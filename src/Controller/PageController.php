@@ -30,7 +30,7 @@ class PageController extends AbstractController
         $data_session = $session->get('hotel');
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         //dd($data_session);
-        return $this->render("security/donnee_jour.html.twig", [
+        return $this->render("page/donnee_jour.html.twig", [
             "hotel" => $data_session['pseudo_hotel'],
             "current_page" => $data_session['current_page']
         ]);
@@ -45,7 +45,7 @@ class PageController extends AbstractController
         $data_session = $session->get('hotel');
         $data_session['pseudo_hote'] = $pseudo_hotel;
         $data_session['current_page'] = "setting";
-        return $this->render('/security/setting.html.twig', [
+        return $this->render('/page/setting.html.twig', [
             "liste_user" => $tab_user,
             "hotel" => $data_session['pseudo_hotel'],
             "current_page" => $data_session['current_page']
@@ -60,7 +60,7 @@ class PageController extends AbstractController
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "crj";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
-        return $this->render('security/crj.html.twig', [
+        return $this->render('page/crj.html.twig', [
             "id" => "li__compte_rendu",
             "hotel" => $data_session['pseudo_hotel'],
             "current_page" => $data_session['current_page']
@@ -140,7 +140,7 @@ class PageController extends AbstractController
 
 
         }
-        return $this->render('security/hebergement.html.twig', [
+        return $this->render('page/hebergement.html.twig', [
             "id" => "li__hebergement",
             "hotel" => $data_session['pseudo_hotel'],
             "current_page" => $data_session['current_page']
@@ -154,7 +154,7 @@ class PageController extends AbstractController
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "restaurant";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
-        return $this->render('security/restaurant.html.twig', [
+        return $this->render('page/restaurant.html.twig', [
             "id" => "li__restaurant",
             "hotel" => $data_session['pseudo_hotel'],
             "current_page" => $data_session['current_page']
@@ -169,7 +169,7 @@ class PageController extends AbstractController
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "spa";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
-        return $this->render('security/spa.html.twig', [
+        return $this->render('page/spa.html.twig', [
             "id" => "li__spa",
             "hotel" => $data_session['pseudo_hotel'],
             "current_page" => $data_session['current_page']
@@ -184,7 +184,7 @@ class PageController extends AbstractController
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "fiche_hotel";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
-        return $this->render('security/fiche_hotel.html.twig', [
+        return $this->render('page/fiche_hotel.html.twig', [
             "id" => "fiche_hotel",
             "hotel" => $data_session['pseudo_hotel'],
             "current_page" => $data_session['current_page']
@@ -203,7 +203,7 @@ class PageController extends AbstractController
         $form = $this->createForm(DonneeDuJourType::class, $ddj);
         // si le formulaire est soumis 
 
-        return $this->render('security/donnee_jour.html.twig', [
+        return $this->render('page/donnee_jour.html.twig', [
             "id" => "li__donnee_du_jour",
             "form" => $form->createView(),
             "hotel" => $data_session['pseudo_hotel'],
@@ -219,7 +219,7 @@ class PageController extends AbstractController
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "h_hebergement";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
-        return $this->render('security/h_hebergement.html.twig', [
+        return $this->render('page/h_hebergement.html.twig', [
             "hotel" => $data_session['pseudo_hotel'],
             "current_page" => $data_session['current_page']
         ]);
@@ -233,7 +233,7 @@ class PageController extends AbstractController
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "h_restaurant";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
-        return $this->render('security/h_restaurant.html.twig', [
+        return $this->render('page/h_restaurant.html.twig', [
             "hotel" => $data_session['pseudo_hotel'],
             "current_page" => $data_session['current_page']
         ]);
@@ -247,7 +247,7 @@ class PageController extends AbstractController
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "h_spa";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
-        return $this->render('security/h_spa.html.twig', [
+        return $this->render('page/h_spa.html.twig', [
             "hotel" => $data_session['pseudo_hotel'],
             "current_page" => $data_session['current_page']
         ]);
@@ -263,7 +263,7 @@ class PageController extends AbstractController
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "t_hebergement";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
-        return $this->render('security/tri_mois/hebergement.html.twig', [
+        return $this->render('page/tri_mois/hebergement.html.twig', [
             "hotel" => $data_session['pseudo_hotel'],
             "current_page" => $data_session['current_page']
         ]);
@@ -277,7 +277,7 @@ class PageController extends AbstractController
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "t_restaurant";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
-        return $this->render('security/tri_mois/restaurant.html.twig', [
+        return $this->render('page/tri_mois/restaurant.html.twig', [
             "hotel" => $data_session['pseudo_hotel'],
             "current_page" => $data_session['current_page']
         ]);
@@ -291,7 +291,7 @@ class PageController extends AbstractController
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "t_spa";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
-        return $this->render('security/tri_mois/spa.html.twig', [
+        return $this->render('page/tri_mois/spa.html.twig', [
             "hotel" => $data_session['pseudo_hotel'],
             "current_page" => $data_session['current_page']
         ]);
