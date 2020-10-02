@@ -1,0 +1,908 @@
+{% extends "base.html.twig" %}
+{% block title %}
+	Spa
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
+{% endblock %}
+
+{% block body %}
+    
+<section
+	id="contents" class="container-fluid">
+	<!-- entete content -->
+	<div id="top-content">
+        <div id="entete_fixed">
+            <ul>
+                <li>
+                    <a href="#" id="btn_drop_side_menu">
+                        <i data-show="show-side-navigation1" class="fa fa-bars show-side-btn"></i>
+                    </a>
+                </li>
+                <li
+								{% if hotel == "royal_beach" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('royal_beach', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{asset('images/hazo1.png')}}" alt="logo1">
+									</div>
+								</a>
+							</li>
+							<li
+								{% if hotel == "calypso" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('calypso', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo2.png') }}" alt="logo2">
+									</div>
+								</a>
+							</li>
+							<li 
+								{% if hotel == "baobab_tree" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('baobab_tree', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo3.png') }}" alt="logo3">
+									</div>
+								</a>
+							</li>
+							<li
+								{% if hotel == "vanila_hotel" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('vanila_hotel', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo4.png') }}" alt="logo4">
+									</div>
+								</a>
+							</li>                <li id="log_out_entete">
+                    <div>
+                         <a href="{{ path('app_logout') }}">
+                            <span aria-hidden="true" class="fa fa-power-off fa-2x"></span>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+	</div>
+	<!-- / entete content -->
+
+	<!-- contenue  -->
+	<div id="hrs_content">
+		<div>
+			<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+				<section class="section_part" id="section_part_top">
+					<div class="sous_titre">
+						<h3>Historique Spa</h3>
+					</div>
+				</section>
+			</div>
+			<div class="col-lg-8 col-md-8 col-sm-12 col-sm-12 col-xs-12">
+				<section class="section_part tab_content margin_tab">
+					<section class=" filtre">
+						<div class="sous_titre_filtre">
+							<h3>Filtre</h3>
+						</div>
+						<form action="" class="tri">
+							<input type="date">
+							<input type="date">
+						</form>
+					</section>
+					<div class="section">
+
+						<div class="tableau tab_historique">
+							<table class="display" id="tableau_tous_les_client_present" style="width:100%">
+								<thead>
+									<tr>
+										<td>
+											<span>CHIFFRE D'AFFAIRE</span>
+										</td>
+										<td>
+											<span>NOMBRE D'ABONNE</span>
+										</td>
+										<td>
+											<span>CLIENT UNIQUE</span>
+										</td>
+										<td>
+											<span>DATE</span>
+										</td>
+										<td>
+											<span>ACTIONS</span>
+										</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ca_val">2</span>
+											<span class="unite">
+												Ariary</span>
+										</td>
+										<td>
+											<span class="ab">25</spanclass="unite">
+											<span>
+												Abonnés</span>
+										</td>
+										<td>
+											<span class="cu">25</spanclass="unite">
+											<span>
+												Clients</span>
+										</td>
+										<td>
+											<span>18/12/2020</span>
+										</td>
+										<td class="td__actions">
+											<a href="#" data-toggle="modal" data-target="#modal_form">
+												<span class="fa fa-edit"></span>
+											</a>
+											<a href="#" data-toggle="modal" data-target="#modal_form_confirme">
+												<span class="fa fa-trash-o"></span>
+											</a>
+										</td>
+									</tr>
+
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+					<!-- Modal modif  -->
+					<div class="modal fade" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+						<div class="modal-dialog opacity-animate4">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h3 class="modal-title" style="text-align: center;">Modification</h3>
+								</div>
+								<div class="modal-body">
+									<form action="">
+										<div class="form-group">
+											<label>Chiffre d'affaire (Ariary) :
+											</label>
+											<input type="text" class="form-control ca">
+										</div>
+										<div class="form-group">
+											<label>Nombre d'abonné (Abonnés) :
+											</label>
+											<input type="text" class="form-control">
+										</div>
+										<div class="form-group">
+											<label>Client unique (Clients) :
+											</label>
+											<input type="text" class="form-control">
+										</div>
+										<div class="form-group">
+											<label>Date :
+											</label>
+											<input type="date" class="form-control">
+										</div>
+										<div class="form-group">
+											<input type="submit" class="form-control btn btn-warning" value="Enregistrer">
+										</div>
+									</form>
+								</div>
+
+							</div>
+						</div>
+					</div>
+					<!-- fin Modal modif  -->
+
+					<!-- Modal suppr  -->
+					<div class="modal fade" id="modal_form_confirme" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+						<div class="modal-dialog opacity-animate4">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h3 class="modal-title" style="text-align: center;">Voulez-vous vraiment supprimer cet élément ?</h3>
+								</div>
+								<div class="modal-body">
+									<div id="div__conf">
+										<a class="btn btn-warning">Supprimer</a>
+										<a class="btn btn-warning annuler" data-dismiss="modal">Annuler</a>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+					<!-- fin Modal suppr  -->
+
+				</section>
+			</div>
+		</div>
+	</div>
+	<!-- / contenue  -->
+</section>
+
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script src="{{ asset('js/cleave.min.js') }}"></script>
+
+<script>
+
+	$(document).ready(function () { // pour le tableau
+
+                var table = $('#tableau_tous_les_client_present').DataTable({
+                "language": {
+                "sEmptyTable": "Aucune donnée disponible dans le tableau",
+                "sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
+                "sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
+                "sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
+                "sInfoPostFix": "",
+                "sInfoThousands": ",",
+                "sLengthMenu": "Afficher _MENU_ éléments",
+                "sLoadingRecords": "Chargement...",
+                "sProcessing": "Traitement...",
+                "sSearch": "Rechercher :",
+                "sZeroRecords": "Aucun élément correspondant trouvé",
+                "oPaginate": {
+                "sFirst": "Premier",
+                "sLast": "Dernier",
+                "sNext": "Suivant",
+                "sPrevious": "Précédent"
+                },
+                "oAria": {
+                "sSortAscending": ": activer pour trier la colonne par ordre croissant",
+                "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+                },
+                "select": {
+                "rows": {
+                "_": "%d lignes sélectionnées",
+                "0": "Aucune ligne sélectionnée",
+                "1": "1 ligne sélectionnée"
+                }
+                }
+                },
+                responsive: true,
+                scrollY: false,
+                scrollX: true,
+                scrollCollapse: true,
+                paging: true,
+                autoFill: true
+        });
+        new $.fn.dataTable.FixedHeader(table);
+
+        // fin tableau
+
+    });
+    var n = document.querySelectorAll(".ca");
+    for (var i = n.length - 1; i >= 0; i--) {
+        new Cleave(n[i], { // prefix: 'Ar ',
+        numeral: true,
+        delimiter: [' '],
+        numeralThousandsGroupStyle: 'thousand',
+        numericOnly: true
+        });
+    }
+</script>
+
+
+{% endblock %}

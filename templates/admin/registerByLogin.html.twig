@@ -1,0 +1,106 @@
+{% extends "base.html.twig" %}
+{% block title %}S'inscrire!
+{% endblock %}
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{asset('css/signup.css')}}">
+{% endblock %}
+{% block body %}
+
+	<section class="wrapper">
+		<div class="container-fluid">
+			<div class="col-lg-6 col-md-6 col-sm-6">
+				<div class="fond_gauche"></div>
+			</div>
+			<div class="col-lg-6 col-md-6 col-sm-6">
+				<div class="row">
+					<div class="grand_titre_si">
+						<div class="bg_titre">
+							<span>SOUND'S</span>
+						</div>
+						<div class="sm_titre">
+							<span>HOTELS GROUP</span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="div_parag">
+						<p>Veuillez compléter pour créer votre compte.</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form">
+						{{ form_start(form) }}
+						<section class="input_vert">
+							<div class="form-group">
+								<span class="span__label"></span>
+								{{ form_widget(form.nom) }}
+							</div>
+							<div class="form-group">
+								<span class="span__label"></span>
+								{{ form_widget(form.prenom) }}
+							</div>
+						</section>
+						<div class="form-group">
+							<span class="span__label"></span>
+							{{ form_widget(form.username) }}
+						</div>
+						<div class="form-group">
+							<span class="span__label"></span>
+							{{ form_widget(form.email) }}
+						</div>
+						<div class="form-group">
+							<span class="span__label"></span>
+							{{ form_widget(form.password) }}
+						</div>
+						<div class="form-group">
+							<span class="span__label"></span>
+							{{ form_widget(form.c_password) }}
+						</div>
+
+						<div class="form-group div__check">
+							<input type="checkbox" id="remember_me" name="" value="remember">
+							<label for="remember_me">J'accepte les termes et les conditions</label>
+						</div>
+						<div class="form-group last_iput">
+							<input type="submit" value="S'inscrire" id="btn_login" class="btn btn-md" name="">
+						</div>
+						<div class="form-group">
+							<a href="{{path('app_login')}}" class="btn btn-link" id="btn_ha">Vous avez déjà un compte? Se connecter.</a>
+						</div>
+						{{ form_end(form) }}
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+{% endblock %}
+{% block javascripts %}
+
+	<script>
+
+		/*animation des input  */
+
+        $(document).ready(function () {
+            $("input[placeholder]").on({
+                focus: function () {
+                    $(this).parent().children(".span__label").text($(this).attr('placeholder'));
+                    $(this).attr('placeholder', ' ');
+                    $(this).css("border-color", "#d29e00");
+                },
+                blur: function () {
+                    var t = $(this).attr('data-placeholder');
+                    $(this).attr('placeholder', t);
+                    $(this).parent().children(".span__label").text("");
+                    $(this).css("border-color", "#e2e3e6");
+                }
+            })
+        })
+
+/* / animation des input  */
+
+	</script>
+
+{% endblock %}
+

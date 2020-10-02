@@ -1,0 +1,789 @@
+{% extends "base.html.twig" %}
+{% block title %} Compte rendu journalier {% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
+{% endblock %}
+{% block body %}
+    
+<section id="contents" class="container-fluid">
+	<!-- entete content -->
+	<div id="top-content">
+        <div id="entete_fixed">
+            <ul>
+                <li>
+                    <a href="#" id="btn_drop_side_menu">
+                        <i data-show="show-side-navigation1" class="fa fa-bars show-side-btn"></i>
+                    </a>
+                </li>
+                <li
+								{% if hotel == "royal_beach" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('royal_beach', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{asset('images/hazo1.png')}}" alt="logo1">
+									</div>
+								</a>
+							</li>
+							<li
+								{% if hotel == "calypso" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('calypso', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo2.png') }}" alt="logo2">
+									</div>
+								</a>
+							</li>
+							<li 
+								{% if hotel == "baobab_tree" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('baobab_tree', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo3.png') }}" alt="logo3">
+									</div>
+								</a>
+							</li>
+							<li
+								{% if hotel == "vanila_hotel" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('vanila_hotel', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo4.png') }}" alt="logo4">
+									</div>
+								</a>
+							</li>
+                <li id="log_out_entete">
+                    <div>
+                        <a href="{{ path('app_logout') }}">
+                            <span aria-hidden="true" class="fa fa-power-off fa-2x"></span>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+	</div>
+	<!-- / entete content -->
+
+
+	<div id="crj_content">
+		<div>
+			<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+				<section class="section_part" id="section_part_top">
+					<div class="sous_titre">
+						<h2>Compte rendu journalier</h2>
+						<form action="" class="tri ">
+							<div id="tri_annee">
+								<h4>Filtre par Année :
+								</h4>
+								<section>
+									<select name="" id="">
+										<option value="">2020</option>
+									</select>
+								</section>
+							</div>
+							<div id="tri">
+								<h4>Filtre par date :
+								</h4>
+								<section>
+									<input type="date" class="date_compte_rendu date1">
+									<input type="date" class="date_compte_rendu date2">
+								</section>
+							</div>
+							<select name="" id="mois">
+								<option value="">Tout service</option>
+								<option value="">Direction</option>
+								<option value="">Service RH</option>
+								<option value="">Commercial</option>
+								<option value="">Compta</option>
+								<option value="">Réception</option>
+								<option value="">Restaurant</option>
+								<option value="">Spa</option>
+								<option value="">Service techniques</option>
+								<option value="">Litiges</option>
+							</select>
+						</form>
+					</div>
+				</section>
+			</div>
+			<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12 data_c">
+
+				<!-- il faut dynamiser page1 , page2 ,... -->
+
+				<!-- unité compte rendu -->
+
+					<div class="tab_content data_crj data_crj_active" id="page1"> <div class="sous_titre">
+						<h3>29/06/2020</h3>
+					</div>
+					<section class="service">
+						<div class="data-service">
+							<div>
+								<h4>Direction</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+							<div>
+								<h4>Service RH</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Commercial</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+							<div>
+								<h4>Compta</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Réception</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+							<div>
+								<h4>Restaurant</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Spa</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+							<div>
+								<h4>Service techniques</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Litiges</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+
+
+						</div>
+					</section>
+				</div>
+
+				<!-- / unite compte rendu -->
+
+				<div class="tab_content data_crj" id="page2">
+
+					<div class="sous_titre">
+						<h3>28/06/2020</h3>
+					</div>
+					<section class="service">
+						<div class="data-service">
+							<div>
+								<h4>Direction</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+							<div>
+								<h4>Service RH</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing Étourdis, courant, comme pour braver perpétuellement le coup qui devait lui cogner à grands coups. Après-demain, vers onze heures du matin. De-ci, de-là, les mauvais traitements qu'on lui disait, peut-être ! Sors-moi cette vermine, quand nous vîmes l'embarcation du gouverneur armée de dix mille jeunes vierges, par exemple, après qu'ils se seront révélés vains. Dire qu'autrefois il aelit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Commercial</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.Lorem ipsum dolor sit amet, consectetur adipisicing Étourdis, courant, comme pour braver perpétuellement le coup qui devait lui cogner à grands coups. Après-demain, vers onze heures du matin. De-ci, de-là, les mauvais traitements qu'on lui
+								</p>
+							</div>
+							<div>
+								<h4>Compta</h4>
+								<p>
+									l'embarcation du gouverneur armée de dix mille jeunes vierges, par exemple, après qu'ils se seront révélés vains. Dire qu'autrefois il aelit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inv
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Réception</h4>
+								<p>
+									l'embarcation du gouverneur armée de dix mille jeunes vierges, par exemple, après qu'ils se seront révélés vains. Dire qu'autrefois il aelit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inv
+								</p>
+							</div>
+							<div>
+								<h4>Restaurant</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Spa</h4>
+								<p>
+									Ls'il restait à sa place habituelle, les grenadiers se répandirent en félicitations. À un demi-mille de la surface, serait avalé, échangé contre ce qui est nécessaire pour notre passé et que le feu s'éteignait, reparaissait un peu plus tôt... Remplis d'espérance et d'amour, les comédies les plus origint.
+								</p>
+							</div>
+							<div>
+								<h4>Service techniques</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Litiges</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt evs'il restait à sa place habituelle, les grenadiers se répandirent en félicitations. À un demi-mille de la surface, serait avalé, échangé contre ce qui est nécessaire pour notre passé et que le feu s'éteignait, reparaissait un peu plus tôt... Remplis d'espérance et d'amour, les comédies les plus origineniet.
+								</p>
+							</div>
+
+
+						</div>
+					</section>
+				</div>
+
+				<div class="tab_content data_crj" id="page3">
+
+					<div class="sous_titre">
+						<h3>27/06/2020</h3>
+					</div>
+					<section class="service">
+						<div class="data-service">
+							<div>
+								<h4>Direction</h4>
+								<p>
+									Loleurs ? Franchissant de nouveau la scène changeait comme par enchantement. Revenons, s'il paraît dans les idées auxquelles le nom peut être appliqué avec profit sont ceux où le doigt ne bouge pas ; si vous s
+								</p>
+							</div>
+							<div>
+								<h4>Service RH</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.s qu'on lui disait, peut-être ! Sors-moi cette vermine, quand nous vîmes l'embarcation du gouverneur armée de dix mille jeunes vierges, par exemple, après qu'ils se seront révélés vains. Dire qu'autrefois il avait fait, cette fois ! Pénible surtout pour moi, s'il restait à sa place habituelle, les grenadiers se répandirent en félicitations. À un demi-mille de la surface, serait
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Commercial</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+							<div>
+								<h4>Compta</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Réception</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eves qu'on lui disait, peut-être ! Sors-moi cette vermine, quand nous vîmes l'embarcation du gouverneur armée de dix mille jeunes vierges, par exemple, après qu'ils se seront révélés vains. Dire qu'autrefois il avait fait, cette fois ! Pénible surtout pour moi, s'il restait à sa place habituelle, les grenadiers se répandirent en félicitations. À un demi-mille de la surface, seraitniet.
+								</p>
+							</div>
+							<div>
+								<h4>Restaurant</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Spa</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+							<div>
+								<h4>Service techniques</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Litiges</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+
+
+						</div>
+					</section>
+				</div>
+				<div class="tab_content data_crj" id="page4">
+
+					<div class="sous_titre">
+						<h3>27/06/2020</h3>
+					</div>
+					<section class="service">
+						<div class="data-service">
+							<div>
+								<h4>Direction</h4>
+								<p>
+									Loleurs ? Franchissant de nouveau la scène changeait comme par enchantement. Revenons, s'il paraît dans les idées auxquelles le nom peut être appliqué avec profit sont ceux où le doigt ne bouge pas ; si vous s
+								</p>
+							</div>
+							<div>
+								<h4>Service RH</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.s qu'on lui disait, peut-être ! Sors-moi cette vermine, quand nous vîmes l'embarcation du gouverneur armée de dix mille jeunes vierges, par exemple, après qu'ils se seront révélés vains. Dire qu'autrefois il avait fait, cette fois ! Pénible surtout pour moi, s'il restait à sa place habituelle, les grenadiers se répandirent en félicitations. À un demi-mille de la surface, serait
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Commercial</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+							<div>
+								<h4>Compta</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Réception</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eves qu'on lui disait, peut-être ! Sors-moi cette vermine, quand nous vîmes l'embarcation du gouverneur armée de dix mille jeunes vierges, par exemple, après qu'ils se seront révélés vains. Dire qu'autrefois il avait fait, cette fois ! Pénible surtout pour moi, s'il restait à sa place habituelle, les grenadiers se répandirent en félicitations. À un demi-mille de la surface, seraitniet.
+								</p>
+							</div>
+							<div>
+								<h4>Restaurant</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Spa</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+							<div>
+								<h4>Service techniques</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Litiges</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+
+
+						</div>
+					</section>
+				</div>
+				<div class="tab_content data_crj" id="page5">
+
+					<div class="sous_titre">
+						<h3>27/06/2020</h3>
+					</div>
+					<section class="service">
+						<div class="data-service">
+							<div>
+								<h4>Direction</h4>
+								<p>
+									Loleurs ? Franchissant de nouveau la scène changeait comme par enchantement. Revenons, s'il paraît dans les idées auxquelles le nom peut être appliqué avec profit sont ceux où le doigt ne bouge pas ; si vous s
+								</p>
+							</div>
+							<div>
+								<h4>Service RH</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.s qu'on lui disait, peut-être ! Sors-moi cette vermine, quand nous vîmes l'embarcation du gouverneur armée de dix mille jeunes vierges, par exemple, après qu'ils se seront révélés vains. Dire qu'autrefois il avait fait, cette fois ! Pénible surtout pour moi, s'il restait à sa place habituelle, les grenadiers se répandirent en félicitations. À un demi-mille de la surface, serait
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Commercial</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+							<div>
+								<h4>Compta</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Réception</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eves qu'on lui disait, peut-être ! Sors-moi cette vermine, quand nous vîmes l'embarcation du gouverneur armée de dix mille jeunes vierges, par exemple, après qu'ils se seront révélés vains. Dire qu'autrefois il avait fait, cette fois ! Pénible surtout pour moi, s'il restait à sa place habituelle, les grenadiers se répandirent en félicitations. À un demi-mille de la surface, seraitniet.
+								</p>
+							</div>
+							<div>
+								<h4>Restaurant</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Spa</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+							<div>
+								<h4>Service techniques</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Litiges</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+
+
+						</div>
+					</section>
+				</div>
+				<div class="tab_content data_crj" id="page6">
+
+					<div class="sous_titre">
+						<h3>27/06/2020</h3>
+					</div>
+					<section class="service">
+						<div class="data-service">
+							<div>
+								<h4>Direction</h4>
+								<p>
+									Loleurs ? Franchissant de nouveau la scène changeait comme par enchantement. Revenons, s'il paraît dans les idées auxquelles le nom peut être appliqué avec profit sont ceux où le doigt ne bouge pas ; si vous s
+								</p>
+							</div>
+							<div>
+								<h4>Service RH</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.s qu'on lui disait, peut-être ! Sors-moi cette vermine, quand nous vîmes l'embarcation du gouverneur armée de dix mille jeunes vierges, par exemple, après qu'ils se seront révélés vains. Dire qu'autrefois il avait fait, cette fois ! Pénible surtout pour moi, s'il restait à sa place habituelle, les grenadiers se répandirent en félicitations. À un demi-mille de la surface, serait
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Commercial</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+							<div>
+								<h4>Compta</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Réception</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eves qu'on lui disait, peut-être ! Sors-moi cette vermine, quand nous vîmes l'embarcation du gouverneur armée de dix mille jeunes vierges, par exemple, après qu'ils se seront révélés vains. Dire qu'autrefois il avait fait, cette fois ! Pénible surtout pour moi, s'il restait à sa place habituelle, les grenadiers se répandirent en félicitations. À un demi-mille de la surface, seraitniet.
+								</p>
+							</div>
+							<div>
+								<h4>Restaurant</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Spa</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+							<div>
+								<h4>Service techniques</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Litiges</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+
+
+						</div>
+					</section>
+				</div>
+				<div class="tab_content data_crj" id="page7">
+
+					<div class="sous_titre">
+						<h3>27/06/2020</h3>
+					</div>
+					<section class="service">
+						<div class="data-service">
+							<div>
+								<h4>Direction</h4>
+								<p>
+									Loleurs ? Franchissant de nouveau la scène changeait comme par enchantement. Revenons, s'il paraît dans les idées auxquelles le nom peut être appliqué avec profit sont ceux où le doigt ne bouge pas ; si vous s
+								</p>
+							</div>
+							<div>
+								<h4>Service RH</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.s qu'on lui disait, peut-être ! Sors-moi cette vermine, quand nous vîmes l'embarcation du gouverneur armée de dix mille jeunes vierges, par exemple, après qu'ils se seront révélés vains. Dire qu'autrefois il avait fait, cette fois ! Pénible surtout pour moi, s'il restait à sa place habituelle, les grenadiers se répandirent en félicitations. À un demi-mille de la surface, serait
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Commercial</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+							<div>
+								<h4>Compta</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Réception</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eves qu'on lui disait, peut-être ! Sors-moi cette vermine, quand nous vîmes l'embarcation du gouverneur armée de dix mille jeunes vierges, par exemple, après qu'ils se seront révélés vains. Dire qu'autrefois il avait fait, cette fois ! Pénible surtout pour moi, s'il restait à sa place habituelle, les grenadiers se répandirent en félicitations. À un demi-mille de la surface, seraitniet.
+								</p>
+							</div>
+							<div>
+								<h4>Restaurant</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Spa</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+							<div>
+								<h4>Service techniques</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Litiges</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+
+
+						</div>
+					</section>
+				</div>
+				<div class="tab_content data_crj" id="page8">
+
+					<div class="sous_titre">
+						<h3>27/06/2020</h3>
+					</div>
+					<section class="service">
+						<div class="data-service">
+							<div>
+								<h4>Direction</h4>
+								<p>
+									Loleurs ? Franchissant de nouveau la scène changeait comme par enchantement. Revenons, s'il paraît dans les idées auxquelles le nom peut être appliqué avec profit sont ceux où le doigt ne bouge pas ; si vous s
+								</p>
+							</div>
+							<div>
+								<h4>Service RH</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.s qu'on lui disait, peut-être ! Sors-moi cette vermine, quand nous vîmes l'embarcation du gouverneur armée de dix mille jeunes vierges, par exemple, après qu'ils se seront révélés vains. Dire qu'autrefois il avait fait, cette fois ! Pénible surtout pour moi, s'il restait à sa place habituelle, les grenadiers se répandirent en félicitations. À un demi-mille de la surface, serait
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Commercial</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+							<div>
+								<h4>Compta</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Réception</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eves qu'on lui disait, peut-être ! Sors-moi cette vermine, quand nous vîmes l'embarcation du gouverneur armée de dix mille jeunes vierges, par exemple, après qu'ils se seront révélés vains. Dire qu'autrefois il avait fait, cette fois ! Pénible surtout pour moi, s'il restait à sa place habituelle, les grenadiers se répandirent en félicitations. À un demi-mille de la surface, seraitniet.
+								</p>
+							</div>
+							<div>
+								<h4>Restaurant</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Spa</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+							<div>
+								<h4>Service techniques</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+						</div>
+						<div class="data-service">
+							<div>
+								<h4>Litiges</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae adipisci, aut, suscipit maxime ducimus obcaecati sint quia! Dicta et earum aut ea omnis inventore, culpa, minima iure modi deserunt eveniet.
+								</p>
+							</div>
+
+
+						</div>
+					</section>
+				</div>
+				<ul id="pagination-demo" class="pagination-lg pull-right"></ul>
+
+
+			</div>
+
+		</div>
+	</div>
+
+</section>
+
+
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('js/cleave.min.js') }}"></script>
+
+
+<!-- / un plugin tres important pour les input -->
+<script src="{{ asset('js/jquery.twbsPagination.min.js') }}"></script>
+
+<script>
+	// nombre des coimpte rendu
+
+var nombre_crj = document.querySelectorAll(".data_crj").length;
+
+$('#pagination-demo').twbsPagination({
+
+totalPages: nombre_crj,
+// the current page that show on start
+startPage: 1,
+
+// maximum visible pages
+visiblePages: 4,
+
+initiateStartPageClick: true,
+
+// template for pagination links
+href: false,
+
+// variable name in href template for page number
+hrefVariable: '[[ number ]]',
+
+// Text labels
+first: 'Premier',
+prev: 'Précédent',
+next: 'Suivant',
+last: 'Dernier',
+
+// carousel-style pagination
+loop: false,
+
+// callback function
+onPageClick: function (event, page) {
+$('.data_crj_active').removeClass('data_crj_active');
+$('#page' + page).addClass('data_crj_active');
+},
+
+// pagination Classes
+paginationClass: 'pagination',
+nextClass: 'next',
+prevClass: 'prev',
+lastClass: 'last',
+firstClass: 'first',
+pageClass: 'page',
+activeClass: 'active',
+disabledClass: 'disabled'
+
+});
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}
+			{% endblock %}
+		</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<meta name="author" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Lato:200,300,400,500,600,700,800,900,1000&display=swap" rel="stylesheet">
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link href="https://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+		<link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.4/css/responsive.bootstrap.min.css">
+
+		{% block stylesheets %}{% endblock %}
+		</head>
+		<body>
+			{# <!-- PRE LOADER --> #}
+			<div class="loader-wrapper">
+				<div class="loader"></div>
+
+				<div class="loader-section section-left"></div>
+				<div class="loader-section section-right"></div>
+			</div>
+			{# <!-- fin preload --> #}
+
+			{% if app.user %}
+				
+				<aside class="side-nav" id="show-side-navigation1">
+					<div id="aside1">
+						<ul>
+							<li
+								{% if hotel == "royal_beach" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('royal_beach', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{asset('images/hazo1.png')}}" alt="logo1">
+									</div>
+								</a>
+							</li>
+							<li
+								{% if hotel == "calypso" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('calypso', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo2.png') }}" alt="logo2">
+									</div>
+								</a>
+							</li>
+							<li 
+								{% if hotel == "baobab_tree" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('baobab_tree', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo3.png') }}" alt="logo3">
+									</div>
+								</a>
+							</li>
+							<li
+								{% if hotel == "vanila_hotel" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('vanila_hotel', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo4.png') }}" alt="logo4">
+									</div>
+								</a>
+							</li>
+							<li id="log_out">
+								<div>
+									<a href="{{ path('app_logout') }}">
+										<span aria-hidden="true" class="fa fa-power-off fa-2x"></span>
+									</a>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div id="aside2">
+						<div class="heading">
+							<img src="https://uniim1.shutterfly.com/ng/services/mediarender/THISLIFE/021036514417/media/23148907008/medium/1501685726/enhance" alt="">
+							<div class="info">
+								<h3>
+									<a href="{{ path('setting',{'pseudo_hotel' : hotel}) }}" >{% if app.user %}
+										<span>{{ app.user.nom }}</span>
+										<span>{{ app.user.prenom }}</span>
+										<span> {{ hotel }}/{{ current_page }} </span>
+									{% endif %}</a>
+								</h3>
+							</div>
+							<div id="reglage">
+								<a href="{{ path('setting', {'pseudo_hotel' : hotel}) }}" >Settings</a>
+							</div>
+						</div>
+						<ul class="categories">
+							<li {% if id is defined and id is not null and id == "li__compte_rendu"  %}
+								id = "{{ id }}"
+							{% endif %}>
+								<a href="{{ path('crj', {'pseudo_hotel' : hotel}) }}">
+									<i aria-hidden="true" id="crj">
+									{% if id is defined and id is not null and id == "li__compte_rendu"  %}
+										<img src="{{ asset('images/crj_2.png') }}" alt="icone crj 1" class="img-responsive nav_icone" width="40">
+									{% else %}
+										<img src="{{ asset('images/crj.png') }}" alt="icone crj 1" class="img-responsive nav_icone" width="40">
+									{% endif %}
+										<img src="{{ asset('images/crj_2.png') }}" alt="icone crj 2" class="img-responsive nav_icone_hover" width="40">
+									</i>
+									<span>Compte rendu journalier</span>
+								</a>
+							</li>
+							<li {% if id is defined and id is not null and id == "li__hebergement" %}
+								id = "{{ id }}"
+							{% endif %}>
+								<a href="{{ path('hebergement', {'pseudo_hotel' : hotel}) }}">
+									<i
+										aria-hidden="true" id="bed">
+									{% if id is defined and id is not null and id == "li__hebergement"  %}
+										<img src="{{ asset('images/bed_2.png')}}" alt="icone bed 1" class="img-responsive nav_icone"  width="40">
+									{% else %}
+										<img src="{{ asset('images/bed.png')}}" alt="icone bed 1" class="img-responsive nav_icone"  width="40">
+									{% endif %}
+											
+              								<img src="{{ asset('images/bed_2.png')}}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40" >
+
+									</i>
+									<span>Hébergement</span>
+								</a>
+							</li>
+							<li {% if id is defined and id is not null and id == "li__restaurant"  %}
+								id = "{{ id }}"
+							{% endif %}>
+								<a href="{{ path('restaurant', {'pseudo_hotel' : hotel}) }}">
+									<i aria-hidden="true" id="restaurant">
+									{% if id is defined and id is not null and id == "li__restaurant"  %}
+										<img src="{{ asset('images/restaurant_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+									{% else %}
+										<img src="{{ asset('images/restaurant.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+									{% endif %}
+										
+
+										<img src="{{ asset('images/restaurant_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
+
+									</i>
+									<span>
+										Restaurant</span>
+								</a>
+							</li>
+							<li {% if id is defined and id is not null and id == "li__spa"  %}
+								id = "{{ id }}"
+							{% endif %}>
+								<a href="{{ path('spa', {'pseudo_hotel' : hotel}) }}">
+									<i aria-hidden="true" id="spa">
+									{% if id is defined and id is not null and id == "li__spa"  %}
+										<img src="{{ asset('images/spa_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+									{% else %}
+										<img src="{{ asset('images/spa.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+									{% endif %}
+											
+
+											<img src="{{ asset('images/spa_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
+
+									</i>
+									<span>Spa</span>
+								</a>
+							</li>
+
+							<li {% if id is defined and id is not null and id == "fiche_hotel" %}
+								id = "{{ id }}"
+							{% endif %}>
+								<a href="{{ path('fiche_hotel', {'pseudo_hotel' : hotel}) }}">
+									<i aria-hidden="true" id="edit">
+									{% if id is defined and id is not null and id == "fiche_hotel"  %}
+										<img src="{{ asset('images/edit_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+									{% else %}
+										<img src="{{ asset('images/edit.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+									{% endif %}
+										
+
+										<img src="{{ asset('images/edit_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
+
+									</i>
+									<span>Fiche hôtel</span>
+								</a>
+							</li>
+							<li {% if id is defined and id is not null and id == "li__donnee_du_jour"  %}
+								id = "{{ id }}"
+							{% endif %}>
+								<a href="{{ path('donnee_jour', {'pseudo_hotel' : hotel}) }}">
+									<i aria-hidden="true" id="edit">
+									{% if id is defined and id is not null and id == "li__donnee_du_jour"  %}
+										<img src="{{ asset('images/donnee_du_jour_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+									{% else %}
+										<img src="{{ asset('images/donnee_du_jour.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+									{% endif %}
+
+										<img src="{{ asset('images/donnee_du_jour_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
+
+									</i>
+									<span>Donnée du jour</span>
+								</a>
+							</li>
+							<li id="li_historique">
+								<a href="#">
+									<span class="fa fa-clock-o"></span>
+									<span>Historiques</span>
+									<span class="fa fa-angle-down"></span>
+								</a>
+								<ul class="ul_historique">
+									<li>
+										<a href="{{ path('h_hebergement', {'pseudo_hotel' : hotel}) }}">
+											<span>Hébergement</span>
+										</a>
+									</li>
+									<li>
+										<a href="{{ path('h_restaurant', {'pseudo_hotel' : hotel}) }}">
+											<span>Restaurant</span>
+										</a>
+									</li>
+									<li>
+										<a href="{{ path('h_spa', {'pseudo_hotel' : hotel}) }}">
+											<span>Spa</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+
+						</ul>
+					</div>
+				</aside>
+
+
+			{% endif %}
+
+			{% block body %}{% endblock %}
+
+			<!--script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></!--script-->
+			<script src="{{asset('jquery/jquery.min.js')}}"></script>
+
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+			<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+			<script>
+				/* pour l'annimation de loader */
+
+
+			$(document).ready(function () {
+				setTimeout(function () {
+				$('body').addClass('loaded');
+				}, 2000);
+			})
+
+			/* fin loader */
+			</script>
+			<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+			<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+			<script src="https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.min.js"></script>
+			<script src="https://cdn.datatables.net/responsive/2.2.4/js/dataTables.responsive.min.js"></script>
+			<script src="https://cdn.datatables.net/responsive/2.2.4/js/responsive.bootstrap.min.js"></script>
+			<script src='{{ asset('js/dashboard.js') }}'></script>
+			{% block javascripts %}{% endblock %}
+		</body>
+	</html>
+

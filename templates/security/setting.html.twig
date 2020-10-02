@@ -1,0 +1,492 @@
+{% extends "base.html.twig" %}
+{% block title %}
+	Reglage
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
+{% endblock %}
+{% block body %}
+    
+<section
+	id="contents" class="container-fluid">
+	<!-- entete content -->
+	<div id="top-content">
+        <div id="entete_fixed">
+            <ul>
+                <li>
+                    <a href="#" id="btn_drop_side_menu">
+                        <i data-show="show-side-navigation1" class="fa fa-bars show-side-btn"></i>
+                    </a>
+                </li>
+                <li
+								{% if hotel == "royal_beach" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('royal_beach', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{asset('images/hazo1.png')}}" alt="logo1">
+									</div>
+								</a>
+							</li>
+							<li
+								{% if hotel == "calypso" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('calypso', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo2.png') }}" alt="logo2">
+									</div>
+								</a>
+							</li>
+							<li 
+								{% if hotel == "baobab_tree" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('baobab_tree', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo3.png') }}" alt="logo3">
+									</div>
+								</a>
+							</li>
+							<li
+								{% if hotel == "vanila_hotel" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('vanila_hotel', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo4.png') }}" alt="logo4">
+									</div>
+								</a>
+							</li>
+                <li id="log_out_entete">
+                    <div>
+                         <a href="{{ path('app_logout') }}">
+                            <span aria-hidden="true" class="fa fa-power-off fa-2x"></span>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+	</div>
+	<!-- / entete content -->
+
+	<!-- contenue nouveau client -->
+	<div id="settings_content">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+			<section class="section_part" id="section_part_top">
+				<div class="sous_titre">
+					<h3>ESPACE DE TRAVAIL</h3>
+				</div>
+				<div class="sous_titre_2">
+					<h4>Gestion des équipes et espace de travail</h4>
+				</div>
+			</section>
+		</div>
+		<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+			<div class="inside_content">
+				<div class="sous_titre_2">
+					<h4>Mon profil</h4>
+				</div>
+				<form action="" id="form-owner">
+					<div class="form-group pdp_profil">
+						<div class="pdp_image" style="/*background-image: url(images/directeur.jpg);*/">
+							<input type="file">
+							<span class="icone_upload fa fa-plus"></span>
+						</div>
+						<div class="pdp_profil_n_p">
+							<p class="p_nom">Mon nom</p>
+							<p class="p_prenom">Mon prénom</p>
+							<p class="p_prenom">Mon identifiant</p>
+						</div>
+					</div>
+					<div class="form-group">
+						<span class="span__label"></span>
+						<input type="text" name="" data-placeholder="Adresse mail" class="form-control" id="username" placeholder="Adresse mail" value="Unadresse@gmail.com">
+					</div>
+					<div class="form-group">
+						<span class="span__label"></span>
+						<input type="password" name="" data-placeholder="Mot de passe" class="form-control" id="passsword" placeholder="Mot de passe" value="un mot de passe">
+						<a href="#" class="show_password">
+							<span class="fa fa-eye"></span>
+						</a>
+						<a href="#" class="edit_pass">
+							<span class="fa fa-edit"></span>
+						</a>
+					</div>
+					<div class="infos_pass form-group">
+						<span class="span__label"></span>
+						<input type="password" name="" data-placeholder="Nouveau Mot de passe" class="form-control" id="n_passsword" placeholder="Nouveau Mot de passe">
+					</div>
+					<div class="infos_pass form-group">
+						<span class="span__label"></span>
+						<input type="password" name="" data-placeholder="Confirmer le mot de passe" class="form-control" id="c_passsword" placeholder="Confirmer le mot de passe">
+					</div>
+					<div class="form-group">
+						<button type="submit" class="form-control btn btn-warning" id="btn_register">Enregistrer</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12"
+		
+		{% if is_granted('ROLE_ADMIN') %}
+					style =" display:block; "
+		{% else %}
+			style = "display : none;"
+				{% endif %}
+		>
+			<div class="equipe_content inside_content">
+				<div class="sous_titre_2">
+					<h4>Liste des équipes</h4>
+				</div>
+				<ul id="ul_liste_equipe">
+					{% for elm in liste_user %}
+						<li>
+							<span class="nom_pers">
+								{{  elm.nom }}
+								<br>
+								{{ elm.prenom }}
+							</span>
+							<span class="role_pers">
+								{% if elm.hotel == "tous" %}
+									Administrateur
+								{% else %}
+									Editeur <br> {{elm.hotel}}
+								{% endif %}
+
+							</span>
+							<div>
+								<a href="#" data-id = {{ elm.id }} data-toggle="modal" data-target="#modal_form_modif_admin">
+									<span class="fa fa-edit"></span>
+								</a>
+								<a href="#" data-id = {{ elm.id }} data-toggle="modal" data-target="#modal_form_confirme_pers" class="delete_pers">
+									<span class="fa fa-trash-o"></span>
+								</a>
+							</div>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12"
+
+			{% if is_granted('ROLE_ADMIN') %}
+				style =" display:block; "
+			{% else %}
+				style = "display : none;"
+			{% endif %}
+		
+		>
+			<div class="inside_content">
+				<div class="sous_titre_2">
+					<h4>Gestion des équipes</h4>
+				</div>
+				<form action="" id="form_register_user">
+					<div class="form-group">
+						<label for="choix_role">Type de l'administrateur :</label>
+						<select name="" id="choix_role" class="form-control">
+							<option value="administrateur">Administrateur</option>
+							<option value="editeur">Editeur</option>
+						</select>
+					</div>
+					<div class="form-group nom_hotel">
+						<label for="choix_hotel">Nom de l'hotel</label>
+						<select name="" id="choix_hotel" class="form-control">
+							<option value="tous">Tous</option>
+							<option value="Royal Beach">Royal Beach</option>
+							<option value="Calypso">Calypso</option>
+							<option value="Baobab Tree">Baobab Tree</option>
+							<option value="Vanila Hotel">Vanila Hotel</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<span class="span__label"></span>
+						<input type="text" name="" data-placeholder="Nom" class="form-control" id="nom_pers" placeholder="Nom">
+					</div>
+					<div class="form-group">
+						<span class="span__label"></span>
+						<input type="text" name="" data-placeholder="Prénom" class="form-control" id="prenom_pers" placeholder="Prénom">
+					</div>
+					<div class="form-group">
+						<span class="span__label"></span>
+						<input type="text" name="" data-placeholder="Adresse mail" class="form-control" id="username_pers" placeholder="Adresse mail" unadresse@gmail.com>
+					</div>
+					<div class=" form-group">
+						<span class="span__label"></span>
+						<input type="text" name="" data-placeholder="Son mot de passe" class="form-control" id="n_passsword_pers" placeholder="Son mot de passe">
+					</div>
+					<div class="form-group">
+						<button type="submit" class="form-control btn btn-warning" id="admin_register">Enregistrer</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- / contenue nouveau client -->
+
+	<!-- Modal suppr  -->
+	<div class="modal fade" id="modal_form_confirme_pers_esorina" tabindex="-1" role="dialog"  aria-hidden="true">
+		<div class="modal-dialog opacity-animate4">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h3 class="modal-title" style="text-align: center;">Voulez-vous vraiment retirer cette personne ?</h3>
+				</div>
+				<div class="modal-body">
+					<div class="footer_modal">
+					
+						<a class="btn btn-warning retirer" data-dismiss="modal" id="suppr_user_model">Supprimer</a>
+						{# data-dismiss="modal" raha te hanala anle modal #}
+						<a class="btn btn-warning annuler" data-dismiss="modal">Annuler</a>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<!-- fin Modal suppr  -->
+
+	<!-- Modal modif  -->
+	<div class="modal fade" id="modal_form_modif_admin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog opacity-animate4">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h3 class="modal-title" style="text-align: center;">Modification</h3>
+				</div>
+				<div class="modal-body">
+					<form action="">
+						<div class="form-group">
+							<label for="choix_role">Type de l'administrateur :</label>
+							<select name="" id="choix_role" class="form-control">
+								<option value="administrateur">Administrateur</option>
+								<option value="editeur">Editeur</option>
+							</select>
+						</div>
+						<div class="form-group nom_hotel">
+							<label for="choix_role">Nom de l'hotel</label>
+							<select name="" id="choix_hotel" class="form-control">
+								<option value="tous">Tous</option>
+								<option value="Royal Beach">Royal Beach</option>
+								<option value="Calypso">Calypso</option>
+								<option value="Baobab Tree">Baobab Tree</option>
+								<option value="Vanila Hotel">Vanila Hotel</option>
+							</select>
+						</div>
+
+						<div class="form-group">
+							<span class="span__label"></span>
+							<input type="text" name="" data-placeholder="Nom" class="form-control" id="nom_pers" placeholder="Nom">
+						</div>
+						<div class="form-group">
+							<span class="span__label"></span>
+							<input type="text" name="" data-placeholder="Prénom" class="form-control" id="prenom_pers" placeholder="Prénom">
+						</div>
+						<div class="form-group">
+							<span class="span__label"></span>
+							<input type="text" name="" data-placeholder="Adresse mail" class="form-control" id="username_pers" placeholder="Adresse mail">
+						</div>
+						<div class=" form-group">
+							<span class="span__label"></span>
+							<input type="text" name="" data-placeholder="Son mot de passe" class="form-control" id="n_passsword_pers" placeholder="Son mot de passe">
+						</div>
+						<div class="form-group">
+							<button type="submit" class="form-control btn btn-warning" id="btn_modif_admin">Enregistrer</button>
+						</div>
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<!-- fin Modal modif  -->
+</section>
+
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+
+	$(document).ready(function () { /* animation des input type text */
+
+			$("input[placeholder]").on({
+				focus: function () {
+					$(this).parent().children(".span__label").text($(this).attr('placeholder'));
+					$(this).attr('placeholder', ' ');
+					$(this).css("border-color", "#d29e00");
+				},
+				blur: function () {
+					var t = $(this).attr('data-placeholder');
+					$(this).attr('placeholder', t);
+					$(this).parent().children(".span__label").text("");
+					$(this).css("border-color", "#e2e3e6");
+				}
+			})
+
+			/* / annimation input */
+
+			/* animation password show hide */
+
+			$(".show_password").click(function (e) {
+				e.preventDefault();
+				if ($(this).children('span').hasClass('fa-eye')) {
+					$(this).children('span').removeClass('fa-eye');
+					$(this).children('span').addClass('fa-eye-slash');
+					$(this).prev().attr("type", "text");
+				} 
+				else if ($(this).children('span').hasClass('fa-eye-slash')) {
+					$(this).children('span').removeClass('fa-eye-slash');
+					$(this).children('span').addClass('fa-eye');
+					$(this).prev().attr("type", "password");
+				}
+			})
+
+			$(".edit_pass").click(function (e) {
+					e.preventDefault();
+					$(".infos_pass").toggle();
+			})
+
+			/*  / animation password show hide */
+
+			// ajax adminRegister
+			// routeName = admin.register
+
+		$('#admin_register').on('click', function(e){
+				e.preventDefault();
+				var role = $('#choix_role').val();
+				var hotel = $('#choix_hotel').val();
+				var nom = $("#nom_pers").val();
+				var prenom = $("#prenom_pers").val();
+				var email = $("#username_pers").val();
+				var password = $('#n_passsword_pers').val();
+				// par défaut son username est la prem partie de son nom
+				var f = nom.split(" ");
+				var username = f[0];
+				var data = {
+					"role":role,
+					"hotel":hotel,
+					"nom":nom,
+					"prenom":prenom,
+					"password":password,
+					"email": email,
+					"username":username
+				}
+			
+				$.ajax({
+					url : "{{ path('admin.register') }}",
+					type : "POST",
+					data : data,
+					success : function(response){
+					
+						if(response.length > 0){
+							$('#ul_liste_equipe').html('');
+									var string = "";
+							
+							for(var i = 0; i<=response.length - 1 ; i++) {
+
+								var son_role = "Administrateur";
+								if(response[i]['hotel'] != "tous") {
+									var son_role = "Editeur <br> "+response[i]['hotel'];
+								}
+								var div = '<div><a href="#" data-id='+ response[i]["id"]  +' data-toggle="modal" data-target="#modal_form_modif_admin"><span class="fa fa-edit"></span></a><a href="#" data-id= '+ response[i]["id"] +' data-toggle="modal" data-target="#modal_form_confirme_pers" class="delete_pers"><span class="fa fa-trash-o"></span></a></div>'
+
+								// on crée un tr
+								var d_tr = "<li>";
+									d_tr += "<span class='nom_pers'>"+response[i]['nom']+"<br>"+response[i]['prenom']+"</span>";
+									d_tr += "<span class='role_pers'>"+ son_role +"</span>";
+									d_tr += div;
+									d_tr += "</li>";
+								string += d_tr;
+							}
+							$('#ul_liste_equipe').append(string);
+							$("#form_register_user").trigger("reset");
+						}
+
+						else {
+							alert(response);
+						}
+
+						
+					},
+					error : function(er){
+
+						alert('erreur ajax');
+					}
+				})
+
+		})
+		
+		// ajax suuprimer user 
+
+		$('.delete_pers').on('click', function(e){
+			e.preventDefault();
+			var id = $(this).attr("data-id");
+
+			//console.log(id);
+			//$('#suppr_user_model').click(function(ev){
+			//	ev.preventDefault();
+				$.ajax({
+					url: "/security/delete_user/"+ id,
+					type: "DELETE",
+					data:{
+						'action' : 'delete'
+						},
+					
+					success : function(response){
+						// on ferme le modal 
+
+						$('.delete_pers').attr('data-id',"");
+						// affichage des user 
+
+							$('#ul_liste_equipe').html('');
+									var string = "";
+							
+							for(var i = 0; i<=response.length - 1 ; i++) {
+
+								var son_role = "Administrateur";
+								if(response[i]['hotel'] != "tous") {
+									var son_role = "Editeur <br> "+response[i]['hotel'];
+								}
+								var div = '<div><a href="#" data-id='+ response[i]["id"]  +' data-toggle="modal" data-target="#modal_form_modif_admin"><span class="fa fa-edit"></span></a><a href="#" data-id= '+ response[i]["id"] +' data-toggle="modal" data-target="#modal_form_confirme_pers" class="delete_pers"><span class="fa fa-trash-o"></span></a></div>'
+
+								// on crée un tr
+								var d_tr = "<li>";
+									d_tr += "<span class='nom_pers'>"+response[i]['nom']+"<br>"+response[i]['prenom']+"</span>";
+									d_tr += "<span class='role_pers'>"+ son_role +"</span>";
+									d_tr += div;
+									d_tr += "</li>";
+								string += d_tr;
+							}
+							$('#ul_liste_equipe').append(string);
+							$("#form_register_user").trigger("reset");
+
+						// fin affichage user
+						console.log(response)
+
+					},
+					error : function(error){
+						alert('erreur de serveur');
+					}
+				})
+			//})
+
+		})
+
+
+	
+
+
+
+	})
+</script>
+
+
+{% endblock %}

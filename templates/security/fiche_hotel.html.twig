@@ -1,0 +1,342 @@
+{% extends "base.html.twig" %}
+{% block title %}
+	Fiche Hotel
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
+{% endblock %}
+{% block body %}
+    
+<section
+	id="contents" class="container-fluid">
+	<!-- entete content -->
+	<div id="top-content">
+        <div id="entete_fixed">
+            <ul>
+                <li>
+                    <a href="#" id="btn_drop_side_menu">
+                        <i data-show="show-side-navigation1" class="fa fa-bars show-side-btn"></i>
+                    </a>
+                </li>
+                <li
+								{% if hotel == "royal_beach" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('royal_beach', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{asset('images/hazo1.png')}}" alt="logo1">
+									</div>
+								</a>
+							</li>
+							<li
+								{% if hotel == "calypso" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('calypso', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo2.png') }}" alt="logo2">
+									</div>
+								</a>
+							</li>
+							<li 
+								{% if hotel == "baobab_tree" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('baobab_tree', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo3.png') }}" alt="logo3">
+									</div>
+								</a>
+							</li>
+							<li
+								{% if hotel == "vanila_hotel" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('vanila_hotel', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo4.png') }}" alt="logo4">
+									</div>
+								</a>
+							</li>
+                <li id="log_out_entete">
+                    <div>
+                         <a href="{{ path('app_logout') }}">
+                            <span aria-hidden="true" class="fa fa-power-off fa-2x"></span>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+	</div>
+	<!-- / entete content -->
+
+	<div id="hrs_content" class="fiche_hotel">
+		<div>
+			<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+				<section class="section_part" id="section_part_top">
+					<div class="sous_titre">
+						<h2>Fiche hotel</h2>
+					</div>
+				</section>
+			</div>
+			<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+				<div class="tab_content" id="data_days">
+
+					<div class="h2_titre">
+						<h2>Royal Beach Hotel & Spa</h2>
+					</div>
+					<section class="n_form">
+						<div class="h4_titre">
+							<h4>Chambres</h4>
+							<button class="btn btn-default" data-toggle="modal" data-target="#modal_form_fh_1">
+								<span class="fa fa-plus"></span>
+								<span class="text">Modifier</span>
+							</button>
+						</div>
+						<div class="data_form">
+							<div class="form-group">
+								<span class="val_data" data-span="cp">2</span>
+								<label>Chambres Préstiges</label>
+							</div>
+							<div class="form-group">
+								<span class="val_data" data-span="sf">25</span>
+								<label>Suites Familiales</label>
+							</div>
+						</div>
+						<div class="data_form">
+							<div class="form-group">
+								<span class="val_data" data-span="cd">55</span>
+								<label>Chambres Deluxes</label>
+							</div>
+							<div class="form-group">
+								<span class="val_data" data-span="sv">36</span>
+								<label>Suites VIP</label>
+							</div>
+						</div>
+						<div class="data_form">
+							<div class="form-group total_chambre">
+								<label>Nombre total des chambres :
+								</label>
+								<span class="val_data">55</span>
+								<span>Chambres</span>
+							</div>
+
+						</div>
+					</section>
+					<section class="n_form">
+						<div class="h4_titre">
+							<h4>Restaurant</h4>
+							<button class="btn btn-default" data-toggle="modal" data-target="#modal_form_fh_2">
+								<span class="fa fa-plus"></span>
+								<span class="text">Modifier</span>
+							</button>
+						</div>
+						<div class="data_form">
+							<div class="form-group">
+								<label class="label_first">Le Nautile</label>
+								<span class="val_data" data-span="ln">12</span>
+								<span class="span__ar">Couverts Maximum</span>
+							</div>
+						</div>
+						<div class="data_form">
+							<div class="form-group">
+								<label class="label_first">Sunset View
+								</label>
+								<span class="val_data" data-span="sview">25</span>
+								<span class="span__ar">Couvert Maximum</span>
+							</div>
+						</div>
+
+					</section>
+					<section class="n_form">
+						<div class="h4_titre">
+							<h4>Equipement de l'etablissement</h4>
+						</div>
+						<div class="data_form">
+							<div class="form-group">
+								<span class="icone_fh">
+                                    <img src="{{ asset('images/parking.png') }}" alt="parking">
+
+								</span>
+								<span class="text_fh">Parking gratuit</span>
+
+							</div>
+							<div class="form-group">
+								<span class="icone_fh">
+                                    <img src="{{ asset('images/piscine.png') }}" alt="piscine">
+
+								</span>
+								<span class="text_fh">2 Piscines</span>
+
+							</div>
+						</div>
+						<div class="data_form">
+							<div class="form-group">
+								<span class="icone_fh">
+                                    <img src="{{ asset('images/lounge.png') }}" alt=" lounge.png">
+
+								</span>
+								<span class="text_fh" data-span="lb">Lounge Bar</span>
+
+							</div>
+							<div class="form-group">
+								<span class="icone_fh">
+                                    <img src="{{ asset('images/kids.png') }}" alt="kids">
+
+								</span>
+								<span class="text_fh" data-span="p">2 Piscines</span>
+							</div>
+						</div>
+						<div class="data_form">
+							<div class="form-group">
+								<span class="icone_fh">
+									<img src="{{asset('images/spa_fh.png')}}" alt="span_fh.png">
+								</span>
+								<span class="text_fh">Spa</span>
+
+							</div>
+						</div>
+					</section>
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal modif  -->
+
+	<div class="modal fade" id="modal_form_fh_1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog opacity-animate4">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h3 class="modal-title" style="text-align: center;">Modification</h3>
+				</div>
+				<div class="modal-body">
+					<form action="">
+						<section>
+
+							<div class="form-group">
+								<label for="">Chambre prestige :
+								</label>
+								<input type="number" class="input_n_modal cp">
+							</div>
+							<div class="form-group">
+								<label for="">Suite Familiales :
+								</label>
+								<input type="number" class="input_n_modal sf">
+							</div>
+						</section>
+						<section>
+							<div class="form-group">
+								<label for="">Chambre Deluxe :
+								</label>
+								<input type="number" class="input_n_modal cd">
+							</div>
+							<div class="form-group">
+								<label for="">Suite VIP :
+								</label>
+								<input type="number" class="input_n_modal sv">
+							</div>
+						</section>
+						<section>
+							<div class="form-group">
+								<input type="submit" id="modif_date_modal" class="btn btn-warning" value="Enregistrer">
+							</div>
+						</section>
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- fin Modal modif  -->
+
+	<!-- Modal modif  -->
+
+	<div class="modal fade" id="modal_form_fh_2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog opacity-animate4">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h3 class="modal-title" style="text-align: center;">Modification</h3>
+				</div>
+				<div class="modal-body">
+					<form action="">
+						<section>
+							<div class="form-group">
+								<label for="">Le Nautile :
+								</label>
+								<input type="number" class="input_n_modal ln">
+							</div>
+							<div class="form-group">
+								<label for="">Sunset View :
+								</label>
+								<input type="number" class="input_n_modal sview">
+							</div>
+						</section>
+						<section>
+							<div class="form-group">
+								<input type="submit" id="modif_date_modal" class="btn btn-warning" value="Enregistrer">
+							</div>
+						</section>
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- fin Modal modif  -->
+
+</section>
+
+
+{% endblock %}
+
+{% block javascripts %}
+    
+<script src="{{ asset('js/cleave.min.js') }}"></script>
+
+<script>
+
+	$(document).ready(function () {
+        $('button[data-target]').on('click', function (e) {
+            e.preventDefault();
+            var tar = $(this).attr("data-target");
+            if (tar == "#modal_form_fh_1") {
+
+            var s_cp = $("span[data-span=cp]").text();
+            var s_sf = $("span[data-span=sf]").text();
+            var s_cd = $("span[data-span=cd]").text();
+            var s_sv = $("span[data-span=sv]").text();
+
+            var cp = $('.cp').val(s_cp);
+            var sf = $('.sf').val(s_sf);
+            var cd = $('.cd').val(s_cd);
+            var sv = $('.sv').val(s_sv);
+
+            // alert(cp+"/"+sf+"/"+cd+"/"+sv)
+            } else if (tar == "#modal_form_fh_2") {
+            var s_ln = $("span[data-span=ln]").text();
+
+            var s_sview = $("span[data-span=sview]").text();
+
+            var ln = $('.ln').val(s_ln);
+
+            var sview = $('.sview').val(s_sview);
+            }
+        })
+    })
+</script>
+
+
+{% endblock %}

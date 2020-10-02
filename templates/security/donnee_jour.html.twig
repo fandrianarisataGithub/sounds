@@ -1,0 +1,590 @@
+{% extends "base.html.twig" %}
+{% block title %}
+	Donnée du jour
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
+{% endblock %}
+{% block body %}
+    
+    <section
+        id="contents" class="container-fluid">
+        <!-- entete content -->
+        <div id="top-content">
+            <div id="entete_fixed">
+                <ul>
+                    <li>
+                        <a href="#" id="btn_drop_side_menu">
+                            <i data-show="show-side-navigation1" class="fa fa-bars show-side-btn"></i>
+                        </a>
+                    </li>
+                    <li
+								{% if hotel == "royal_beach" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('royal_beach', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{asset('images/hazo1.png')}}" alt="logo1">
+									</div>
+								</a>
+							</li>
+							<li
+								{% if hotel == "calypso" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('calypso', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo2.png') }}" alt="logo2">
+									</div>
+								</a>
+							</li>
+							<li 
+								{% if hotel == "baobab_tree" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('baobab_tree', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo3.png') }}" alt="logo3">
+									</div>
+								</a>
+							</li>
+							<li
+								{% if hotel == "vanila_hotel" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('vanila_hotel', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo4.png') }}" alt="logo4">
+									</div>
+								</a>
+							</li>
+                    <li id="log_out_entete">
+                        <div>
+                             <a href="{{ path('app_logout') }}">
+                                <span aria-hidden="true" class="fa fa-power-off fa-2x"></span>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- / entete content -->
+
+
+        <div id="hrs_content">
+            <div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+                    <section class="section_part" id="section_part_top">
+                        <div class="sous_titre">
+                            <h2>Donnée du jour</h2>
+                            <form action="" class="from_sous_titre">
+                                <input type="date">
+                            </form>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+
+                    <div
+                        class="tab_content" id="data_days">
+
+                        <!-- formulaire total -->
+
+                        <form>
+                            <div class="h4_titre">
+                                <h4>Hébergement</h4>
+                            </div>
+                            <div class="data_form">
+                                <div class="form-group">
+                                    <label for="t_o">Taux d'occupation :
+                                    </label>
+                                    <input type="text" max="100" class="input_pourcent">
+                                    <span class="span__pourcent">%</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="c_a">Chiffre d'affaire :
+                                    </label>
+                                    <input type="text" maxlength="23" class="input_nombre">
+                                    <span class="span__ar">Ar</span>
+                                </div>
+                            </div>
+                            <section class="sous_form">
+                                <h4 class="label__titre">Nouveau client</h4>
+                                <div class="sous_data_form">
+                                    <div>
+                                        <span class="span__label"></span><input type="text" class="input__text" placeholder="Nom" name="" id ="nom_client">
+                                        <span class="span__label span_prenom"></span><input type="text" class="input__text" placeholder="Prénom" name="" id = "prenom_client">
+                                    </div>
+                                    <div>
+                                        <div class="form-group">
+                                            <label for="date_arrive" class="label_date">Date d'arrivé :</label>
+                                            <input type="date" id="date_arrives">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="date_arrive" class="label_date">Date de départ :</label>
+                                            <input type="date" id="date_depart">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-default" type="submit" id = "ajouter_client">
+                                            <span class="fa fa-plus"></span>
+                                            <span>Ajouter</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <div class="tableau" id="tab_client_present">
+                                <div class="sous_titre">
+                                    <h4 class="label__titre">Client présent</h4>
+                                </div>
+                                <section class=" filtre">
+                                    <div class="sous_titre_filtre">
+                                        <h3>Filtre</h3>
+                                    </div>
+
+                                    <div>
+                                        <input type="date">
+                                        <input type="date">
+                                    </div>
+
+                                </section>
+                                <div>
+                                    <table class="display" style="width: 100%" id="tableau_client_donnee_jour">
+                                        <thead>
+                                            <tr>
+                                                <td>
+                                                    <span>NOM</span>
+                                                </td>
+                                                <td>
+                                                    <span>DATE D'ARRIVEE</span>
+                                                </td>
+                                                <td>
+                                                    <span>DATE DU DEPART</span>
+                                                </td>
+                                                <td>
+                                                    <span>DUREE DU SEJOUR</span>
+                                                </td>
+                                                <td>
+                                                    <span>ACTIONS</span>
+                                                </td>
+                                            </tr>
+                                        </thead>
+                                        <tbody id ="tbody_load">
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="h4_titre">
+                                <h4>Restaurant</h4>
+                            </div>
+                            <div class="data_form">
+                                <div class="form-group">
+                                    <label for="n_couvert">Nombre de couvert :
+                                    </label>
+                                    <input type="text" max="100" maxlength="18" class="input_nombre">
+                                </div>
+                                <div class="form-group">
+                                    <label for="c_a_rest">Chiffre d'affaire :
+                                    </label>
+                                    <input type="text" maxlength="23" class="input_nombre">
+                                    <span class="span__ar">Ar</span>
+                                </div>
+                            </div>
+                            <div class="data_form">
+                                <div class="form-group">
+                                    <label for="p_dejeuner">Petit déjeuner :
+                                    </label>
+                                    <input type="text" max="100" maxlength="18" class="input_nombre">
+                                </div>
+                                <div class="form-group">
+                                    <label for="dejeuner">Déjeuner :
+                                    </label>
+                                    <input type="text" max="100" maxlength="18" class="input_nombre">
+                                </div>
+                            </div>
+                            <div class="data_form">
+                                <div class="form-group">
+                                    <label for="dinner">Dinner :
+                                    </label>
+                                    <input type="text" max="100" maxlength="18" class="input_nombre">
+                                </div>
+                            </div>
+                            <div class="h4_titre">
+                                <h4>Spa</h4>
+                            </div>
+                            <div class="data_form">
+                                <div class="form-group">
+                                    <label for="c_a_spa">Chiffre d'affaire :
+                                    </label>
+                                    <input type="text" maxlength="23" class="input_nombre">
+                                    <span class="span__ar">Ar</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="n_abonne">Nombre d'abonné :
+                                    </label>
+                                    <input type="text" max="100" maxlength="18" class="input_nombre">
+                                </div>
+                            </div>
+                            <div class="data_form">
+
+                                <div class="form-group">
+                                    <label for="c_unique">Client unique :
+                                    </label>
+                                    <input type="text" max="100" maxlength="18" class="input_nombre">
+                                </div>
+                            </div>
+
+                            <!-- text area  -->
+                            <div class="h4_titre">
+                                <h4>Compte rendu journalier</h4>
+                            </div>
+                            <div class="data_form crj">
+                                <div class="form-group">
+                                    <label for="c_a_spa">Direction :
+                                    </label>
+                                    <textarea class="form-control"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="c_a_spa">Service RH :
+                                    </label>
+                                    <textarea class="form-control"></textarea>
+                                </div>
+                            </div>
+                            <div class="data_form crj">
+                                <div class="form-group">
+                                    <label for="c_a_spa">Commercial :
+                                    </label>
+                                    <textarea class="form-control"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="c_a_spa">Compatble :
+                                    </label>
+                                    <textarea class="form-control"></textarea>
+                                </div>
+                            </div>
+                            <div class="data_form crj">
+                                <div class="form-group">
+                                    <label for="c_a_spa">Réception :
+                                    </label>
+                                    <textarea class="form-control"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="c_a_spa">Restaurant :
+                                    </label>
+                                    <textarea class="form-control"></textarea>
+                                </div>
+                            </div>
+                            <div class="data_form crj">
+                                <div class="form-group">
+                                    <label for="c_a_spa">Spa :
+                                    </label>
+                                    <textarea class="form-control"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="c_a_spa">Service techniques :
+                                    </label>
+                                    <textarea class="form-control"></textarea>
+                                </div>
+                            </div>
+                            <div class="data_form crj">
+                                <div class="form-group">
+                                    <label for="c_a_spa">Litiges :
+                                    </label>
+                                    <textarea class="form-control"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- / textarea -->
+
+                            <div class="btn-list">
+                                <ul>
+                                    <li><button type="submit" class="btn btn-warning"><span>Enregistrer</span></button></li>
+                                </ul>
+                            </div>
+                        </form>
+
+                        <!-- / formulaire total -->
+                    </div>
+
+
+                    <!-- Modal modif  -->
+                    <div class="modal fade" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog opacity-animate4">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h3 class="modal-title" style="text-align: center;">Modification</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="">
+                                        <div class="form-group">
+                                            <label for="n_date_depart">Nom du client :
+                                            </label>
+                                            <input type="text" id="nom_client" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="n_date_depart">Date du départ :
+                                            </label>
+                                            <input type="date" id="n_date_depart" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="n_date_arrivee">Date d'arrivée :
+                                            </label>
+                                            <input type="date" id="n_date_arrivee" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="n_date_arrivee">Durée du sejour :
+                                            </label>
+                                            <input type="number" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="submit" id="modif_date_modal" class="form-control btn btn-warning">
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- fin Modal modif  -->
+
+                    <!-- Modal suppr  -->
+
+                    <div class="modal fade" id="modal_form_confirme" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog opacity-animate4">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h3 class="modal-title" style="text-align: center;">Voulez-vous vraiment supprimer cet élément ?</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="div__conf">
+                                        <button class="btn btn-warning" data-dismiss="modal" data-confirm = "oui">Supprimer</button>
+                                        <button class="btn btn-warning annuler" data-dismiss="modal" data-confirm = "non">Annuler</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- fin Modal suppr  -->
+
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+
+{% endblock %}
+
+{% block javascripts %}
+<!-- un plugin tres important pour les input -->
+
+<script src="{{ asset('js/cleave.min.js') }}"></script>
+
+
+<script>
+
+    document.querySelector(".input_pourcent").onkeyup = function(){
+        handleChange(this);
+       // alert('kjh')
+    }
+
+
+
+	function handleChange(input) {
+
+    if (input.value < 0) {
+    input.value = 0;
+    } else if (input.value > 100) {
+    input.value = 100;
+    } else if (isNaN(input.value)) {
+    input.value = 0;
+    }
+
+    }
+</script>
+
+<!-- limiter les  -->
+
+<script>
+
+	/* utilisation de cleave.js pour les input */
+
+    // style des % et Ar
+    var n = document.querySelectorAll(".input_nombre");
+    for (var i = n.length - 1; i >= 0; i--) {
+    new Cleave(n[i], { // prefix: 'Ar ',
+    numeral: true,
+    delimiter: [' '],
+    numeralThousandsGroupStyle: 'thousand',
+    numericOnly: true
+    });
+    }
+
+
+new Cleave('.input_pourcent', {blocks: [4]});
+
+
+/* fin utilisation de cleave.js pour les input */
+
+</script>
+<script>
+
+	$(document).ready(function () {
+    var table = $('#tableau_client_donnee_jour').DataTable({
+    "language": {
+    "sEmptyTable": "Aucune donnée disponible dans le tableau",
+    "sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
+    "sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
+    "sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
+    "sInfoPostFix": "",
+    "sInfoThousands": ",",
+    "sLengthMenu": "Afficher _MENU_ éléments",
+    "sLoadingRecords": "Chargement...",
+    "sProcessing": "Traitement...",
+    "sSearch": "Rechercher :",
+    "sZeroRecords": "Aucun élément correspondant trouvé",
+    "oPaginate": {
+    "sFirst": "Premier",
+    "sLast": "Dernier",
+    "sNext": "Suivant",
+    "sPrevious": "Précédent"
+    },
+    "oAria": {
+    "sSortAscending": ": activer pour trier la colonne par ordre croissant",
+    "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+    },
+    "select": {
+    "rows": {
+    "_": "%d lignes sélectionnées",
+    "0": "Aucune ligne sélectionnée",
+    "1": "1 ligne sélectionnée"
+    }
+    }
+    },
+    responsive: true,
+    scrollY: false, // raha scrollena de asina val ex 400
+    scrollX: true,
+    scrollCollapse: true,
+    paging: true,
+    autoFill: true
+    });
+
+    new $.fn.dataTable.FixedHeader(table);
+});
+</script>
+
+<script>
+
+        // ajout de client 
+
+        $(document).ready(function(){
+
+            // on load tbody
+
+            $('#tbody_load').load("{{ asset('web/liste_client_present.php') }}");
+
+            $("#ajouter_client").click(function (e) { 
+                e.preventDefault();
+                //alert('ksg')
+
+                var nom = $('#nom_client').val();
+                var prenom = $('#prenom_client').val();
+                var date_arrives = $('#date_arrives').val();
+                var date_depart = $('#date_depart').val();
+                var data = {
+                    "nom_client" : nom,
+                    "prenom_client" : prenom,
+                    "date_arrivee" : date_arrives,
+                    "date_depart" : date_depart
+                }
+
+                // test
+
+               // alert("nom = "+nom+" prenom = "+prenom+ "  date ar = "+date_arrives+" date dep = "+date_depart); 
+
+                // ajax 
+
+                $.ajax({
+                    url : "{{ path('hebergement', {'pseudo_hotel' : hotel}) }}",
+                    type : "POST",
+                    data : data,
+                    success : function (response) {
+                        if(response=="0"){
+                            $('#nom_client').val('');
+                            $('#prenom_client').val('');
+                            $('#tbody_load').load("{{ asset('web/liste_client_present.php') }}");
+                        }
+                        else {
+                            alert(response);
+                        }
+                    },
+
+                    error : function() {
+                        alert('Erreur dans le serveur')
+                    }
+
+                })
+                
+            });
+
+            // suppression client présent 
+
+            $("tbody").on("click", ".btn_client_suppr", function(e){
+                e.preventDefault();
+                var confirm = false;
+                var id = $(this).attr('data-id');
+
+                $('#modal_form_confirme .modal-body button').on('click', function(event) {
+                    var $button = $(event.target); // The clicked button
+
+                    $(this).closest('.modal').one('hidden.bs.modal', function() {
+                        // Fire if the button element 
+                        //console.log('The button that closed the modal is: ', $button);
+                        var data_confirm = $button.attr('data-confirm');
+                        //console.log(data_confirm);
+                        // si le bouton cliqué est celle qui a comme consirme oui
+                        if(data_confirm == "oui"){
+                             $.ajax({
+                                url: "/profile/supprimer_client",
+                                type: "POST",
+                                data: { "id" : id },
+                                success: function (response) {
+                                    if(response == 'suppression ok'){
+                                        $('#tbody_load').load("{{ asset('web/liste_client_present.php') }}");
+                                    }
+                                }, 
+                                error : function (params) {
+                                    alert('erreur server');
+                                }
+                            });
+                        }
+                    });
+                });
+
+                
+                    
+                    
+                   
+                
+            })
+
+        })
+
+
+</script>
+
+
+{% endblock %}
