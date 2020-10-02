@@ -499,7 +499,6 @@ new Cleave('.input_pourcent', {blocks: [4]});
             $("#ajouter_client").click(function (e) { 
                 e.preventDefault();
                 //alert('ksg')
-
                 var nom = $('#nom_client').val();
                 var prenom = $('#prenom_client').val();
                 var date_arrives = $('#date_arrives').val();
@@ -522,14 +521,7 @@ new Cleave('.input_pourcent', {blocks: [4]});
                     type : "POST",
                     data : data,
                     success : function (response) {
-                        if(response=="0"){
-                            $('#nom_client').val('');
-                            $('#prenom_client').val('');
-                            $('#tbody_load').load("{{ asset('web/liste_client_present.php') }}");
-                        }
-                        else {
-                            alert(response);
-                        }
+                       alert(response);
                     },
 
                     error : function() {

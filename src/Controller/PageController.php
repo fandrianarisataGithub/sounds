@@ -8,6 +8,7 @@ use App\Entity\Client;
 use App\Entity\DonneeDuJour;
 use App\Form\DonneeDuJourType;
 use App\Repository\UserRepository;
+use App\Repository\HotelRepository;
 use App\Repository\ClientRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,11 +56,12 @@ class PageController extends AbstractController
     /**
      * @Route("/profile/{pseudo_hotel}/crj", name="crj")
      */
-    public function crj(SessionInterface $session, $pseudo_hotel)
+    public function crj(SessionInterface $session,$pseudo_hotel, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "crj";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
+       
         return $this->render('page/crj.html.twig', [
             "id" => "li__compte_rendu",
             "hotel" => $data_session['pseudo_hotel'],
@@ -70,7 +72,7 @@ class PageController extends AbstractController
     /**
      * @Route("/profile/{pseudo_hotel}/hebergement", name="hebergement")
      */
-    public function hebergement($pseudo_hotel, Request $request, EntityManagerInterface $manager, ClientRepository $repo, SessionInterface $session)
+    public function hebergement($pseudo_hotel, Request $request, EntityManagerInterface $manager, ClientRepository $repo, SessionInterface $session, HotelRepository $repoHotel)
     {
         $response = new Response();
         $data_session = $session->get('hotel');
@@ -83,60 +85,38 @@ class PageController extends AbstractController
             $string_date_arrivee = $request->get('date_arrivee');
             $string_date_depart = $request->get('date_depart');
 
+            $date_arrivee = date_create($string_date_arrivee);
+            $date_depart = date_create($string_date_depart);
+            $son_hotel = $repoHotel->findByPseudo($pseudo_hotel);
+            $id = $son_hotel->getId();
+            $retour = "";
             if (!empty($string_date_arrivee) &&  !empty($string_date_depart) && !empty($nom_client)) {
 
-                $format = "Y-m-d";
+                // $client = new Client();
+                // $client->setNom($nom_client);
+                // $client->setPrenom($prenom_client);
+                // $client->setDateArrivee($date_arrivee);
+                // $client->setDateDepart($date_depart);
+                // $i = $date_arrivee->diff($date_depart);
+                // $d = $i->days;
+                // $client->setDureeSejour($d);
+                // $son_hotel->addClient($client);
+                // $manager->persist($client);
+                // $manager->flush();
+                $retour = $pseudo_hotel;
+               
+                
 
-                $date_arrivee = \DateTime::createFromFormat($format, $string_date_arrivee);
-                $date_depart = \DateTime::createFromFormat($format, $string_date_depart);
-
-                // calcul de diff de deux date 
-                $erreur = 0;
-                if ($date_arrivee <= $date_depart) {
-
-                    $diff = $date_arrivee->diff($date_depart)->days;
-                    $data = "nom = " . $nom_client . " prenom = " . $prenom_client . "arr = " . $string_date_arrivee . " dep = " . $string_date_depart . " diff = " . $diff;
-
-                    // insertion
-
-
-                    $client = new Client();
-                    $client->setNom($nom_client)
-                        ->setPrenom($prenom_client)
-                        ->setDateArrivee($date_arrivee)
-                        ->setDateDepart($date_depart)
-                        ->setDureeSejour($diff);
-
-                    $manager->persist($client);
-                    $manager->flush();
-
-                    $data = json_encode("0"); // formater le résultat de la requête en json
-
-                    $response->headers->set('Content-Type', 'application/json');
-                    $response->setContent($data);
-
-                    return $response;
-                } else {
-                    $erreur = -1;
-                    $data = json_encode($erreur); // formater le résultat de la requête en json
-
-                    $response->headers->set('Content-Type', 'application/json');
-                    $response->setContent($data);
-
-                    return $response;
-                }
             } else {
 
-                $data = json_encode("form vide"); // formater le résultat de la requête en json
-
-                $response->headers->set('Content-Type', 'application/json');
-                $response->setContent($data);
-
-                return $response;
+                $retour = "vide";
+              
             }
 
-            // format en date 
-
+            $data = json_encode($retour); // formater le résultat de la requête en json
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+            return $response;
 
 
         }
