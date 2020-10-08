@@ -150,43 +150,6 @@ class AdminController extends AbstractController
         return $this->render('security/setting.html.twig');
     }
 
-    /**
-     * @Route("/profile/{pseudo_hotel}/supprimer_client", name="supprimer_client")
-     */
-    public function supprimer_client($pseudo_hotel, Request $request, ClientRepository $repo, EntityManagerInterface $manager, SessionInterface $session)
-    {
-        $response = new Response();
-        $client  = new Client();
-        $data_session = $session->get('hotel');
-        $data_session['current_page'] = "donnee_jour";
-        $data_session['pseudo_hotel'] = $pseudo_hotel;
-        if ($request->isXmlHttpRequest()) {
-            $id = $request->get('id');
-            //on recupere le client 
-            $client = $repo->find($id);
-            // on supprime la valeur dont le id = x
-            // si il y a un client
-            if ($client) {
-                $manager->remove($client);
-                $manager->flush();
-                $data = json_encode("suppression ok");
-                $response->headers->set('Content-Type', 'application/json');
-                $response->setContent($data);
-                return $response;
-            } else {
-                $data = json_encode("Il n'y a pas de client reçu");
-                $response->headers->set('Content-Type', 'application/json');
-                $response->setContent($data);
-                return $response;
-            }
-        }
-
-        return $this->redirectToRoute("donnee_jour", [
-            "hotel" => $data_session['pseudo_hotel'],
-            "current_page" => $data_session['current_page']
-        ]);
-    }
-
 
     /**
      * @Route("/security/delete_user/{id}", name = "delete.user")

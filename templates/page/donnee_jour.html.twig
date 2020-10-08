@@ -95,7 +95,7 @@
 
                         <!-- formulaire total -->
 
-                        <form>
+                        {{ form_start(form) }}
                             <div class="h4_titre">
                                 <h4>Hébergement</h4>
                             </div>
@@ -103,13 +103,26 @@
                                 <div class="form-group">
                                     <label for="t_o">Taux d'occupation :
                                     </label>
-                                    <input type="text" max="100" class="input_pourcent">
+                                     {{ form_widget(form.heb_to, {
+                                        'attr' : {
+                                            'class' : 'input_pourcent',
+                                           
+                                            'max' : '100',
+                                        }
+                                    }) }}
                                     <span class="span__pourcent">%</span>
                                 </div>
                                 <div class="form-group">
                                     <label for="c_a">Chiffre d'affaire :
                                     </label>
-                                    <input type="text" maxlength="23" class="input_nombre">
+                                    {# <input type="text" maxlength="23" class="input_nombre" id="heb_ca"> #}
+                                    {{ form_widget(form.heb_ca, {
+                                        'attr' : {
+                                            'class' : 'input_nombre',
+                                            
+                                            'maxlength' : '23',
+                                        }
+                                    }) }}
                                     <span class="span__ar">Ar</span>
                                 </div>
                             </div>
@@ -123,7 +136,8 @@
                                     <div>
                                         <div class="form-group">
                                             <label for="date_arrive" class="label_date">Date d'arrivé :</label>
-                                            <input type="date" id="date_arrives">
+                                            <input type="date" id="date_arrivee">
+                                            <input type="hidden" id="hide_pseudo_hotel" value="{{ hotel }}">
                                         </div>
                                         <div class="form-group">
                                             <label for="date_arrive" class="label_date">Date de départ :</label>
@@ -131,7 +145,7 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <button class="btn btn-default" type="submit" id = "ajouter_client">
+                                        <button class="btn btn-default" id = "ajouter_client">
                                             <span class="fa fa-plus"></span>
                                             <span>Ajouter</span>
                                         </button>
@@ -189,12 +203,28 @@
                                 <div class="form-group">
                                     <label for="n_couvert">Nombre de couvert :
                                     </label>
-                                    <input type="text" max="100" maxlength="18" class="input_nombre">
+                                    {# <input type="text" max="100" maxlength="18" class="input_nombre" id="res_n_couvert"> #}
+                                     {{ form_widget(form.res_n_couvert, {
+                                        'attr' : {
+                                            'class' : 'input_nombre',
+                                            
+                                            'maxlength' : '23',
+                                            'max' : '100',
+                                        }
+                                    }) }}
                                 </div>
                                 <div class="form-group">
                                     <label for="c_a_rest">Chiffre d'affaire :
                                     </label>
-                                    <input type="text" maxlength="23" class="input_nombre">
+                                    {# <input type="text" maxlength="23" class="input_nombre" id = "res_ca"> #}
+                                    {{ form_widget(form.res_ca, {
+                                        'attr' : {
+                                            'class' : 'input_nombre',
+                                        
+                                            'maxlength' : '23',
+                                            'max' : '100',
+                                        }
+                                    }) }}
                                     <span class="span__ar">Ar</span>
                                 </div>
                             </div>
@@ -202,19 +232,43 @@
                                 <div class="form-group">
                                     <label for="p_dejeuner">Petit déjeuner :
                                     </label>
-                                    <input type="text" max="100" maxlength="18" class="input_nombre">
+                                    {# <input type="text" max="100" maxlength="18" class="input_nombre" id="res_p_dej"> #}
+                                     {{ form_widget(form.res_p_dej, {
+                                        'attr' : {
+                                            'class' : 'input_nombre',
+                                        
+                                            'maxlength' : '23',
+                                            'max' : '100',
+                                        }
+                                    }) }}
                                 </div>
                                 <div class="form-group">
                                     <label for="dejeuner">Déjeuner :
                                     </label>
-                                    <input type="text" max="100" maxlength="18" class="input_nombre">
+                                    {# <input type="text" max="100" maxlength="18" class="input_nombre" id = "res_dej"> #}
+                                    {{ form_widget(form.res_dej, {
+                                        'attr' : {
+                                            'class' : 'input_nombre',
+                                        
+                                            'maxlength' : '18',
+                                            'max' : '100',
+                                        }
+                                    }) }}
                                 </div>
                             </div>
                             <div class="data_form">
                                 <div class="form-group">
                                     <label for="dinner">Dinner :
                                     </label>
-                                    <input type="text" max="100" maxlength="18" class="input_nombre">
+                                    {# <input type="text" max="100" maxlength="18" class="input_nombre" id = "res_dinner"> #}
+                                    {{ form_widget(form.res_dinner, {
+                                        'attr' : {
+                                            'class' : 'input_nombre',
+                                        
+                                            'maxlength' : '18',
+                                            'max' : '100',
+                                        }
+                                    }) }}
                                 </div>
                             </div>
                             <div class="h4_titre">
@@ -224,13 +278,28 @@
                                 <div class="form-group">
                                     <label for="c_a_spa">Chiffre d'affaire :
                                     </label>
-                                    <input type="text" maxlength="23" class="input_nombre">
+                                    {# <input type="text" maxlength="23" class="input_nombre" id = "spa_ca"> #}
+                                    {{ form_widget(form.spa_ca, {
+                                        'attr' : {
+                                            'class' : 'input_nombre',
+                                        
+                                            'maxlength' : '23',
+                                        }
+                                    }) }}
                                     <span class="span__ar">Ar</span>
                                 </div>
                                 <div class="form-group">
                                     <label for="n_abonne">Nombre d'abonné :
                                     </label>
-                                    <input type="text" max="100" maxlength="18" class="input_nombre">
+                                    {# <input type="text" max="100" maxlength="18" class="input_nombre" id = "spa_n_abonne"> #}
+                                     {{ form_widget(form.spa_n_abonne, {
+                                        'attr' : {
+                                            'class' : 'input_nombre',
+                                        
+                                            'maxlength' : '18',
+                                            'max' : '100',
+                                        }
+                                    }) }}
                                 </div>
                             </div>
                             <div class="data_form">
@@ -238,7 +307,15 @@
                                 <div class="form-group">
                                     <label for="c_unique">Client unique :
                                     </label>
-                                    <input type="text" max="100" maxlength="18" class="input_nombre">
+                                    {# <input type="text" max="100" maxlength="18" class="input_nombre" id = "spa_c_unique"> #}
+                                     {{ form_widget(form.spa_c_unique, {
+                                        'attr' : {
+                                            'class' : 'input_nombre',
+                                        
+                                            'maxlength' : '18',
+                                            'max' : '100',
+                                        }
+                                    }) }}
                                 </div>
                             </div>
 
@@ -250,55 +327,100 @@
                                 <div class="form-group">
                                     <label for="c_a_spa">Direction :
                                     </label>
-                                    <textarea class="form-control"></textarea>
+                                    {# <textarea class="form-control" id = "crj_direction"></textarea> #}
+                                     {{ form_widget(form.crj_direction, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                        }
+                                    }) }}
                                 </div>
                                 <div class="form-group">
                                     <label for="c_a_spa">Service RH :
                                     </label>
-                                    <textarea class="form-control"></textarea>
+                                    {# <textarea class="form-control" id = "crj_service_rh"></textarea> #}
+                                    {{ form_widget(form.crj_service_rh, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                        }
+                                    }) }}
                                 </div>
                             </div>
                             <div class="data_form crj">
                                 <div class="form-group">
                                     <label for="c_a_spa">Commercial :
                                     </label>
-                                    <textarea class="form-control"></textarea>
+                                    {# <textarea class="form-control" id ="crj_commercial"></textarea> #}
+                                    {{ form_widget(form.crj_commercial, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                        }
+                                    }) }}
                                 </div>
                                 <div class="form-group">
                                     <label for="c_a_spa">Compatble :
                                     </label>
-                                    <textarea class="form-control"></textarea>
+                                    {# <textarea class="form-control" id = "crj_comptable"></textarea> #}
+                                     {{ form_widget(form.crj_comptable, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                        }
+                                    }) }}
                                 </div>
                             </div>
                             <div class="data_form crj">
                                 <div class="form-group">
                                     <label for="c_a_spa">Réception :
                                     </label>
-                                    <textarea class="form-control"></textarea>
+                                    {# <textarea class="form-control" id ="crj_reception"></textarea> #}
+                                     {{ form_widget(form.crj_reception, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                        }
+                                    }) }}
                                 </div>
                                 <div class="form-group">
                                     <label for="c_a_spa">Restaurant :
                                     </label>
-                                    <textarea class="form-control"></textarea>
+                                    {# <textarea class="form-control" id ="crj_restaurant"></textarea> #}
+                                    {{ form_widget(form.crj_restaurant, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                        }
+                                    }) }}
                                 </div>
                             </div>
                             <div class="data_form crj">
                                 <div class="form-group">
                                     <label for="c_a_spa">Spa :
                                     </label>
-                                    <textarea class="form-control"></textarea>
+                                    {# <textarea class="form-control" id ="crj_spa"></textarea> #}
+                                    {{ form_widget(form.crj_spa, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                        }
+                                    }) }}
                                 </div>
                                 <div class="form-group">
                                     <label for="c_a_spa">Service techniques :
                                     </label>
-                                    <textarea class="form-control"></textarea>
+                                    {# <textarea class="form-control" id ="crj_s_technique"></textarea> #}
+                                    {{ form_widget(form.crj_s_technique, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                        }
+                                    }) }}
                                 </div>
                             </div>
                             <div class="data_form crj">
                                 <div class="form-group">
                                     <label for="c_a_spa">Litiges :
                                     </label>
-                                    <textarea class="form-control"></textarea>
+                                    {# <textarea class="form-control" id ="crj_litiges"></textarea> #}
+                                     {{ form_widget(form.crj_litiges, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                        }
+                                    }) }}
                                 </div>
                             </div>
 
@@ -306,10 +428,10 @@
 
                             <div class="btn-list">
                                 <ul>
-                                    <li><button type="submit" class="btn btn-warning"><span>Enregistrer</span></button></li>
+                                    <li><button type="submit" id = "btn_add_donnee_dj" class="btn btn-warning"><span>Enregistrer</span></button></li>
                                 </ul>
                             </div>
-                        </form>
+                        {{ form_end(form) }}
 
                         <!-- / formulaire total -->
                     </div>
@@ -323,32 +445,8 @@
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     <h3 class="modal-title" style="text-align: center;">Modification</h3>
                                 </div>
-                                <div class="modal-body">
-                                    <form action="">
-                                        <div class="form-group">
-                                            <label for="n_date_depart">Nom du client :
-                                            </label>
-                                            <input type="text" id="nom_client" class="form-control">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="n_date_depart">Date du départ :
-                                            </label>
-                                            <input type="date" id="n_date_depart" class="form-control">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="n_date_arrivee">Date d'arrivée :
-                                            </label>
-                                            <input type="date" id="n_date_arrivee" class="form-control">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="n_date_arrivee">Durée du sejour :
-                                            </label>
-                                            <input type="number" class="form-control">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="submit" id="modif_date_modal" class="form-control btn btn-warning">
-                                        </div>
-                                    </form>
+                                <div class="modal-body modal_modif_client">
+                                    
                                 </div>
 
                             </div>
@@ -367,7 +465,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <div id="div__conf">
-                                        <button class="btn btn-warning" data-dismiss="modal" data-confirm = "oui">Supprimer</button>
+                                        <button class="btn btn-warning supprimer" data-id = ""  data-dismiss="modal" data-confirm = "oui">Supprimer</button>
                                         <button class="btn btn-warning annuler" data-dismiss="modal" data-confirm = "non">Annuler</button>
                                     </div>
                                 </div>
@@ -384,6 +482,9 @@
         </div>
 
     </section>
+    <div class="load_modif">
+        <p>Patienter...</p>
+    </div>
 
 
 {% endblock %}
@@ -443,46 +544,7 @@ new Cleave('.input_pourcent', {blocks: [4]});
 <script>
 
 	$(document).ready(function () {
-    var table = $('#tableau_client_donnee_jour').DataTable({
-    "language": {
-    "sEmptyTable": "Aucune donnée disponible dans le tableau",
-    "sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
-    "sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
-    "sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
-    "sInfoPostFix": "",
-    "sInfoThousands": ",",
-    "sLengthMenu": "Afficher _MENU_ éléments",
-    "sLoadingRecords": "Chargement...",
-    "sProcessing": "Traitement...",
-    "sSearch": "Rechercher :",
-    "sZeroRecords": "Aucun élément correspondant trouvé",
-    "oPaginate": {
-    "sFirst": "Premier",
-    "sLast": "Dernier",
-    "sNext": "Suivant",
-    "sPrevious": "Précédent"
-    },
-    "oAria": {
-    "sSortAscending": ": activer pour trier la colonne par ordre croissant",
-    "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
-    },
-    "select": {
-    "rows": {
-    "_": "%d lignes sélectionnées",
-    "0": "Aucune ligne sélectionnée",
-    "1": "1 ligne sélectionnée"
-    }
-    }
-    },
-    responsive: true,
-    scrollY: false, // raha scrollena de asina val ex 400
-    scrollX: true,
-    scrollCollapse: true,
-    paging: true,
-    autoFill: true
-    });
-
-    new $.fn.dataTable.FixedHeader(table);
+        
 });
 </script>
 
@@ -491,28 +553,88 @@ new Cleave('.input_pourcent', {blocks: [4]});
         // ajout de client 
 
         $(document).ready(function(){
+            /* table */
+                var pseudo_hotel = $('#hide_pseudo_hotel').val();
+        //alert(pseudo_hotel);
+    var table = $('#tableau_client_donnee_jour').DataTable({
+                    "language": {
+                        "sEmptyTable": "Aucune donnée disponible dans le tableau",
+                        "sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
+                        "sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
+                        "sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
+                        "sInfoPostFix": "",
+                        "sInfoThousands": ",",
+                        "sLengthMenu": "Afficher _MENU_ éléments",
+                        "sLoadingRecords": "Chargement...",
+                        "sProcessing": "Traitement...",
+                        "sSearch": "Rechercher :",
+                        "sZeroRecords": "Aucun élément correspondant trouvé",
+                        "oPaginate": {
+                            "sFirst": "Premier",
+                            "sLast": "Dernier",
+                            "sNext": "Suivant",
+                            "sPrevious": "Précédent"
+                        },
+                        "oAria": {
+                            "sSortAscending": ": activer pour trier la colonne par ordre croissant",
+                            "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+                        },
+                        "select": {
+                            "rows": {
+                                    "_": "%d lignes sélectionnées",
+                                    "0": "Aucune ligne sélectionnée",
+                                    "1": "1 ligne sélectionnée"
+                            }
+                        }
+                    },
 
-            // on load tbody
+                    "ajax" : {
+                        url : "/profile/select_client", // any am Clientcontroller
+                        type : 'POST', 
+                        data : {'pseudo_hotel' : pseudo_hotel},
+                        // success : function(response){
+                        //     alert(response);
+                        // }, 
+                        // error : function(){
+                        //     alert('erreur server');
+                        // },
+                        "dataSrc":"",
+                        
+                    },
 
-            $('#tbody_load').load("{{ asset('web/liste_client_present.php') }}");
+                    //annule le tri
+                    order : [[0 , 'asc']],
+                    ordering : false,
+
+                    responsive: true,
+                    scrollY: false, // raha scrollena de asina val ex 400
+                    scrollX: true,
+                    scrollCollapse: true,
+                    paging: true,
+                     autoFill: true
+                });
+
+                new $.fn.dataTable.FixedHeader(table);
+
+            /*  fiun table */
 
             $("#ajouter_client").click(function (e) { 
                 e.preventDefault();
-                //alert('ksg')
+                // alert('ksg')
                 var nom = $('#nom_client').val();
                 var prenom = $('#prenom_client').val();
-                var date_arrives = $('#date_arrives').val();
+                var date_arrivee = $('#date_arrivee').val();
                 var date_depart = $('#date_depart').val();
                 var data = {
                     "nom_client" : nom,
                     "prenom_client" : prenom,
-                    "date_arrivee" : date_arrives,
+                    "date_arrivee" : date_arrivee,
                     "date_depart" : date_depart
-                }
+                };
 
                 // test
 
-               // alert("nom = "+nom+" prenom = "+prenom+ "  date ar = "+date_arrives+" date dep = "+date_depart); 
+                //alert("nom = "+nom+" prenom = "+prenom+ "  date ar = "+date_arrivee+" date dep = "+date_depart); 
 
                 // ajax 
 
@@ -520,13 +642,26 @@ new Cleave('.input_pourcent', {blocks: [4]});
                     url : "{{ path('hebergement', {'pseudo_hotel' : hotel}) }}",
                     type : "POST",
                     data : data,
-                    success : function (response) {
-                       alert(response);
+                    beforeSend : function(){
+                        $("#ajouter_client").html('<span>Patienter...</span>');
                     },
-
+                    success : function (response) {
+                        if(response == "ok"){
+                            // on initialise le formulaire
+                            $('#nom_client').val("");
+                            $('#prenom_client').val("");
+                            $('#date_arrivee').val("d-m-YYYY");
+                            $('#date_depart').val("d-m-YYYY");
+                            
+                        }
+                    },
+                    complete : function(){
+                            table.ajax.reload(null, false);
+                         $("#ajouter_client").html('<span class="fa fa-plus"></span><span>Ajouter</span>');
+                    },
                     error : function() {
                         alert('Erreur dans le serveur')
-                    }
+                    },
 
                 })
                 
@@ -534,44 +669,173 @@ new Cleave('.input_pourcent', {blocks: [4]});
 
             // suppression client présent 
 
-            $("tbody").on("click", ".btn_client_suppr", function(e){
-                e.preventDefault();
-                var confirm = false;
+            $(document).on('click', ".btn_client_suppr", function(ev){
+                //ev.preventDefault();
                 var id = $(this).attr('data-id');
-
-                $('#modal_form_confirme .modal-body button').on('click', function(event) {
-                    var $button = $(event.target); // The clicked button
-
-                    $(this).closest('.modal').one('hidden.bs.modal', function() {
-                        // Fire if the button element 
-                        //console.log('The button that closed the modal is: ', $button);
-                        var data_confirm = $button.attr('data-confirm');
-                        //console.log(data_confirm);
-                        // si le bouton cliqué est celle qui a comme consirme oui
-                        if(data_confirm == "oui"){
-                             $.ajax({
-                                url: "/profile/supprimer_client",
-                                type: "POST",
-                                data: { "id" : id },
-                                success: function (response) {
-                                    if(response == 'suppression ok'){
-                                        $('#tbody_load').load("{{ asset('web/liste_client_present.php') }}");
-                                    }
-                                }, 
-                                error : function (params) {
-                                    alert('erreur server');
-                                }
-                            });
-                        }
-                    });
-                });
-
-                
-                    
-                    
-                   
-                
+                //alert(id);
+                $('#div__conf button.supprimer').attr('data-id', id);
             })
+
+            $('#div__conf button.supprimer').on('click', function(){
+                 var id = $(this).attr('data-id');
+                 //alert(id);
+                 // ajax
+                 $.ajax({
+                     url : "/admin/suprimer_client",
+                     data : {
+                         "client_id" : id,
+                         "pseudo_hotel" : pseudo_hotel,
+                     },
+                     type : "POST",
+                     success : function(response){
+                         if(response == "deleted"){
+                             table.ajax.reload(null, false);
+                         }
+                     },
+                     error : function(error){
+                         alert('erreur de server');
+                     },
+                })
+            })
+
+            /* fin suppression client*/
+
+            /* debut modif client */
+
+            $(document).on('click', '.btn_client_modif', function(ev){
+                ev.preventDefault();
+                 var id = $(this).attr('data-id');
+                 //alert(id);
+                 $.ajax({
+                     url : "/admin/check_client",
+                     data : {
+                         "client_id" : id,
+                     },
+                     type : "POST",
+                    
+                     success : function(response){
+                         $('.modal_modif_client').html(response);
+                          $('#modal_form').modal('show');
+                     },
+                     error : function(error){
+                         alert('erreur de server');
+                     },
+                })
+            })
+
+            $(document).on('click', '#a_modal_modif_client', function(ev){
+                ev.preventDefault();
+                var id = $(this).attr("data-id");
+                var nom = $('#modif_nom_client').val();
+                var prenom = $('#modif_prenom_client').val();
+                var date_arrivee = $('#modif_date_arrivee').val();
+                var date_depart = $('#modif_date_depart').val();
+                //alert(id+"/"+nom+"/"+date_depart+"/"+date_arrivee+"/"+prenom);
+                // ajax
+                $.ajax({
+                     url : "/admin/edit_client",
+                     data : {
+                         "id" : id,
+                         "nom" : nom,
+                         "prenom" : prenom,
+                         "date_arrivee" : date_arrivee,
+                         "date_depart" : date_depart,
+                     },
+                     type : "POST",
+                    beforeSend : function(){
+                       $('#a_modal_modif_client').html('<span>Patienter...</span>'); 
+                    },
+                     success : function(response){
+                        if(response == "ok"){
+                            table.ajax.reload(null, false);
+                             $('#modal_form').modal('hide');
+                        }
+                     },
+                     error : function(error){
+                         alert('erreur de server');
+                     },
+                     complete : function(){
+                          $('#a_modal_modif_client').html('<span>Enregistrer</span>'); 
+                     },
+                })
+            })
+            
+
+
+            /* fin modif client */
+
+            /* donnee du jour*/
+
+           /* $("#btn_add_donnee_dj").on('click', function(ev){
+                ev.preventDefault();
+                //alert('io');
+                var heb_to = $('#heb_to').val();
+                var heb_to = $('#heb_to').val();
+                var heb_ca = $('#heb_ca').val();
+                var res_n_couvert = $('#res_n_couvert').val();
+                var res_ca = $('#res_ca').val();
+                var res_p_dej = $('#res_p_dej').val();
+                var res_dej = $('#res_dej').val();
+                var res_dinner = $('#res_dinner').val();
+                var spa_ca = $('#spa_ca').val();
+                var spa_n_abonne = $('#spa_n_abonne').val();
+                var spa_c_unique = $('#spa_c_unique').val();
+                var crj_direction = $('#crj_direction').val();
+                var crj_service_rh = $('#crj_service_rh').val();
+                var crj_commercial = $('#crj_commercial').val();
+                var crj_comptable = $('#crj_comptable').val();
+                var crj_reception = $('#crj_reception').val();
+                var crj_restaurant = $('#crj_restaurant').val();
+                var crj_spa = $('#crj_spa').val();
+                var crj_s_technique = $('#crj_s_technique').val();
+                var crj_litiges = $('#crj_litiges').val();
+                var data  = {
+                    'heb_to' : heb_to,
+                    'heb_ca' : heb_ca,
+                    'res_n_couvert' : res_n_couvert,
+                    'res_ca' : res_ca,
+                    'res_p_dej' : res_p_dej,
+                    'res_dej' : res_dej,
+                    'res_dinner' : res_dinner,
+                    'spa_ca' : spa_ca,
+                    'spa_n_abonne' : spa_n_abonne,
+                    'spa_c_unique' : spa_c_unique,
+                    'crj_direction' : crj_direction,
+                    'crj_service_rh' : crj_service_rh,
+                    'crj_commercial' : crj_commercial,
+                    'crj_comptable' : crj_comptable,
+                    'crj_reception' : crj_reception,
+                    'crj_restaurant' : crj_restaurant,
+                    'crj_spa' : crj_spa,
+                    'crj_s_technique' : crj_s_technique,
+                    'crj_litiges' : crj_litiges,
+                    'pseudo_hotel' : pseudo_hotel
+                };
+                console.log(data);
+                // ajax
+                $.ajax({
+                    url : "/admin/add_donnee_dj",
+                    type : "POST",
+                    data : {"test" : 1},
+                    beforeSend : function(){
+                        $("#btn_add_donnee_dj").html('<span>Patienter...</span>');
+                    },
+                    success : function(response){
+                        alert(response);
+                    },
+                    complete : function(){
+                        $("#btn_add_donnee_dj").html('<span>Enregistrer</span>');
+                    },
+                    error : function(error){
+                        alert('erreur au code server serveur');
+                    }
+
+
+                })
+
+            })*/
+
+            /* fin donnee du jour*/
 
         })
 

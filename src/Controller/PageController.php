@@ -11,6 +11,7 @@ use App\Repository\UserRepository;
 use App\Repository\HotelRepository;
 use App\Repository\ClientRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\DonneeDuJourRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,6 +23,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class PageController extends AbstractController
 {
+
+    /**
+     * @Route("/", name="first_page")
+     */
+    public function first_page(Request $request)
+    {
+        return $this->redirectToRoute("app_login");
+    }
+
     /**
      *@Route("/profile/{pseudo_hotel}", name="home")
      */
@@ -56,13 +66,14 @@ class PageController extends AbstractController
     /**
      * @Route("/profile/{pseudo_hotel}/crj", name="crj")
      */
-    public function crj(SessionInterface $session,$pseudo_hotel, HotelRepository $repoHotel)
+    public function crj(SessionInterface $session,$pseudo_hotel, HotelRepository $repoHotel, DonneeDuJourRepository $repoDoneeDJ)
     {
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "crj";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
-       
+        $donneeDJs = $repoDoneeDJ->findAll();
         return $this->render('page/crj.html.twig', [
+            "items" => $donneeDJs,
             "id" => "li__compte_rendu",
             "hotel" => $data_session['pseudo_hotel'],
             "current_page" => $data_session['current_page']
@@ -78,46 +89,41 @@ class PageController extends AbstractController
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "hebergement";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
+        $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
         if ($request->isXmlHttpRequest()) {
 
             $nom_client = $request->get('nom_client');
-            $prenom_client = $request->get('prenom_client');
-            $string_date_arrivee = $request->get('date_arrivee');
-            $string_date_depart = $request->get('date_depart');
-
-            $date_arrivee = date_create($string_date_arrivee);
-            $date_depart = date_create($string_date_depart);
-            $son_hotel = $repoHotel->findByPseudo($pseudo_hotel);
-            $id = $son_hotel->getId();
-            $retour = "";
-            if (!empty($string_date_arrivee) &&  !empty($string_date_depart) && !empty($nom_client)) {
-
-                // $client = new Client();
-                // $client->setNom($nom_client);
-                // $client->setPrenom($prenom_client);
-                // $client->setDateArrivee($date_arrivee);
-                // $client->setDateDepart($date_depart);
-                // $i = $date_arrivee->diff($date_depart);
-                // $d = $i->days;
-                // $client->setDureeSejour($d);
-                // $son_hotel->addClient($client);
-                // $manager->persist($client);
-                // $manager->flush();
-                $retour = $pseudo_hotel;
+            $prenom_client = (empty($request->get('prenom_client'))) ? "" : $request->get('prenom_client');
+            $date_arrivee = $request->get('date_arrivee');
+            $date_depart = $request->get('date_depart');
+            $date_arrivee = date_create($date_arrivee);
+            $date_depart = date_create($date_depart);
+            $diff = $date_arrivee->diff($date_depart);
+            $days = $diff->d;
+           
+            // condition 
+            if(!empty($nom_client) && !empty($date_depart) && !empty($date_arrivee)){
+                $client = new Client();
+                $client->setNom($nom_client);
+                $client->setPrenom($prenom_client);
+                $client->setDateArrivee($date_arrivee);
+                $client->setDateDepart($date_depart);
+                $client->setDureeSejour($days);
+                $client->setCreatedAt(new \DateTime());
+                $hotel->addClient($client);
+                $manager->persist($client);
+                $manager->persist($hotel);
+                $manager->flush();
+                $data = json_encode("ok");
                
-                
-
-            } else {
-
-                $retour = "vide";
-              
+            }
+            else{
+                $data = json_encode("Veuiller remplir ces formulaires"); 
             }
 
-            $data = json_encode($retour); // formater le résultat de la requête en json
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent($data);
             return $response;
-
 
         }
         return $this->render('page/hebergement.html.twig', [
@@ -174,7 +180,7 @@ class PageController extends AbstractController
     /**
      * @Route("/profile/{pseudo_hotel}/donnee_jour", name="donnee_jour")
      */
-    public function donnee_jour(Request $request, $pseudo_hotel, EntityManagerInterface $manager, SessionInterface $session)
+    public function donnee_jour(Request $request, $pseudo_hotel, EntityManagerInterface $manager, SessionInterface $session, HotelRepository $reposHotel)
     {
         $ddj = new DonneeDuJour();
         $data_session = $session->get('hotel');
@@ -182,6 +188,17 @@ class PageController extends AbstractController
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         $form = $this->createForm(DonneeDuJourType::class, $ddj);
         // si le formulaire est soumis 
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $ddj = $form->getData();
+            $ddj->setCreatedAt(new \DateTime());
+            $hotel = $reposHotel->findOneByPseudo($pseudo_hotel);
+            $hotel->addDonneeDuJour($ddj);
+            $manager->persist($ddj);
+            $manager->persist($hotel);
+            $manager->flush();
+            return $this->redirectToRoute('donnee_jour', ['pseudo_hotel' => $pseudo_hotel]);
+        }
 
         return $this->render('page/donnee_jour.html.twig', [
             "id" => "li__donnee_du_jour",

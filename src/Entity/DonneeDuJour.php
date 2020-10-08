@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use App\Repository\DonneeDuJourRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\DonneeDuJourRepository;
 
 /**
  * @ORM\Entity(repositoryClass=DonneeDuJourRepository::class)
@@ -18,52 +18,52 @@ class DonneeDuJour
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $heb_to;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $heb_ca;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $res_n_couvert;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $res_ca;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $res_p_dej;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $res_dej;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $res_dinner;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $spa_ca;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $spa_n_abonne;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $spa_c_unique;
 
@@ -128,120 +128,120 @@ class DonneeDuJour
         return $this->id;
     }
 
-    public function getHebTo(): ?int
+    public function getHebTo(): ?string
     {
         return $this->heb_to;
     }
 
-    public function setHebTo(int $heb_to): self
+    public function setHebTo(string $heb_to): self
     {
         $this->heb_to = $heb_to;
 
         return $this;
     }
 
-    public function getHebCa(): ?float
+    public function getHebCa(): ?string
     {
         return $this->heb_ca;
     }
 
-    public function setHebCa(float $heb_ca): self
+    public function setHebCa(string $heb_ca): self
     {
         $this->heb_ca = $heb_ca;
 
         return $this;
     }
 
-    public function getResNCouvert(): ?int
+    public function getResNCouvert(): ?string
     {
         return $this->res_n_couvert;
     }
 
-    public function setResNCouvert(int $res_n_couvert): self
+    public function setResNCouvert(string $res_n_couvert): self
     {
         $this->res_n_couvert = $res_n_couvert;
 
         return $this;
     }
 
-    public function getResCa(): ?int
+    public function getResCa(): ?string
     {
         return $this->res_ca;
     }
 
-    public function setResCa(int $res_ca): self
+    public function setResCa(string $res_ca): self
     {
         $this->res_ca = $res_ca;
 
         return $this;
     }
 
-    public function getResPDej(): ?int
+    public function getResPDej(): ?string
     {
         return $this->res_p_dej;
     }
 
-    public function setResPDej(int $res_p_dej): self
+    public function setResPDej(string $res_p_dej): self
     {
         $this->res_p_dej = $res_p_dej;
 
         return $this;
     }
 
-    public function getResDej(): ?int
+    public function getResDej(): ?string
     {
         return $this->res_dej;
     }
 
-    public function setResDej(int $res_dej): self
+    public function setResDej(string $res_dej): self
     {
         $this->res_dej = $res_dej;
 
         return $this;
     }
 
-    public function getResDinner(): ?int
+    public function getResDinner(): ?string
     {
         return $this->res_dinner;
     }
 
-    public function setResDinner(int $res_dinner): self
+    public function setResDinner(string $res_dinner): self
     {
         $this->res_dinner = $res_dinner;
 
         return $this;
     }
 
-    public function getSpaCa(): ?float
+    public function getSpaCa(): ?string
     {
         return $this->spa_ca;
     }
 
-    public function setSpaCa(float $spa_ca): self
+    public function setSpaCa(string $spa_ca): self
     {
         $this->spa_ca = $spa_ca;
 
         return $this;
     }
 
-    public function getSpaNAbonne(): ?int
+    public function getSpaNAbonne(): ?string
     {
         return $this->spa_n_abonne;
     }
 
-    public function setSpaNAbonne(int $spa_n_abonne): self
+    public function setSpaNAbonne(string $spa_n_abonne): self
     {
         $this->spa_n_abonne = $spa_n_abonne;
 
         return $this;
     }
 
-    public function getSpaCUnique(): ?int
+    public function getSpaCUnique(): ?string
     {
         return $this->spa_c_unique;
     }
 
-    public function setSpaCUnique(int $spa_c_unique): self
+    public function setSpaCUnique(string $spa_c_unique): self
     {
         $this->spa_c_unique = $spa_c_unique;
 
