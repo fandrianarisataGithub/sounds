@@ -114,7 +114,7 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
 
         $session->set("hotel", $hotel);
 
-         return new RedirectResponse($this->urlGenerator->generate('home', ['pseudo_hotel'=> $hotel['pseudo_hotel']]));
+         return new RedirectResponse($this->urlGenerator->generate('hebergement', ['pseudo_hotel'=> $hotel['pseudo_hotel']]));
        // throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
     }
 

@@ -44,10 +44,16 @@ class Hotel
      */
     private $pseudo;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="hotels")
+     */
+    private $user;
+
     public function __construct()
     {
         $this->clients = new ArrayCollection();
         $this->donneeDuJours = new ArrayCollection();
+        $this->user = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -149,6 +155,32 @@ class Hotel
     public function setPseudo(string $pseudo): self
     {
         $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUser(): Collection
+    {
+        return $this->user;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->user->contains($user)) {
+            $this->user[] = $user;
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->user->contains($user)) {
+            $this->user->removeElement($user);
+        }
 
         return $this;
     }

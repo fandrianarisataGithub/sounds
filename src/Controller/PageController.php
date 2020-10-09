@@ -32,21 +32,7 @@ class PageController extends AbstractController
         return $this->redirectToRoute("app_login");
     }
 
-    /**
-     *@Route("/profile/{pseudo_hotel}", name="home")
-     */
-    public function home(SessionInterface $session, $pseudo_hotel)
-    {
-
-        $data_session = $session->get('hotel');
-        $data_session['pseudo_hotel'] = $pseudo_hotel;
-        //dd($data_session);
-        return $this->render("page/donnee_jour.html.twig", [
-            "hotel" => $data_session['pseudo_hotel'],
-            "current_page" => $data_session['current_page']
-        ]);
-    }
-
+   
     /**
      * @Route("/profile/{pseudo_hotel}/setting", name="setting")
      */
@@ -71,9 +57,19 @@ class PageController extends AbstractController
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "crj";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
+        $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+        $current_id_hotel = $l_hotel->getId();
         $donneeDJs = $repoDoneeDJ->findAll();
+        $tab = [];
+        foreach($donneeDJs as $item){
+            $son_hotel = $item->getHotel();
+            $son_id_hotel = $son_hotel->getId();
+            if($son_id_hotel == $current_id_hotel){
+                array_push($tab, $item);
+            }
+        }
         return $this->render('page/crj.html.twig', [
-            "items" => $donneeDJs,
+            "items" => $tab,
             "id" => "li__compte_rendu",
             "hotel" => $data_session['pseudo_hotel'],
             "current_page" => $data_session['current_page']

@@ -556,7 +556,7 @@ new Cleave('.input_pourcent', {blocks: [4]});
             /* table */
                 var pseudo_hotel = $('#hide_pseudo_hotel').val();
         //alert(pseudo_hotel);
-    var table = $('#tableau_client_donnee_jour').DataTable({
+        var table = $('#tableau_client_donnee_jour').DataTable({
                     "language": {
                         "sEmptyTable": "Aucune donnée disponible dans le tableau",
                         "sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
@@ -762,81 +762,7 @@ new Cleave('.input_pourcent', {blocks: [4]});
             
 
 
-            /* fin modif client */
-
-            /* donnee du jour*/
-
-           /* $("#btn_add_donnee_dj").on('click', function(ev){
-                ev.preventDefault();
-                //alert('io');
-                var heb_to = $('#heb_to').val();
-                var heb_to = $('#heb_to').val();
-                var heb_ca = $('#heb_ca').val();
-                var res_n_couvert = $('#res_n_couvert').val();
-                var res_ca = $('#res_ca').val();
-                var res_p_dej = $('#res_p_dej').val();
-                var res_dej = $('#res_dej').val();
-                var res_dinner = $('#res_dinner').val();
-                var spa_ca = $('#spa_ca').val();
-                var spa_n_abonne = $('#spa_n_abonne').val();
-                var spa_c_unique = $('#spa_c_unique').val();
-                var crj_direction = $('#crj_direction').val();
-                var crj_service_rh = $('#crj_service_rh').val();
-                var crj_commercial = $('#crj_commercial').val();
-                var crj_comptable = $('#crj_comptable').val();
-                var crj_reception = $('#crj_reception').val();
-                var crj_restaurant = $('#crj_restaurant').val();
-                var crj_spa = $('#crj_spa').val();
-                var crj_s_technique = $('#crj_s_technique').val();
-                var crj_litiges = $('#crj_litiges').val();
-                var data  = {
-                    'heb_to' : heb_to,
-                    'heb_ca' : heb_ca,
-                    'res_n_couvert' : res_n_couvert,
-                    'res_ca' : res_ca,
-                    'res_p_dej' : res_p_dej,
-                    'res_dej' : res_dej,
-                    'res_dinner' : res_dinner,
-                    'spa_ca' : spa_ca,
-                    'spa_n_abonne' : spa_n_abonne,
-                    'spa_c_unique' : spa_c_unique,
-                    'crj_direction' : crj_direction,
-                    'crj_service_rh' : crj_service_rh,
-                    'crj_commercial' : crj_commercial,
-                    'crj_comptable' : crj_comptable,
-                    'crj_reception' : crj_reception,
-                    'crj_restaurant' : crj_restaurant,
-                    'crj_spa' : crj_spa,
-                    'crj_s_technique' : crj_s_technique,
-                    'crj_litiges' : crj_litiges,
-                    'pseudo_hotel' : pseudo_hotel
-                };
-                console.log(data);
-                // ajax
-                $.ajax({
-                    url : "/admin/add_donnee_dj",
-                    type : "POST",
-                    data : {"test" : 1},
-                    beforeSend : function(){
-                        $("#btn_add_donnee_dj").html('<span>Patienter...</span>');
-                    },
-                    success : function(response){
-                        alert(response);
-                    },
-                    complete : function(){
-                        $("#btn_add_donnee_dj").html('<span>Enregistrer</span>');
-                    },
-                    error : function(error){
-                        alert('erreur au code server serveur');
-                    }
-
-
-                })
-
-            })*/
-
-            /* fin donnee du jour*/
-
+            
         })
 
 

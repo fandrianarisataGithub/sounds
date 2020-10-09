@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -56,6 +58,16 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=255)
      */
     private $hotel;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Hotel::class, mappedBy="user")
+     */
+    private $hotels;
+
+    public function __construct()
+    {
+        $this->hotels = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -174,6 +186,34 @@ class User implements UserInterface
     public function setHotel(string $hotel): self
     {
         $this->hotel = $hotel;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Hotel[]
+     */
+    public function getHotels(): Collection
+    {
+        return $this->hotels;
+    }
+
+    public function addHotel(Hotel $hotel): self
+    {
+        if (!$this->hotels->contains($hotel)) {
+            $this->hotels[] = $hotel;
+            $hotel->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHotel(Hotel $hotel): self
+    {
+        if ($this->hotels->contains($hotel)) {
+            $this->hotels->removeElement($hotel);
+            $hotel->removeUser($this);
+        }
 
         return $this;
     }

@@ -146,31 +146,7 @@
 					<h4>Liste des équipes</h4>
 				</div>
 				<ul id="ul_liste_equipe">
-					{% for elm in liste_user %}
-						<li>
-							<span class="nom_pers">
-								{{  elm.nom }}
-								<br>
-								{{ elm.prenom }}
-							</span>
-							<span class="role_pers">
-								{% if elm.hotel == "tous" %}
-									Administrateur
-								{% else %}
-									Editeur <br> {{elm.hotel}}
-								{% endif %}
-
-							</span>
-							<div>
-								<a href="#" data-id = {{ elm.id }} data-toggle="modal" data-target="#modal_form_modif_admin">
-									<span class="fa fa-edit"></span>
-								</a>
-								<a href="#" data-id = {{ elm.id }} data-toggle="modal" data-target="#modal_form_confirme_pers" class="delete_pers">
-									<span class="fa fa-trash-o"></span>
-								</a>
-							</div>
-						</li>
-					{% endfor %}
+					
 				</ul>
 			</div>
 		</div>
@@ -192,6 +168,7 @@
 						<label for="choix_role">Type de l'administrateur :</label>
 						<select name="" id="choix_role" class="form-control">
 							<option value="administrateur">Administrateur</option>
+							{# <option selected = "selected" value="editeur">Editeur</option> #}
 							<option value="editeur">Editeur</option>
 						</select>
 					</div>
@@ -222,8 +199,11 @@
 						<span class="span__label"></span>
 						<input type="text" name="" data-placeholder="Son mot de passe" class="form-control" id="n_passsword_pers" placeholder="Son mot de passe">
 					</div>
+					<div class="infos">
+						<p>lorem ipsum hhh kkk</p>
+					</div>
 					<div class="form-group">
-						<button type="submit" class="form-control btn btn-warning" id="admin_register">Enregistrer</button>
+						<button type="submit" class="form-control btn btn-warning" id="admin_register"><span>Enregistrer</span></button>
 					</div>
 				</form>
 			</div>
@@ -232,7 +212,7 @@
 	<!-- / contenue nouveau client -->
 
 	<!-- Modal suppr  -->
-	<div class="modal fade" id="modal_form_confirme_pers_esorina" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal fade" id="modal_form_confirme_pers" tabindex="-1" role="dialog"  aria-hidden="true">
 		<div class="modal-dialog opacity-animate4">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -242,9 +222,8 @@
 				<div class="modal-body">
 					<div class="footer_modal">
 					
-						<a class="btn btn-warning retirer" data-dismiss="modal" id="suppr_user_model">Supprimer</a>
-						{# data-dismiss="modal" raha te hanala anle modal #}
-						<a class="btn btn-warning annuler" data-dismiss="modal">Annuler</a>
+						<a href="#" class="btn btn-warning retirer" data-id = "" data-dismiss="modal" id="suppr_user_model">Supprimer</a>
+						<a href ="#" class="btn btn-warning annuler" data-dismiss="modal">Annuler</a>
 					</div>
 				</div>
 
@@ -261,46 +240,8 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h3 class="modal-title" style="text-align: center;">Modification</h3>
 				</div>
-				<div class="modal-body">
-					<form action="">
-						<div class="form-group">
-							<label for="choix_role">Type de l'administrateur :</label>
-							<select name="" id="choix_role" class="form-control">
-								<option value="administrateur">Administrateur</option>
-								<option value="editeur">Editeur</option>
-							</select>
-						</div>
-						<div class="form-group nom_hotel">
-							<label for="choix_role">Nom de l'hotel</label>
-							<select name="" id="choix_hotel" class="form-control">
-								<option value="tous">Tous</option>
-								<option value="Royal Beach">Royal Beach</option>
-								<option value="Calypso">Calypso</option>
-								<option value="Baobab Tree">Baobab Tree</option>
-								<option value="Vanila Hotel">Vanila Hotel</option>
-							</select>
-						</div>
-
-						<div class="form-group">
-							<span class="span__label"></span>
-							<input type="text" name="" data-placeholder="Nom" class="form-control" id="nom_pers" placeholder="Nom">
-						</div>
-						<div class="form-group">
-							<span class="span__label"></span>
-							<input type="text" name="" data-placeholder="Prénom" class="form-control" id="prenom_pers" placeholder="Prénom">
-						</div>
-						<div class="form-group">
-							<span class="span__label"></span>
-							<input type="text" name="" data-placeholder="Adresse mail" class="form-control" id="username_pers" placeholder="Adresse mail">
-						</div>
-						<div class=" form-group">
-							<span class="span__label"></span>
-							<input type="text" name="" data-placeholder="Son mot de passe" class="form-control" id="n_passsword_pers" placeholder="Son mot de passe">
-						</div>
-						<div class="form-group">
-							<button type="submit" class="form-control btn btn-warning" id="btn_modif_admin">Enregistrer</button>
-						</div>
-					</form>
+				<div class="modal-body" id = "modal_modif_user">
+					
 				</div>
 
 			</div>
@@ -356,6 +297,31 @@
 
 			/*  / animation password show hide */
 
+			/* ajax pour l'affichage de tous les users */
+
+			{% if is_granted('ROLE_ADMIN') %}
+				print_all_users();
+			{% endif %}
+			
+			function print_all_users(){
+				$.ajax({
+					url : "/admin/print_all_users",
+					type : "POST",
+					success : function(response){
+						if(response){
+							$('#ul_liste_equipe').html(response);
+						}
+					},
+					error : function(error){
+						alert('erreur dans le code server print_all_users');
+					}
+				})
+			}
+			
+
+
+			/* / fin affichage de tous les users */
+
 			// ajax adminRegister
 			// routeName = admin.register
 
@@ -384,41 +350,27 @@
 					url : "{{ path('admin.register') }}",
 					type : "POST",
 					data : data,
+					beforeSend : function(){
+						$('#admin_register').html('<span>Patienter...</span>');
+					},
 					success : function(response){
-					
-						if(response.length > 0){
-							$('#ul_liste_equipe').html('');
-									var string = "";
-							
-							for(var i = 0; i<=response.length - 1 ; i++) {
-
-								var son_role = "Administrateur";
-								if(response[i]['hotel'] != "tous") {
-									var son_role = "Editeur <br> "+response[i]['hotel'];
-								}
-								var div = '<div><a href="#" data-id='+ response[i]["id"]  +' data-toggle="modal" data-target="#modal_form_modif_admin"><span class="fa fa-edit"></span></a><a href="#" data-id= '+ response[i]["id"] +' data-toggle="modal" data-target="#modal_form_confirme_pers" class="delete_pers"><span class="fa fa-trash-o"></span></a></div>'
-
-								// on crée un tr
-								var d_tr = "<li>";
-									d_tr += "<span class='nom_pers'>"+response[i]['nom']+"<br>"+response[i]['prenom']+"</span>";
-									d_tr += "<span class='role_pers'>"+ son_role +"</span>";
-									d_tr += div;
-									d_tr += "</li>";
-								string += d_tr;
-							}
-							$('#ul_liste_equipe').append(string);
-							$("#form_register_user").trigger("reset");
+						if(response == "ok"){
+							print_all_users();
 						}
-
-						else {
-							alert(response);
+						else{
+							$(".infos p").text(response);
+							$(".infos").fadeIn();
+							setTimeout(() => {
+								$(".infos").fadeOut();
+							}, 2000);
 						}
-
-						
 					},
 					error : function(er){
 
 						alert('erreur ajax');
+					},
+					complete : function(){
+						$('#admin_register').html('<span>Enregistrer</span>');
 					}
 				})
 
@@ -426,60 +378,82 @@
 		
 		// ajax suuprimer user 
 
-		$('.delete_pers').on('click', function(e){
-			e.preventDefault();
-			var id = $(this).attr("data-id");
-
-			//console.log(id);
-			//$('#suppr_user_model').click(function(ev){
-			//	ev.preventDefault();
-				$.ajax({
-					url: "/security/delete_user/"+ id,
-					type: "DELETE",
-					data:{
-						'action' : 'delete'
-						},
-					
-					success : function(response){
-						// on ferme le modal 
-
-						$('.delete_pers').attr('data-id',"");
-						// affichage des user 
-
-							$('#ul_liste_equipe').html('');
-									var string = "";
-							
-							for(var i = 0; i<=response.length - 1 ; i++) {
-
-								var son_role = "Administrateur";
-								if(response[i]['hotel'] != "tous") {
-									var son_role = "Editeur <br> "+response[i]['hotel'];
-								}
-								var div = '<div><a href="#" data-id='+ response[i]["id"]  +' data-toggle="modal" data-target="#modal_form_modif_admin"><span class="fa fa-edit"></span></a><a href="#" data-id= '+ response[i]["id"] +' data-toggle="modal" data-target="#modal_form_confirme_pers" class="delete_pers"><span class="fa fa-trash-o"></span></a></div>'
-
-								// on crée un tr
-								var d_tr = "<li>";
-									d_tr += "<span class='nom_pers'>"+response[i]['nom']+"<br>"+response[i]['prenom']+"</span>";
-									d_tr += "<span class='role_pers'>"+ son_role +"</span>";
-									d_tr += div;
-									d_tr += "</li>";
-								string += d_tr;
-							}
-							$('#ul_liste_equipe').append(string);
-							$("#form_register_user").trigger("reset");
-
-						// fin affichage user
-						console.log(response)
-
-					},
-					error : function(error){
-						alert('erreur de serveur');
+		$(document).on('click', '.delete_user', function(ev){
+			ev.preventDefault();
+			var id = $(this).attr('data-id');
+			// alert(id);
+			$('#suppr_user_model').attr('data-id', id);
+		})
+		
+		$('#suppr_user_model').click(function(ev){
+			ev.preventDefault();
+			var id = $(this).attr('data-id');
+		
+			$.ajax({
+				url : "/security/delete_user/"+id,
+				type : "POST",
+				success : function(response){
+					if(response == "ok"){
+						print_all_users();
 					}
-				})
-			//})
-
+				},
+				error : function(error){
+					alert('erreur au serveur delete user');
+				}
+			})
 		})
 
+		/* debut modif  */
+
+		// pick up user for modif
+		$(document).on('click', '.edit_user', function(ev){
+			ev.preventDefault();
+			var id = $(this).attr('data-id');
+			 //alert(id);
+			 $.ajax({
+				 url : "/admin/pick_up/"+id,
+				 type : "POST",
+				 success : function(response){
+					$('#modal_modif_user').html(response);
+					$('#modal_form_modif_admin').modal('show');
+				 },
+				 error : function(error){
+					 alert('erreur server pick up user for modif');
+				 }
+			 })
+		})
+		// modif
+
+		$(document).on('click', '#btn_modif_admin', function(ev){
+			ev.preventDefault();
+			//alert('alefa');
+			var id = $(this).attr('data-id');
+			$.ajax({
+				url : "/admin/edit_user",
+				data : {
+					'choix_role' : $('#modal_choix_role').val(),
+					'choix_hotel' : $('#modal_choix_hotel').val(),
+					'nom_pers' : $('#modal_nom_pers').val(),
+					'prenom_pers' : $('#modal_prenom_pers').val(),
+					'username_pers' : $('#modal_username_pers').val(),
+					'user_id' : id,
+				}, 
+				success : function(response){
+					if(response == "ok"){
+						print_all_users();
+						$('#modal_form_modif_admin').modal('hide');
+					}
+				},
+				error : function(error){
+					alert('erreur server au niveau de modal modif user');
+				}
+
+			})
+		})
+
+
+
+		/* fin modif  */
 
 	
 

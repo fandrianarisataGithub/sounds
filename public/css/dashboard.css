@@ -1636,7 +1636,22 @@ tbody tr td{
       font-size: 18px;
   }
   /* css settings */
-  
+  .infos {
+      background: lightblue;
+      padding: 5px;
+      margin-bottom: 15px;
+      display: none;
+      justify-content: start;
+      align-items: center;
+      background: rgba(235,71,16, 0.5);
+      border-left : 5px solid red;
+   }
+.infos p{
+    position: relative;
+    top: 5px;
+    color : white;
+    font-size : 12px;
+}
   .inside_content {
       box-shadow: 0px 1px 3px lightgrey;
       background: rgba(255, 255, 255, 0.7);
@@ -1658,7 +1673,7 @@ tbody tr td{
       top: 10px;
       color: #fff;
   }
-  
+
   .inside_content form,
   .inside_content ul {
       padding: 10px;
@@ -1902,10 +1917,10 @@ table.dataTable.display tbody tr td a{
       display: flex;
       justify-content: space-between;
   }
-  
-  .footer_modal .annuler {
-      background-color: #323232;
-      border: none;
+
+  .footer_modal .annuler, #div__conf .annuler {
+     background: #2f2f2f !important;
+    border-color: transparent;
   }
   
   .footer_modal .retirer {
