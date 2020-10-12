@@ -94,25 +94,22 @@
 						</div>
 						<form action="" class="tri">
 							<select name="" id="mois">
-								<option>Tous les mois</option>
-								<option>Janvier</option>
-								<option>Février</option>
-								<option>Mars</option>
-								<option>Avril</option>
-								<option>Mai</option>
-								<option>Juin</option>
-								<option>Juillet</option>
-								<option>Août</option>
-								<option>Septembre</option>
-								<option>Octobre</option>
-								<option>Novembre</option>
-								<option>Décembre</option>
+								<option selected = "selected" >Tous les mois</option>
+								<option value = "01">Janvier</option>
+								<option value = "02">Février</option>
+								<option value = "03">Mars</option>
+								<option value = "04">Avril</option>
+								<option value = "05">Mai</option>
+								<option value = "06">Juin</option>
+								<option value = "07">Juillet</option>
+								<option value = "08">Août</option>
+								<option value = "09">Septembre</option>
+								<option value = "10">Octobre</option>
+								<option value = "11">Novembre</option>
+								<option value = "12">Décembre</option>
 							</select>
 							<select name="" id="annee">
 								<option>2020</option>
-								<option>2019</option>
-								<option>2018</option>
-								<option>2017</option>
 							</select>
 							<div class="div_btn_afficher">
 								<button class="btn btn-info btn-xs" type="submit">Afficher</button>
@@ -205,9 +202,47 @@
 								</thead>
 								<tbody id ="tbody_load">
                                             
-                                        </tbody>
+                                </tbody>
 							</table>
 						</div>
+						<!-- Modal modif  -->
+                    <div class="modal fade" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog opacity-animate4">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h3 class="modal-title" style="text-align: center;">Modification</h3>
+                                </div>
+                                <div class="modal-body modal_modif_client">
+                                    
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- fin Modal modif  -->
+
+                    <!-- Modal suppr  -->
+
+                    <div class="modal fade" id="modal_form_confirme" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog opacity-animate4">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h3 class="modal-title" style="text-align: center;">Voulez-vous vraiment supprimer cet élément ?</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="div__conf">
+                                        <button class="btn btn-warning supprimer" data-id = ""  data-dismiss="modal" data-confirm = "oui">Supprimer</button>
+                                        <button class="btn btn-warning annuler" data-dismiss="modal" data-confirm = "non">Annuler</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- fin Modal suppr  -->
 
 					</div>
 				</section>
@@ -715,6 +750,98 @@
 							/*  fiun table */
 
 					/* fin datatable */
+					// suppression client présent 
+
+					$(document).on('click', ".btn_client_suppr", function(ev){
+						//ev.preventDefault();
+						var id = $(this).attr('data-id');
+						//alert(id);
+						$('#div__conf button.supprimer').attr('data-id', id);
+					})
+
+					$('#div__conf button.supprimer').on('click', function(){
+						var id = $(this).attr('data-id');
+						//alert(id);
+						// ajax
+						$.ajax({
+							url : "/admin/suprimer_client",
+							data : {
+								"client_id" : id,
+								"pseudo_hotel" : pseudo_hotel,
+							},
+							type : "POST",
+							success : function(response){
+								if(response == "deleted"){
+									table.ajax.reload(null, false);
+								}
+							},
+							error : function(error){
+								alert('erreur de server');
+							},
+						})
+					})
+
+					/* fin suppression client*/
+
+					/* debut modif client */
+
+					$(document).on('click', '.btn_client_modif', function(ev){
+						ev.preventDefault();
+						var id = $(this).attr('data-id');
+						//alert(id);
+						$.ajax({
+							url : "/admin/check_client",
+							data : {
+								"client_id" : id,
+							},
+							type : "POST",
+							
+							success : function(response){
+								$('.modal_modif_client').html(response);
+								$('#modal_form').modal('show');
+							},
+							error : function(error){
+								alert('erreur de server');
+							},
+						})
+					})
+
+					$(document).on('click', '#a_modal_modif_client', function(ev){
+						ev.preventDefault();
+						var id = $(this).attr("data-id");
+						var nom = $('#modif_nom_client').val();
+						var prenom = $('#modif_prenom_client').val();
+						var date_arrivee = $('#modif_date_arrivee').val();
+						var date_depart = $('#modif_date_depart').val();
+						//alert(id+"/"+nom+"/"+date_depart+"/"+date_arrivee+"/"+prenom);
+						// ajax
+						$.ajax({
+							url : "/admin/edit_client",
+							data : {
+								"id" : id,
+								"nom" : nom,
+								"prenom" : prenom,
+								"date_arrivee" : date_arrivee,
+								"date_depart" : date_depart,
+							},
+							type : "POST",
+							beforeSend : function(){
+							$('#a_modal_modif_client').html('<span>Patienter...</span>'); 
+							},
+							success : function(response){
+								if(response == "ok"){
+									table.ajax.reload(null, false);
+									$('#modal_form').modal('hide');
+								}
+							},
+							error : function(error){
+								alert('erreur de server');
+							},
+							complete : function(){
+								$('#a_modal_modif_client').html('<span>Enregistrer</span>'); 
+							},
+						})
+					})
 
 
 				})

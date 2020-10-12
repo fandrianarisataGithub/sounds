@@ -74,7 +74,13 @@
       background-color: #fff;
       animation: loader-inner 2s infinite ease-in;
   }
-  
+.unite{
+    margin-left: 5px;
+}
+tbody tr td div{
+    padding-left: 15px;
+    color: rgba(0,0,0, 0.5) !important;
+}
   @keyframes loader {
       0% {
           transform: rotate(0deg);
@@ -3394,6 +3400,18 @@ table.dataTable.display tbody tr td a{
       color: #666666;
       font-size: 14px;
   }
+
+.text-start a, .text-start a:visited, .text-start a:link, .text-start a:focus{
+    background: transparent;
+    border: none;
+}
+.text-start a:hover{
+    background: #d29e00;
+}
+.text-start a:hover span{
+    color: #fff;
+    
+}
   
   .legendValue {
       float: left;

@@ -79,7 +79,7 @@ class PageController extends AbstractController
     /**
      * @Route("/profile/{pseudo_hotel}/hebergement", name="hebergement")
      */
-    public function hebergement($pseudo_hotel, Request $request, EntityManagerInterface $manager, ClientRepository $repo, SessionInterface $session, HotelRepository $repoHotel)
+    public function hebergement($pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ, Request $request, EntityManagerInterface $manager, ClientRepository $repo, SessionInterface $session, HotelRepository $repoHotel)
     {
         $response = new Response();
         $data_session = $session->get('hotel');
@@ -122,6 +122,38 @@ class PageController extends AbstractController
             return $response;
 
         }
+
+        /** préparation des input des filtres */
+        // les année existant dans les donnée de jour pour l'hotel en cours
+        $all_ddj = $repoDoneeDJ->findAll();
+        $current_hotel_ddj = [];
+        foreach($all_ddj as $d){
+            $son_hotel = $d->getHotel()->getPseudo();
+            if($son_hotel == $pseudo_hotel){
+                array_push($current_hotel_ddj, $d);
+            }
+        }
+        //dd($current_hotel_ddj);
+        $tab_annee = [];
+        $tab_sans_doublant = [];
+        foreach($current_hotel_ddj as $c){
+            $son_created_at = $c->getCreatedAt();
+            $annee = $son_created_at->format('Y');
+            array_push($tab_annee, $annee);
+        }
+        array_push($tab_sans_doublant, $tab_annee[0]);
+        for($i = 0; $i < count($tab_annee); $i++){
+            
+            if(!in_array($tab_annee[$i], $tab_sans_doublant)){
+                array_push($tab_sans_doublant, $tab_annee[$i]);
+            }
+            
+        }
+        dd($tab_sans_doublant);
+        // on cherche le max et le min des ann
+        
+
+
         return $this->render('page/hebergement.html.twig', [
             "id" => "li__hebergement",
             "hotel" => $data_session['pseudo_hotel'],
