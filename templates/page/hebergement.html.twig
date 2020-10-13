@@ -93,8 +93,8 @@
 							<h4>Taux d'occupation</h4>
 						</div>
 						<form action="" class="tri">
-							<select name="" id="mois">
-								<option selected = "selected" >Tous les mois</option>
+							<select name="" id="mois_heb_to">
+								<option selected = "selected" value = "tous_les_mois">Tous les mois</option>
 								<option value = "01">Janvier</option>
 								<option value = "02">Février</option>
 								<option value = "03">Mars</option>
@@ -108,12 +108,11 @@
 								<option value = "11">Novembre</option>
 								<option value = "12">Décembre</option>
 							</select>
-							<select name="" id="annee">
-								<option>2020</option>
+							<select name="" class="annee" id="annee_heb_to">
+								{% for a in tab_annee %}
+									<option value="{{ a }}">{{ a }}</option>
+								{% endfor %}
 							</select>
-							<div class="div_btn_afficher">
-								<button class="btn btn-info btn-xs" type="submit">Afficher</button>
-							</div>
 						</form>
 					</div>
 					<div>
@@ -130,8 +129,8 @@
 							<h4>Chiffre d'affaire</h4>
 						</div>
 						<form action="" class="tri">
-							<select name="" id="mois">
-								<option>Tous les mois</option>
+							<select name="" id="mois_heb_ca">
+								<option selected = "selected">Tous les mois</option>
 								<option>Janvier</option>
 								<option>Février</option>
 								<option>Mars</option>
@@ -145,15 +144,11 @@
 								<option>Novembre</option>
 								<option>Décembre</option>
 							</select>
-							<select name="" id="annee">
-								<option>2020</option>
-								<option>2019</option>
-								<option>2018</option>
-								<option>2017</option>
+							<select name="" class="annee" id = "annee_heb_to">
+								{% for a in tab_annee %}
+									<option value="{{ a }}">{{ a }}</option>
+								{% endfor %}
 							</select>
-							<div class="div_btn_afficher">
-								<button class="btn btn-info btn-xs" type="submit">Afficher</button>
-							</div>
 						</form>
 					</div>
 					<div>
@@ -258,7 +253,7 @@
 
 			<script>
 				$(document).ready(function () {
-					function draw_chart1() {
+					function draw_chart1(my_data, my_labels) {
 
 					var ctx1 = document.getElementById('canvas_to').getContext("2d");
 
@@ -282,20 +277,7 @@
 
 					/* insertion des données sur l'axe (oy) */
 
-					data: [
-					25,
-					84,
-					32,
-					5,
-					50,
-					15,
-					65,
-					84,
-					32,
-					5,
-					50,
-					15
-					],
+					data: my_data, // qui est un tableau simple
 
 					/* / insertion des données sur l'axe (oy) */
 					pointStyle: 'circle',
@@ -348,22 +330,7 @@
 						{
 						type: 'category',
 
-						/* insertion des données sur l'axe (ox) */
-
-						labels: [
-						"Jan",
-						"Feb",
-						"Mar",
-						"Apr",
-						"May",
-						"Jun",
-						"Jul",
-						"Aug",
-						"Sept",
-						"Oct",
-						"Nov",
-						"Dec"
-						],
+						labels : my_labels, // qui est un tableau simple
 
 						/* / insertion des données sur l'axe (ox) */
 						gridLines: {
@@ -447,7 +414,7 @@
 					// debut chart  2
 
 
-					function draw_chart2() {
+					function draw_chart2(my_data, my_labels) {
 					var ctx2 = document.getElementById('canvas_ca').getContext("2d");
 
 
@@ -475,20 +442,7 @@
 
 					/* insertion des données sur l'axe (oy) */
 
-					data: [
-					86,
-					45,
-					65,
-					23,
-					78,
-					33,
-					22,
-					45,
-					65,
-					23,
-					78,
-					33
-					],
+					data: my_data,
 
 					/* insertion des données sur l'axe (oy) */
 					pointStyle: 'circle',
@@ -542,21 +496,7 @@
 
 					/* insertion des données sur l'axe (ox) */
 
-					labels: [
-					"Jan",
-					"Feb",
-					"Mar",
-					"Apr",
-					"May",
-					"Jun",
-					"Jul",
-					"Aug",
-					"Sept",
-					"Oct",
-					"Nov",
-					"Dec"
-					],
-
+					labels: my_labels,
 					/* /insertion des données sur l'axe (ox) */
 
 					gridLines: {
@@ -647,40 +587,53 @@
 					// responsive pour les chart
 
 					function add_resp_heb(myChart1, myChart2) {
-					myChart1.options.scales.yAxes[0].ticks.fontSize = 7;
-					myChart1.options.scales.yAxes[0].ticks.padding = 10;
-					myChart1.options.scales.yAxes[0].ticks.stepSize = 20;
-					myChart1.options.scales.xAxes[0].ticks.stepSize = 0;
-					myChart1.options.scales.xAxes[0].ticks.fontSize = 8;
+						myChart1.options.scales.yAxes[0].ticks.fontSize = 7;
+						myChart1.options.scales.yAxes[0].ticks.padding = 10;
+						myChart1.options.scales.yAxes[0].ticks.stepSize = 20;
+						myChart1.options.scales.xAxes[0].ticks.stepSize = 0;
+						myChart1.options.scales.xAxes[0].ticks.fontSize = 8;
 
-					myChart2.options.scales.yAxes[0].ticks.fontSize = 7;
-					myChart2.options.scales.yAxes[0].ticks.padding = 10;
-					myChart2.options.scales.yAxes[0].ticks.stepSize = 20;
-					myChart2.options.scales.xAxes[0].ticks.stepSize = 0;
-					myChart2.options.scales.xAxes[0].ticks.fontSize = 8;
-					for (var i = myChart1.data.datasets.length - 1; i >= 0; i--) {
-					myChart1.data.datasets[i].radius = '3';
-					}
-					myChart1.update();
-					myChart2.options.scales.yAxes[0].ticks.fontSize = 7;
-					myChart2.options.scales.xAxes[0].ticks.fontSize = 7;
-					for (var i = myChart2.data.datasets.length - 1; i >= 0; i--) {
-					myChart2.data.datasets[i].radius = '3';
-					}
-					myChart2.update();
+						myChart2.options.scales.yAxes[0].ticks.fontSize = 7;
+						myChart2.options.scales.yAxes[0].ticks.padding = 10;
+						myChart2.options.scales.yAxes[0].ticks.stepSize = 20;
+						myChart2.options.scales.xAxes[0].ticks.stepSize = 0;
+						myChart2.options.scales.xAxes[0].ticks.fontSize = 8;
+						for (var i = myChart1.data.datasets.length - 1; i >= 0; i--) {
+							myChart1.data.datasets[i].radius = '3';
+						}
+						myChart1.update();
+						myChart2.options.scales.yAxes[0].ticks.fontSize = 7;
+						myChart2.options.scales.xAxes[0].ticks.fontSize = 7;
+						for (var i = myChart2.data.datasets.length - 1; i >= 0; i--) {
+							myChart2.data.datasets[i].radius = '3';
+						}
+						myChart2.update();
 					}
 
 					// tracer
+					var my_data_to = [
+						{% for t in tab_heb_to %}
+							{{ t }},
+						{% endfor %}
+					];
 
+					var my_data_ca = [
+						{% for t in tab_heb_ca %}
+							{{ t }},
+						{% endfor %}
+					];
+
+					var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 
 					var w = $(window).width();
 					if (w <= 768) {
-					var myChart1 = draw_chart1();
-					var myChart2 = draw_chart2();
-					add_resp_heb(myChart1, myChart2);
+						var myChart1 = draw_chart1(my_data_to, my_labels);
+						var myChart2 = draw_chart2(my_data_ca, my_labels);
+						add_resp_heb(myChart1, myChart2);
 					} else {
-					var myChart1 = draw_chart1();
-					var myChart2 = draw_chart2();
+						var myChart1 = draw_chart1(my_data_to, my_labels);
+						var myChart2 = draw_chart2(my_data_ca, my_labels);
+						
 					}
 
 					/* debut dataTable */
@@ -840,6 +793,225 @@
 							complete : function(){
 								$('#a_modal_modif_client').html('<span>Enregistrer</span>'); 
 							},
+						})
+					})
+
+
+					// triage chart heb_to
+					$('#mois_heb_to').on('change', function(){
+						//alert('io')
+						var mois = $('#mois_heb_to').val();
+						var annee = $('#annee_heb_to').val();
+						var data = {'data' : mois+"-"+annee};
+						$.ajax({
+							url : "/admin/filtre/graph/heb_to/"+pseudo_hotel,
+							type : "POST",
+							data : data,
+							success : function(response){
+								if(response){
+									//console.log(response);
+									if(mois != 'tous_les_mois'){
+										var my_data = response;
+
+										var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
+
+										var w = $(window).width();
+										if (w <= 768) {
+											var myChart1 = draw_chart1(my_data, my_labels);
+											myChart1.update();
+											var myChart2 = draw_chart2();
+											add_resp_heb(myChart1, myChart2);
+										} else {
+											var myChart1 = draw_chart1(my_data, my_labels);
+											myChart1.update();
+											var myChart2 = draw_chart2();
+											
+										}
+									}
+									else{
+										var my_data = response;
+										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+										var w = $(window).width();
+										if (w <= 768) {
+											var myChart1 = draw_chart1(my_data, my_labels);
+											myChart1.update();
+											var myChart2 = draw_chart2();
+											add_resp_heb(myChart1, myChart2);
+										} else {
+											var myChart1 = draw_chart1(my_data, my_labels);
+											myChart1.update();
+											var myChart2 = draw_chart2();
+											
+										}
+									}
+								}
+							}, 
+							error : function(error){
+								alert('erreur server au niveau de triage chart heb_to '+pseudo_hotel)
+							}
+						})
+					})
+
+					$('#annee_heb_to').on('change', function(){
+						//alert('io')
+						var mois = $('#mois_heb_to').val();
+						var annee = $('#annee_heb_to').val();
+						var data = {'data' : mois+"-"+annee};
+						$.ajax({
+							url : "/admin/filtre/graph/heb_to/"+pseudo_hotel,
+							type : "POST",
+							data : data,
+							success : function(response){
+								if(response){
+									//console.log(response);
+									if(mois != 'tous_les_mois'){
+										var my_data = response;
+
+										var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
+
+										var w = $(window).width();
+										if (w <= 768) {
+											var myChart1 = draw_chart1(my_data, my_labels);
+											myChart1.update();
+											var myChart2 = draw_chart2();
+											add_resp_heb(myChart1, myChart2);
+										} else {
+											var myChart1 = draw_chart1(my_data, my_labels);
+											myChart1.update();
+											var myChart2 = draw_chart2();
+											
+										}
+									}
+									else{
+										var my_data = response;
+										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+										var w = $(window).width();
+										if (w <= 768) {
+											var myChart1 = draw_chart1(my_data, my_labels);
+											myChart1.update();
+											var myChart2 = draw_chart2();
+											add_resp_heb(myChart1, myChart2);
+										} else {
+											var myChart1 = draw_chart1(my_data, my_labels);
+											myChart1.update();
+											var myChart2 = draw_chart2();
+											
+										}
+									}
+								}
+							}, 
+							error : function(error){
+								alert('erreur server au niveau de triage chart heb_to '+pseudo_hotel)
+							}
+						})
+					})
+
+					// triage chart heb_ca
+					$('#mois_heb_ca').on('change', function(){
+						//alert('io')
+						var mois = $('#mois_heb_ca').val();
+						var annee = $('#annee_heb_ca').val();
+						var data = {'data' : mois+"-"+annee};
+						$.ajax({
+							url : "/admin/filtre/graph/heb_ca/"+pseudo_hotel,
+							type : "POST",
+							data : data,
+							success : function(response){
+								if(response){
+									//console.log(response);
+									if(mois != 'tous_les_mois'){
+										var my_data = response;
+
+										var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
+
+										var w = $(window).width();
+										if (w <= 768) {
+											var myChart1 = draw_chart1(my_data, my_labels);
+											myChart1.update();
+											var myChart2 = draw_chart2();
+											add_resp_heb(myChart1, myChart2);
+										} else {
+											var myChart1 = draw_chart1(my_data, my_labels);
+											myChart1.update();
+											var myChart2 = draw_chart2();
+											
+										}
+									}
+									else{
+										var my_data = response;
+										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+										var w = $(window).width();
+										if (w <= 768) {
+											var myChart1 = draw_chart1(my_data, my_labels);
+											myChart1.update();
+											var myChart2 = draw_chart2();
+											add_resp_heb(myChart1, myChart2);
+										} else {
+											var myChart1 = draw_chart1(my_data, my_labels);
+											myChart1.update();
+											var myChart2 = draw_chart2();
+											
+										}
+									}
+								}
+							}, 
+							error : function(error){
+								alert('erreur server au niveau de triage chart heb_to '+pseudo_hotel)
+							}
+						})
+					})
+
+					$('#annee_heb_to').on('change', function(){
+						//alert('io')
+						var mois = $('#mois_heb_to').val();
+						var annee = $('#annee_heb_to').val();
+						var data = {'data' : mois+"-"+annee};
+						$.ajax({
+							url : "/admin/filtre/graph/heb_to/"+pseudo_hotel,
+							type : "POST",
+							data : data,
+							success : function(response){
+								if(response){
+									//console.log(response);
+									if(mois != 'tous_les_mois'){
+										var my_data = response;
+
+										var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
+
+										var w = $(window).width();
+										if (w <= 768) {
+											var myChart1 = draw_chart1(my_data, my_labels);
+											myChart1.update();
+											var myChart2 = draw_chart2();
+											add_resp_heb(myChart1, myChart2);
+										} else {
+											var myChart1 = draw_chart1(my_data, my_labels);
+											myChart1.update();
+											var myChart2 = draw_chart2();
+											
+										}
+									}
+									else{
+										var my_data = response;
+										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+										var w = $(window).width();
+										if (w <= 768) {
+											var myChart1 = draw_chart1(my_data, my_labels);
+											myChart1.update();
+											var myChart2 = draw_chart2();
+											add_resp_heb(myChart1, myChart2);
+										} else {
+											var myChart1 = draw_chart1(my_data, my_labels);
+											myChart1.update();
+											var myChart2 = draw_chart2();
+											
+										}
+									}
+								}
+							}, 
+							error : function(error){
+								alert('erreur server au niveau de triage chart heb_to '+pseudo_hotel)
+							}
 						})
 					})
 
