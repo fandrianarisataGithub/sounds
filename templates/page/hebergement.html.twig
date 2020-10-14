@@ -130,21 +130,21 @@
 						</div>
 						<form action="" class="tri">
 							<select name="" id="mois_heb_ca">
-								<option selected = "selected">Tous les mois</option>
-								<option>Janvier</option>
-								<option>Février</option>
-								<option>Mars</option>
-								<option>Avril</option>
-								<option>Mai</option>
-								<option>Juin</option>
-								<option>Juillet</option>
-								<option>Août</option>
-								<option>Septembre</option>
-								<option>Octobre</option>
-								<option>Novembre</option>
-								<option>Décembre</option>
+								<option selected = "selected" value = "tous_les_mois">Tous les mois</option>
+								<option value = "01">Janvier</option>
+								<option value = "02">Février</option>
+								<option value = "03">Mars</option>
+								<option value = "04">Avril</option>
+								<option value = "05">Mai</option>
+								<option value = "06">Juin</option>
+								<option value = "07">Juillet</option>
+								<option value = "08">Août</option>
+								<option value = "09">Septembre</option>
+								<option value = "10">Octobre</option>
+								<option value = "11">Novembre</option>
+								<option value = "12">Décembre</option>
 							</select>
-							<select name="" class="annee" id = "annee_heb_to">
+							<select name="" class="annee" id = "annee_heb_ca">
 								{% for a in tab_annee %}
 									<option value="{{ a }}">{{ a }}</option>
 								{% endfor %}
@@ -522,7 +522,7 @@
 					padding: 20, // pour le marge % axe y
 					min: 0,
 					max: 100,
-					stepSize: 5,
+					stepSize: 20,
 
 					callback: function (value) {
 					return value + "M Ar"
@@ -618,10 +618,9 @@
 					];
 
 					var my_data_ca = [
-						{% for t in tab_heb_ca %}
-							{{ t }},
-						{% endfor %}
-					];
+						{% for tca in tab_heb_ca %}
+							{{ tca }} ,
+						{% endfor %}];
 
 					var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 
@@ -819,12 +818,11 @@
 										if (w <= 768) {
 											var myChart1 = draw_chart1(my_data, my_labels);
 											myChart1.update();
-											var myChart2 = draw_chart2();
-											add_resp_heb(myChart1, myChart2);
+											//add_resp_heb(myChart1, myChart2);
 										} else {
 											var myChart1 = draw_chart1(my_data, my_labels);
 											myChart1.update();
-											var myChart2 = draw_chart2();
+											
 											
 										}
 									}
@@ -835,12 +833,11 @@
 										if (w <= 768) {
 											var myChart1 = draw_chart1(my_data, my_labels);
 											myChart1.update();
-											var myChart2 = draw_chart2();
-											add_resp_heb(myChart1, myChart2);
+											//add_resp_heb(myChart1, myChart2);
 										} else {
 											var myChart1 = draw_chart1(my_data, my_labels);
 											myChart1.update();
-											var myChart2 = draw_chart2();
+											
 											
 										}
 									}
@@ -873,12 +870,12 @@
 										if (w <= 768) {
 											var myChart1 = draw_chart1(my_data, my_labels);
 											myChart1.update();
-											var myChart2 = draw_chart2();
-											add_resp_heb(myChart1, myChart2);
+											
+											//add_resp_heb(myChart1, myChart2);
 										} else {
 											var myChart1 = draw_chart1(my_data, my_labels);
 											myChart1.update();
-											var myChart2 = draw_chart2();
+											
 											
 										}
 									}
@@ -889,12 +886,12 @@
 										if (w <= 768) {
 											var myChart1 = draw_chart1(my_data, my_labels);
 											myChart1.update();
-											var myChart2 = draw_chart2();
-											add_resp_heb(myChart1, myChart2);
+											
+											//add_resp_heb(myChart1, myChart2);
 										} else {
 											var myChart1 = draw_chart1(my_data, my_labels);
 											myChart1.update();
-											var myChart2 = draw_chart2();
+											
 											
 										}
 									}
@@ -921,35 +918,34 @@
 									//console.log(response);
 									if(mois != 'tous_les_mois'){
 										var my_data = response;
-
+										console.log(my_data);
 										var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
 
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart1 = draw_chart1(my_data, my_labels);
-											myChart1.update();
-											var myChart2 = draw_chart2();
-											add_resp_heb(myChart1, myChart2);
+											var myChart2 = draw_chart2(my_data, my_labels);
+											myChart2.update();
+											//add_resp_heb(myChart1, myChart2);
 										} else {
-											var myChart1 = draw_chart1(my_data, my_labels);
-											myChart1.update();
-											var myChart2 = draw_chart2();
+											var myChart2 = draw_chart2(my_data, my_labels);
+											myChart2.update();
+											//add_resp_heb(myChart1, myChart2);
 											
 										}
 									}
 									else{
 										var my_data = response;
+										console.log(my_data);
 										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart1 = draw_chart1(my_data, my_labels);
-											myChart1.update();
-											var myChart2 = draw_chart2();
-											add_resp_heb(myChart1, myChart2);
+											var myChart2 = draw_chart2(my_data, my_labels);
+											myChart2.update();
+											//add_resp_heb(myChart1, myChart2);
 										} else {
-											var myChart1 = draw_chart1(my_data, my_labels);
-											myChart1.update();
-											var myChart2 = draw_chart2();
+											var myChart2 = draw_chart2(my_data, my_labels);
+											myChart2.update();
+											//add_resp_heb(myChart1, myChart2);
 											
 										}
 									}
@@ -961,56 +957,58 @@
 						})
 					})
 
-					$('#annee_heb_to').on('change', function(){
+					$('#annee_heb_ca').on('change', function(){
 						//alert('io')
-						var mois = $('#mois_heb_to').val();
-						var annee = $('#annee_heb_to').val();
+						var mois = $('#mois_heb_ca').val();
+						var annee = $('#annee_heb_ca').val();
 						var data = {'data' : mois+"-"+annee};
+						//alert(data.data);
 						$.ajax({
-							url : "/admin/filtre/graph/heb_to/"+pseudo_hotel,
+							url : "/admin/filtre/graph/heb_ca/"+pseudo_hotel,
 							type : "POST",
 							data : data,
 							success : function(response){
+								
 								if(response){
 									//console.log(response);
 									if(mois != 'tous_les_mois'){
-										var my_data = response;
 
+										var my_data = response;
+										//console.log(my_data);
 										var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
 
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart1 = draw_chart1(my_data, my_labels);
-											myChart1.update();
-											var myChart2 = draw_chart2();
-											add_resp_heb(myChart1, myChart2);
+											var myChart2 = draw_chart2(my_data, my_labels);
+											myChart2.update();
+											//add_resp_heb(myChart1, myChart2);
 										} else {
-											var myChart1 = draw_chart1(my_data, my_labels);
-											myChart1.update();
-											var myChart2 = draw_chart2();
+											var myChart2 = draw_chart2(my_data, my_labels);
+											myChart2.update();
+											//add_resp_heb(myChart1, myChart2);
 											
 										}
 									}
 									else{
 										var my_data = response;
+										//console.log(my_data);
 										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart1 = draw_chart1(my_data, my_labels);
-											myChart1.update();
-											var myChart2 = draw_chart2();
-											add_resp_heb(myChart1, myChart2);
+											var myChart2 = draw_chart2(my_data, my_labels);
+											myChart2.update();
+											//add_resp_heb(myChart1, myChart2);
 										} else {
-											var myChart1 = draw_chart1(my_data, my_labels);
-											myChart1.update();
-											var myChart2 = draw_chart2();
+											var myChart2 = draw_chart2(my_data, my_labels);
+											myChart2.update();
+											//add_resp_heb(myChart1, myChart2);
 											
 										}
 									}
 								}
 							}, 
 							error : function(error){
-								alert('erreur server au niveau de triage chart heb_to '+pseudo_hotel)
+								alert('erreur server au niveau de triage chart heb_ca '+pseudo_hotel)
 							}
 						})
 					})
