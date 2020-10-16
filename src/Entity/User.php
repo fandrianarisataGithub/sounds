@@ -64,6 +64,16 @@ class User implements UserInterface
      */
     private $hotels;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $pass_clair;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $image;
+
     public function __construct()
     {
         $this->hotels = new ArrayCollection();
@@ -214,6 +224,30 @@ class User implements UserInterface
             $this->hotels->removeElement($hotel);
             $hotel->removeUser($this);
         }
+
+        return $this;
+    }
+
+    public function getPassClair(): ?string
+    {
+        return $this->pass_clair;
+    }
+
+    public function setPassClair(?string $pass_clair): self
+    {
+        $this->pass_clair = $pass_clair;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
 
         return $this;
     }

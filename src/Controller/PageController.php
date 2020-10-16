@@ -5,11 +5,13 @@ namespace App\Controller;
 use DateTime;
 use App\Entity\User;
 use App\Entity\Client;
+use App\Entity\FicheHotel;
 use App\Entity\DonneeDuJour;
 use App\Form\DonneeDuJourType;
 use App\Repository\UserRepository;
 use App\Repository\HotelRepository;
 use App\Repository\ClientRepository;
+use App\Repository\FicheHotelRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\DonneeDuJourRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -366,7 +368,8 @@ class PageController extends AbstractController
             "Nov",
             "Dec"
         ];
-       
+
+
        //dd($tab_heb_ca);
         return $this->render('page/hebergement.html.twig', [
             "id" => "li__hebergement",
@@ -1123,13 +1126,39 @@ class PageController extends AbstractController
     /**
      * @Route("/profile/{pseudo_hotel}/fiche_hotel", name="fiche_hotel")
      */
-    public function fiche_hotel(SessionInterface $session, $pseudo_hotel)
+    public function fiche_hotel(SessionInterface $session, $pseudo_hotel, FicheHotelRepository $repoFiche, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "fiche_hotel";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
+        $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+        $id = $l_hotel->getId();
+        // tous les fiche hotel 
+
+        $fiches = $repoFiche->findAll();
+        $x = new FicheHotel();
+        foreach($fiches as $fiche){
+            $son_hotel = $fiche->getHotel();
+            $id_hotel = $son_hotel->getId();
+            if($id == $id_hotel){
+                $x = $fiche;
+            }
+            
+        }
+
+        $t = 0 ;
+        $t += $x->getCPrestige();
+        $t += $x->getSFamilliale();
+        $t += $x->getCDeluxe();
+        $t += $x->getSVip();
+      
+        //dd($t);
+
+
         return $this->render('page/fiche_hotel.html.twig', [
             "id" => "fiche_hotel",
+            "fiche" => $x,
+            "total" => $t,
             "hotel" => $data_session['pseudo_hotel'],
             "current_page" => $data_session['current_page']
         ]);
@@ -1461,147 +1490,7 @@ class PageController extends AbstractController
         dd($tab_jour_heb_to);
     }
 
-    /**
-     * @Route("/admin/filtre/graph/spa_cu/{pseudo_hotel}", name = "filtre_graph_spa_cu")
-     */
-    public function filtre_graph_spa_cu($pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ, Request $request, EntityManagerInterface $manager, ClientRepository $repo, SessionInterface $session, HotelRepository $repoHotel)
-    {
-        $response = new Response();
-        if ($request->isXmlHttpRequest()) {
-
-            $donnee = $request->get('data');
-            $donnee_explode = explode("-", $donnee);
-            if ($donnee_explode[0] != 'tous_les_mois') {
-
-                $all_ddj = $repoDoneeDJ->findAll();
-
-                // les var pour les heb_to
-
-                $tab_jour_spa_cu = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-                $num = 0;
-                foreach ($all_ddj as $d) {
-                    $son_mois_createdAt = $d->getCreatedAt()->format('m-Y');
-                    if ($donnee == $son_mois_createdAt) {
-                        $son_num_jour = $d->getCreatedAt()->format('d');
-                        $num = intval($son_num_jour) - 1;
-                        $tab_jour_spa_cu[$num] = $d->getSpaCUnique();
-                    }
-                }
-
-
-                $data = json_encode($tab_jour_spa_cu);
-
-                $response->headers->set('Content-Type', 'application/json');
-                $response->setContent($data);
-                return $response;
-            } else {
-                // hafa
-                $all_ddj = $repoDoneeDJ->findAll();
-                // les heb_to pour chaque mois
-
-                $spa_cu_jan = 0;
-                $spa_cu_fev = 0;
-                $spa_cu_mars = 0;
-                $spa_cu_avr = 0;
-                $spa_cu_mai = 0;
-                $spa_cu_juin = 0;
-                $spa_cu_juil = 0;
-                $spa_cu_aou = 0;
-                $spa_cu_sep = 0;
-                $spa_cu_oct = 0;
-                $spa_cu_nov = 0;
-                $spa_cu_dec = 0;
-
-                // effectif pour la moyen 
-
-                $ecu_jan = 0;
-                $ecu_fev = 0;
-                $ecu_mars = 0;
-                $ecu_avr = 0;
-                $ecu_mai = 0;
-                $ecu_juin = 0;
-                $ecu_juil = 0;
-                $ecu_aou = 0;
-                $ecu_sep = 0;
-                $ecu_oct = 0;
-                $ecu_nov = 0;
-                $ecu_dec = 0;
-                $annee_actuel = $donnee_explode[1];
-                foreach ($all_ddj as $ddj) {
-                    $son_createdAt = $ddj->getCreatedAt();
-                    $son_mois_ca = $son_createdAt->format("m");
-                    $son_annee_ca = $son_createdAt->format("Y");
-                    if ($son_annee_ca == $annee_actuel) {
-                        if ($son_mois_ca == "01") {
-                            $ecu_jan++;
-                            $spa_cu_jan += $ddj->getSpaCUnique();
-                        }
-                        if ($son_mois_ca == "02") {
-                            $ecu_fev++;
-                            $spa_cu_fev += $ddj->getSpaCUnique();
-                        }
-                        if ($son_mois_ca == "03") {
-                            $ecu_mars++;
-                            $spa_cu_mars += $ddj->getSpaCUnique();
-                        }
-                        if ($son_mois_ca == "04") {
-                            $ecu_avr++;
-                            $spa_cu_avr += $ddj->getSpaCUnique();
-                        }
-                        if ($son_mois_ca == "05") {
-                            $ecu_mai++;
-                            $spa_cu_mai += $ddj->getSpaCUnique();
-                        }
-                        if ($son_mois_ca == "06") {
-                            $ecu_juin++;
-                            $spa_cu_juin += $ddj->getSpaCUnique();
-                        }
-                        if ($son_mois_ca == "07") {
-                            $ecu_juil++;
-                            $spa_cu_juil += $ddj->getSpaCUnique();
-                        }
-                        if ($son_mois_ca == "08") {
-                            $ecu_aou++;
-                            $spa_cu_aou += $ddj->getSpaCUnique();
-                        }
-                        if ($son_mois_ca == "09") {
-                            $ecu_sep++;
-                            $spa_cu_sep += $ddj->getSpaCUnique();
-                        }
-                        if ($son_mois_ca == "10") {
-                            $ecu_oct++;
-                            $spa_cu_oct += $ddj->getSpaCUnique();
-                        }
-                        if ($son_mois_ca == "11") {
-                            $ecu_nov++;
-                            $spa_cu_nov += $ddj->getSpaCUnique();
-                        }
-                        if ($son_mois_ca == "12") {
-                            $ecu_dec++;
-                            $spa_cu_dec += $ddj->getSpaCUnique();
-                        }
-                    }
-                }
-                $tab_spa_cu = [$spa_cu_jan, $spa_cu_fev, $spa_cu_mars, $spa_cu_avr, $spa_cu_mai, $spa_cu_juin, $spa_cu_juil, $spa_cu_aou, $spa_cu_sep, $spa_cu_oct, $spa_cu_nov, $spa_cu_dec];
-                $tab_ecu = [$ecu_jan, $ecu_fev, $ecu_mars, $ecu_avr, $ecu_mai, $ecu_juin, $ecu_juil, $ecu_aou, $ecu_sep, $ecu_oct, $ecu_nov, $ecu_dec];
-                for ($i = 0; $i < count($tab_ecu); $i++) {
-                    if ($tab_ecu[$i] == 0) {
-                        $tab_ecu[$i] = 1;
-                    }
-                    $tab_spa_cu[$i] = number_format(($tab_spa_cu[$i] / $tab_ecu[$i]), 2);
-                }
-
-
-                $data = json_encode($tab_spa_cu);
-
-                $response->headers->set('Content-Type', 'application/json');
-                $response->setContent($data);
-                return $response;
-            }
-        }
-
-    }
+    
 
 
 
@@ -1915,7 +1804,7 @@ class PageController extends AbstractController
 
                         $son_num_jour = $d->getCreatedAt()->format('d');
                         $num = intval($son_num_jour) - 1;
-                        $tab_jour_res_ca[$num] = $d->getHebCa();
+                        $tab_jour_res_ca[$num] = $d->getResCa();
                         $tab_jour_res_ca[$num] =  $tab_jour_res_ca[$num] / 1000000;
                         $tab_jour_res_ca[$num] = number_format($tab_jour_res_ca[$num], 2);
                     }
@@ -2034,141 +1923,6 @@ class PageController extends AbstractController
             }
         }
 
-        $donnee = 'tous_les_mois';
-
-        if ($donnee != 'tous_les_mois') {
-            $donnee_explode = explode("-", $donnee);
-            $all_ddj = $repoDoneeDJ->findAll();
-
-            // les var pour les heb_to
-
-            $tab_jour_res_ca = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-            $num = 0;
-            foreach ($all_ddj as $d) {
-                $son_mois_createdAt = $d->getCreatedAt()->format('m-Y');
-                //dd($donnee);
-                if ($donnee == $son_mois_createdAt) {
-
-                    $son_num_jour = $d->getCreatedAt()->format('d');
-                    $num = intval($son_num_jour) - 1;
-                    $tab_jour_res_ca[$num] = $d->getResCa();
-                    $tab_jour_res_ca[$num] =  $tab_jour_res_ca[$num] / 1000000;
-                    $tab_jour_res_ca[$num] = number_format($tab_jour_res_ca[$num], 2);
-                }
-            }
-
-            $data = json_encode($tab_jour_res_ca);
-
-            $response->headers->set('Content-Type', 'application/json');
-            $response->setContent($data);
-            dd($response);
-        } else {
-            // hafa
-            $all_ddj = $repoDoneeDJ->findAll();
-            // les heb_to pour chaque mois
-
-            $res_ca_jan = 0;
-            $res_ca_fev = 0;
-            $res_ca_mars = 0;
-            $res_ca_avr = 0;
-            $res_ca_mai = 0;
-            $res_ca_juin = 0;
-            $res_ca_juil = 0;
-            $res_ca_aou = 0;
-            $res_ca_sep = 0;
-            $res_ca_oct = 0;
-            $res_ca_nov = 0;
-            $res_ca_dec = 0;
-
-            // effectif pour la moyen 
-
-            $eca_jan = 0;
-            $eca_fev = 0;
-            $eca_mars = 0;
-            $eca_avr = 0;
-            $eca_mai = 0;
-            $eca_juin = 0;
-            $eca_juil = 0;
-            $eca_aou = 0;
-            $eca_sep = 0;
-            $eca_oct = 0;
-            $eca_nov = 0;
-            $eca_dec = 0;
-            $annee_actuel = '2019';
-            foreach ($all_ddj as $ddj) {
-                $son_createdAt = $ddj->getCreatedAt();
-                $son_mois_ca = $son_createdAt->format("m");
-                $son_annee_ca = $son_createdAt->format("Y");
-                if ($son_annee_ca == $annee_actuel) {
-                    if ($son_mois_ca == "01") {
-                        $eca_jan++;
-                        $res_ca_jan += $ddj->getResCa();
-                    }
-                    if ($son_mois_ca == "02") {
-                        $eca_fev++;
-                        $res_ca_fev += $ddj->getResCa();
-                    }
-                    if ($son_mois_ca == "03") {
-                        $eca_mars++;
-                        $res_ca_mars += $ddj->getResCa();
-                    }
-                    if ($son_mois_ca == "04") {
-                        $eca_avr++;
-                        $res_ca_avr += $ddj->getResCa();
-                    }
-                    if ($son_mois_ca == "05") {
-                        $eca_mai++;
-                        $res_ca_mai += $ddj->getResCa();
-                    }
-                    if ($son_mois_ca == "06") {
-                        $eca_juin++;
-                        $res_ca_juin += $ddj->getResCa();
-                    }
-                    if ($son_mois_ca == "07") {
-                        $eca_juil++;
-                        $res_ca_juil += $ddj->getResCa();
-                    }
-                    if ($son_mois_ca == "08") {
-                        $eca_aou++;
-                        $res_ca_aou += $ddj->getResCa();
-                    }
-                    if ($son_mois_ca == "09") {
-                        $eca_sep++;
-                        $res_ca_sep += $ddj->getResCa();
-                    }
-                    if ($son_mois_ca == "10") {
-                        $eca_oct++;
-                        $res_ca_oct += $ddj->getResCa();
-                    }
-                    if ($son_mois_ca == "11") {
-                        $eca_nov++;
-                        $res_ca_nov += $ddj->getResCa();
-                    }
-                    if ($son_mois_ca == "12") {
-                        $eca_dec++;
-                        $res_ca_dec += $ddj->getResCa();
-                    }
-                }
-            }
-            $tab_res_ca = [$res_ca_jan, $res_ca_fev, $res_ca_mars, $res_ca_avr, $res_ca_mai, $res_ca_juin, $res_ca_juil, $res_ca_aou, $res_ca_sep, $res_ca_oct, $res_ca_nov, $res_ca_dec];
-            $tab_eca = [$eca_jan, $eca_fev, $eca_mars, $eca_avr, $eca_mai, $eca_juin, $eca_juil, $eca_aou, $eca_sep, $eca_oct, $eca_nov, $eca_dec];
-            for ($i = 0; $i < count($tab_eca); $i++) {
-                if ($tab_eca[$i] == 0) {
-                    $tab_eca[$i] = 1;
-                }
-                $tab_res_ca[$i] = $tab_res_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
-                $tab_res_ca[$i] = $tab_res_ca[$i] / 1000000;
-                $tab_res_ca[$i] = number_format($tab_res_ca[$i], 2);
-            }
-
-
-            $data = json_encode($tab_res_ca);
-
-            $response->headers->set('Content-Type', 'application/json');
-            $response->setContent($data);
-            dd($response);
-        }
     }
 
 
@@ -2496,6 +2250,441 @@ class PageController extends AbstractController
             }
         }
 
+    }
+
+
+    /**
+     * @Route("/admin/filtre/graph/spa_ca/{pseudo_hotel}", name = "filtre_graph_spa_ca")
+     */
+    public function filtre_graph_spa_ca($pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ, Request $request, EntityManagerInterface $manager, ClientRepository $repo, SessionInterface $session, HotelRepository $repoHotel)
+    {
+        $response = new Response();
+        if ($request->isXmlHttpRequest()) {
+
+
+            $donnee = $request->get('data');
+            $donnee_explode = explode("-", $donnee);
+            if ($donnee_explode[0] != 'tous_les_mois') {
+
+                $all_ddj = $repoDoneeDJ->findAll();
+
+                // les var pour les heb_to
+
+                $tab_jour_res_ca = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+                $num = 0;
+                foreach ($all_ddj as $d) {
+                    $son_mois_createdAt = $d->getCreatedAt()->format('m-Y');
+                    //dd($donnee);
+                    if ($donnee == $son_mois_createdAt) {
+
+                        $son_num_jour = $d->getCreatedAt()->format('d');
+                        $num = intval($son_num_jour) - 1;
+                        $tab_jour_res_ca[$num] = $d->getSpaCa();
+                        $tab_jour_res_ca[$num] =  $tab_jour_res_ca[$num] / 1000000;
+                        $tab_jour_res_ca[$num] = number_format($tab_jour_res_ca[$num], 2);
+                    }
+                }
+
+                $data = json_encode($tab_jour_res_ca);
+
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+                return $response;
+            } else {
+                // hafa
+                $all_ddj = $repoDoneeDJ->findAll();
+                // les heb_to pour chaque mois
+
+                $res_ca_jan = 0;
+                $res_ca_fev = 0;
+                $res_ca_mars = 0;
+                $res_ca_avr = 0;
+                $res_ca_mai = 0;
+                $res_ca_juin = 0;
+                $res_ca_juil = 0;
+                $res_ca_aou = 0;
+                $res_ca_sep = 0;
+                $res_ca_oct = 0;
+                $res_ca_nov = 0;
+                $res_ca_dec = 0;
+
+                // effectif pour la moyen 
+
+                $eca_jan = 0;
+                $eca_fev = 0;
+                $eca_mars = 0;
+                $eca_avr = 0;
+                $eca_mai = 0;
+                $eca_juin = 0;
+                $eca_juil = 0;
+                $eca_aou = 0;
+                $eca_sep = 0;
+                $eca_oct = 0;
+                $eca_nov = 0;
+                $eca_dec = 0;
+                $annee_actuel = $donnee_explode[1];
+                foreach ($all_ddj as $ddj) {
+                    $son_createdAt = $ddj->getCreatedAt();
+                    $son_mois_ca = $son_createdAt->format("m");
+                    $son_annee_ca = $son_createdAt->format("Y");
+                    if ($son_annee_ca == $annee_actuel) {
+                        if ($son_mois_ca == "01") {
+                            $eca_jan++;
+                            $res_ca_jan += $ddj->getSpaCa();
+                        }
+                        if ($son_mois_ca == "02") {
+                            $eca_fev++;
+                            $res_ca_fev += $ddj->getSpaCa();
+                        }
+                        if ($son_mois_ca == "03") {
+                            $eca_mars++;
+                            $res_ca_mars += $ddj->getSpaCa();
+                        }
+                        if ($son_mois_ca == "04") {
+                            $eca_avr++;
+                            $res_ca_avr += $ddj->getSpaCa();
+                        }
+                        if ($son_mois_ca == "05") {
+                            $eca_mai++;
+                            $res_ca_mai += $ddj->getSpaCa();
+                        }
+                        if ($son_mois_ca == "06") {
+                            $eca_juin++;
+                            $res_ca_juin += $ddj->getSpaCa();
+                        }
+                        if ($son_mois_ca == "07") {
+                            $eca_juil++;
+                            $res_ca_juil += $ddj->getSpaCa();
+                        }
+                        if ($son_mois_ca == "08") {
+                            $eca_aou++;
+                            $res_ca_aou += $ddj->getSpaCa();
+                        }
+                        if ($son_mois_ca == "09") {
+                            $eca_sep++;
+                            $res_ca_sep += $ddj->getSpaCa();
+                        }
+                        if ($son_mois_ca == "10") {
+                            $eca_oct++;
+                            $res_ca_oct += $ddj->getSpaCa();
+                        }
+                        if ($son_mois_ca == "11") {
+                            $eca_nov++;
+                            $res_ca_nov += $ddj->getSpaCa();
+                        }
+                        if ($son_mois_ca == "12") {
+                            $eca_dec++;
+                            $res_ca_dec += $ddj->getSpaCa();
+                        }
+                    }
+                }
+                $tab_res_ca = [$res_ca_jan, $res_ca_fev, $res_ca_mars, $res_ca_avr, $res_ca_mai, $res_ca_juin, $res_ca_juil, $res_ca_aou, $res_ca_sep, $res_ca_oct, $res_ca_nov, $res_ca_dec];
+                $tab_eca = [$eca_jan, $eca_fev, $eca_mars, $eca_avr, $eca_mai, $eca_juin, $eca_juil, $eca_aou, $eca_sep, $eca_oct, $eca_nov, $eca_dec];
+                for ($i = 0; $i < count($tab_eca); $i++) {
+                    if ($tab_eca[$i] == 0) {
+                        $tab_eca[$i] = 1;
+                    }
+                    $tab_res_ca[$i] = $tab_res_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
+                    $tab_res_ca[$i] = $tab_res_ca[$i] / 1000000;
+                    $tab_res_ca[$i] = number_format($tab_res_ca[$i], 2);
+                }
+
+
+                $data = json_encode($tab_res_ca);
+
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+                return $response;
+            }
+        }
+
+        
+    }
+
+
+
+
+    /**
+     * @Route("/admin/filtre/graph/spa_na/{pseudo_hotel}", name = "filtre_graph_spa_na")
+     */
+    public function filtre_graph_spa_na($pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ, Request $request, EntityManagerInterface $manager, ClientRepository $repo, SessionInterface $session, HotelRepository $repoHotel)
+    {
+        $response = new Response();
+        if ($request->isXmlHttpRequest()) {
+
+            $donnee = $request->get('data');
+            $donnee_explode = explode("-", $donnee);
+            if ($donnee_explode[0] != 'tous_les_mois') {
+
+                $all_ddj = $repoDoneeDJ->findAll();
+
+                // les var pour les heb_to
+
+                $tab_jour_spa_cu = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+                $num = 0;
+                foreach ($all_ddj as $d) {
+                    $son_mois_createdAt = $d->getCreatedAt()->format('m-Y');
+                    if ($donnee == $son_mois_createdAt) {
+                        $son_num_jour = $d->getCreatedAt()->format('d');
+                        $num = intval($son_num_jour) - 1;
+                        $tab_jour_spa_cu[$num] = $d->getSpaNAbonne();
+                    }
+                }
+
+
+                $data = json_encode($tab_jour_spa_cu);
+
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+                return $response;
+            } else {
+                // hafa
+                $all_ddj = $repoDoneeDJ->findAll();
+                // les heb_to pour chaque mois
+
+                $spa_cu_jan = 0;
+                $spa_cu_fev = 0;
+                $spa_cu_mars = 0;
+                $spa_cu_avr = 0;
+                $spa_cu_mai = 0;
+                $spa_cu_juin = 0;
+                $spa_cu_juil = 0;
+                $spa_cu_aou = 0;
+                $spa_cu_sep = 0;
+                $spa_cu_oct = 0;
+                $spa_cu_nov = 0;
+                $spa_cu_dec = 0;
+
+                // effectif pour la moyen 
+
+                $ecu_jan = 0;
+                $ecu_fev = 0;
+                $ecu_mars = 0;
+                $ecu_avr = 0;
+                $ecu_mai = 0;
+                $ecu_juin = 0;
+                $ecu_juil = 0;
+                $ecu_aou = 0;
+                $ecu_sep = 0;
+                $ecu_oct = 0;
+                $ecu_nov = 0;
+                $ecu_dec = 0;
+                $annee_actuel = $donnee_explode[1];
+                foreach ($all_ddj as $ddj) {
+                    $son_createdAt = $ddj->getCreatedAt();
+                    $son_mois_ca = $son_createdAt->format("m");
+                    $son_annee_ca = $son_createdAt->format("Y");
+                    if ($son_annee_ca == $annee_actuel) {
+                        if ($son_mois_ca == "01") {
+                            $ecu_jan++;
+                            $spa_cu_jan += $ddj->getSpaNAbonne();
+                        }
+                        if ($son_mois_ca == "02") {
+                            $ecu_fev++;
+                            $spa_cu_fev += $ddj->getSpaNAbonne();
+                        }
+                        if ($son_mois_ca == "03") {
+                            $ecu_mars++;
+                            $spa_cu_mars += $ddj->getSpaNAbonne();
+                        }
+                        if ($son_mois_ca == "04") {
+                            $ecu_avr++;
+                            $spa_cu_avr += $ddj->getSpaNAbonne();
+                        }
+                        if ($son_mois_ca == "05") {
+                            $ecu_mai++;
+                            $spa_cu_mai += $ddj->getSpaNAbonne();
+                        }
+                        if ($son_mois_ca == "06") {
+                            $ecu_juin++;
+                            $spa_cu_juin += $ddj->getSpaNAbonne();
+                        }
+                        if ($son_mois_ca == "07") {
+                            $ecu_juil++;
+                            $spa_cu_juil += $ddj->getSpaNAbonne();
+                        }
+                        if ($son_mois_ca == "08") {
+                            $ecu_aou++;
+                            $spa_cu_aou += $ddj->getSpaNAbonne();
+                        }
+                        if ($son_mois_ca == "09") {
+                            $ecu_sep++;
+                            $spa_cu_sep += $ddj->getSpaNAbonne();
+                        }
+                        if ($son_mois_ca == "10") {
+                            $ecu_oct++;
+                            $spa_cu_oct += $ddj->getSpaNAbonne();
+                        }
+                        if ($son_mois_ca == "11") {
+                            $ecu_nov++;
+                            $spa_cu_nov += $ddj->getSpaNAbonne();
+                        }
+                        if ($son_mois_ca == "12") {
+                            $ecu_dec++;
+                            $spa_cu_dec += $ddj->getSpaNAbonne();
+                        }
+                    }
+                }
+                $tab_spa_cu = [$spa_cu_jan, $spa_cu_fev, $spa_cu_mars, $spa_cu_avr, $spa_cu_mai, $spa_cu_juin, $spa_cu_juil, $spa_cu_aou, $spa_cu_sep, $spa_cu_oct, $spa_cu_nov, $spa_cu_dec];
+                $tab_ecu = [$ecu_jan, $ecu_fev, $ecu_mars, $ecu_avr, $ecu_mai, $ecu_juin, $ecu_juil, $ecu_aou, $ecu_sep, $ecu_oct, $ecu_nov, $ecu_dec];
+                for ($i = 0; $i < count($tab_ecu); $i++) {
+                    if ($tab_ecu[$i] == 0) {
+                        $tab_ecu[$i] = 1;
+                    }
+                    $tab_spa_cu[$i] = number_format(($tab_spa_cu[$i] / $tab_ecu[$i]), 2);
+                }
+
+
+                $data = json_encode($tab_spa_cu);
+
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+                return $response;
+            }
+        }
+    }
+
+    /**
+     * @Route("/admin/filtre/graph/spa_cu/{pseudo_hotel}", name = "filtre_graph_spa_cu")
+     */
+    public function filtre_graph_spa_cu($pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ, Request $request, EntityManagerInterface $manager, ClientRepository $repo, SessionInterface $session, HotelRepository $repoHotel)
+    {
+        $response = new Response();
+        if ($request->isXmlHttpRequest()) {
+
+            $donnee = $request->get('data');
+            $donnee_explode = explode("-", $donnee);
+            if ($donnee_explode[0] != 'tous_les_mois') {
+
+                $all_ddj = $repoDoneeDJ->findAll();
+
+                // les var pour les heb_to
+
+                $tab_jour_spa_cu = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+                $num = 0;
+                foreach ($all_ddj as $d) {
+                    $son_mois_createdAt = $d->getCreatedAt()->format('m-Y');
+                    if ($donnee == $son_mois_createdAt) {
+                        $son_num_jour = $d->getCreatedAt()->format('d');
+                        $num = intval($son_num_jour) - 1;
+                        $tab_jour_spa_cu[$num] = $d->getSpaCUnique();
+                    }
+                }
+
+
+                $data = json_encode($tab_jour_spa_cu);
+
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+                return $response;
+            } else {
+                // hafa
+                $all_ddj = $repoDoneeDJ->findAll();
+                // les heb_to pour chaque mois
+
+                $spa_cu_jan = 0;
+                $spa_cu_fev = 0;
+                $spa_cu_mars = 0;
+                $spa_cu_avr = 0;
+                $spa_cu_mai = 0;
+                $spa_cu_juin = 0;
+                $spa_cu_juil = 0;
+                $spa_cu_aou = 0;
+                $spa_cu_sep = 0;
+                $spa_cu_oct = 0;
+                $spa_cu_nov = 0;
+                $spa_cu_dec = 0;
+
+                // effectif pour la moyen 
+
+                $ecu_jan = 0;
+                $ecu_fev = 0;
+                $ecu_mars = 0;
+                $ecu_avr = 0;
+                $ecu_mai = 0;
+                $ecu_juin = 0;
+                $ecu_juil = 0;
+                $ecu_aou = 0;
+                $ecu_sep = 0;
+                $ecu_oct = 0;
+                $ecu_nov = 0;
+                $ecu_dec = 0;
+                $annee_actuel = $donnee_explode[1];
+                foreach ($all_ddj as $ddj) {
+                    $son_createdAt = $ddj->getCreatedAt();
+                    $son_mois_ca = $son_createdAt->format("m");
+                    $son_annee_ca = $son_createdAt->format("Y");
+                    if ($son_annee_ca == $annee_actuel) {
+                        if ($son_mois_ca == "01") {
+                            $ecu_jan++;
+                            $spa_cu_jan += $ddj->getSpaCUnique();
+                        }
+                        if ($son_mois_ca == "02") {
+                            $ecu_fev++;
+                            $spa_cu_fev += $ddj->getSpaCUnique();
+                        }
+                        if ($son_mois_ca == "03") {
+                            $ecu_mars++;
+                            $spa_cu_mars += $ddj->getSpaCUnique();
+                        }
+                        if ($son_mois_ca == "04") {
+                            $ecu_avr++;
+                            $spa_cu_avr += $ddj->getSpaCUnique();
+                        }
+                        if ($son_mois_ca == "05") {
+                            $ecu_mai++;
+                            $spa_cu_mai += $ddj->getSpaCUnique();
+                        }
+                        if ($son_mois_ca == "06") {
+                            $ecu_juin++;
+                            $spa_cu_juin += $ddj->getSpaCUnique();
+                        }
+                        if ($son_mois_ca == "07") {
+                            $ecu_juil++;
+                            $spa_cu_juil += $ddj->getSpaCUnique();
+                        }
+                        if ($son_mois_ca == "08") {
+                            $ecu_aou++;
+                            $spa_cu_aou += $ddj->getSpaCUnique();
+                        }
+                        if ($son_mois_ca == "09") {
+                            $ecu_sep++;
+                            $spa_cu_sep += $ddj->getSpaCUnique();
+                        }
+                        if ($son_mois_ca == "10") {
+                            $ecu_oct++;
+                            $spa_cu_oct += $ddj->getSpaCUnique();
+                        }
+                        if ($son_mois_ca == "11") {
+                            $ecu_nov++;
+                            $spa_cu_nov += $ddj->getSpaCUnique();
+                        }
+                        if ($son_mois_ca == "12") {
+                            $ecu_dec++;
+                            $spa_cu_dec += $ddj->getSpaCUnique();
+                        }
+                    }
+                }
+                $tab_spa_cu = [$spa_cu_jan, $spa_cu_fev, $spa_cu_mars, $spa_cu_avr, $spa_cu_mai, $spa_cu_juin, $spa_cu_juil, $spa_cu_aou, $spa_cu_sep, $spa_cu_oct, $spa_cu_nov, $spa_cu_dec];
+                $tab_ecu = [$ecu_jan, $ecu_fev, $ecu_mars, $ecu_avr, $ecu_mai, $ecu_juin, $ecu_juil, $ecu_aou, $ecu_sep, $ecu_oct, $ecu_nov, $ecu_dec];
+                for ($i = 0; $i < count($tab_ecu); $i++) {
+                    if ($tab_ecu[$i] == 0) {
+                        $tab_ecu[$i] = 1;
+                    }
+                    $tab_spa_cu[$i] = number_format(($tab_spa_cu[$i] / $tab_ecu[$i]), 2);
+                }
+
+
+                $data = json_encode($tab_spa_cu);
+
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+                return $response;
+            }
+        }
     }
 
 

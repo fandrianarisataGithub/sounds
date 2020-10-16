@@ -91,69 +91,9 @@
 					<div class="h2_titre">
 						<h2>Royal Beach Hotel & Spa</h2>
 					</div>
-					<section class="n_form">
-						<div class="h4_titre">
-							<h4>Chambres</h4>
-							<button class="btn btn-default" data-toggle="modal" data-target="#modal_form_fh_1">
-								<span class="fa fa-plus"></span>
-								<span class="text">Modifier</span>
-							</button>
-						</div>
-						<div class="data_form">
-							<div class="form-group">
-								<span class="val_data" data-span="cp">2</span>
-								<label>Chambres Préstiges</label>
-							</div>
-							<div class="form-group">
-								<span class="val_data" data-span="sf">25</span>
-								<label>Suites Familiales</label>
-							</div>
-						</div>
-						<div class="data_form">
-							<div class="form-group">
-								<span class="val_data" data-span="cd">55</span>
-								<label>Chambres Deluxes</label>
-							</div>
-							<div class="form-group">
-								<span class="val_data" data-span="sv">36</span>
-								<label>Suites VIP</label>
-							</div>
-						</div>
-						<div class="data_form">
-							<div class="form-group total_chambre">
-								<label>Nombre total des chambres :
-								</label>
-								<span class="val_data">55</span>
-								<span>Chambres</span>
-							</div>
-
-						</div>
-					</section>
-					<section class="n_form">
-						<div class="h4_titre">
-							<h4>Restaurant</h4>
-							<button class="btn btn-default" data-toggle="modal" data-target="#modal_form_fh_2">
-								<span class="fa fa-plus"></span>
-								<span class="text">Modifier</span>
-							</button>
-						</div>
-						<div class="data_form">
-							<div class="form-group">
-								<label class="label_first">Le Nautile</label>
-								<span class="val_data" data-span="ln">12</span>
-								<span class="span__ar">Couverts Maximum</span>
-							</div>
-						</div>
-						<div class="data_form">
-							<div class="form-group">
-								<label class="label_first">Sunset View
-								</label>
-								<span class="val_data" data-span="sview">25</span>
-								<span class="span__ar">Couvert Maximum</span>
-							</div>
-						</div>
-
-					</section>
+					<div id = "load_fiche">
+						
+					</div>
 					<section class="n_form">
 						<div class="h4_titre">
 							<h4>Equipement de l'etablissement</h4>
@@ -224,31 +164,30 @@
 						<section>
 
 							<div class="form-group">
-								<label for="">Chambre prestige :
-								</label>
-								<input type="number" class="input_n_modal cp">
+								<label for="">Chambre prestige :</label>
+								<input type="number" class="input_n_modal" id="mon_cp" value = "12" />
 							</div>
 							<div class="form-group">
 								<label for="">Suite Familiales :
 								</label>
-								<input type="number" class="input_n_modal sf">
+								<input type="number" class="input_n_modal " id = "sf">
 							</div>
 						</section>
 						<section>
 							<div class="form-group">
 								<label for="">Chambre Deluxe :
 								</label>
-								<input type="number" class="input_n_modal cd">
+								<input type="number" class="input_n_modal" id = "cd">
 							</div>
 							<div class="form-group">
 								<label for="">Suite VIP :
 								</label>
-								<input type="number" class="input_n_modal sv">
+								<input type="number" class="input_n_modal" id = "sv">
 							</div>
 						</section>
 						<section>
 							<div class="form-group">
-								<input type="submit" id="modif_date_modal" class="btn btn-warning" value="Enregistrer">
+								<button type="submit" data-dismiss="modal" id="modif_suite" class="btn btn-warning"><span>Enregistrer</span></button>
 							</div>
 						</section>
 					</form>
@@ -275,17 +214,17 @@
 							<div class="form-group">
 								<label for="">Le Nautile :
 								</label>
-								<input type="number" class="input_n_modal ln">
+								<input type="number" class="input_n_modal" id = "ln">
 							</div>
 							<div class="form-group">
 								<label for="">Sunset View :
 								</label>
-								<input type="number" class="input_n_modal sview">
+								<input type="number" class="input_n_modal" id = "sview">
 							</div>
 						</section>
 						<section>
 							<div class="form-group">
-								<input type="submit" id="modif_date_modal" class="btn btn-warning" value="Enregistrer">
+								<button type="submit" data-dismiss="modal" id="modif_nautile" class="btn btn-warning"><span>Enregistrer</span></button>
 							</div>
 						</section>
 					</form>
@@ -309,32 +248,108 @@
 <script>
 
 	$(document).ready(function () {
-        $('button[data-target]').on('click', function (e) {
-            e.preventDefault();
+		var pseudo_hotel = "{{ hotel }}";
+		$(document).on('click', 'button[data-target]', function(e){
+			e.preventDefault();
             var tar = $(this).attr("data-target");
             if (tar == "#modal_form_fh_1") {
+				
+				var s_cp = $("#scp").text();
+				var s_sf = $("#ssf").text();
+				var s_cd = $("#scd").text();
+				var s_sv = $("#ssv").text();
 
-            var s_cp = $("span[data-span=cp]").text();
-            var s_sf = $("span[data-span=sf]").text();
-            var s_cd = $("span[data-span=cd]").text();
-            var s_sv = $("span[data-span=sv]").text();
+				var sf = $('#sf').val(s_sf);
+				var cd = $('#cd').val(s_cd);
+				var sv = $('#sv').val(s_sv);
+				var cp = $('#mon_cp').val(s_cp);
 
-            var cp = $('.cp').val(s_cp);
-            var sf = $('.sf').val(s_sf);
-            var cd = $('.cd').val(s_cd);
-            var sv = $('.sv').val(s_sv);
+				// alert(s_cp);
 
-            // alert(cp+"/"+sf+"/"+cd+"/"+sv)
             } else if (tar == "#modal_form_fh_2") {
-            var s_ln = $("span[data-span=ln]").text();
+				var s_ln = $("#sln").text();
 
-            var s_sview = $("span[data-span=sview]").text();
+				var s_sview = $("#ssview").text();
 
-            var ln = $('.ln').val(s_ln);
+				var ln = $('#ln').val(s_ln);
 
-            var sview = $('.sview').val(s_sview);
+				var sview = $('#sview').val(s_sview);
             }
-        })
+		})
+
+		// ajax affichage
+
+		function load_fiche(){
+			
+			$.ajax({
+				url : "/profile/affiche_fiche/"+pseudo_hotel,
+				type : "POST",
+				success : function(response){
+					$('#load_fiche').html(response);
+				},
+				error : function(params) {
+					alert('erreur au niveau de load fiche');
+				}
+			})
+		}
+
+		load_fiche();
+
+		$('#modif_suite').on('click', function(ev){
+			ev.preventDefault();
+			var cp = $('#mon_cp').val();
+			var sf = $('#sf').val();
+			var cd = $('#cd').val();
+			var sv = $('#sv').val();
+			var data = {
+				'cp' : cp,
+				'sf' : sf,
+				'cd' : cd,
+				'sv' : sv,
+				'option' : 'chambre',
+			}
+			$.ajax({
+				//url : "/admin/modif/fiche/"+pseudo_hotel,
+				url : "/profile/modif_fiche/"+pseudo_hotel,
+				type : "POST",
+				data : data,
+				success : function(response){
+					if(response){
+						load_fiche();
+					}
+				},
+				error : function(error){
+					alert('erreur au niveau de modif fiche chambre');
+				}
+			})
+		})
+
+		$('#modif_nautile').on('click', function(ev){
+			ev.preventDefault();
+			var ln = $('#ln').val();
+			var sview = $('#sview').val();
+
+			var data = {
+				'ln' : ln,
+				'sview' : sview,
+				'option' : 'no-chambre',
+			}
+			$.ajax({
+				url : "/profile/modif_fiche/"+pseudo_hotel,
+				type : "POST",
+				data : data,
+				success : function(response){
+					if(response){
+						load_fiche();
+					}
+				},
+				error : function(error){
+					alert('erreur au niveau de modif fiche chambre');
+				}
+			})
+		})
+
+
     })
 </script>
 

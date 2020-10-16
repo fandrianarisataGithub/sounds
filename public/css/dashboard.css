@@ -44,6 +44,11 @@
   /* preload */
   /*PRELOADING------------ */
   
+    .modal-dialog {
+    width: 600px;
+    margin: 100px auto;
+}
+
   #overlayer {
       width: 100% !important;
       height: 100% !important;

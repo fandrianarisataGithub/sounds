@@ -15,6 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AdminController extends AbstractController
@@ -512,7 +513,41 @@ class AdminController extends AbstractController
         }
     }
 
+    /**
+     * @Route("/profile/add_pdp/{id_user}", name = "edit_pdp")
+     */
+    public function edit_pdp($id_user, Request $request, UserRepository $repoUser, EntityManagerInterface $manager)
+    {
+        $response = new Response();
+        $user =  new User();
+        if ($request->isXmlHttpRequest()) {
+            $user = $repoUser->find($id_user);
 
-   
-    
+            $image = $request->get('fichier')->getData();
+
+            if ($image) {
+                $originalFilename1 = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                // this is needed to safely include the file name as part of the URL
+                $safeFilename1 = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename1);
+                $newFilename1 = $safeFilename1 . '-' . uniqid() . '.' . $image->guessExtension();
+
+
+                // Move the file to the directory where brochures are stored
+                try {
+                    $image->move(
+                        $this->getParameter('image_cin_directory'),
+                        $newFilename1
+                    );
+                } catch (FileException $e) {
+                    // ... handle exception if something happens during file upload
+                }
+
+            }
+            
+            $data = json_encode('ok');
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+            return $response;
+        }
+    }
 }

@@ -87,8 +87,11 @@ class ClientController extends AbstractController
             $pseudo_hotel = $request->get('pseudo_hotel');
             $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
             $clients = $repoClient->findAll();
-            $clients_today = [];
+            $clients_current = [];
             $today = new \DateTime();
+
+            $today_s = $today->format('d-m-Y');
+            $today = date_create($today_s);
            
             $t = [];
             $x = 0;
@@ -97,16 +100,19 @@ class ClientController extends AbstractController
                 $son_pseudo_hotel = $son_hotel->getPseudo();
                 if ($son_pseudo_hotel == $pseudo_hotel) {
                     $sa_date_arrivee = $c->getDateArrivee();
+                    $sa_date_arrivee = $sa_date_arrivee->format("d-m-Y");
+                    $sa_date_arrivee = date_create($sa_date_arrivee);
                     $sa_date_depart = $c->getDateDepart();
-                    
-                    if (($sa_date_arrivee <= $today) && ($today < $sa_date_depart)) {
-                        array_push($clients_today, $c);
+                    $sa_date_depart = $sa_date_depart->format("d-m-Y");
+                    $sa_date_depart = date_create($sa_date_depart);
+                    if (($sa_date_arrivee <= $today) && ($today <= $sa_date_depart)) {
+                        array_push($clients_current, $c);
                     } else {
                         $x = $x;
                     }
                 }
             }
-            foreach ($clients_today as $item) {
+            foreach ($clients_current as $item) {
 
                 array_push($t, ['<div>' . $item->getNom() . '</div><div>' . $item->getPrenom() . '</div><div>' . $item->getCreatedAt()->format("d-m-Y") . '</div>', $item->getDateArrivee()->format('d-m-Y'), $item->getDateDepart()->format('d-m-Y'), $item->getDureeSejour(), '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_diso" data-id = "' . $item->getId() . '" class="btn btn_client_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a><a href="#" data-toggle="modal" data-target="#modal_form_confirme" data-id = "' . $item->getId() . '" class="btn btn_client_suppr btn-danger btn-xs"><span class="fa fa-trash-o"></span></a></div>']);
             }
@@ -122,7 +128,10 @@ class ClientController extends AbstractController
         $clients = $repoClient->findAll();
         $clients_today = [];
         $today = new \DateTime();
+        
         $today_s = $today->format('d-m-Y');
+        $today = date_create($today_s);
+        //dd($today);
         $t = [];
         $x = 0;
         foreach ($clients as $c) {
@@ -130,9 +139,12 @@ class ClientController extends AbstractController
             $son_pseudo_hotel = $son_hotel->getPseudo();
             if($son_pseudo_hotel == $pseudo_hotel){
                 $sa_date_arrivee = $c->getDateArrivee();
+                $sa_date_arrivee = $sa_date_arrivee->format("d-m-Y");
+                $sa_date_arrivee = date_create($sa_date_arrivee);
                 $sa_date_depart = $c->getDateDepart();
-                $son_createdAt = $c->getCreatedAt();
-                if (($sa_date_arrivee <= $son_createdAt) && ($son_createdAt < $sa_date_depart)) {
+                $sa_date_depart = $sa_date_depart->format("d-m-Y");
+                $sa_date_depart = date_create($sa_date_depart);
+                if (($sa_date_arrivee <= $today) && ($today <= $sa_date_depart)) {
                     array_push($clients_today, $c);
                 } else {
                     $x = $x;
@@ -144,7 +156,7 @@ class ClientController extends AbstractController
 
             array_push($t, ['<div>' . $item->getNom() . '</div><div>' . $item->getPrenom() . '</div><div>' . $item->getCreatedAt()->format("d-m-Y") . '</div>', $item->getDateArrivee()->format('d-m-Y'), $item->getDateDepart()->format('d-m-Y'), $item->getDureeSejour(), '<div class="text-start"><a href="#" data-id = "' . $item->getId() . '" class="btn btn_client_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a><a href="#" data-id = "' . $item->getId() . '" class="btn btn_client_suppr btn-danger btn-xs"><span class="fa fa-trash-o"></span></a></div>']);
         }
-        dd($t);
+        dd($clients_today);
     }
 
     /**
