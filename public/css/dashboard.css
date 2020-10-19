@@ -387,7 +387,7 @@ tbody tr td{
       font-family: 'Droid Sans', sans-serif;
       outline: none;
   }
-  
+
    ::-webkit-scrollbar {
       background: transparent;
       width: 5px;
@@ -1371,7 +1371,19 @@ tbody tr td{
       position: relative;
       top: 15px;
   }
-  
+  .btn_filter{
+    margin-right: 10px;
+      padding-left: 10px;
+      height: 30px;
+      background: #c89b11;
+      border: none;
+      border-radius: 5px;
+      position: relative;
+      top: 15px;
+}
+.btn_filter:hover,  .btn_filter:focus{
+     background: #c89b11;
+}
   .filtre {
       padding-bottom: 10px;
   }

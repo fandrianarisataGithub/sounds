@@ -83,46 +83,55 @@ class DonneeDuJourType extends AbstractType
                 ]
             ])
             ->add('crj_direction', TextareaType::class, [
+                'required' => false,
                 "attr" => [
                     "class" => "form-control"
                 ]
             ])
             ->add('crj_service_rh', TextareaType::class, [
+                'required' => false,
                 "attr" => [
                     "class" => "form-control"
                 ]
             ])
             ->add('crj_commercial', TextareaType::class, [
+                'required' => false,
                 "attr" => [
                     "class" => "form-control"
                 ]
             ])
             ->add('crj_comptable', TextareaType::class, [
+                'required' => false,
                 "attr" => [
                     "class" => "form-control"
                 ]
             ])
             ->add('crj_reception', TextareaType::class, [
+                'required' => false,
                 "attr" => [
                     "class" => "form-control"
                 ]
             ])
             ->add('crj_restaurant', TextareaType::class, [
+                'required' => false,
                 "attr" => [
                     "class" => "form-control"
                 ]
             ])
             ->add('crj_spa', TextareaType::class, [
+                'required' => false,
                 "attr" => [
                     "class" => "form-control"
                 ]
             ])
             ->add('crj_s_technique', TextareaType::class, [
+                'required' => false,
                 "attr" => [
                     "class" => "form-control"
                 ]
             ])
             ->add('crj_litiges', TextareaType::class, [
+                'required' => false,
                 "attr" => [
                     "class" => "form-control"
                 ]

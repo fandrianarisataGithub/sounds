@@ -625,15 +625,22 @@
 					var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 
 					var w = $(window).width();
+					var myChart1 = 0;
+					var myChart2 = 0;
 					if (w <= 768) {
 						var myChart1 = draw_chart1(my_data_to, my_labels);
 						var myChart2 = draw_chart2(my_data_ca, my_labels);
 						add_resp_heb(myChart1, myChart2);
+						
 					} else {
 						var myChart1 = draw_chart1(my_data_to, my_labels);
 						var myChart2 = draw_chart2(my_data_ca, my_labels);
-						
+								
 					}
+					
+					//console.log(myChart1);
+					
+					/* ajax pour loader le graph */
 
 					/* debut dataTable */
 
@@ -816,10 +823,12 @@
 
 										var w = $(window).width();
 										if (w <= 768) {
+											
 											var myChart1 = draw_chart1(my_data, my_labels);
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart2);
 										} else {
+											
 											var myChart1 = draw_chart1(my_data, my_labels);
 											myChart1.update();
 											
@@ -831,10 +840,12 @@
 										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 										var w = $(window).width();
 										if (w <= 768) {
+											
 											var myChart1 = draw_chart1(my_data, my_labels);
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart2);
 										} else {
+											
 											var myChart1 = draw_chart1(my_data, my_labels);
 											myChart1.update();
 											
@@ -868,11 +879,13 @@
 
 										var w = $(window).width();
 										if (w <= 768) {
+											
 											var myChart1 = draw_chart1(my_data, my_labels);
 											myChart1.update();
 											
 											//add_resp_heb(myChart1, myChart2);
 										} else {
+											
 											var myChart1 = draw_chart1(my_data, my_labels);
 											myChart1.update();
 											
@@ -884,11 +897,13 @@
 										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 										var w = $(window).width();
 										if (w <= 768) {
+											
 											var myChart1 = draw_chart1(my_data, my_labels);
 											myChart1.update();
 											
 											//add_resp_heb(myChart1, myChart2);
 										} else {
+											
 											var myChart1 = draw_chart1(my_data, my_labels);
 											myChart1.update();
 											

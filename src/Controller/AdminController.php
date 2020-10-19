@@ -392,6 +392,7 @@ class AdminController extends AbstractController
                 $user = $repoUser->find($id);
                 $user->setEmail($email);
                 $user->setPrenom($prenom_user);
+                $user->setNom($nom);
                 $taille = "";
                 $users = $repoUser->findAll();
                 foreach ($users as $u) {
