@@ -1,0 +1,13 @@
+
+
+{% block title %}Hello TriController!{% endblock %}
+
+{% block body %}
+    {% for item in t %}
+        <div>
+            {% for u in item %}
+                <div>{{ u | raw}}</div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endblock %}

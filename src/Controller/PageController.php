@@ -6,6 +6,7 @@ use DateTime;
 use App\Entity\User;
 use App\Entity\Client;
 use App\Entity\FicheHotel;
+use App\Services\Services;
 use App\Entity\DonneeDuJour;
 use App\Form\DonneeDuJourType;
 use App\Repository\UserRepository;
@@ -81,7 +82,7 @@ class PageController extends AbstractController
     /**
      * @Route("/profile/{pseudo_hotel}/hebergement", name="hebergement")
      */
-    public function hebergement($pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ, Request $request, EntityManagerInterface $manager, ClientRepository $repo, SessionInterface $session, HotelRepository $repoHotel)
+    public function hebergement(Services $services, $pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ, Request $request, EntityManagerInterface $manager, ClientRepository $repo, SessionInterface $session, HotelRepository $repoHotel)
     {
         $response = new Response();
         $data_session = $session->get('hotel');
@@ -285,51 +286,64 @@ class PageController extends AbstractController
             if ($son_annee_ca == $annee_actuel) {
                 if ($son_mois_ca == "01") {
                     $eca_jan++;
-                    $heb_ca_jan += $ddj->getHebCa();
+                    $x = intVal($ddj->getHebCa());
+                    $heb_ca_jan += $x;
                 }
                 if ($son_mois_ca == "02") {
                     $eca_fev++;
-                    $heb_ca_fev += $ddj->getHebCa();
+                    $x = intVal($ddj->getHebCa());
+                    $heb_ca_fev += $x;
                 }
                 if ($son_mois_ca == "03") {
                     $eca_mars++;
-                    $heb_ca_mars += $ddj->getHebCa();
+                    $x = intVal($ddj->getHebCa());
+                    $heb_ca_mars += $x;
                 }
                 if ($son_mois_ca == "04") {
                     $eca_avr++;
-                    $heb_ca_avr += $ddj->getHebCa();
+                    $x = intVal($ddj->getHebCa());
+                    $heb_ca_avr += $x;
                 }
                 if ($son_mois_ca == "05") {
                     $eca_mai++;
-                    $heb_ca_mai += $ddj->getHebCa();
+                    $x = intVal($ddj->getHebCa());
+                    $heb_ca_mai += $x;
                 }
                 if ($son_mois_ca == "06") {
                     $eca_juin++;
-                    $heb_ca_juin += $ddj->getHebCa();
+                    $x = intVal($ddj->getHebCa());
+                    $heb_ca_juin += $x;
                 }
                 if ($son_mois_ca == "07") {
                     $eca_juil++;
-                    $heb_ca_juil += $ddj->getHebCa();
+                    $x = intVal($ddj->getHebCa());
+                    $heb_ca_juil += $x;
                 }
                 if ($son_mois_ca == "08") {
                     $eca_aou++;
-                    $heb_ca_aou += $ddj->getHebCa();
+                    $x = intVal($ddj->getHebCa());
+                    $heb_ca_aou += $x;
                 }
                 if ($son_mois_ca == "09") {
                     $eca_sep++;
-                    $heb_ca_sep += $ddj->getHebCa();
+                    $x = intVal($ddj->getHebCa());
+                    $heb_ca_sep += $x;
                 }
                 if ($son_mois_ca == "10") {
                     $eca_oct++;
-                    $heb_ca_oct += $ddj->getHebCa();
+                    $x = intVal($ddj->getHebCa());
+                   
+                    $heb_ca_oct += $x;
                 }
                 if ($son_mois_ca == "11") {
                     $eca_nov++;
-                    $heb_ca_nov += $ddj->getHebCa();
+                    $x = intVal($ddj->getHebCa());
+                    $heb_ca_nov += $x;
                 }
                 if ($son_mois_ca == "12") {
                     $eca_dec++;
-                    $heb_ca_dec += $ddj->getHebCa();
+                    $x = intVal($ddj->getHebCa());
+                    $heb_ca_dec += $x;
                 }
             }
         }
@@ -368,7 +382,67 @@ class PageController extends AbstractController
             "Nov",
             "Dec"
         ];
+        $tab_aff = [];
+        if ($request->request->count() > 0) {
+            // dd($request->request);
+            $date1 = $request->request->get('date1');
+            $date2 = $request->request->get('date2');
 
+            //dd(gettype($date1)."  ".$date2);
+
+            $date1 = date_create($date1);
+            $date2 = date_create($date2);
+
+
+            $all_date_asked = $services->all_date_between2_dates($date1, $date2);
+            //dd($all_date_asked);
+            
+            $tab = [];
+            $data_session = $session->get('hotel');
+            $data_session['current_page'] = "crj";
+            $data_session['pseudo_hotel'] = $pseudo_hotel;
+            $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+            $current_id_hotel = $l_hotel->getId();
+            $clients = $repo->findAll();
+            foreach ($clients as $item) {
+                $son_id_hotel = $item->getHotel()->getId();
+                if ($son_id_hotel == $current_id_hotel) {
+                    array_push($tab, $item);
+                }
+            }
+            foreach ($tab as $client) {
+                // on liste tous les jour entre sa dete arrivee et date depart
+                $sa_da = $client->getDateArrivee();
+                $sa_dd = $client->getDateDepart();
+                //dd($sa_dd);
+                $his_al_dates = $services->all_date_between2_dates($sa_da, $sa_dd);
+                //dd($his_al_dates);
+                for ($i = 0; $i < count($all_date_asked); $i++) {
+                    for ($j = 0; $j < count($his_al_dates); $j++) {
+                        if ($all_date_asked[$i] == $his_al_dates[$j]) {
+                            if (!in_array($client, $tab_aff)) {
+                                array_push($tab_aff, $client);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return $this->render('page/hebergement.html.twig', [
+                "id" => "li__hebergement",
+                "tab_annee" => $tab_sans_doublant,
+                "hotel" => $data_session['pseudo_hotel'],
+                "current_page" => $data_session['current_page'],
+                "tab_heb_to" => $tab_heb_to,
+                "tab_heb_ca" => $tab_heb_ca,
+                "tab_labels" => $tab_labels,
+                "type_affichage" => "annee",
+                'items' => $tab_aff,
+                'date1' => $date1->format('Y-m-d'),
+                'date2' => $date2->format('Y-m-d'),
+            ]);
+           
+        }
 
        //dd($tab_heb_ca);
         return $this->render('page/hebergement.html.twig', [
@@ -380,6 +454,7 @@ class PageController extends AbstractController
             "tab_heb_ca" => $tab_heb_ca,
             "tab_labels" => $tab_labels,
             "type_affichage" => "annee",
+            'items' => $tab_aff,
         ]);
     }
 
@@ -1179,7 +1254,10 @@ class PageController extends AbstractController
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             $ddj = $form->getData();
-            $ddj->setCreatedAt(new \DateTime());
+            $createdAt  = $request->request->get('createdAt');
+            $createdAt = date_create($createdAt);
+            $ddj->setCreatedAt($createdAt);
+            //dd($ddj);
             $hotel = $reposHotel->findOneByPseudo($pseudo_hotel);
             $hotel->addDonneeDuJour($ddj);
             $manager->persist($ddj);

@@ -44,11 +44,11 @@
   /* preload */
   /*PRELOADING------------ */
   
-    .modal-dialog {
-    width: 600px;
-    margin: 100px auto;
-}
-
+  .modal-dialog {
+      width: 600px;
+      margin: 100px auto;
+  }
+  
   #overlayer {
       width: 100% !important;
       height: 100% !important;
@@ -79,13 +79,16 @@
       background-color: #fff;
       animation: loader-inner 2s infinite ease-in;
   }
-.unite{
-    margin-left: 5px;
-}
-tbody tr td div{
-    padding-left: 15px;
-    color: rgba(0,0,0, 0.5) !important;
-}
+  
+  .unite {
+      margin-left: 5px;
+  }
+  
+  tbody tr td div {
+      padding-left: 15px;
+      color: rgba(0, 0, 0, 0.5) !important;
+  }
+  
   @keyframes loader {
       0% {
           transform: rotate(0deg);
@@ -139,9 +142,11 @@ tbody tr td div{
       height: 100%;
       z-index: 99000;
   }
-tbody tr td{
-    font-size: 12px;
-}
+  
+  tbody tr td {
+      font-size: 12px;
+  }
+  
   .loader-wrapper .loader {
       display: block;
       position: relative;
@@ -387,7 +392,7 @@ tbody tr td{
       font-family: 'Droid Sans', sans-serif;
       outline: none;
   }
-
+  
    ::-webkit-scrollbar {
       background: transparent;
       width: 5px;
@@ -1371,19 +1376,23 @@ tbody tr td{
       position: relative;
       top: 15px;
   }
-  .btn_filter{
-    margin-right: 10px;
+  
+  .btn_filter {
+      margin-right: 10px;
       padding-left: 10px;
       height: 30px;
-      background: #c89b11;
+      /*background: #c89b11;*/
       border: none;
       border-radius: 5px;
       position: relative;
       top: 15px;
-}
-.btn_filter:hover,  .btn_filter:focus{
-     background: #c89b11;
-}
+  }
+  
+  .btn_filter:hover,
+  .btn_filter:focus {
+      background: #c89b11;
+  }
+  
   .filtre {
       padding-bottom: 10px;
   }
@@ -1604,10 +1613,12 @@ tbody tr td{
       background: #d29e00 !important;
       border-color: transparent;
   }
-    .modal-body .annuler{
-        background: #323232;
-        border-color: transparent;
-    }
+  
+  .modal-body .annuler {
+      background: #323232;
+      border-color: transparent;
+  }
+  
   #modal_form .modal-content form .form-group .form-control:not(.btn-warning) {
       padding-top: 5px;
       width: 70%;
@@ -1659,6 +1670,7 @@ tbody tr td{
       font-size: 18px;
   }
   /* css settings */
+  
   .infos {
       background: lightblue;
       padding: 5px;
@@ -1666,15 +1678,17 @@ tbody tr td{
       display: none;
       justify-content: start;
       align-items: center;
-      background: rgba(235,71,16, 0.5);
-      border-left : 5px solid red;
-   }
-.infos p{
-    position: relative;
-    top: 5px;
-    color : white;
-    font-size : 12px;
-}
+      background: rgba(235, 71, 16, 0.5);
+      border-left: 5px solid red;
+  }
+  
+  .infos p {
+      position: relative;
+      top: 5px;
+      color: white;
+      font-size: 12px;
+  }
+  
   .inside_content {
       box-shadow: 0px 1px 3px lightgrey;
       background: rgba(255, 255, 255, 0.7);
@@ -1696,7 +1710,7 @@ tbody tr td{
       top: 10px;
       color: #fff;
   }
-
+  
   .inside_content form,
   .inside_content ul {
       padding: 10px;
@@ -1754,9 +1768,11 @@ tbody tr td{
       color: rgba(0, 0, 0, 0.4);
       font-size: 12.5px;
   }
-table.dataTable.display tbody tr td a{
-    margin-left: 5px;
-}
+  
+  table.dataTable.display tbody tr td a {
+      margin-left: 5px;
+  }
+  
   form#form-owner .form_title {
       color: rgba(0, 0, 0, 0.4);
   }
@@ -1940,10 +1956,11 @@ table.dataTable.display tbody tr td a{
       display: flex;
       justify-content: space-between;
   }
-
-  .footer_modal .annuler, #div__conf .annuler {
-     background: #2f2f2f !important;
-    border-color: transparent;
+  
+  .footer_modal .annuler,
+  #div__conf .annuler {
+      background: #2f2f2f !important;
+      border-color: transparent;
   }
   
   .footer_modal .retirer {
@@ -2198,8 +2215,8 @@ table.dataTable.display tbody tr td a{
           background-color: #555555;
           border-bottom: 1px solid gray;
       }
-      #entete_fixed ul li.logo_active a div{
-          border:3px solid #d29e00;
+      #entete_fixed ul li.logo_active a div {
+          border: 3px solid #d29e00;
       }
       img.nav_icone_hover {
           display: none;
@@ -2261,7 +2278,6 @@ table.dataTable.display tbody tr td a{
   }
   
   @media all and (max-width:480px) {
-      
       #settings_content {
           margin-top: 30px;
       }
@@ -2732,22 +2748,24 @@ table.dataTable.display tbody tr td a{
       width: 80%;
       margin: 20px auto;
   }
-    
-.load_modif{
-    position: fixed;
-    background: rgba(200,155,17, 0.3);
-    justify-content: center;
-    align-items: center;
-    top: 0;
-    left: 0;
-    display: none;
-    width: 100%;
-    height: 100%;
-    z-index: 1000 !important;
-}
-.load_modif p{
-    color: #fff;
-}
+  
+  .load_modif {
+      position: fixed;
+      background: rgba(200, 155, 17, 0.3);
+      justify-content: center;
+      align-items: center;
+      top: 0;
+      left: 0;
+      display: none;
+      width: 100%;
+      height: 100%;
+      z-index: 1000 !important;
+  }
+  
+  .load_modif p {
+      color: #fff;
+  }
+  
   li {
       list-style-type: none;
   }
@@ -3151,6 +3169,23 @@ table.dataTable.display tbody tr td a{
       color: #858790;
   }
   
+  .createdAt {
+      background-color: #fff;
+      border: solid 1px #cccccc;
+      border-top-color: rgb(204, 204, 204);
+      border-right-color: rgb(204, 204, 204);
+      border-bottom-color: rgb(204, 204, 204);
+      border-left-color: rgb(204, 204, 204);
+      border-top-color: rgb(204, 204, 204);
+      border-right-color: rgb(204, 204, 204);
+      border-bottom-color: rgb(204, 204, 204);
+      border-left-color: rgb(204, 204, 204);
+      text-align: left;
+      padding: 4.5px 10px;
+      border-radius: 4px;
+      color: #858790;
+  }
+  
   .sous_data_form button.btn {
       background-color: #fff;
       border: solid 1px rgb(204, 204, 204);
@@ -3417,18 +3452,22 @@ table.dataTable.display tbody tr td a{
       color: #666666;
       font-size: 14px;
   }
-
-.text-start a, .text-start a:visited, .text-start a:link, .text-start a:focus{
-    background: transparent;
-    border: none;
-}
-.text-start a:hover{
-    background: #d29e00;
-}
-.text-start a:hover span{
-    color: #fff;
-    
-}
+  
+  .text-start a,
+  .text-start a:visited,
+  .text-start a:link,
+  .text-start a:focus {
+      background: transparent;
+      border: none;
+  }
+  
+  .text-start a:hover {
+      background: #d29e00;
+  }
+  
+  .text-start a:hover span {
+      color: #fff;
+  }
   
   .legendValue {
       float: left;

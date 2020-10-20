@@ -169,9 +169,20 @@
 							<div class="sous_titre_filtre">
 								<h3>Filtre</h3>
 							</div>
-							<form action="" class="tri">
-								<input type="date">
-								<input type="date">
+							<form class="tri" action = "{{ path('hebergement', { 'pseudo_hotel' : hotel }) }}" method = "POST">
+								<input name = "date1" type="date" id = "date1" 
+
+									{% if date1 is defined %}
+										value = "{{ date1 }}"
+									{% endif %}
+								
+								>
+								<input type="date" name = "date2" id = "date2" 
+									{% if date2 is defined %}
+										value = "{{ date2 }}"
+									{% endif %}
+								>
+								<button type = "submit" class = "btn btn-primary btn-xs btn_filter"><span>Filtrer</span></button>
 							</form>
 						</section>
 						<div class="tableau tab_historique">
@@ -190,13 +201,35 @@
 										<td>
 											<span>DUREE DU SEJOUR</span>
 										</td>
-										<td>
-											<span>ACTIONS</span>
-										</td>
 									</tr>
 								</thead>
 								<tbody id ="tbody_load">
-                                            
+                                   {% if items is empty%}
+									   <span>vide</span>
+                                   {% else %}
+									   {% for item in items %}
+										   <tr>
+
+											   <td>
+											   		<span>{{ item.nom }} <br> 
+														{% if item.prenom is defined %}
+															{{ item.prenom }}
+														{% endif %}   
+													</span>
+											   </td>
+											   <td>
+											   		<span>{{ item.getDateArrivee() | date('d-m-Y') }}</span>
+											   </td>
+											   <td>
+											   		<span>{{ item.getDateDepart() | date('d-m-Y') }}</span>
+											   </td>
+											    <td>
+											   		<span>{{ item.getDureeSejour() | date('d-m-Y') }}</span>
+											   </td>
+										   
+										   </tr>
+									   {% endfor %}
+								   {% endif %}
                                 </tbody>
 							</table>
 						</div>
@@ -646,7 +679,8 @@
 
 						var pseudo_hotel = "{{ hotel }}" ;
 						//alert(pseudo_hotel);
-						var table = $('#tab_client_heb').DataTable({
+						
+							var table = $('#tab_client_heb').DataTable({
 									"language": {
 										"sEmptyTable": "Aucune donnée disponible dans le tableau",
 										"sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
@@ -678,20 +712,6 @@
 										}
 									},
 	
-									"ajax" : {
-										url : "/profile/select_current_client", // any am Clientcontroller
-										type : 'POST', 
-										data : {'pseudo_hotel' : pseudo_hotel},
-										// success : function(response){
-										//     alert("nety");
-										// }, 
-										// error : function(){
-										//     alert('erreur server');
-										// },
-										"dataSrc":"",
-										
-									},
-	
 									//annule le tri
 									order : [[0 , 'asc']],
 									ordering : false,
@@ -705,10 +725,69 @@
 							});
 	
 								new $.fn.dataTable.FixedHeader(table);
-	
+								
+			
 							/*  fiun table */
 
 					/* fin datatable */
+
+
+					/* debut tri dans le tableau */
+
+						function initialise_dates() {
+							$("#date1").val("");
+							$("#date2").val("");
+						}
+						//initialise_dates();
+
+						$("#date1").on("change", function(){
+							if($("#date2").val() == ""){
+								//alert("mbola miandry");
+								$('#date2').css("border-color", "red");
+								setTimeout(() => {
+									$('#date2').css("border-color", "rgba(200, 200, 200, 0.8)");
+								}, 500);
+							}
+							
+							
+						})
+						$("#date2").on("change", function(){
+							if($("#date1").val() == ""){
+								$('#date2').css("border-color", "red");
+								setTimeout(() => {
+									$('#date2').css("border-color", "rgba(200, 200, 200, 0.8)");
+								}, 500);
+							}
+							
+							
+						})
+						
+						
+
+						function do_ajax() {
+							//alert('ajax');
+							var date1 = $('#date1').val();
+							var date2 = $('#date2').val();
+							var data = {
+								"date1" : date1,
+								"date2" : date2,
+							}
+							$.ajax({
+								url : "/profile/tri_heb/"+pseudo_hotel,
+								type : "POST",
+								data : data,
+								success : function(response){
+									alert(response);
+									//console.log(response);
+								},
+								error : function(error){
+									alert('erreur au niveau de do_ajax_tab heb');
+								}
+							})
+						}
+
+
+					/* fin tri tableau heb */
 					// suppression client présent 
 
 
