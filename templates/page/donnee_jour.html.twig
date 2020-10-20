@@ -83,7 +83,7 @@
                         <div class="sous_titre">
                             <h2>Donnée du jour</h2>
                             <form action="" class="from_sous_titre">
-                                <input type="date">
+                                <input type="date" id = "today" value = "{{ today }}">
                             </form>
                         </div>
                     </section>
@@ -589,7 +589,7 @@ new Cleave('.input_pourcent', {blocks: [4]});
                     },
 
                     "ajax" : {
-                        url : "/profile/select_client/today", // any am Clientcontroller
+                        url : "/profile/select_current_client", // any am Clientcontroller
                         type : 'POST', 
                         data : {'pseudo_hotel' : pseudo_hotel},
                         // success : function(response){

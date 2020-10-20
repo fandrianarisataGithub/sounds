@@ -1174,6 +1174,7 @@ class PageController extends AbstractController
         $data_session['current_page'] = "donnee_jour";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         $form = $this->createForm(DonneeDuJourType::class, $ddj);
+        $today = new \DateTime();
         // si le formulaire est soumis 
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
@@ -1191,7 +1192,8 @@ class PageController extends AbstractController
             "id" => "li__donnee_du_jour",
             "form" => $form->createView(),
             "hotel" => $data_session['pseudo_hotel'],
-            "current_page" => $data_session['current_page']
+            "current_page" => $data_session['current_page'],
+            "today" => $today->format("Y-m-d"),
         ]);
     }
 
