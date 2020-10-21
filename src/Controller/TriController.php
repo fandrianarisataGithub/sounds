@@ -73,7 +73,7 @@ class TriController extends AbstractController
             }
 
            // $data = json_encode($date1->format('d-m-Y')."/". $date2->format('d-m-Y'));
-           $data = json_encode($t);
+           $data = json_encode($date1_s . "/" . $date2_s);
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent($data);
             return $response;

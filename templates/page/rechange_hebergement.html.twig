@@ -1,0 +1,1484 @@
+	{% extends "base.html.twig" %}
+{% block title %}
+	Hébergement
+{% endblock %}
+
+	{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
+	{% endblock %}
+	{% block body %}
+
+	<section id="contents" class="container-fluid">
+	<!-- entete content -->
+	<div id="top-content">
+		<div id="entete_fixed">
+			<ul>
+				<li>
+					<a href="#" id="btn_drop_side_menu">
+						<i data-show="show-side-navigation1" class="fa fa-bars show-side-btn"></i>
+					</a>
+				</li>
+				<li
+								{% if hotel == "royal_beach" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('royal_beach', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{asset('images/hazo1.png')}}" alt="logo1">
+									</div>
+								</a>
+							</li>
+							<li
+								{% if hotel == "calypso" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('calypso', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo2.png') }}" alt="logo2">
+									</div>
+								</a>
+							</li>
+							<li 
+								{% if hotel == "baobab_tree" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('baobab_tree', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo3.png') }}" alt="logo3">
+									</div>
+								</a>
+							</li>
+							<li
+								{% if hotel == "vanila_hotel" %}
+									class="logo_active"
+								{% endif %}
+							>
+								<a href="{{ path('vanila_hotel', {'current_page' : current_page }) }}">
+									<div>
+										<img src="{{ asset('images/hazo4.png') }}" alt="logo4">
+									</div>
+								</a>
+							</li>
+				<li id="log_out_entete">
+					<div>
+						 <a href="{{ path('app_logout') }}">
+							<span aria-hidden="true" class="fa fa-power-off fa-2x"></span>
+						</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<!-- / entete content -->
+
+	<!-- contenue  -->
+	<div id="hrs_content">
+		<div>
+			<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+				<section class="section_part" id="section_part_top">
+					<div class="sous_titre">
+						<h3>Hébergement</h3>
+					</div>
+				</section>
+			</div>
+			<div
+				class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+				<!-- debut chart 1 -->
+				<section class="section_part tab_content margin_tab">
+					<div class="chart_title">
+						<div class="chart_title-part">
+							<h4>Taux d'occupation</h4>
+						</div>
+						<form action="" class="tri">
+							<select name="" id="mois_heb_to">
+								<option selected = "selected" value = "tous_les_mois">Tous les mois</option>
+								<option value = "01">Janvier</option>
+								<option value = "02">Février</option>
+								<option value = "03">Mars</option>
+								<option value = "04">Avril</option>
+								<option value = "05">Mai</option>
+								<option value = "06">Juin</option>
+								<option value = "07">Juillet</option>
+								<option value = "08">Août</option>
+								<option value = "09">Septembre</option>
+								<option value = "10">Octobre</option>
+								<option value = "11">Novembre</option>
+								<option value = "12">Décembre</option>
+							</select>
+							<select name="" class="annee" id="annee_heb_to">
+								{% for a in tab_annee %}
+									<option value="{{ a }}">{{ a }}</option>
+								{% endfor %}
+							</select>
+						</form>
+					</div>
+					{# <section class = "load_canvas_to"><p>Patienter ...</p></section> #}
+					<section>
+						<div id="element_canvas_heb_to">
+						
+							<div>
+								<canvas id="canvas_to"></canvas>
+							</div>
+							<div id="chart-legends_to"></div>
+						</div>
+					</section>
+
+				</section>
+				<!-- fin chart 1 -->
+				<!-- debut chart 2 -->
+				<section class="section_part tab_content margin_tab">
+					<div class="chart_title">
+						<div class="chart_title-part">
+							<h4>Chiffre d'affaire</h4>
+						</div>
+						<form action="" class="tri">
+							<select name="" id="mois_heb_ca">
+								<option selected = "selected" value = "tous_les_mois">Tous les mois</option>
+								<option value = "01">Janvier</option>
+								<option value = "02">Février</option>
+								<option value = "03">Mars</option>
+								<option value = "04">Avril</option>
+								<option value = "05">Mai</option>
+								<option value = "06">Juin</option>
+								<option value = "07">Juillet</option>
+								<option value = "08">Août</option>
+								<option value = "09">Septembre</option>
+								<option value = "10">Octobre</option>
+								<option value = "11">Novembre</option>
+								<option value = "12">Décembre</option>
+							</select>
+							<select name="" class="annee" id = "annee_heb_ca">
+								{% for a in tab_annee %}
+									<option value="{{ a }}">{{ a }}</option>
+								{% endfor %}
+							</select>
+						</form>
+					</div>
+
+					<section>
+						{# <section class = "load_canvas_ca"><p>Patienter ...</p></section> #}
+						<div id="element_canvas_heb_ca">
+							<div>
+								<canvas id="canvas_ca"></canvas>
+							</div>
+							<div id="chart-legends_ca"></div>
+						</div>
+					</section>
+
+				</section>
+				<!-- fin chart2  -->
+			</div>
+			<div class="col-lg-8 col-md-8 col-sm-12 col-sm-12 col-xs-12">
+				<section class="section_part tab_content margin_tab tab_liste_client">
+					<div class="tableau">
+						<div class="sous_titre">
+							<h4>Liste des clients hébergés</h4>
+						</div>
+						<section class=" filtre">
+							<div class="sous_titre_filtre">
+								<h3>Filtre</h3>
+							</div>
+							<form class="tri" id = "form_tri_tab_heb" action = "{{ path('hebergement', { 'pseudo_hotel' : hotel }) }}" method = "POST">
+								<input name = "date1" type="date" id = "date1" 
+
+									{% if date1 is defined %}
+										value = "{{ date1 }}"
+									{% endif %}
+								
+								>
+								<input type="date" name = "date2" id = "date2" 
+									{% if date2 is defined %}
+										value = "{{ date2 }}"
+									{% endif %}
+								>
+								<button type = "submit" class = "btn btn-primary btn-xs btn_filter"><span>Filtrer</span></button>
+							</form>
+						</section>
+						<div class="tableau tab_historique">
+							<table class="display" id="tab_client_heb" style="width:100%">
+								<thead>
+									<tr>
+										<td>
+											<span>NOM</span>
+										</td>
+										<td>
+											<span>DATE D'ARRIVEE</span>
+										</td>
+										<td>
+											<span>DATE DE DEPART</span>
+										</td>
+										<td>
+											<span>DUREE DU SEJOUR</span>
+										</td>
+									</tr>
+								</thead>
+								<tbody id ="tbody_load">
+                                   {% if items is empty%}
+									   <span>vide</span>
+                                   {% else %}
+									   {% for item in items %}
+										   <tr>
+
+											   <td>
+											   		<span>{{ item.nom }} <br> 
+														{% if item.prenom is defined %}
+															{{ item.prenom }}
+														{% endif %}   
+													</span>
+											   </td>
+											   <td>
+											   		<span>{{ item.getDateArrivee() | date('d-m-Y') }}</span>
+											   </td>
+											   <td>
+											   		<span>{{ item.getDateDepart() | date('d-m-Y') }}</span>
+											   </td>
+											    <td>
+											   		<span>{{ item.getDureeSejour() | date('d-m-Y') }}</span>
+											   </td>
+										   
+										   </tr>
+									   {% endfor %}
+								   {% endif %}
+                                </tbody>
+							</table>
+						</div>
+						<!-- Modal modif  -->
+                    <div class="modal fade" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog opacity-animate4">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h3 class="modal-title" style="text-align: center;">Modification</h3>
+                                </div>
+                                <div class="modal-body modal_modif_client">
+                                    
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- fin Modal modif  -->
+
+                    <!-- Modal suppr  -->
+
+                    <div class="modal fade" id="modal_form_confirme" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog opacity-animate4">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h3 class="modal-title" style="text-align: center;">Voulez-vous vraiment supprimer cet élément ?</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="div__conf">
+                                        <button class="btn btn-warning supprimer" data-id = ""  data-dismiss="modal" data-confirm = "oui">Supprimer</button>
+                                        <button class="btn btn-warning annuler" data-dismiss="modal" data-confirm = "non">Annuler</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- fin Modal suppr  -->
+
+					</div>
+				</section>
+
+			</div>
+		</div>
+	</div>
+	<!-- / contenue  -->
+	</section>
+
+	{% endblock %}
+	{% block javascripts %}
+
+		<script>
+			$(document).ready(function () {
+
+					/* donnée pour les deux chart */
+
+						// tracer
+					var my_data_to = [
+						{% for t in tab_heb_to %}
+							{{ t }},
+						{% endfor %}
+					];
+
+					var my_data_ca = [
+						{% for tca in tab_heb_ca %}
+							{{ tca }} ,
+						{% endfor %}];
+
+					var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+
+					/* fin donnée pour les deux chart */
+
+					
+
+					function create_ctx1(){
+						var ctx1 = document.getElementById('canvas_to').getContext("2d");
+
+							
+
+						return ctx1;
+					}
+
+
+					function create_config1(data, labels,max_y, stepSize){
+
+						var ctx1 = create_ctx1();
+
+						var gradientfill_1 = ctx1.createLinearGradient(0, 0, 0, 320);
+						gradientfill_1.addColorStop(0, '#d29e00');
+						gradientfill_1.addColorStop(1, 'transparent');
+
+						var gradientfill_2 = ctx1.createLinearGradient(0, 0, 0, 320);
+						gradientfill_2.addColorStop(0, '#55d8ff');
+						gradientfill_2.addColorStop(1, 'transparent');
+
+
+						var config1 = {
+							type: 'line',
+							data: {
+								datasets: [
+									{
+										label: "Taux d'occupation",
+										fill: true,
+										backgroundColor: gradientfill_1,
+										borderColor: "#d29e00",
+
+										/* insertion des données sur l'axe (oy) */
+
+										data: data, // qui est un tableau simple
+
+										/* / insertion des données sur l'axe (oy) */
+										pointStyle: 'circle',
+										pointBackgroundColor: "transparent",
+										pointBorderWidth: '2',
+										radius: '5',
+										hoverRadius: '5',
+										borderWidth: 2
+
+									}
+								]
+							},
+							options: {
+
+								legend: {
+									display: false,
+									align: 'start',
+									position: 'bottom'
+
+								},
+
+								legendCallback: function (chart) {
+									var text = [];
+									text.push('<ul class="my_liste_legend ul_1">');
+										for (var i = 0; i < chart.data.datasets.length; i++) {
+											console.log(chart.data.datasets[i]); // see what's inside the obj.
+											text.push('<li>');
+											text.push('<span data_leg = "' + i + '" style="background-color:' + chart.data.datasets[i].borderColor + '">' + '</span><b data_leg = "' + i + '">' + chart.data.datasets[i].label + '</b>');
+											text.push('</li>');
+										}
+										text.push('</ul>');
+									return text.join("");
+								},
+								responsive: true,
+								title: {
+									display: true,
+									text: ''
+								},
+								tooltips: {
+									mode: 'index',
+									intersect: false
+								},
+								hover: {
+									mode: 'nearest',
+									intersect: true
+								},
+
+								scales: {
+
+									xAxes: [
+										{
+										type: 'category',
+
+										labels : labels, // qui est un tableau simple
+
+										/* / insertion des données sur l'axe (ox) */
+										gridLines: {
+												drawOnChartArea: true,
+												drawTicks: false,
+												color: "#f0f2f4"
+											},
+
+											ticks: {
+												padding: 20, // pour le marge % axe x
+												fontSize : (function(){
+													var w = $(window).width();
+													if(w<769){
+														return 7;
+													}
+													return 10;
+												})(),
+											}
+										}
+									],
+									yAxes: [
+										{
+											gridLines: {
+												drawOnChartArea: true,
+												drawTicks: false,
+												color: "#dddfe1"
+											},
+											ticks: {
+												padding: 20, // pour le marge % axe y
+												min: 0,
+												max: parseInt(max_y),
+												stepSize: parseInt(stepSize),
+												callback: function (value) {
+													return value + "%"
+												}
+											},
+
+											display: true,
+											scaleLabel: {
+												display: true,
+												labelString: ''
+											}
+										}
+									]
+								}
+							}
+
+						};
+
+						return config1;
+					}
+
+					
+					
+					
+					// fin event pour data 1
+
+
+					// fin chart 1
+					
+
+					// debut chart  2
+
+
+					function create_ctx2(){
+						var ctx2 = document.getElementById('canvas_ca').getContext("2d");
+
+							var gradientfill_1 = ctx2.createLinearGradient(0, 0, 0, 320);
+							gradientfill_1.addColorStop(0, '#d29e00');
+							gradientfill_1.addColorStop(1, 'transparent');
+
+							var gradientfill_2 = ctx2.createLinearGradient(0, 0, 0, 320);
+							gradientfill_2.addColorStop(0, '#55d8ff');
+							gradientfill_2.addColorStop(1, 'transparent');
+
+						return ctx2;
+					}
+
+					function create_config2(data, labels, max_y, stepSize){
+
+						var ctx2 = create_ctx2();
+
+						var gradientfill_1 = ctx2.createLinearGradient(0, 0, 0, 320);
+						gradientfill_1.addColorStop(0, '#d29e00');
+						gradientfill_1.addColorStop(1, 'transparent');
+
+						var gradientfill_2 = ctx2.createLinearGradient(0, 0, 0, 320);
+						gradientfill_2.addColorStop(0, '#55d8ff');
+						gradientfill_2.addColorStop(1, 'transparent');
+
+						var config2 = {
+							type: 'line',
+							data: {
+								datasets: [
+									{
+										label: "Chiffre d'affaire",
+										fill: true,
+										backgroundColor: gradientfill_2,
+										borderColor: "#55d8ff",
+
+										/* insertion des données sur l'axe (oy) */
+
+										data: data,
+
+										/* insertion des données sur l'axe (oy) */
+										pointStyle: 'circle',
+										pointBackgroundColor: "transparent",
+										pointBorderWidth: '2',
+										radius: '5',
+										hoverRadius: '5',
+										borderWidth: 2
+									}
+								]
+							},
+							options: {
+								legend: {
+									display: false,
+									align: 'start',
+									position: 'bottom'
+
+								},
+
+								legendCallback: function (chart) {
+									var text = [];
+									text.push('<ul class="my_liste_legend ul_2">');
+									for (var i = 0; i < chart.data.datasets.length; i++) {
+										console.log(chart.data.datasets[i]); // see what's inside the obj.
+										text.push('<li>');
+										text.push('<span data_leg = "' + i + '" style="background-color:' + chart.data.datasets[i].borderColor + '">' + '</span><b data_leg = "' + i + '">' + chart.data.datasets[i].label + '</b>');
+										text.push('</li>');
+									}
+									text.push('</ul>');
+									return text.join("");
+								},
+								responsive: true,
+								title: {
+									display: true,
+									text: ''
+								},
+								tooltips: {
+									mode: 'index',
+									intersect: false
+								},
+								hover: {
+									mode: 'nearest',
+									intersect: true
+								},
+
+								scales: {
+
+								xAxes: [
+									{
+										type: 'category',
+
+										/* insertion des données sur l'axe (ox) */
+
+										labels: labels,
+										/* /insertion des données sur l'axe (ox) */
+
+										gridLines: {
+											drawOnChartArea: true,
+											drawTicks: false,
+											color: "#f0f2f4"
+										},
+
+										ticks: {
+											padding: 20, // pour le marge % axe x
+											fontSize : (function(){
+												var w = $(window).width();
+												if(w<769){
+													return 7;
+												}
+												return 10;
+											})(),
+										}
+									}
+								],
+								yAxes: [
+									{
+										gridLines: {
+											drawOnChartArea: true,
+											drawTicks: false,
+											color: "#dddfe1"
+										},
+										ticks: {
+											padding: 20, // pour le marge % axe y
+											min: 0,
+											max: parseInt(max_y),
+											stepSize: parseInt(stepSize),
+
+											callback: function (value) {
+												return value + "M Ar"
+											}
+										},
+										display: true,
+										scaleLabel: {
+											display: true,
+											labelString: ''
+										}
+									}
+								]
+							}
+						
+							}
+
+						};
+
+						return config2;
+					} 
+				
+
+					// fin chart2
+
+
+					// responsive pour les chart
+
+
+					function create_chart1(ctx1, config1){
+						var myChart1 = new Chart(ctx1, config1);
+
+						// pour dire qu'on va utiliser notre propre légende html fenitra
+						document.getElementById('chart-legends_to').innerHTML = myChart1.generateLegend();
+
+						// event pour data 1
+
+						var ev_click = false;
+						var tab_temp = [];
+						for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) { // myChart1.data.datasets[0].data[i]= -10;
+							tab_temp[i] = myChart1.data.datasets[0].data[i];
+						}
+						$("#chart-legends_to").on('click', "li span[data_leg=0]", function () {
+
+							if (ev_click == false) {
+								$(".ul_1 li span[data_leg=0]").addClass("legende_click");
+								for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) {
+									myChart1.data.datasets[0].data[i] = -10;
+								}
+								myChart1.update();
+								ev_click = ! ev_click;
+								// alert(ev_click) ;
+							} else {
+								$(".ul_1 li span[data_leg=0]").removeClass("legende_click");
+								for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) {
+									myChart1.data.datasets[0].data[i] = tab_temp[i];
+								}
+								myChart1.update();
+								ev_click = ! ev_click;
+								// alert(ev_click) ;
+							}
+						});
+
+						return myChart1;
+
+					}
+
+					function create_chart2(ctx2, config2){
+						var myChart2 = new Chart(ctx2, config2);
+
+						// pour dire qu'on va utiliser notre propre légende html fenitra
+						document.getElementById('chart-legends_ca').innerHTML = myChart2.generateLegend();
+
+
+						// legende 2
+
+						var ev_click2 = false;
+						var tab_temp2 = [];
+						for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) { // myChart2.data.datasets[0].data[i]= -10;
+							tab_temp2[i] = myChart2.data.datasets[0].data[i];
+						}
+						$("#chart-legends_ca").on('click', "li span[data_leg=0]", function () {
+
+							if (ev_click2 == false) {
+								$(".ul_2 li span[data_leg=0]").addClass("legende_click");
+								for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) {
+									myChart2.data.datasets[0].data[i] = -10;
+								}
+									myChart2.update();
+									ev_click2 = ! ev_click2;
+									// alert(ev_click2) ;
+							} 
+							else {
+								$(".ul_2 li span[data_leg=0]").removeClass("legende_click");
+								for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) {
+									myChart2.data.datasets[0].data[i] = tab_temp2[i];
+								}
+
+								myChart2.update();
+								ev_click2 = ! ev_click2;
+									
+							}
+						});
+
+						return myChart2;
+
+					}
+
+
+					var myChart1 = create_chart1(create_ctx1(), create_config1(my_data_to, my_labels, 100, 20));
+
+					var myChart2 = create_chart2(create_ctx2(), create_config2(my_data_ca, my_labels, 100, 20));
+			
+					/* ajax pour loader le graph */
+
+					/* debut dataTable */
+
+						var pseudo_hotel = "{{ hotel }}" ;
+						//alert(pseudo_hotel);
+						
+							var table = $('#tab_client_heb').DataTable({
+									"language": {
+										"sEmptyTable": "Aucune donnée disponible dans le tableau",
+										"sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
+										"sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
+										"sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
+										"sInfoPostFix": "",
+										"sInfoThousands": ",",
+										"sLengthMenu": "Afficher _MENU_ éléments",
+										"sLoadingRecords": "Chargement...",
+										"sProcessing": "Traitement...",
+										"sSearch": "Rechercher :",
+										"sZeroRecords": "Aucun élément correspondant trouvé",
+										"oPaginate": {
+											"sFirst": "Premier",
+											"sLast": "Dernier",
+											"sNext": "Suivant",
+											"sPrevious": "Précédent"
+										},
+										"oAria": {
+											"sSortAscending": ": activer pour trier la colonne par ordre croissant",
+											"sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+										},
+										"select": {
+											"rows": {
+													"_": "%d lignes sélectionnées",
+													"0": "Aucune ligne sélectionnée",
+													"1": "1 ligne sélectionnée"
+											}
+										}
+									},
+	
+									//annule le tri
+									order : [[0 , 'asc']],
+									ordering : false,
+	
+									responsive: true,
+									scrollY: false, // raha scrollena de asina val ex 400
+									scrollX: true,
+									scrollCollapse: true,
+									paging: true,
+									autoFill: true
+							});
+	
+								new $.fn.dataTable.FixedHeader(table);
+								
+			
+							/*  fiun table */
+
+					/* fin datatable */
+
+
+					/* debut tri dans le tableau */
+
+						function initialise_dates() {
+							$("#date1").val("");
+							$("#date2").val("");
+						}
+						//initialise_dates();
+
+						$("#date1").on("change", function(){
+							if($("#date2").val() == ""){
+								//alert("mbola miandry");
+								$('#date2').css("border-color", "red");
+								setTimeout(() => {
+									$('#date2').css("border-color", "rgba(200, 200, 200, 0.8)");
+								}, 500);
+							}
+							
+							
+						})
+						$("#date2").on("change", function(){
+							if($("#date1").val() == ""){
+								$('#date2').css("border-color", "red");
+								setTimeout(() => {
+									$('#date2').css("border-color", "rgba(200, 200, 200, 0.8)");
+								}, 500);
+							}
+							
+							
+						})
+
+
+						var DateDiff = {
+
+						    inDays: function(d1, d2) {
+						        var t2 = d2.getTime();
+						        var t1 = d1.getTime();
+
+						        return parseInt((t2-t1)/(24*3600*1000));
+						    },
+
+						    inWeeks: function(d1, d2) {
+						        var t2 = d2.getTime();
+						        var t1 = d1.getTime();
+
+						        return parseInt((t2-t1)/(24*3600*1000*7));
+						    },
+
+						    inMonths: function(d1, d2) {
+						        var d1Y = d1.getFullYear();
+						        var d2Y = d2.getFullYear();
+						        var d1M = d1.getMonth();
+						        var d2M = d2.getMonth();
+
+						        return (d2M+12*d2Y)-(d1M+12*d1Y);
+						    },
+
+						    inYears: function(d1, d2) {
+						        return d2.getFullYear()-d1.getFullYear();
+						    }
+						}
+
+						
+						
+							
+						$('.btn_filter').click(function(e){
+							e.preventDefault();
+							
+							var date1 = new Date($('#date1').val());
+							var date2 = new Date($('#date2').val());
+
+							//alert(DateDiff.inDays(date1, date2));
+
+							// listons tous les dates entre ces deux dates
+
+							/*
+								
+								var dateObj = new Date();
+								var month = dateObj.getUTCMonth() + 1; //months from 1-12
+								var day = dateObj.getUTCDate();
+								var year = dateObj.getUTCFullYear();
+
+								newdate = year + "/" + month + "/" + day;
+
+							*/
+
+							var nextDay = new Date(date1);
+							nextDay.setDate(date1.getDate() + 1);
+
+							alert(nextDay.getUTCDate());
+						})
+						
+						
+
+						function do_ajax(date1, date2) {
+							
+							var data = {
+								"date1" : date1,
+								"date2" : date2,
+							}
+							$.ajax({
+								url : "/profile/tri_heb/"+pseudo_hotel,
+								type : "POST",
+								data : data,
+								success : function(response){
+									alert(response);
+									//console.log(response);
+								},
+								error : function(error){
+									alert('erreur au niveau de do_ajax_tab heb');
+								}
+							})
+						}
+
+
+					/* fin tri tableau heb */
+					// suppression client présent 
+
+
+					$(document).on('click', ".btn_client_suppr", function(ev){
+						//ev.preventDefault();
+						var id = $(this).attr('data-id');
+						//alert(id);
+						$('#div__conf button.supprimer').attr('data-id', id);
+					})
+
+					$('#div__conf button.supprimer').on('click', function(){
+						var id = $(this).attr('data-id');
+						//alert(id);
+						// ajax
+						$.ajax({
+							url : "/admin/suprimer_client",
+							data : {
+								"client_id" : id,
+								"pseudo_hotel" : pseudo_hotel,
+							},
+							type : "POST",
+							success : function(response){
+								if(response == "deleted"){
+									table.ajax.reload(null, false);
+								}
+							},
+							error : function(error){
+								alert('erreur de server');
+							},
+						})
+					})
+
+					/* fin suppression client*/
+
+					/* debut modif client */
+
+					$(document).on('click', '.btn_client_modif', function(ev){
+						ev.preventDefault();
+						var id = $(this).attr('data-id');
+						//alert(id);
+						$.ajax({
+							url : "/admin/check_client",
+							data : {
+								"client_id" : id,
+							},
+							type : "POST",
+							
+							success : function(response){
+								$('.modal_modif_client').html(response);
+								$('#modal_form').modal('show');
+							},
+							error : function(error){
+								alert('erreur de server');
+							},
+						})
+					})
+
+					$(document).on('click', '#a_modal_modif_client', function(ev){
+						ev.preventDefault();
+						var id = $(this).attr("data-id");
+						var nom = $('#modif_nom_client').val();
+						var prenom = $('#modif_prenom_client').val();
+						var date_arrivee = $('#modif_date_arrivee').val();
+						var date_depart = $('#modif_date_depart').val();
+						//alert(id+"/"+nom+"/"+date_depart+"/"+date_arrivee+"/"+prenom);
+						// ajax
+						$.ajax({
+							url : "/admin/edit_client",
+							data : {
+								"id" : id,
+								"nom" : nom,
+								"prenom" : prenom,
+								"date_arrivee" : date_arrivee,
+								"date_depart" : date_depart,
+							},
+							type : "POST",
+							beforeSend : function(){
+							$('#a_modal_modif_client').html('<span>Patienter...</span>'); 
+							},
+							success : function(response){
+								if(response == "ok"){
+									table.ajax.reload(null, false);
+									$('#modal_form').modal('hide');
+								}
+							},
+							error : function(error){
+								alert('erreur de server');
+							},
+							complete : function(){
+								$('#a_modal_modif_client').html('<span>Enregistrer</span>'); 
+							},
+						})
+					})
+
+
+					// triage chart heb_to
+					$('#mois_heb_to').on('change', function(){
+
+
+						$('#element_canvas_heb_to').empty();
+
+						var mois = $('#mois_heb_to').val();
+						var annee = $('#annee_heb_to').val();
+						var data = {'data' : mois+"-"+annee};
+						$.ajax({
+							url : "/profile/filtre/graph/heb_to/"+pseudo_hotel,
+							type : "POST",
+							data : data,
+							beforeSend : function(){
+								$('.load_canvas_to').css('display', 'flex');
+							},
+							success : function(response){
+								if(response){
+									//console.log(response);
+									if(mois != 'tous_les_mois'){
+										
+
+										var my_data = response;
+
+										var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
+
+										$('#element_canvas_heb_to').html('<div><canvas id="canvas_to"></canvas></div><div id="chart-legends_to"></div>');
+
+										setTimeout(function(){
+
+											myChart1 = new Chart(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
+											myChart1.update();
+											// pour dire qu'on va utiliser notre propre légende html fenitra
+											document.getElementById('chart-legends_to').innerHTML = myChart1.generateLegend();
+
+											// event pour data 1
+
+											var ev_click = false;
+											var tab_temp = [];
+											for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) { // myChart1.data.datasets[0].data[i]= -10;
+												tab_temp[i] = myChart1.data.datasets[0].data[i];
+											}
+											$("#chart-legends_to").on('click', "li span[data_leg=0]", function () {
+
+												if (ev_click == false) {
+													$(".ul_1 li span[data_leg=0]").addClass("legende_click");
+													for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) {
+														myChart1.data.datasets[0].data[i] = -10;
+													}
+													myChart1.update();
+													ev_click = ! ev_click;
+													// alert(ev_click) ;
+												} else {
+													$(".ul_1 li span[data_leg=0]").removeClass("legende_click");
+													for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) {
+														myChart1.data.datasets[0].data[i] = tab_temp[i];
+													}
+													myChart1.update();
+													ev_click = ! ev_click;
+													// alert(ev_click) ;
+												}
+											});
+
+										}, 1000)
+
+									}
+									else{
+										var my_data = response;
+										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+										$('#element_canvas_heb_to').html('<div><canvas id="canvas_to"></canvas></div><div id="chart-legends_to"></div>');
+
+										setTimeout(function(){
+
+											myChart1 = new Chart(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
+											myChart1.update();
+											// pour dire qu'on va utiliser notre propre légende html fenitra
+											document.getElementById('chart-legends_to').innerHTML = myChart1.generateLegend();
+
+											// event pour data 1
+
+											var ev_click = false;
+											var tab_temp = [];
+											for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) { // myChart1.data.datasets[0].data[i]= -10;
+												tab_temp[i] = myChart1.data.datasets[0].data[i];
+											}
+											$("#chart-legends_to").on('click', "li span[data_leg=0]", function () {
+
+												if (ev_click == false) {
+													$(".ul_1 li span[data_leg=0]").addClass("legende_click");
+													for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) {
+														myChart1.data.datasets[0].data[i] = -10;
+													}
+													myChart1.update();
+													ev_click = ! ev_click;
+													// alert(ev_click) ;
+												} else {
+													$(".ul_1 li span[data_leg=0]").removeClass("legende_click");
+													for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) {
+														myChart1.data.datasets[0].data[i] = tab_temp[i];
+													}
+													myChart1.update();
+													ev_click = ! ev_click;
+													// alert(ev_click) ;
+												}
+											});
+
+										}, 1000)
+									}
+								}
+							}, 
+							error : function(error){
+								alert('erreur server au niveau de triage chart heb_to '+pseudo_hotel)
+							},
+							complete : function(){
+								setTimeout(function(){
+									$('.load_canvas_to').css('display', 'none');
+								}, 1000);
+							}
+						})
+					})
+
+					$('#annee_heb_to').on('change', function(){
+						$('#element_canvas_heb_to').empty();
+						var mois = $('#mois_heb_to').val();
+						var annee = $('#annee_heb_to').val();
+						var data = {'data' : mois+"-"+annee};
+						$.ajax({
+							url : "/profile/filtre/graph/heb_to/"+pseudo_hotel,
+							type : "POST",
+							data : data,
+							beforeSend : function(){
+								$('.load_canvas_to').css('display', 'flex');
+							},
+							success : function(response){
+								if(response){
+									//console.log(response);
+									if(mois != 'tous_les_mois'){
+										
+
+										var my_data = response;
+
+										var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
+
+										$('#element_canvas_heb_to').html('<div><canvas id="canvas_to"></canvas></div><div id="chart-legends_to"></div>');
+
+										setTimeout(function(){
+
+											myChart1 = new Chart(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
+											myChart1.update();
+											// pour dire qu'on va utiliser notre propre légende html fenitra
+											document.getElementById('chart-legends_to').innerHTML = myChart1.generateLegend();
+
+											// event pour data 1
+
+											var ev_click = false;
+											var tab_temp = [];
+											for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) { // myChart1.data.datasets[0].data[i]= -10;
+												tab_temp[i] = myChart1.data.datasets[0].data[i];
+											}
+											$("#chart-legends_to").on('click', "li span[data_leg=0]", function () {
+
+												if (ev_click == false) {
+													$(".ul_1 li span[data_leg=0]").addClass("legende_click");
+													for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) {
+														myChart1.data.datasets[0].data[i] = -10;
+													}
+													myChart1.update();
+													ev_click = ! ev_click;
+													// alert(ev_click) ;
+												} else {
+													$(".ul_1 li span[data_leg=0]").removeClass("legende_click");
+													for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) {
+														myChart1.data.datasets[0].data[i] = tab_temp[i];
+													}
+													myChart1.update();
+													ev_click = ! ev_click;
+													// alert(ev_click) ;
+												}
+											});
+
+										}, 1000)
+
+									}
+									else{
+										var my_data = response;
+										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+
+										$('#element_canvas_heb_to').html('<div><canvas id="canvas_to"></canvas></div><div id="chart-legends_to"></div>');
+
+										setTimeout(function(){
+
+											myChart1 = new Chart(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
+											myChart1.update();
+											// pour dire qu'on va utiliser notre propre légende html fenitra
+											document.getElementById('chart-legends_to').innerHTML = myChart1.generateLegend();
+
+											// event pour data 1
+
+											var ev_click = false;
+											var tab_temp = [];
+											for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) { // myChart1.data.datasets[0].data[i]= -10;
+												tab_temp[i] = myChart1.data.datasets[0].data[i];
+											}
+											$("#chart-legends_to").on('click', "li span[data_leg=0]", function () {
+
+												if (ev_click == false) {
+													$(".ul_1 li span[data_leg=0]").addClass("legende_click");
+													for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) {
+														myChart1.data.datasets[0].data[i] = -10;
+													}
+													myChart1.update();
+													ev_click = ! ev_click;
+													// alert(ev_click) ;
+												} else {
+													$(".ul_1 li span[data_leg=0]").removeClass("legende_click");
+													for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) {
+														myChart1.data.datasets[0].data[i] = tab_temp[i];
+													}
+													myChart1.update();
+													ev_click = ! ev_click;
+													// alert(ev_click) ;
+												}
+											});
+
+										}, 1000)
+									}
+								}
+							}, 
+						
+							complete : function(){
+								setTimeout(function(){
+									$('.load_canvas_to').css('display', 'none');
+								}, 1000);
+							},
+							error : function(error){
+								alert('erreur server au niveau de triage chart heb_to '+pseudo_hotel)
+							}
+						})
+					})
+
+					// triage chart heb_ca
+					$('#mois_heb_ca').on('change', function(){
+
+						$('#element_canvas_heb_ca').empty();
+
+						var mois = $('#mois_heb_ca').val();
+						var annee = $('#annee_heb_ca').val();
+						var data = {'data' : mois+"-"+annee};
+						$.ajax({
+							url : "/profile/filtre/graph/heb_ca/"+pseudo_hotel,
+							type : "POST",
+							data : data,
+							beforeSend : function(){
+								$('.load_canvas_ca').css('display', 'flex');
+							},
+							success : function(response){
+								if(response){
+									//console.log(response);
+									if(mois != 'tous_les_mois'){
+										var my_data = response;
+										console.log(my_data);
+										var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
+
+										$('#element_canvas_heb_ca').html('<div><canvas id="canvas_ca"></canvas></div><div id="chart-legends_ca"></div>');
+
+										setTimeout(function(){
+
+											myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, 20, 5));
+											myChart2.update();
+											
+											// pour dire qu'on va utiliser notre propre légende html fenitra
+											document.getElementById('chart-legends_ca').innerHTML = myChart2.generateLegend();
+
+
+											// legende 2
+
+											var ev_click2 = false;
+											var tab_temp2 = [];
+											for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) { // myChart2.data.datasets[0].data[i]= -10;
+												tab_temp2[i] = myChart2.data.datasets[0].data[i];
+											}
+											$("#chart-legends_ca").on('click', "li span[data_leg=0]", function () {
+
+												if (ev_click2 == false) {
+													$(".ul_2 li span[data_leg=0]").addClass("legende_click");
+													for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) {
+														myChart2.data.datasets[0].data[i] = -10;
+													}
+														myChart2.update();
+														ev_click2 = ! ev_click2;
+														// alert(ev_click2) ;
+												} 
+												else {
+													$(".ul_2 li span[data_leg=0]").removeClass("legende_click");
+													for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) {
+														myChart2.data.datasets[0].data[i] = tab_temp2[i];
+													}
+
+													myChart2.update();
+													ev_click2 = ! ev_click2;
+														
+												}
+											});
+
+										}, 1000)
+
+									}
+									else{
+										var my_data = response;
+										console.log(my_data);
+										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+
+										$('#element_canvas_heb_ca').html('<div><canvas id="canvas_ca"></canvas></div><div id="chart-legends_ca"></div>');
+
+										setTimeout(function(){
+
+											myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, 100, 20));
+											myChart2.update();
+											
+											// pour dire qu'on va utiliser notre propre légende html fenitra
+											document.getElementById('chart-legends_ca').innerHTML = myChart2.generateLegend();
+
+
+											// legende 2
+
+											var ev_click2 = false;
+											var tab_temp2 = [];
+											for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) { // myChart2.data.datasets[0].data[i]= -10;
+												tab_temp2[i] = myChart2.data.datasets[0].data[i];
+											}
+											$("#chart-legends_ca").on('click', "li span[data_leg=0]", function () {
+
+												if (ev_click2 == false) {
+													$(".ul_2 li span[data_leg=0]").addClass("legende_click");
+													for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) {
+														myChart2.data.datasets[0].data[i] = -10;
+													}
+														myChart2.update();
+														ev_click2 = ! ev_click2;
+														// alert(ev_click2) ;
+												} 
+												else {
+													$(".ul_2 li span[data_leg=0]").removeClass("legende_click");
+													for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) {
+														myChart2.data.datasets[0].data[i] = tab_temp2[i];
+													}
+
+													myChart2.update();
+													ev_click2 = ! ev_click2;
+														
+												}
+											});
+
+										}, 1000)
+									}
+								}
+							}, 
+							error : function(error){
+								alert('erreur server au niveau de triage chart heb_to '+pseudo_hotel)
+							},
+							complete : function(){
+								setTimeout(function(){
+									$('.load_canvas_ca').css('display', 'none');
+								}, 1000);
+							}
+						})
+					})
+
+					$('#annee_heb_ca').on('change', function(){
+						
+						$('#element_canvas_heb_ca').empty();
+						
+						var mois = $('#mois_heb_ca').val();
+						var annee = $('#annee_heb_ca').val();
+						var data = {'data' : mois+"-"+annee};
+						//alert(data.data);
+						$.ajax({
+							url : "/profile/filtre/graph/heb_ca/"+pseudo_hotel,
+							type : "POST",
+							data : data,
+							beforeSend : function(){
+								$('.load_canvas_ca').css('display', 'flex');
+							},
+							success : function(response){
+								
+								if(response){
+									//console.log(response);
+									if(mois != 'tous_les_mois'){
+										var my_data = response;
+										console.log(my_data);
+										var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
+
+										$('#element_canvas_heb_ca').html('<div><canvas id="canvas_ca"></canvas></div><div id="chart-legends_ca"></div>');
+
+										setTimeout(function(){
+
+											myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, 20, 5));
+											myChart2.update();
+											
+											// pour dire qu'on va utiliser notre propre légende html fenitra
+											document.getElementById('chart-legends_ca').innerHTML = myChart2.generateLegend();
+
+
+											// legende 2
+
+											var ev_click2 = false;
+											var tab_temp2 = [];
+											for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) { // myChart2.data.datasets[0].data[i]= -10;
+												tab_temp2[i] = myChart2.data.datasets[0].data[i];
+											}
+											$("#chart-legends_ca").on('click', "li span[data_leg=0]", function () {
+
+												if (ev_click2 == false) {
+													$(".ul_2 li span[data_leg=0]").addClass("legende_click");
+													for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) {
+														myChart2.data.datasets[0].data[i] = -10;
+													}
+														myChart2.update();
+														ev_click2 = ! ev_click2;
+														// alert(ev_click2) ;
+												} 
+												else {
+													$(".ul_2 li span[data_leg=0]").removeClass("legende_click");
+													for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) {
+														myChart2.data.datasets[0].data[i] = tab_temp2[i];
+													}
+
+													myChart2.update();
+													ev_click2 = ! ev_click2;
+														
+												}
+											});
+
+										}, 1000)
+
+									}
+									else{
+										var my_data = response;
+										console.log(my_data);
+										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+										
+										$('#element_canvas_heb_ca').html('<div><canvas id="canvas_ca"></canvas></div><div id="chart-legends_ca"></div>');
+
+										setTimeout(function(){
+
+											myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, 100, 20));
+											myChart2.update();
+											
+											// pour dire qu'on va utiliser notre propre légende html fenitra
+											document.getElementById('chart-legends_ca').innerHTML = myChart2.generateLegend();
+
+
+											// legende 2
+
+											var ev_click2 = false;
+											var tab_temp2 = [];
+											for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) { // myChart2.data.datasets[0].data[i]= -10;
+												tab_temp2[i] = myChart2.data.datasets[0].data[i];
+											}
+											$("#chart-legends_ca").on('click', "li span[data_leg=0]", function () {
+
+												if (ev_click2 == false) {
+													$(".ul_2 li span[data_leg=0]").addClass("legende_click");
+													for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) {
+														myChart2.data.datasets[0].data[i] = -10;
+													}
+														myChart2.update();
+														ev_click2 = ! ev_click2;
+														// alert(ev_click2) ;
+												} 
+												else {
+													$(".ul_2 li span[data_leg=0]").removeClass("legende_click");
+													for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) {
+														myChart2.data.datasets[0].data[i] = tab_temp2[i];
+													}
+
+													myChart2.update();
+													ev_click2 = ! ev_click2;
+														
+												}
+											});
+
+										}, 1000)
+									}
+								}
+							}, 
+							error : function(error){
+								alert('erreur server au niveau de triage chart heb_ca '+pseudo_hotel)
+							},
+							complete : function(){
+								setTimeout(function(){
+									$('.load_canvas_ca').css('display', 'none');
+								}, 1000);
+							}
+						})
+					})
+
+
+				})
+			</script>
+
+
+
+	{% endblock %}

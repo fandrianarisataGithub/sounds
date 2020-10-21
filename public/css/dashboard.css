@@ -988,7 +988,46 @@
       border-radius: 4px;
       color: #858790;
   }
-  
+.load_canvas_to{
+    background: rgba(200,200,200,1);
+    display: none;
+
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50%;
+    z-index: 2;
+    position: absolute;
+}
+.load_canvas_ca{
+   background: rgba(200,200,200,1);
+    display: none;
+
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50%;
+    z-index: 2;
+    position: absolute;
+}
+.load_canvas_to p{
+    transform: scale(0.8);
+    animation: scale_p 2s infinite ease-in-out;
+}
+
+.load_canvas_ca p{
+    transform: scale(0.8);
+    animation: scale_p 2s infinite ease-in-out;
+}
+
+@keyframes scale_p {
+    0%{
+        transform: scale(0.6);
+    }
+     100%{
+        transform: scale(1);
+    }
+} 
   .date_compte_rendu {
       height: 25px;
       padding-top: 0px;
