@@ -27,6 +27,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class PageController extends AbstractController
 {
 
+    private  $services;
+    public function __construct(Services $services)
+    {
+        $this->services = $services;
+    }
+
     /**
      * @Route("/", name="first_page")
      */
@@ -39,23 +45,32 @@ class PageController extends AbstractController
     /**
      * @Route("/profile/{pseudo_hotel}/setting", name="setting")
      */
-    public function setting(UserRepository $repoUser, Request $request, EntityManagerInterface $manager, SessionInterface $session, $pseudo_hotel)
-    {
+    public function setting(HotelRepository $repoHotel, UserRepository $repoUser, Request $request, EntityManagerInterface $manager, SessionInterface $session, $pseudo_hotel)
+    {   
+       
         $tab_user = $repoUser->findAll();
         $data_session = $session->get('hotel');
         $data_session['pseudo_hote'] = $pseudo_hotel;
         $data_session['current_page'] = "setting";
-        return $this->render('/page/setting.html.twig', [
-            "liste_user" => $tab_user,
-            "hotel" => $data_session['pseudo_hotel'],
-            "current_page" => $data_session['current_page']
 
-        ]);
+        $user = $data_session['user'];
+        $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
+        if($pos == "impossible"){
+            return $this->render('/page/error.html.twig');
+        }
+        else{
+            return $this->render('/page/setting.html.twig', [
+                "liste_user" => $tab_user,
+                "hotel" => $data_session['pseudo_hotel'],
+                "current_page" => $data_session['current_page']
+
+            ]);
+        }
     }
     /**
      * @Route("/profile/{pseudo_hotel}/crj", name="crj")
      */
-    public function crj(SessionInterface $session,$pseudo_hotel, HotelRepository $repoHotel, DonneeDuJourRepository $repoDoneeDJ)
+    public function crj(SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel, DonneeDuJourRepository $repoDoneeDJ)
     {
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "crj";
@@ -71,12 +86,19 @@ class PageController extends AbstractController
                 array_push($tab, $item);
             }
         }
-        return $this->render('page/crj.html.twig', [
-            "items" => $tab,
-            "id" => "li__compte_rendu",
-            "hotel" => $data_session['pseudo_hotel'],
-            "current_page" => $data_session['current_page']
-        ]);
+        $user = $data_session['user'];
+        $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
+        if ($pos == "impossible") {
+            return $this->render('/page/error.html.twig');
+        }
+        else{
+            return $this->render('page/crj.html.twig', [
+                "items" => $tab,
+                "id" => "li__compte_rendu",
+                "hotel" => $data_session['pseudo_hotel'],
+                "current_page" => $data_session['current_page']
+            ]);
+        }
     }
 
     /**
@@ -430,18 +452,24 @@ class PageController extends AbstractController
            
         }
 
-       //dd($tab_heb_ca);
-        return $this->render('page/rechange_hebergement.html.twig', [
-            "id" => "li__hebergement",
-            "tab_annee" => $tab_sans_doublant,
-            "hotel" => $data_session['pseudo_hotel'],
-            "current_page" => $data_session['current_page'],
-            "tab_heb_to" => $tab_heb_to,
-            "tab_heb_ca" => $tab_heb_ca,
-            "tab_labels" => $tab_labels,
-            "type_affichage" => "annee",
-            'items' => $tab_aff,
-        ]);
+        $user = $data_session['user'];
+        $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
+        if ($pos == "impossible") {
+            return $this->render('/page/error.html.twig');
+        }
+       else{
+            return $this->render('page/hebergement.html.twig', [
+                "id" => "li__hebergement",
+                "tab_annee" => $tab_sans_doublant,
+                "hotel" => $data_session['pseudo_hotel'],
+                "current_page" => $data_session['current_page'],
+                "tab_heb_to" => $tab_heb_to,
+                "tab_heb_ca" => $tab_heb_ca,
+                "tab_labels" => $tab_labels,
+                "type_affichage" => "annee",
+                'items' => $tab_aff,
+            ]);
+       }
     }
 
     
@@ -450,7 +478,7 @@ class PageController extends AbstractController
     /**
      * @Route("/profile/{pseudo_hotel}/restaurant", name="restaurant")
      */
-    public function restaurant(SessionInterface $session, $pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ)
+    public function restaurant(SessionInterface $session, $pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "restaurant";
@@ -841,24 +869,31 @@ class PageController extends AbstractController
             "Nov",
             "Dec"
         ];
-        
-        return $this->render('page/restaurant.html.twig', [
-            "id" => "li__restaurant",
-            "hotel" => $data_session['pseudo_hotel'],
-            "current_page" => $data_session['current_page'],
-            "tab_annee" => $tab_sans_doublant,
-            "tab_res_ca" => $tab_res_ca,
-            "tab_res_pd" => $tab_res_pd,
-            "tab_res_d" => $tab_res_d,
-            "tab_res_di" => $tab_res_di,
-            'tab_res_total' => $tab_total,
-        ]);
+        // HotelRepository $repoHotel
+        $user = $data_session['user'];
+        $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
+        if ($pos == "impossible") {
+            return $this->render('/page/error.html.twig');
+        }
+       else{
+            return $this->render('page/restaurant.html.twig', [
+                "id" => "li__restaurant",
+                "hotel" => $data_session['pseudo_hotel'],
+                "current_page" => $data_session['current_page'],
+                "tab_annee" => $tab_sans_doublant,
+                "tab_res_ca" => $tab_res_ca,
+                "tab_res_pd" => $tab_res_pd,
+                "tab_res_d" => $tab_res_d,
+                "tab_res_di" => $tab_res_di,
+                'tab_res_total' => $tab_total,
+            ]);
+       }
     }
 
     /**
      * @Route("/profile/{pseudo_hotel}/spa", name="spa")
      */
-    public function spa(SessionInterface $session, $pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ)
+    public function spa(SessionInterface $session, $pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "spa";
@@ -1150,18 +1185,25 @@ class PageController extends AbstractController
             }
             $tab_spa_cu[$i] = number_format(($tab_spa_cu[$i] / $tab_ecu[$i]), 2);
         }
-        
-        //dd($tab_spa_cu);
 
-        return $this->render('page/spa.html.twig', [
-            "id" => "li__spa",
-            "hotel" => $data_session['pseudo_hotel'],
-            "current_page" => $data_session['current_page'],
-            "tab_annee" => $tab_sans_doublant,
-            'tab_spa_cu' => $tab_spa_cu,
-            'tab_spa_ca' => $tab_spa_ca,
-            'tab_spa_na' => $tab_spa_na,
-        ]);
+        //dd($tab_spa_cu);
+        // HotelRepository $repoHotel
+        $user = $data_session['user'];
+        $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
+        if ($pos == "impossible") {
+            return $this->render('/page/error.html.twig');
+        }
+        else{
+            return $this->render('page/spa.html.twig', [
+                "id" => "li__spa",
+                "hotel" => $data_session['pseudo_hotel'],
+                "current_page" => $data_session['current_page'],
+                "tab_annee" => $tab_sans_doublant,
+                'tab_spa_cu' => $tab_spa_cu,
+                'tab_spa_ca' => $tab_spa_ca,
+                'tab_spa_na' => $tab_spa_na,
+            ]);
+        }
     }
 
     /**
@@ -1192,17 +1234,24 @@ class PageController extends AbstractController
         $t += $x->getSFamilliale();
         $t += $x->getCDeluxe();
         $t += $x->getSVip();
-      
+
         //dd($t);
+        // HotelRepository $repoHotel
+        $user = $data_session['user'];
+        $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
+        if ($pos == "impossible") {
+            return $this->render('/page/error.html.twig');
+        }
 
-
-        return $this->render('page/fiche_hotel.html.twig', [
-            "id" => "fiche_hotel",
-            "fiche" => $x,
-            "total" => $t,
-            "hotel" => $data_session['pseudo_hotel'],
-            "current_page" => $data_session['current_page']
-        ]);
+       else{
+            return $this->render('page/fiche_hotel.html.twig', [
+                "id" => "fiche_hotel",
+                "fiche" => $x,
+                "total" => $t,
+                "hotel" => $data_session['pseudo_hotel'],
+                "current_page" => $data_session['current_page']
+            ]);
+       }
     }
 
     /**
@@ -1231,101 +1280,92 @@ class PageController extends AbstractController
             $manager->flush();
             return $this->redirectToRoute('donnee_jour', ['pseudo_hotel' => $pseudo_hotel]);
         }
+        // HotelRepository $repoHotel
+        $user = $data_session['user'];
+        $pos = $this->services->tester_droit($pseudo_hotel, $user, $reposHotel);
+        if ($pos == "impossible") {
+            return $this->render('/page/error.html.twig');
+        }
 
-        return $this->render('page/donnee_jour.html.twig', [
-            "id" => "li__donnee_du_jour",
-            "form" => $form->createView(),
-            "hotel" => $data_session['pseudo_hotel'],
-            "current_page" => $data_session['current_page'],
-            "today" => $today->format("Y-m-d"),
-        ]);
+       else{
+            return $this->render('page/donnee_jour.html.twig', [
+                "id" => "li__donnee_du_jour",
+                "form" => $form->createView(),
+                "hotel" => $data_session['pseudo_hotel'],
+                "current_page" => $data_session['current_page'],
+                "today" => $today->format("Y-m-d"),
+            ]);
+       }
     }
 
     /**
      * @Route("/profile/{pseudo_hotel}/h_hebergement", name="h_hebergement")
      */
-    public function h_hebergement(SessionInterface $session, $pseudo_hotel)
+    public function h_hebergement(SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "h_hebergement";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
-        return $this->render('page/h_hebergement.html.twig', [
-            "hotel" => $data_session['pseudo_hotel'],
-            "current_page" => $data_session['current_page']
-        ]);
+
+        // HotelRepository $repoHotel
+        $user = $data_session['user'];
+        $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
+        if ($pos == "impossible") {
+            return $this->render('/page/error.html.twig');
+        }
+       else{
+            return $this->render('page/h_hebergement.html.twig', [
+                "hotel" => $data_session['pseudo_hotel'],
+                "current_page" => $data_session['current_page']
+            ]);
+       }
     }
 
     /**
      * @Route("/profile/{pseudo_hotel}/h_restaurant", name="h_restaurant")
      */
-    public function h_restaurant(SessionInterface $session, $pseudo_hotel)
+    public function h_restaurant(SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "h_restaurant";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
-        return $this->render('page/h_restaurant.html.twig', [
-            "hotel" => $data_session['pseudo_hotel'],
-            "current_page" => $data_session['current_page']
-        ]);
+        // HotelRepository $repoHotel
+        $user = $data_session['user'];
+        $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
+        if ($pos == "impossible") {
+            return $this->render('/page/error.html.twig');
+        }
+       else{
+            return $this->render('page/h_restaurant.html.twig', [
+                "hotel" => $data_session['pseudo_hotel'],
+                "current_page" => $data_session['current_page']
+            ]);
+       }
     }
 
     /**
      * @Route("/profile/{pseudo_hotel}/h_spa", name="h_spa")
      */
-    public function h_spa(SessionInterface $session, $pseudo_hotel)
+    public function h_spa(SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "h_spa";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
-        return $this->render('page/h_spa.html.twig', [
-            "hotel" => $data_session['pseudo_hotel'],
-            "current_page" => $data_session['current_page']
-        ]);
+        // HotelRepository $repoHotel
+        $user = $data_session['user'];
+        $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
+        if ($pos == "impossible") {
+            return $this->render('/page/error.html.twig');
+        }
+       else{
+            return $this->render('page/h_spa.html.twig', [
+                "hotel" => $data_session['pseudo_hotel'],
+                "current_page" => $data_session['current_page']
+            ]);
+       }
     }
 
-    // Route pour les tris mois
-
-    /**
-     * @Route("/profile/{pseudo_hotel}/t_hebergement", name = "t_hebergement")
-     */
-    public function t_hebergement(SessionInterface $session, $pseudo_hotel)
-    {
-        $data_session = $session->get('hotel');
-        $data_session['current_page'] = "t_hebergement";
-        $data_session['pseudo_hotel'] = $pseudo_hotel;
-        return $this->render('page/tri_mois/hebergement.html.twig', [
-            "hotel" => $data_session['pseudo_hotel'],
-            "current_page" => $data_session['current_page']
-        ]);
-    }
-
-    /**
-     * @Route("/profile/{pseudo_hotel}/t_restaurant", name = "t_restaurant")
-     */
-    public function t_restaurant(SessionInterface $session, $pseudo_hotel)
-    {
-        $data_session = $session->get('hotel');
-        $data_session['current_page'] = "t_restaurant";
-        $data_session['pseudo_hotel'] = $pseudo_hotel;
-        return $this->render('page/tri_mois/restaurant.html.twig', [
-            "hotel" => $data_session['pseudo_hotel'],
-            "current_page" => $data_session['current_page']
-        ]);
-    }
-
-    /**
-     * @Route("/profile/{pseudo_hotel}/t_spa", name = "t_spa")
-     */
-    public function t_spa(SessionInterface $session, $pseudo_hotel)
-    {
-        $data_session = $session->get('hotel');
-        $data_session['current_page'] = "t_spa";
-        $data_session['pseudo_hotel'] = $pseudo_hotel;
-        return $this->render('page/tri_mois/spa.html.twig', [
-            "hotel" => $data_session['pseudo_hotel'],
-            "current_page" => $data_session['current_page']
-        ]);
-    }
+    
 
     // navigation entre les hotels
 
@@ -1766,51 +1806,51 @@ class PageController extends AbstractController
                     if ($son_annee_ca == $annee_actuel) {
                         if ($son_mois_ca == "01") {
                             $eca_jan++;
-                            $res_ca_jan += $ddj->getResCa();
+                            $res_ca_jan += intval($ddj->getResCa());
                         }
                         if ($son_mois_ca == "02") {
                             $eca_fev++;
-                            $res_ca_fev += $ddj->getResCa();
+                            $res_ca_fev += intval($ddj->getResCa());
                         }
                         if ($son_mois_ca == "03") {
                             $eca_mars++;
-                            $res_ca_mars += $ddj->getResCa();
+                            $res_ca_mars += intval($ddj->getResCa());
                         }
                         if ($son_mois_ca == "04") {
                             $eca_avr++;
-                            $res_ca_avr += $ddj->getResCa();
+                            $res_ca_avr += intval($ddj->getResCa());
                         }
                         if ($son_mois_ca == "05") {
                             $eca_mai++;
-                            $res_ca_mai += $ddj->getResCa();
+                            $res_ca_mai += intval($ddj->getResCa());
                         }
                         if ($son_mois_ca == "06") {
                             $eca_juin++;
-                            $res_ca_juin += $ddj->getResCa();
+                            $res_ca_juin += intval($ddj->getResCa());
                         }
                         if ($son_mois_ca == "07") {
                             $eca_juil++;
-                            $res_ca_juil += $ddj->getResCa();
+                            $res_ca_juil += intval($ddj->getResCa());
                         }
                         if ($son_mois_ca == "08") {
                             $eca_aou++;
-                            $res_ca_aou += $ddj->getResCa();
+                            $res_ca_aou += intval($ddj->getResCa());
                         }
                         if ($son_mois_ca == "09") {
                             $eca_sep++;
-                            $res_ca_sep += $ddj->getResCa();
+                            $res_ca_sep += intval($ddj->getResCa());
                         }
                         if ($son_mois_ca == "10") {
                             $eca_oct++;
-                            $res_ca_oct += $ddj->getResCa();
+                            $res_ca_oct += intval($ddj->getResCa());
                         }
                         if ($son_mois_ca == "11") {
                             $eca_nov++;
-                            $res_ca_nov += $ddj->getResCa();
+                            $res_ca_nov += intval($ddj->getResCa());
                         }
                         if ($son_mois_ca == "12") {
                             $eca_dec++;
-                            $res_ca_dec += $ddj->getResCa();
+                            $res_ca_dec += intval($ddj->getResCa());
                         }
                     }
                 }

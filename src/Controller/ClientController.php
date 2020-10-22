@@ -189,29 +189,32 @@ class ClientController extends AbstractController
             $client_id = $request->get('client_id');
             $client = $repoClient->find($client_id);
             $html = '';
-            $html.= '<form action="">
+            $html.= '<form action="/admin/modifier_client_tri" method = "POST">
+                        <input type="hidden" id = "hidden_date1" name = "date1">
+                        <input type="hidden" id = "hidden_date2" name = "date2">
+                        <input type="hidden" id = "hidden_id" value = "'. $client->getId() .'" name = "client_id">
                         <div class="form-group">
                             <label for="n_date_depart">Nom du client :
                             </label>
-                            <input type="text" id="modif_nom_client" class="form-control" value = "' . $client->getNom() . '">
+                            <input type="text" id="modif_nom_client" class="form-control" value = "' . $client->getNom() . '" name = "nom">
                         </div>
                             <div class="form-group">
                             <label for="n_date_depart">Prénom du client :
                             </label>
-                            <input type="text" id="modif_prenom_client" class="form-control" value = "' . $client->getPrenom() . '">
+                            <input type="text" id="modif_prenom_client" class="form-control" value = "' . $client->getPrenom() . '" name = "prenom">
                         </div>
                         <div class="form-group">
                             <label for="n_date_arrivee">Date d \'arrivée :
                             </label>
-                            <input type="date" id="modif_date_arrivee" class="form-control" value = "' . $client->getDateArrivee()->format("Y-m-d") . '">
+                            <input type="date" id="modif_date_arrivee" class="form-control" value = "' . $client->getDateArrivee()->format("Y-m-d") . '" name = "date_arrivee">
                         </div>
                         <div class="form-group">
                             <label for="n_date_depart">Date du départ :
                             </label>
-                            <input type="date" id="modif_date_depart" class="form-control" value = "' . $client->getDateDepart()->format("Y-m-d") . '">
+                            <input type="date" id="modif_date_depart" class="form-control" value = "' . $client->getDateDepart()->format("Y-m-d") . '" name = "date_depart">
                         </div>
                         <div class="form-group">
-                           <a href="#" id="a_modal_modif_client" data-id = "' .  $client->getId() . '" class="form-control btn btn-warning"><span>Enregistrer</span></a>
+                           <button type = "submit" class="form-control btn btn-warning"><span>Enregistrer</span></button>
                         </div>
                     </form>';
 

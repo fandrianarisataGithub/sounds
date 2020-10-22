@@ -1,8 +1,10 @@
 <?php
 
     namespace App\Services;
-    
-    class Services
+
+use App\Entity\User;
+use App\Repository\HotelRepository;
+class Services
     {
         public function all_date_between2_dates(\DateTime $date1, \DateTime $date2)
         {
@@ -27,5 +29,24 @@
             }
         
             return $tab;
+        }
+
+        public function tester_droit($pseudo_hotel, User $user, HotelRepository $repoHotel)
+        {
+            $son_hotel = $user->getHotel();
+            if($son_hotel == 'tous'){
+                return 'possible';
+            }
+            else{
+                // on compare son hotel à celle mentionné
+                $l_hotel = $repoHotel->findOneByNom($son_hotel);
+                $le_pseudo = $l_hotel->getPseudo();
+                if($pseudo_hotel == $le_pseudo){
+                    return 'possible';
+                }
+                else{
+                    return 'impossible';
+                }
+            }
         }
     } 

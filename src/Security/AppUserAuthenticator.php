@@ -122,6 +122,7 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
 
             $hotel['pseudo_hotel'] = $hotel_cible;
             $hotel['current_page'] = "crj";
+            $hotel['user'] = $user;
             //dd($hotel['pseudo_hotel']);
             // on stock ça dans la variable de session 
 
@@ -137,6 +138,7 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
             // initialisation de la variable session hotel
             $hotel['pseudo_hotel'] = $hotel_cible;
             $hotel['current_page'] = "crj";
+            $hotel['user'] = $user;
             //dd($hotel['pseudo_hotel']);
             // on stock ça dans la variable de session 
 

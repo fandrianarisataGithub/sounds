@@ -120,11 +120,14 @@
 							</select>
 						</form>
 					</div>
-					<div>
-						<canvas id="canvas_cas"></canvas>
-					</div>
-					<div id="chart-legends_cas"></div>
-
+                    <section>
+                        <div id="element_canvas_cas">
+                            <div>
+                                <canvas id="canvas_cas"></canvas>
+                            </div>
+                            {# <div id="chart-legends_cas"></div> #}
+                        </div>
+                    </section>
 				</section>
 				<!-- fin chart 1 -->
 
@@ -157,10 +160,15 @@
 							</select>
 						</form>
 					</div>
-					<div>
-						<canvas id="canvas_na"></canvas>
-					</div>
-					<div id="chart-legends_na"></div>
+					
+                    <section>
+                        <div id="element_canvas_na"> 
+                            <div>
+                                <canvas id="canvas_na"></canvas>
+                            </div>
+                            {# <div id="chart-legends_na"></div> #}
+                        </div>
+                    </section>
 
 				</section>
 				<!-- fin chart2  -->
@@ -195,11 +203,15 @@
 							</select>
 						</form>
 					</div>
-					<div>
-						<canvas id="canvas_cu"></canvas>
-					</div>
-					<div id="chart-legends_cu"></div>
-
+					
+                     <section>
+                        <div id="element_canvas_cu"> 
+                            <div>
+                                <canvas id="canvas_cu"></canvas>
+                            </div>
+                            {# <div id="chart-legends_cu"></div> #}
+                        </div>
+                    </section>
 				</section>
 				<!-- fin chart 3  -->
 			</div>
@@ -217,305 +229,304 @@
     
     <script>
          $(document).ready(function () {
-            var ctx1 = document.getElementById('canvas_cas').getContext("2d");
+           function create_ctx1() {
+                var ctx1 = document.getElementById('canvas_cas').getContext("2d");
+                return ctx1;
+           }
 
-            function draw_chart1(my_data, my_labels) {
 
+                    function create_config1(my_data, my_labels, my_max, my_stepSize){
+                        var ctx1 = create_ctx1();
 
-            var gradientfill_1 = ctx1.createLinearGradient(0, 0, 0, 320);
-                gradientfill_1.addColorStop(0, '#d29e00');
-                gradientfill_1.addColorStop(1, 'transparent');
+						var gradientfill_1 = ctx1.createLinearGradient(0, 0, 0, 320);
+						gradientfill_1.addColorStop(0, '#d29e00');
+						gradientfill_1.addColorStop(1, 'transparent');
 
-            var gradientfill_2 = ctx1.createLinearGradient(0, 0, 0, 320);
-                gradientfill_2.addColorStop(0, '#55d8ff');
-                gradientfill_2.addColorStop(1, 'transparent');
+						var gradientfill_2 = ctx1.createLinearGradient(0, 0, 0, 320);
+						gradientfill_2.addColorStop(0, '#55d8ff');
+						gradientfill_2.addColorStop(1, 'transparent');
 
-            var config1 = {
-                    type: 'line',
-                        data: {
-                            datasets: [
-                            {
-                                label: "Chiffre d'affaire",
-                                fill: true,
-                                backgroundColor: gradientfill_1,
-                                borderColor: "#d29e00",
+                        var config1 = {
+                            type: 'line',
+                                data: {
+                                    datasets: [
+                                    {
+                                        label: "Chiffre d'affaire",
+                                        fill: true,
+                                        backgroundColor: gradientfill_1,
+                                        borderColor: "#d29e00",
 
-                                /* insertion des données sur l'axe (oy) */
+                                        /* insertion des données sur l'axe (oy) */
 
-                                data: my_data,
+                                        data: my_data,
 
-                                /* insertion des données sur l'axe (oy) */
+                                        /* insertion des données sur l'axe (oy) */
 
-                                pointStyle: 'circle',
-                                pointBackgroundColor: "transparent",
-                                pointBorderWidth: '2',
-                                radius: '5',
-                                hoverRadius: '5',
-                                borderWidth: 2
+                                        pointStyle: 'circle',
+                                        pointBackgroundColor: "transparent",
+                                        pointBorderWidth: '2',
+                                        radius: '5',
+                                        hoverRadius: '5',
+                                        borderWidth: 2
 
-                            }
-                        ]
-                    },
-                    options: {
-                        legend: {
-                            display: false,
-                            align: 'start',
-                            position: 'bottom'
+                                    }
+                                ]
+                            },
+                            options: {
+                                legend: {
+                                    display: false,
+                                    align: 'start',
+                                    position: 'bottom'
 
-                        },
-
-                        legendCallback: function (chart) {
-                            var text = [];
-                            text.push('<ul class="my_liste_legend ul_1">');
-                            for (var i = 0; i < chart.data.datasets.length; i++) {
-                                console.log(chart.data.datasets[i]); // see what's inside the obj.
-                                text.push('<li>');
-                                text.push('<span data_leg = "' + i + '" style="background-color:' + chart.data.datasets[i].borderColor + '">' + '</span><b data_leg = "' + i + '">' + chart.data.datasets[i].label + '</b>');
-                                text.push('</li>');
-                            }
-                            text.push('</ul>');
-                            return text.join("");
-                        },
-                        responsive: true,
-                        title: {
-                            display: true,
-                            text: ''
-                        },
-                        tooltips: {
-                            mode: 'index',
-                            intersect: false
-                        },
-                        hover: {
-                            mode: 'nearest',
-                            intersect: true
-                        },
-
-                        scales: {
-
-                        xAxes: [
-                            {
-                                type: 'category',
-
-                                /* insertion des données sur l'axe (ox) */
-
-                                labels: my_labels,
-
-                                /* insertion des données sur l'axe (ox) */
-                                gridLines: {
-                                    drawOnChartArea: true,
-                                    drawTicks: false,
-                                    color: "#f0f2f4"
                                 },
 
-                                ticks: {
-                                    padding: 20 // pour le marge % axe x
-                                }
-                            }
-                        ],
-                        yAxes: [
-                            {
-                            gridLines: {
-                                drawOnChartArea: true,
-                                drawTicks: false,
-                                color: "#dddfe1"
-                            },
-                            ticks: {
-                                padding: 20, // pour le marge % axe y
-                                margin: 0,
-                                min: 0,
-                                max: 100,
-                                stepSize: 20,
-                                callback: function (value) {
-                                    return value + "M Ar"
-                                }
-                            },
-                                display: true,
-                                scaleLabel: {
+                                // legendCallback: function (chart) {
+                                //     var text = [];
+                                //     text.push('<ul class="my_liste_legend ul_1">');
+                                //     for (var i = 0; i < chart.data.datasets.length; i++) {
+                                //         console.log(chart.data.datasets[i]); // see what's inside the obj.
+                                //         text.push('<li>');
+                                //         text.push('<span data_leg = "' + i + '" style="background-color:' + chart.data.datasets[i].borderColor + '">' + '</span><b data_leg = "' + i + '">' + chart.data.datasets[i].label + '</b>');
+                                //         text.push('</li>');
+                                //     }
+                                //     text.push('</ul>');
+                                //     return text.join("");
+                                // },
+                                responsive: true,
+                                title: {
                                     display: true,
-                                    labelString: ''
-                                }
-                            }
-                        ]
-                    }
-                }
-
-            };
-                // si on veut ajouter un marge bottom des legendes
-                // Chart.Legend.prototype.afterFit = function() {
-                //     this.height = this.height + 150;
-
-                // };
-                var myChart1 = new Chart(ctx1, config1);
-                // pour dire qu'on va utiliser notre propre légende html fenitra
-                document.getElementById('chart-legends_cas').innerHTML = myChart1.generateLegend();
-
-                    // event pour data 1
-
-                var ev_click = false;
-                var tab_temp = [];
-                for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) { // myChart1.data.datasets[0].data[i]= -10;
-                    tab_temp[i] = myChart1.data.datasets[0].data[i];
-                }
-                $("#chart-legends_cas").on('click', "li span[data_leg=0]", function () {
-
-                    if (ev_click == false) {
-                        $(".ul_1 li span[data_leg=0]").addClass("legende_click");
-                        for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) {
-                            myChart1.data.datasets[0].data[i] = -10;
-                        }
-                        myChart1.update();
-                        ev_click = ! ev_click;
-                        // alert(ev_click) ;
-                    } else {
-                        $(".ul_1 li span[data_leg=0]").removeClass("legende_click");
-                        for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) {
-                            myChart1.data.datasets[0].data[i] = tab_temp[i];
-                        }
-                        myChart1.update();
-                        ev_click = ! ev_click;
-                        // alert(ev_click) ;
-                    }
-                });
-
-                    // fin event pour data 1
-
-
-                    // fin chart 1
-
-            return myChart1;
-            }
-
-            // debut chart  2
-            var ctx2 = document.getElementById('canvas_na').getContext("2d");
-
-            function draw_chart2(my_data, my_labels) {
-
-
-            var gradientfill_1 = ctx2.createLinearGradient(0, 0, 0, 320);
-            gradientfill_1.addColorStop(0, '#d29e00');
-            gradientfill_1.addColorStop(1, 'transparent');
-
-            var gradientfill_2 = ctx2.createLinearGradient(0, 0, 0, 320);
-            gradientfill_2.addColorStop(0, '#55d8ff');
-            gradientfill_2.addColorStop(1, 'transparent');
-
-            var config2 = {
-                type: 'line',
-                        data: {
-                            datasets: [
-                                        {
-                                            label: "Nombre d'abonné",
-                                            fill: true,
-                                            backgroundColor: gradientfill_2,
-                                            borderColor: "#55d8ff",
-
-                                            /* insertion des données sur l'axe (oy) */
-
-                                            data: my_data,
-
-                                            /* insertion des données sur l'axe (oy) */
-
-                                            pointStyle: 'circle',
-                                            pointBackgroundColor: "transparent",
-                                            pointBorderWidth: '2',
-                                            radius: '5',
-                                            hoverRadius: '5',
-                                            borderWidth: 2
-                                        }
-                                    ]
+                                    text: ''
                                 },
-                                options: {
-                                                    legend: {
-                                                        display: false,
-                                                        align: 'start',
-                                                        position: 'bottom'
+                                tooltips: {
+                                    mode: 'index',
+                                    intersect: false
+                                },
+                                hover: {
+                                    mode: 'nearest',
+                                    intersect: true
+                                },
 
-                                                    },
+                                scales: {
 
-                                                    legendCallback: function (chart) {
-                                                        var text = [];
-                                                        text.push('<ul class="my_liste_legend ul_2">');
-                                                        for (var i = 0; i < chart.data.datasets.length; i++) {
-                                                            console.log(chart.data.datasets[i]); // see what's inside the obj.
-                                                            text.push('<li>');
-                                                            text.push('<span data_leg = "x' + i + '" style="background-color:' + chart.data.datasets[i].borderColor + '">' + '</span><b data_leg = "' + i + '">' + chart.data.datasets[i].label + '</b>');
-                                                            text.push('</li>');
-                                                        }
-                                                        text.push('</ul>');
-                                                        return text.join("");
-                                                    },
-                                                    responsive: true,
-                                                    title: {
-                                                    display: true,
-                                                        text: ''
-                                                    },
-                                                    tooltips: {
-                                                        mode: 'index',
-                                                        intersect: false
-                                                    },
-                                                    hover: {
-                                                        mode: 'nearest',
-                                                        intersect: true
-                                                    },
+                                    xAxes: [
+                                        {
+                                            type: 'category',
 
-                                                    scales: {
+                                            /* insertion des données sur l'axe (ox) */
 
-                                                    xAxes: [
-                                                    {
-                                                        type: 'category',
+                                            labels: my_labels,
 
-                                                        /* insertion des données sur l'axe (ox) */
+                                            /* insertion des données sur l'axe (ox) */
+                                            gridLines: {
+                                                drawOnChartArea: true,
+                                                drawTicks: false,
+                                                color: "#f0f2f4"
+                                            },
 
-                                                        labels: my_labels,
-
-                                                        /* / insertion des données sur l'axe (ox) */
-
-                                                    gridLines: {
-                                                        drawOnChartArea: true,
-                                                        drawTicks: false,
-                                                        color: "#f0f2f4"
-                                                    },
-
-                                                    ticks: {
-                                                        padding: 20 // pour le marge % axe x
-                                                    }
-                                                }
-                                            ],
-                                            yAxes: [
-                                            {
-                                                gridLines: {
-                                                    drawOnChartArea: true,
-                                                    drawTicks: false,
-                                                    color: "#dddfe1"
-                                                },
-                                                ticks: {
-                                                    padding: 20, // pour le marge % axe y
-                                                    min: 0,
-                                                    max: 500,
-                                                    stepSize: 50,
-                                                    callback: function (value) {
-                                                        return value + " Abonnés"
-                                                    }
-                                                },
-                                                display: true,
-                                                scaleLabel: {
+                                            ticks: {
+                                                padding: 20 // pour le marge % axe x
+                                            }
+                                        }
+                                    ],
+                                    yAxes: [
+                                        {
+                                        gridLines: {
+                                            drawOnChartArea: true,
+                                            drawTicks: false,
+                                            color: "#dddfe1"
+                                        },
+                                        ticks: {
+                                            padding: 20, // pour le marge % axe y
+                                            margin: 0,
+                                            min: 0,
+                                            max: my_max,
+                                            stepSize: my_stepSize,
+                                            callback: function (value) {
+                                                return value + "M Ar"
+                                            }
+                                        },
+                                            display: true,
+                                            scaleLabel: {
                                                 display: true,
                                                 labelString: ''
                                             }
                                         }
                                     ]
-                                }
+                                 }
                             }
 
-                        };
-                        // si on veut ajouter un marge bottom des legendes
-                        // Chart.Legend.prototype.afterFit = function() {
-                        //     this.height = this.height + 150;
+                        }
+                        return config1;
+                    }
+                
+                    function create_chart1(ctx1, config1){
+                        var myChart1 = new Chart(ctx1, config1);
+                        // pour dire qu'on va utiliser notre propre légende html fenitra
+                       // document.getElementById('chart-legends_cas').innerHTML = myChart1.generateLegend();
 
-                        // };
+
+                        var ev_click = false;
+                        var tab_temp = [];
+                        for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) { // myChart1.data.datasets[0].data[i]= -10;
+                            tab_temp[i] = myChart1.data.datasets[0].data[i];
+                        }
+                        $("#chart-legends_cas").on('click', "li span[data_leg=0]", function () {
+
+                            if (ev_click == false) {
+                                $(".ul_1 li span[data_leg=0]").addClass("legende_click");
+                                for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) {
+                                    myChart1.data.datasets[0].data[i] = -10;
+                                }
+                                myChart1.update();
+                                ev_click = ! ev_click;
+                                // alert(ev_click) ;
+                            } else {
+                                $(".ul_1 li span[data_leg=0]").removeClass("legende_click");
+                                for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) {
+                                    myChart1.data.datasets[0].data[i] = tab_temp[i];
+                                }
+                                myChart1.update();
+                                ev_click = ! ev_click;
+                                // alert(ev_click) ;
+                            }
+                        })
+
+                        return myChart1;
+                    }
+            
+            
+                   function create_ctx2(){
+                        var ctx2 = document.getElementById('canvas_na').getContext("2d");
+                        return ctx2;
+                   }
+
+                   function create_config2(my_data, my_labels, my_max, my_stepSize){
+                        var ctx2 = create_ctx2();
+                    var gradientfill_1 = ctx2.createLinearGradient(0, 0, 0, 320);
+                    gradientfill_1.addColorStop(0, '#d29e00');
+                    gradientfill_1.addColorStop(1, 'transparent');
+
+                    var gradientfill_2 = ctx2.createLinearGradient(0, 0, 0, 320);
+                    gradientfill_2.addColorStop(0, '#55d8ff');
+                    gradientfill_2.addColorStop(1, 'transparent');
+                       var config2 = {
+                            type: 'line',
+                                    data: {
+                                        datasets: [
+                                                    {
+                                                        label: "Nombre d'abonné",
+                                                        fill: true,
+                                                        backgroundColor: gradientfill_2,
+                                                        borderColor: "#55d8ff",
+
+                                                        /* insertion des données sur l'axe (oy) */
+
+                                                        data: my_data,
+
+                                                        /* insertion des données sur l'axe (oy) */
+
+                                                        pointStyle: 'circle',
+                                                        pointBackgroundColor: "transparent",
+                                                        pointBorderWidth: '2',
+                                                        radius: '5',
+                                                        hoverRadius: '5',
+                                                        borderWidth: 2
+                                                    }
+                                                ]
+                                            },
+                                            options: {
+                                                                legend: {
+                                                                    display: false,
+                                                                    align: 'start',
+                                                                    position: 'bottom'
+
+                                                                },
+
+                                                                // legendCallback: function (chart) {
+                                                                //     var text = [];
+                                                                //     text.push('<ul class="my_liste_legend ul_2">');
+                                                                //     for (var i = 0; i < chart.data.datasets.length; i++) {
+                                                                //         console.log(chart.data.datasets[i]); // see what's inside the obj.
+                                                                //         text.push('<li>');
+                                                                //         text.push('<span data_leg = "x' + i + '" style="background-color:' + chart.data.datasets[i].borderColor + '">' + '</span><b data_leg = "' + i + '">' + chart.data.datasets[i].label + '</b>');
+                                                                //         text.push('</li>');
+                                                                //     }
+                                                                //     text.push('</ul>');
+                                                                //     return text.join("");
+                                                                // },
+                                                                responsive: true,
+                                                                title: {
+                                                                display: true,
+                                                                    text: ''
+                                                                },
+                                                                tooltips: {
+                                                                    mode: 'index',
+                                                                    intersect: false
+                                                                },
+                                                                hover: {
+                                                                    mode: 'nearest',
+                                                                    intersect: true
+                                                                },
+
+                                                                scales: {
+
+                                                                xAxes: [
+                                                                {
+                                                                    type: 'category',
+
+                                                                    /* insertion des données sur l'axe (ox) */
+
+                                                                    labels: my_labels,
+
+                                                                    /* / insertion des données sur l'axe (ox) */
+
+                                                                gridLines: {
+                                                                    drawOnChartArea: true,
+                                                                    drawTicks: false,
+                                                                    color: "#f0f2f4"
+                                                                },
+
+                                                                ticks: {
+                                                                    padding: 20 // pour le marge % axe x
+                                                                }
+                                                            }
+                                                        ],
+                                                        yAxes: [
+                                                        {
+                                                            gridLines: {
+                                                                drawOnChartArea: true,
+                                                                drawTicks: false,
+                                                                color: "#dddfe1"
+                                                            },
+                                                            ticks: {
+                                                                padding: 20, // pour le marge % axe y
+                                                                min: 0,
+                                                                max: my_max, // 500 teo
+                                                                stepSize: my_stepSize, // 50 teo 
+                                                                callback: function (value) {
+                                                                    return value + " Abonnés"
+                                                                }
+                                                            },
+                                                            display: true,
+                                                            scaleLabel: {
+                                                            display: true,
+                                                            labelString: ''
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+
+                                    };
+
+                       return config2;
+                   }
+
+                   function create_chart2(ctx2, config2) {
+                       
                         var myChart2 = new Chart(ctx2, config2);
                         // pour dire qu'on va utiliser notre propre légende html fenitra
-                        document.getElementById('chart-legends_na').innerHTML = myChart2.generateLegend();
+                        //document.getElementById('chart-legends_na').innerHTML = myChart2.generateLegend();
 
 
                         // legende 2
@@ -545,25 +556,24 @@
                                 // alert(ev_click2) ;
                             }
                         });
-
-                        // fin legende 2
-
-                    return myChart2;
-                }
+                        return myChart2;
+                   }
+                
                 // fin chart 2
 
-                var ctx3 = document.getElementById('canvas_cu').getContext("2d");
+                function create_ctx3(){
+                    var ctx3 = document.getElementById('canvas_cu').getContext("2d");
+                    return ctx3;
+                }
+                
 
-                function draw_chart3(my_data, my_labels) {
+                function create_config3(my_data, my_labels, my_max, my_stepSize){
+                    var ctx3 = create_ctx3();
 
-                    
                     var gradientfill_1 = ctx3.createLinearGradient(0, 0, 0, 320);
                     gradientfill_1.addColorStop(0, '#d29e00');
                     gradientfill_1.addColorStop(1, 'transparent');
 
-                    var gradientfill_2 = ctx3.createLinearGradient(0, 0, 0, 320);
-                    gradientfill_2.addColorStop(0, '#55d8ff');
-                    gradientfill_2.addColorStop(1, 'transparent');
 
                     var config3 = {
                         type: 'line',
@@ -598,18 +608,18 @@
 
                                 },
 
-                                legendCallback: function (chart) {
-                                    var text = [];
-                                    text.push('<ul class="my_liste_legend ul_3">');
-                                    for (var i = 0; i < chart.data.datasets.length; i++) {
-                                        console.log(chart.data.datasets[i]); // see what's inside the obj.
-                                        text.push('<li>');
-                                        text.push('<span data_leg = "d' + i + '" class="" style="background-color:' + chart.data.datasets[i].borderColor + '">' + '</span><b data_leg = "' + i + '">' + chart.data.datasets[i].label + '</b>');
-                                        text.push('</li>');
-                                    }
-                                    text.push('</ul>');
-                                    return text.join("");
-                                },
+                                // legendCallback: function (chart) {
+                                //     var text = [];
+                                //     text.push('<ul class="my_liste_legend ul_3">');
+                                //     for (var i = 0; i < chart.data.datasets.length; i++) {
+                                //         console.log(chart.data.datasets[i]); // see what's inside the obj.
+                                //         text.push('<li>');
+                                //         text.push('<span data_leg = "d' + i + '" class="" style="background-color:' + chart.data.datasets[i].borderColor + '">' + '</span><b data_leg = "' + i + '">' + chart.data.datasets[i].label + '</b>');
+                                //         text.push('</li>');
+                                //     }
+                                //     text.push('</ul>');
+                                //     return text.join("");
+                                // },
                                 responsive: true,
                                 title: {
                                     display: true,
@@ -657,8 +667,8 @@
                                             ticks: {
                                                     padding: 20, // pour le marge % axe y
                                                 min: 0,
-                                                max: 500,
-                                                stepSize: 50,
+                                                max: my_max, // 500
+                                                stepSize: my_stepSize, // 50
                                                 callback: function (value) {
                                                     return value + " Clients";
                                                 }
@@ -673,15 +683,14 @@
                             }
                         }
                     };
-                    
-                    // si on veut ajouter un marge bottom des legendes
-                    // Chart.Legend.prototype.afterFit = function() {
-                    //     this.height = this.height + 150;
+                    return config3;
+                }
 
-                    // };
+                function create_chart3(ctx3, config3) {
+
                     var myChart3 = new Chart(ctx3, config3);
                     // pour dire qu'on va utiliser notre propre légende html fenitra
-                    document.getElementById('chart-legends_cu').innerHTML = myChart3.generateLegend();
+                    //document.getElementById('chart-legends_cu').innerHTML = myChart3.generateLegend();
 
                     // legende 1
 
@@ -711,7 +720,6 @@
                         }
                     });
 
-                    // fin legende 1
 
 
                     return myChart3;
@@ -776,25 +784,19 @@
                     {% endfor %}
                 ];
 
-                var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+                var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Sept","Oct","Nov","Dec"];
 
+                
 
+                var myChart1 = create_chart1(create_ctx1(), create_config1(my_data_spa_ca, my_labels, 100, 20));
 
-                var w = $(window).width();
-                if (w <= 768) {
-                    var myChart1 = draw_chart1(my_data_spa_ca, my_labels);
-                    var myChart2 = draw_chart2(my_data_spa_na, my_labels);
-                    var myChart3 = draw_chart3(my_data_spa_cu, my_labels);
-                    add_resp_heb(myChart1, myChart2, myChart3);
-                } else {
-                     var myChart1 = draw_chart1(my_data_spa_ca, my_labels);
-                    var myChart2 = draw_chart2(my_data_spa_na, my_labels);
-                    var myChart3 = draw_chart3(my_data_spa_cu, my_labels);
-                }
+                var myChart2 = create_chart2(create_ctx2(), create_config2(my_data_spa_na, my_labels, 500, 50));
+
+                var myChart3 = create_chart2(create_ctx3(), create_config3(my_data_spa_cu, my_labels, 500, 50));
 
                 // triage chart heb_ca
 					$('#mois_spa_ca').on('change', function(){
-						//alert('io')
+						$("#element_canvas_cas").empty();
 						var mois = $('#mois_spa_ca').val();
 						var annee = $('#annee_spa_ca').val();
 						var data = {'data' : mois+"-"+annee};
@@ -813,14 +815,16 @@
 
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart1 = draw_chart1(my_data, my_labels);
-											myChart2.update();
-											//add_resp_heb(myChart1, myChart2);
-										} else {
-											var myChart1 = draw_chart1(my_data, my_labels);
+                                            // $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
+                                            $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
+											 var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart2);
-											
+										} else {
+											 $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
+											var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
+											myChart1.update();
+											//add_resp_heb(myChart1, myChart2);
 										}
 									}
 									else{
@@ -829,14 +833,16 @@
 										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart1 = draw_chart1(my_data, my_labels);
-											myChart2.update();
-											//add_resp_heb(myChart1, myChart2);
-										} else {
-											var myChart2 = draw_chart1(my_data, my_labels);
+                                            // $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
+                                            $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
+											 var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart2);
-											
+										} else {
+											 $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
+											var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
+											myChart1.update();
+											//add_resp_heb(myChart1, myChart2);
 										}
 									}
 								}
@@ -848,7 +854,7 @@
 					})
 
 					$('#annee_spa_ca').on('change', function(){
-						//alert('io')
+						$("#element_canvas_cas").empty();
 						var mois = $('#mois_spa_ca').val();
 						var annee = $('#annee_spa_ca').val();
 						var data = {'data' : mois+"-"+annee};
@@ -869,14 +875,16 @@
 
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart1 = draw_chart1(my_data, my_labels);
-											myChart2.update();
-											//add_resp_heb(myChart1, myChart2);
-										} else {
-											var myChart1 = draw_chart1(my_data, my_labels);
+                                            // $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
+                                            $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
+											 var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart2);
-											
+										} else {
+											 $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
+											var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
+											myChart1.update();
+											//add_resp_heb(myChart1, myChart2);
 										}
 									}
 									else{
@@ -885,14 +893,16 @@
 										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart1 = draw_chart1(my_data, my_labels);
-											myChart2.update();
-											//add_resp_heb(myChart1, myChart2);
-										} else {
-											var myChart2 = draw_chart1(my_data, my_labels);
+                                            // $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
+                                            $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
+											 var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart2);
-											
+										} else {
+											 $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
+											var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
+											myChart1.update();
+											//add_resp_heb(myChart1, myChart2);
 										}
 									}
 								}
@@ -908,7 +918,7 @@
                 // triage chart spa_na
                     var pseudo_hotel = "{{ hotel }}";
 					$('#mois_spa_na').on('change', function(){
-						//alert('io')
+						$("#element_canvas_na").empty();
 						var mois = $('#mois_spa_na').val();
 						var annee = $('#annee_spa_na').val();
 						var data = {'data' : mois+"-"+annee};
@@ -927,14 +937,14 @@
 
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart2 = draw_chart2(my_data, my_labels);
+                                             $("#element_canvas_na").html('<div><canvas id="canvas_na"></canvas></div><div id="chart-legends_na"></div>');
+											 var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, 100, 10));
 											myChart2.update();
 											
 										} else {
-											var myChart2 = draw_chart2(my_data, my_labels);
+											$("#element_canvas_na").html('<div><canvas id="canvas_na"></canvas></div><div id="chart-legends_na"></div>');
+											var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, 100, 10));
 											myChart2.update();
-											
-											
 										}
 									}
 									else{
@@ -943,13 +953,14 @@
 										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart2 = draw_chart2(my_data, my_labels);
-											myChart3.update();
-											//add_resp_heb(myChart1, myChart2);
-										} else {
-											var myChart2 = draw_chart2(my_data, my_labels);
+                                             $("#element_canvas_na").html('<div><canvas id="canvas_na"></canvas></div><div id="chart-legends_na"></div>');
+											var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, 400, 100));
 											myChart2.update();
-										
+											
+										} else {
+											$("#element_canvas_na").html('<div><canvas id="canvas_na"></canvas></div><div id="chart-legends_na"></div>');
+											var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, 400, 50));
+											myChart2.update();
 										}
 									}
 								}
@@ -961,7 +972,7 @@
 					})
 
 					$('#annee_spa_na').on('change', function(){
-						//alert('io')
+						$("#element_canvas_na").empty();
 						var mois = $('#mois_spa_na').val();
 						var annee = $('#annee_spa_na').val();
 						var data = {'data' : mois+"-"+annee};
@@ -979,14 +990,14 @@
 
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart2 = draw_chart2(my_data, my_labels);
+                                             $("#element_canvas_na").html('<div><canvas id="canvas_na"></canvas></div><div id="chart-legends_na"></div>');
+											 var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, 100, 10));
 											myChart2.update();
 											
 										} else {
-											var myChart2 = draw_chart2(my_data, my_labels);
+											$("#element_canvas_na").html('<div><canvas id="canvas_na"></canvas></div><div id="chart-legends_na"></div>');
+											var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, 100, 10));
 											myChart2.update();
-											
-											
 										}
 									}
 									else{
@@ -995,13 +1006,14 @@
 										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart2 = draw_chart2(my_data, my_labels);
-											myChart3.update();
-											//add_resp_heb(myChart1, myChart2);
-										} else {
-											var myChart2 = draw_chart2(my_data, my_labels);
+                                             $("#element_canvas_na").html('<div><canvas id="canvas_na"></canvas></div><div id="chart-legends_na"></div>');
+											var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, 400, 100));
 											myChart2.update();
-										
+											
+										} else {
+											$("#element_canvas_na").html('<div><canvas id="canvas_na"></canvas></div><div id="chart-legends_na"></div>');
+											var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, 400, 50));
+											myChart2.update();
 										}
 									}
 								}
@@ -1018,7 +1030,7 @@
                 // triage chart spa_cu
                     var pseudo_hotel = "{{ hotel }}";
 					$('#mois_spa_cu').on('change', function(){
-						//alert('io')
+						$("#element_canvas_cu").empty();
 						var mois = $('#mois_spa_cu').val();
 						var annee = $('#annee_spa_cu').val();
 						var data = {'data' : mois+"-"+annee};
@@ -1037,11 +1049,13 @@
 
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart3 = draw_chart3(my_data, my_labels);
+                                            $("#element_canvas_cu").html('<div><canvas id="canvas_cu"></canvas></div><div id="chart-legends_cu"></div>');
+											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels, 100, 20));
 											myChart3.update();
 											
 										} else {
-											var myChart3 = draw_chart3(my_data, my_labels);
+                                             $("#element_canvas_cu").html('<div><canvas id="canvas_cu"></canvas></div><div id="chart-legends_cu"></div>');
+											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels, 100, 10));
 											myChart3.update();
 											
 											
@@ -1053,13 +1067,16 @@
 										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart3 = draw_chart3(my_data, my_labels);
+                                            $("#element_canvas_cu").html('<div><canvas id="canvas_cu"></canvas></div><div id="chart-legends_cu"></div>');
+											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels, 500, 100));
 											myChart3.update();
-											//add_resp_heb(myChart1, myChart2);
+											
 										} else {
-											var myChart3 = draw_chart3(my_data, my_labels);
+                                             $("#element_canvas_cu").html('<div><canvas id="canvas_cu"></canvas></div><div id="chart-legends_cu"></div>');
+											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels, 500, 50));
 											myChart3.update();
-										
+											
+											
 										}
 									}
 								}
@@ -1089,11 +1106,13 @@
 
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart3 = draw_chart3(my_data, my_labels);
+                                            $("#element_canvas_cu").html('<div><canvas id="canvas_cu"></canvas></div><div id="chart-legends_cu"></div>');
+											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels, 100, 20));
 											myChart3.update();
 											
 										} else {
-											var myChart3 = draw_chart3(my_data, my_labels);
+                                             $("#element_canvas_cu").html('<div><canvas id="canvas_cu"></canvas></div><div id="chart-legends_cu"></div>');
+											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels, 100, 10));
 											myChart3.update();
 											
 											
@@ -1105,13 +1124,16 @@
 										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart3 = draw_chart3(my_data, my_labels);
+                                            $("#element_canvas_cu").html('<div><canvas id="canvas_cu"></canvas></div><div id="chart-legends_cu"></div>');
+											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels, 500, 100));
 											myChart3.update();
-											//add_resp_heb(myChart1, myChart2);
+											
 										} else {
-											var myChart3 = draw_chart3(my_data, my_labels);
+                                             $("#element_canvas_cu").html('<div><canvas id="canvas_cu"></canvas></div><div id="chart-legends_cu"></div>');
+											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels, 500, 50));
 											myChart3.update();
-										
+											
+											
 										}
 									}
 								}

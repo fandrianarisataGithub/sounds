@@ -102,10 +102,14 @@
 								</select>
 							</form>
 						</div>
-						<div>
-							<canvas id="canvas_nc"></canvas>
-						</div>
-						<div id="chart-legends_nc"></div>
+						<section>
+                            <div id = "element_canvas_nc">
+                                <div>
+                                    <canvas id="canvas_nc"></canvas>
+                                </div>
+                                {# <div id="chart-legends_nc"></div> #}
+                            </div>
+                        </section>
 
 					</section>
 					<!-- fin chart 1 -->
@@ -139,10 +143,16 @@
 								</select>
 							</form>
 						</div>
-						<div>
-							<canvas id="canvas_car"></canvas>
-						</div>
-						<div id="chart-legends_car"></div>
+						<section>
+
+                            <div id = "element_canvas_car">
+                                <div>
+                                    <canvas id="canvas_car"></canvas>
+                                </div>
+                                <div id="chart-legends_car"></div>
+
+                            </div>
+                        </section>
 
 
 					</section>
@@ -154,6 +164,7 @@
 			</div>
 		</div>
 		<!-- / contenue nouveau client -->
+        <i id = "bottom"></i>
 	</section>
 
 {% endblock %}
@@ -161,7 +172,7 @@
 {% block javascripts %}
     <script>
         $(document).ready(function () {
-                    function draw_chart1(my_data, my_labels) {
+                    function draw_chart1(my_data, my_labels, my_max, my_stepSize) {
 
                         var ctx1 = document.getElementById('canvas_nc').getContext("2d");
 
@@ -209,18 +220,18 @@
 
                                     },
 
-                                    legendCallback: function (chart) {
-                                        var text = [];
-                                        text.push('<ul class="my_liste_legend ul_1">');
-                                        for (var i = 0; i < chart.data.datasets.length; i++) {
-                                            console.log(chart.data.datasets[i]); // see what's inside the obj.
-                                            text.push('<li>');
-                                            text.push('<span data_leg = "' + i + '" style="background-color:' + chart.data.datasets[i].borderColor + '">' + '</span><b data_leg = "' + i + '">' + chart.data.datasets[i].label + '</b>');
-                                            text.push('</li>');
-                                        }
-                                        text.push('</ul>');
-                                        return text.join("");
-                                    },
+                                    // legendCallback: function (chart) {
+                                    //     var text = [];
+                                    //     text.push('<ul class="my_liste_legend ul_1">');
+                                    //     for (var i = 0; i < chart.data.datasets.length; i++) {
+                                    //         console.log(chart.data.datasets[i]); // see what's inside the obj.
+                                    //         text.push('<li>');
+                                    //         text.push('<span data_leg = "' + i + '" style="background-color:' + chart.data.datasets[i].borderColor + '">' + '</span><b data_leg = "' + i + '">' + chart.data.datasets[i].label + '</b>');
+                                    //         text.push('</li>');
+                                    //     }
+                                    //     text.push('</ul>');
+                                    //     return text.join("");
+                                    // },
                                     responsive: true,
                                     title: {
                                         display: true,
@@ -268,8 +279,8 @@
                                                 ticks: {
                                                     padding: 20, // pour le marge % axe y
                                                     min: 0,
-                                                    max: 100,
-                                                    stepSize: 20,
+                                                    max: parseInt(my_max),
+                                                    stepSize: parseInt(my_stepSize),
                                                     callback: function (value) {
                                                         return value + " M Ar"
                                                     }
@@ -292,7 +303,7 @@
                             // };
                         var myChart1 = new Chart(ctx1, config1);
                         // pour dire qu'on va utiliser notre propre légende html fenitra
-                        document.getElementById('chart-legends_nc').innerHTML = myChart1.generateLegend();
+                       // document.getElementById('chart-legends_nc').innerHTML = myChart1.generateLegend();
 
                         // legende 1
 
@@ -334,7 +345,7 @@
                     // debut chart  2
 
 
-                    function draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_t, my_labels) {
+                    function draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_t, my_labels, my_max, my_stepSize) {
 
                         var ctx2 = document.getElementById('canvas_car').getContext("2d");
 
@@ -482,9 +493,7 @@
                                             xAxes: [
                                             {
                                                 type: 'category',
-
                                                 /* insertion des données sur l'axe (ox) */
-
                                                 labels: my_labels,
 
                                                 /* / insertion des données sur l'axe (ox) */
@@ -510,8 +519,8 @@
                                             ticks: {
                                                 padding: 20, // pour le marge % axe y
                                                 min: 0,
-                                                max: 300,
-                                                stepSize : 50,
+                                                max: my_max,
+                                                stepSize : my_stepSize,
                                                 callback: function (value) {
                                                     return value + " Couverts"
                                                 }
@@ -724,21 +733,21 @@
                 
                     var w = $(window).width();
                     if (w <= 768) {
-                        var myChart1 = draw_chart1(my_data_ca, my_labels);
-                        var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels);
+                        var myChart1 = draw_chart1(my_data_ca, my_labels, 100, 20);
+                        var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 1000, 200);
                         add_resp_heb(myChart1, myChart2);
                     } else {
-                        var myChart1 = draw_chart1(my_data_ca, my_labels);
-                        var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels);
+                        var myChart1 = draw_chart1(my_data_ca, my_labels, 100, 20);
+                        var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 1000, 100);
                     }
                 
                 /* tri graph res  */
 
-                // triage chart res_ca
+                    // triage chart res_ca
                     var pseudo_hotel = "{{ hotel }}" ;
-
+                    // element_canvas_nc  element_canvas_car
 					$('#mois_res_ca').on('change', function(){
-						//alert('io')
+                        $('#element_canvas_nc').empty();
 						var mois = $('#mois_res_ca').val();
 						var annee = $('#annee_res_ca').val();
                         var data = {'data' : mois+"-"+annee};
@@ -758,11 +767,13 @@
 
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart1 = draw_chart1(my_data, my_labels);
+                                            $('#element_canvas_nc').html('<div><canvas id="canvas_nc"></canvas></div><div id="chart-legends_nc"></div>');
+											var myChart1 = draw_chart1(my_data, my_labels, 20, 5);
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart1);
 										} else {
-											var myChart1 = draw_chart1(my_data, my_labels);
+                                            $('#element_canvas_nc').html('<div><canvas id="canvas_nc"></canvas></div><div id="chart-legends_nc"></div>');
+											var myChart1 = draw_chart1(my_data, my_labels, 20, 5);
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart1);
 											
@@ -774,11 +785,13 @@
 										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart1 = draw_chart1(my_data, my_labels);
+                                            $('#element_canvas_nc').html('<div><canvas id="canvas_nc"></canvas></div><div id="chart-legends_nc"></div>');
+											var myChart1 = draw_chart1(my_data, my_labels, 100, 20);
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart1);
 										} else {
-											var myChart1 = draw_chart1(my_data, my_labels);
+                                            $('#element_canvas_nc').html('<div><canvas id="canvas_nc"></canvas></div><div id="chart-legends_nc"></div>');
+											var myChart1 = draw_chart1(my_data, my_labels, 100, 20);
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart1);
 											
@@ -793,7 +806,7 @@
 					})
 
 					$('#annee_res_ca').on('change', function(){
-						//alert('io')
+						 $('#element_canvas_nc').empty();
 						var mois = $('#mois_res_ca').val();
 						var annee = $('#annee_res_ca').val();
 						var data = {'data' : mois+"-"+annee};
@@ -807,21 +820,21 @@
 								if(response){
 									//console.log(response);
 									if(mois != 'tous_les_mois'){
-
 										var my_data = response;
 										//console.log(my_data);
 										var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
 
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart1 = draw_chart1(my_data, my_labels);
+                                            $('#element_canvas_nc').html('<div><canvas id="canvas_nc"></canvas></div><div id="chart-legends_nc"></div>');
+											var myChart1 = draw_chart1(my_data, my_labels, 20, 5);
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart1);
 										} else {
-											var myChart1 = draw_chart1(my_data, my_labels);
+                                            $('#element_canvas_nc').html('<div><canvas id="canvas_nc"></canvas></div><div id="chart-legends_nc"></div>');
+											var myChart1 = draw_chart1(my_data, my_labels, 20, 5);
 											myChart1.update();
-											//add_resp_heb(myChart1, myChart1);
-											
+											//add_resp_heb(myChart1, myChart1); 
 										}
 									}
 									else{
@@ -830,14 +843,15 @@
 										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 										var w = $(window).width();
 										if (w <= 768) {
-											var myChart1 = draw_chart1(my_data, my_labels);
+                                            $('#element_canvas_nc').html('<div><canvas id="canvas_nc"></canvas></div><div id="chart-legends_nc"></div>');
+											var myChart1 = draw_chart1(my_data, my_labels, 100, 20);
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart1);
 										} else {
-											var myChart1 = draw_chart1(my_data, my_labels);
+                                            $('#element_canvas_nc').html('<div><canvas id="canvas_nc"></canvas></div><div id="chart-legends_nc"></div>');
+											var myChart1 = draw_chart1(my_data, my_labels, 100, 20);
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart1);
-											
 										}
 									}
 								}
@@ -848,130 +862,137 @@
 						})
                     })
                     
-                        /*  couverts */
-	
-						$('#mois_res_couvert').on('change', function(){
-							//alert('io')
-							var mois = $('#mois_res_couvert').val();
-							var annee = $('#annee_res_couvert').val();
-	                        var data = {'data' : mois+"-"+annee};
-	                        //alert(data.data);
-							$.ajax({
-								url : "/profile/filtre/graph/res_couvert/"+pseudo_hotel,
-								type : "POST",
-								data : data,
-								success : function(response){
-									if(response){
-									    console.log(response);
-										if(mois != 'tous_les_mois'){
-	
-											var my_data_pd = response[0];
-                                            var my_data_d = response[1];
-                                            var my_data_di = response[2];
-                                            var my_data_total = response[3];
-											//console.log(my_data);
-											var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
-	
-											var w = $(window).width();
-											if (w <= 768) {
-                                                
-                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels);
-                                                myChart2.update();
-                                            } else {
- 
-                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels);
-                                                myChart2.update();
-                                            }
-										}
-										else{
-											var my_data_pd = response[0];
-                                            var my_data_d = response[1];
-                                            var my_data_di = response[2];
-                                            var my_data_total = response[3];
-											//console.log(my_data);
-											var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
-											var w = $(window).width();
-											
-											if (w <= 768) {
-                                                
-                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels);
-                                                myChart2.update();
-                                            } else {
- 
-                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels);
-                                                myChart2.update();
-                                            }
-										}
-									}
-								}, 
-								error : function(error){
-									alert('erreur server au niveau de triage chart res_couvert mois '+pseudo_hotel)
-								}
-							})
-						})
-	
-						$('#annee_res_couvert').on('change', function(){
-							//alert('io')
-							var mois = $('#mois_res_couvert').val();
-							var annee = $('#annee_res_couvert').val();
-	                        var data = {'data' : mois+"-"+annee};
-	                        //alert(data.data);
-							$.ajax({
-								url : "/profile/filtre/graph/res_couvert/"+pseudo_hotel,
-								type : "POST",
-								data : data,
-								success : function(response){
-									if(response){
-									    console.log(response);
-										if(mois != 'tous_les_mois'){
-	
-											var my_data_pd = response[0];
-                                            var my_data_d = response[1];
-                                            var my_data_di = response[2];
-                                            var my_data_total = response[3];
-											//console.log(my_data);
-											var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
-	
-											var w = $(window).width();
-											if (w <= 768) {
-                                                
-                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels);
-                                                myChart2.update();
-                                            } else {
- 
-                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels);
-                                                myChart2.update();
-                                            }
-										}
-										else{
-											var my_data_pd = response[0];
-                                            var my_data_d = response[1];
-                                            var my_data_di = response[2];
-                                            var my_data_total = response[3];
-											//console.log(my_data);
-											var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
-											var w = $(window).width();
-											
-											if (w <= 768) {
-                                                
-                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels);
-                                                myChart2.update();
-                                            } else {
- 
-                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels);
-                                                myChart2.update();
-                                            }
-										}
-									}
-								}, 
-								error : function(error){
-									alert('erreur server au niveau de triage chart res_couvert mois '+pseudo_hotel)
-								}
-							})
-						})
+                    /*  couverts */
 
+                    $('#mois_res_couvert').on('change', function(){
+                        $('#element_canvas_car').empty();
+                        var mois = $('#mois_res_couvert').val();
+                        var annee = $('#annee_res_couvert').val();
+                        var data = {'data' : mois+"-"+annee};
+                        //alert(data.data);
+                        $.ajax({
+                            url : "/profile/filtre/graph/res_couvert/"+pseudo_hotel,
+                            type : "POST",
+                            data : data,
+                            success : function(response){
+                                if(response){
+                                    console.log(response);
+                                    if(mois != 'tous_les_mois'){
 
-        })
+                                        var my_data_pd = response[0];
+                                        var my_data_d = response[1];
+                                        var my_data_di = response[2];
+                                        var my_data_total = response[3];
+                                        //console.log(my_data);
+                                        var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
+
+                                        var w = $(window).width();
+                                        if (w <= 768) {
+                                            $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
+                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 300, 50);
+                                            myChart2.update();
+                                           
+                                        } else {
+                                             $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
+                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 300, 20);
+                                            myChart2.update();
+                                           
+                                        }
+                                    }
+                                    else{
+                                        var my_data_pd = response[0];
+                                        var my_data_d = response[1];
+                                        var my_data_di = response[2];
+                                        var my_data_total = response[3];
+                                        //console.log(my_data);
+                                        var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+                                        var w = $(window).width();
+                                        
+                                        if (w <= 768) {
+                                            $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
+                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 1000, 200);
+                                            myChart2.update();
+                                           
+                                        } else {
+                                             $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
+                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 1000, 100);
+                                            myChart2.update();
+                                           
+                                        }
+                                    }
+                                }
+                            }, 
+                            error : function(error){
+                                alert('erreur server au niveau de triage chart res_couvert mois '+pseudo_hotel);
+                            },
+                        })
+                    });
+
+                    $('#annee_res_couvert').on('change', function(){
+                        $('#element_canvas_car').empty();
+                        var mois = $('#mois_res_couvert').val();
+                        var annee = $('#annee_res_couvert').val();
+                        var data = {'data' : mois+"-"+annee};
+                        //alert(data.data);
+                        $.ajax({
+                            url : "/profile/filtre/graph/res_couvert/"+pseudo_hotel,
+                            type : "POST",
+                            data : data,
+                            success : function(response){
+                                if(response){
+                                    console.log(response);
+                                    if(mois != 'tous_les_mois'){
+
+                                        var my_data_pd = response[0];
+                                        var my_data_d = response[1];
+                                        var my_data_di = response[2];
+                                        var my_data_total = response[3];
+                                        //console.log(my_data);
+                                        var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
+
+                                        var w = $(window).width();
+                                        if (w <= 768) {
+                                            $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
+                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 300, 50);
+                                            myChart2.update();
+                                           
+                                        } else {
+                                             $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
+                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 300, 20);
+                                            myChart2.update();
+                                           
+                                        }
+                                    }
+                                    else{
+                                        var my_data_pd = response[0];
+                                        var my_data_d = response[1];
+                                        var my_data_di = response[2];
+                                        var my_data_total = response[3];
+                                        //console.log(my_data);
+                                        var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+                                        var w = $(window).width();
+                                        
+                                        
+                                        if (w <= 768) {
+                                            $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
+                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 1000, 200);
+                                            myChart2.update();
+                                        } else {
+                                             $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
+                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 1000, 100);
+                                            myChart2.update();
+                                           
+                                        }
+                                    }
+                                }
+                            }, 
+                            error : function(error){
+                                alert('erreur server au niveau de triage chart res_couvert mois '+pseudo_hotel)
+                            }
+                        })
+                    })
+                
+    })
 	</script>
 
 
