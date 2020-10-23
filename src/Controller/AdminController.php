@@ -523,32 +523,41 @@ class AdminController extends AbstractController
         $user =  new User();
         if ($request->isXmlHttpRequest()) {
             $user = $repoUser->find($id_user);
+           
+           if(is_array($_FILES)) {
+                if(is_uploaded_file($_FILES['fichier']['tmp_name'])) {
+                    $sourcePath = $_FILES['fichier']['tmp_name'];
+                    $nom = $_FILES['fichier']['name'];
+                    $tab_nom = explode(".",$nom);
+                    $t = count($tab_nom) - 1;
+                    $ext = "";
+                    $tab_ext = ['png', 'jpg', 'jpeg', 'JPG', 'JPEG', 'PNG'];
+                    if($t > 0){
+                        $ext = $tab_nom[$t];
+                    }
+                    if(in_array($ext, $tab_ext)){
+                        $targetPath = "uploads/" . $_FILES['fichier']['name'];
+                        if (move_uploaded_file($sourcePath, $targetPath)) {
+                            $data = json_encode($targetPath);
+                            $response->headers->set('Content-Type', 'application/json');
+                            $response->setContent($data);
+                            return $response;
+                        }
+                    }
+                    else{
+                        $data = json_encode("error");
+                        $response->headers->set('Content-Type', 'application/json');
+                        $response->setContent($data);
+                        return $response;
+                    }
 
-            $image = $request->get('fichier')->getData();
-
-            if ($image) {
-                $originalFilename1 = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
-                // this is needed to safely include the file name as part of the URL
-                $safeFilename1 = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename1);
-                $newFilename1 = $safeFilename1 . '-' . uniqid() . '.' . $image->guessExtension();
-
-
-                // Move the file to the directory where brochures are stored
-                try {
-                    $image->move(
-                        $this->getParameter('image_cin_directory'),
-                        $newFilename1
-                    );
-                } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
+                    
+                   
                 }
-
             }
+                
             
-            $data = json_encode('ok');
-            $response->headers->set('Content-Type', 'application/json');
-            $response->setContent($data);
-            return $response;
+           
         }
     }
 }

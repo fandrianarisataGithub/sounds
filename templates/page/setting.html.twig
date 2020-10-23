@@ -95,7 +95,7 @@
 				</div>
 				<form action="" id="form-owner" enctype="multipart/form-data">
 					<div class="form-group pdp_profil">
-						<div class="pdp_image" style="/*background-image: url(images/directeur.jpg);*/">
+						<div class="pdp_image" style="">
 							<input type="file" name="fichier" id="fichier">
 							<span class="icone_upload fa fa-plus"></span>
 						</div>
@@ -460,12 +460,9 @@
 		$('.pdp_image input').on('change', function(){
 			// alefa le sary 
 			var id_user = "{{ app.user.id }}";
-			var val = $(this).val();
-			var form = $('form')[0] ;
+			var form = $('#form-owner')[0] ;
 			var data = new FormData(form) ;
-			var files = $('#fichier')[0].files[0] ;
-			data.append("file",files) ;
-			//alert(val);
+			
 			$.ajax({
 				url : '/profile/add_pdp/'+ id_user,
 				type : 'POST',
@@ -474,7 +471,13 @@
 				cache: false,
 				processData:false,
 				success : function(response){
-					alert(response);
+					if(response == "error"){
+						alert('Veuiller choisir un fichier image');
+					}
+					else{
+						//background-image: url(images/directeur.jpg); .pdp_image
+						$('.pdp_image').css('background-image', "url("+{{ asset('response') }}+")"); // tsy mety le affichage 
+					}
 				},
 				error: function(){
 					alert('erreur pendant le telechargement de pdp');
