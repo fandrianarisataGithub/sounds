@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Services\Services;
 use App\Repository\HotelRepository;
 use App\Repository\ClientRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\DonneeDuJourRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -134,6 +136,58 @@ class TriController extends AbstractController
             //dd($t);
         }
     }
+
+    /**
+     *@Route("/profile/filtrer_historique", name = "filtrer_historique") 
+     */
+    // public function filtrer_historique(Services $services, Request $request, HotelRepository $repoHotel, DonneeDuJourRepository $repoddj)
+    // {
+    //     $response = new Response();
+    //     if($request->isXmlHttpRequest()){
+
+    //         $date1 = $request->request->get('date1');
+    //         $date2 = $request->request->get('date2');
+    //         $pseudo_hotel = $request->request->get('pseudo_hotel');
+    //         $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+    //         $current_id_hotel = $l_hotel->getId();
+    //         $date1 = date_create($date1);
+    //         $date2 = date_create($date2);
+    //         $historique = $request->request->get('historique');
+    //         $all_date_asked = $services->all_date_between2_dates($date1, $date2);
+    //         $ddjs = $repoddj->findAll();
+    //         $tab = [];
+    //         foreach ($ddjs as $item) {
+    //             $son_id_hotel = $item->getHotel()->getId();
+    //             if ($son_id_hotel == $current_id_hotel) {
+    //                 array_push($tab, $item);
+    //             }
+    //         }
+    //         $tab_aff = [];
+
+    //         foreach ($tab as $item) {
+    //             // on liste tous les jour entre sa dete arrivee et date depart
+    //             $c = $item->getCreatedAt();
+    //             $c_s = $c->format("Y-m-d");
+    //             //dd($his_al_dates);
+    //             for ($i = 0; $i < count($all_date_asked); $i++) {
+    //                 if($c_s == $all_date_asked[$i]){
+    //                     array_push($tab_aff, $item);
+    //                 }
+    //             }
+    //         }
+    //         $x = $tab_aff[0]->getCreatedAt()->format('d-m-Y');
+
+    //         $data = json_encode($x);
+    //         $response->headers->set('Content-Type', 'application/json');
+    //         $response->setContent($data);
+    //         return $response;
+    //     }
+        
+    //     $date1 = new \DateTime("2020-05-10");
+    //     $date2 = new \DateTime("2020-05-15");
+    //     $all_date_asked = $services->all_date_between2_dates($date1, $date2);
+    //     dd($all_date_asked[0]);
+    // }
 
    
 }

@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ClientController extends AbstractController
@@ -182,17 +183,25 @@ class ClientController extends AbstractController
     /**
      * @Route("/admin/check_client", name = "check_client")
      */
-    public function check_client(Request $request, ClientRepository $repoClient, HotelRepository $repoHotel, EntityManagerInterface $manager)
+    public function check_client(SessionInterface $session, Request $request, ClientRepository $repoClient, HotelRepository $repoHotel, EntityManagerInterface $manager)
     {
         $response = new Response();
+        $data_session = $session->get('hotel');
+        $data_session['current_page'] = "hebergement";
+        $pseudo_hotel = $data_session['pseudo_hotel'] ;
         if($request->isXmlHttpRequest()){
             $client_id = $request->get('client_id');
+            $date1 = $request->get('date1');
+            $date2 = $request->get('date2');
+            $action = $request->get('action');
             $client = $repoClient->find($client_id);
             $html = '';
-            $html.= '<form action="/admin/modifier_client_tri" method = "POST">
-                        <input type="hidden" id = "hidden_date1" name = "date1">
-                        <input type="hidden" id = "hidden_date2" name = "date2">
-                        <input type="hidden" id = "hidden_id" value = "'. $client->getId() .'" name = "client_id">
+            if($action == "modification"){
+                $html .= '<form action="/profile/' . $pseudo_hotel . '/hebergement" method = "POST">
+                        <input type="hidden" id = "hidden_date1" name = "date1" value = "' . $date1 . '">
+                        <input type="hidden" id = "hidden_date2" name = "date2" value = "' . $date2 . '">
+                        <input type="hidden" id = "hidden_id" value = "' . $client->getId() . '" name = "client_id">
+                        <input type="hidden" name = "action" value = "modification">
                         <div class="form-group">
                             <label for="n_date_depart">Nom du client :
                             </label>
@@ -217,6 +226,19 @@ class ClientController extends AbstractController
                            <button type = "submit" class="form-control btn btn-warning"><span>Enregistrer</span></button>
                         </div>
                     </form>';
+            }
+            else{
+                $html .= '<form action="/profile/' . $pseudo_hotel . '/hebergement" method = "POST" id = "form_modal_delete">
+                        <input type="hidden" id = "hidden_date1" name = "date1" value = "' . $date1 . '">
+                        <input type="hidden" id = "hidden_date2" name = "date2" value = "' . $date2 . '">
+                        <input type="hidden" id = "hidden_id" value = "' . $client->getId() . '" name = "client_id">
+                        <input type="hidden" name = "action" value = "suppression">
+                        <div class="form-group">
+                           <button type = "submit" class="form-control btn btn-warning"><span>Supprimer</span></button>
+                           <button type = "buton" class="form-control btn btn-default" data-dismiss = "modal"><span>Annuler</span></button>
+                        </div>
+                    </form>';
+            }
 
             $data = json_encode($html);
             $response->headers->set('Content-Type', 'application/json');

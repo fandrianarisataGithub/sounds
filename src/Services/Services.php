@@ -10,7 +10,7 @@ class Services
         {
             // $date1 = new \DateTime('2020-05-19');
             //  $date2 = new \DateTime('2020-05-25');
-
+           
             $diff_days = 0;
             $tab = [];
             if ($date1 < $date2) {
@@ -19,15 +19,17 @@ class Services
                 for ($i = 0; $i <= $diff_days; $i++) {
                     $d = date('Y-m-d', strtotime($date1->format("Y-m-d") . ' + ' . $i . ' days'));
                     array_push($tab, $d);
+                    //dd(gettype($d)); => string
                 }
             } else if ($date1 > $date2) {
                 $diff_days = $date2->diff($date1)->days;
                 for ($i = 0; $i <= $diff_days; $i++) {
                     $d = date('Y-m-d', strtotime($date2->format("Y-m-d") . ' + ' . $i . ' days'));
                     array_push($tab, $d);
+                   
                 }
             }
-        
+           
             return $tab;
         }
 

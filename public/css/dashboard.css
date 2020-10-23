@@ -1065,6 +1065,10 @@
   #crj_content .section_part>.sous_titre form select {
       margin-top: 10px;
       float: right;
+      border : 0.5px solid rgba(200,200,200);
+      border-radius : 2px;
+      font-size : 11px;
+      padding : 5px;
   }
   
   #tri_annee {
@@ -1420,12 +1424,20 @@
       margin-right: 10px;
       padding-left: 5px;
       height: 30px;
-      /*background: #c89b11;*/
+      background: #323232 !important;
       border: none;
       border-radius: 5px;
       position: relative;
       top: 15px;
   }
+
+.filter_crj{
+    top: 0 !important;
+    height: 22px;
+}
+.filter_crj span{
+    font-size: 11px;
+}
   
   .btn_filter:hover,
   .btn_filter:focus {
@@ -1704,12 +1716,34 @@
       display: flex;
       justify-content: space-between
   }
-  
+
   .modal-title {
       font-size: 18px;
   }
   /* css settings */
-  
+.modal_suppr_client{
+    width: 100%;
+}
+
+#form_modal_delete{
+    width: 100%;
+}
+#form_modal_delete .form-group{
+    display: flex;
+    justify-content: space-between;
+}
+#form_modal_delete .form-group button{
+    width: 100px;
+}
+#form_modal_delete .form-group button.btn-default{
+    background: #323232 !important;
+    color: #fff !important;
+    
+}
+#form_modal_delete .form-group button.btn-default:hover{
+    background: #323232;
+    color: #fff !important;
+}
   .infos {
       background: lightblue;
       padding: 5px;

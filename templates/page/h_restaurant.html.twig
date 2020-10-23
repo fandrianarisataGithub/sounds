@@ -93,10 +93,10 @@
 						<div class="sous_titre_filtre">
 							<h3>Filtre</h3>
 						</div>
-						<form action="" class="tri">
-							<input type="date">
-							<input type="date">
-							<button class="btn btn-primary btn-xs btn_filter"><span>Filtrer</span></button>
+						<form action="{{ path('h_restaurant', {'pseudo_hotel' : hotel}) }}" method = "POST" class="tri">
+							<input type="date" name = "date1" id = "date1" value = "{{ value_date1 }}">
+							<input type="date"  name = "date2" id = "date2" value = "{{ value_date2 }}">
+							<button type = "submit" class="btn btn-primary btn-xs btn_filter"><span>Filtrer</span></button>
 						</form>
 					</section>
 					<div class="section">
@@ -239,7 +239,11 @@
 				"ajax" : {
 						url : "/profile/historique_res", // any am Clientcontroller
 						type : 'POST', 
-						data : {'pseudo_hotel' : pseudo_hotel},
+						data : {
+							'pseudo_hotel' : pseudo_hotel,
+							'date1' : $("#date1").val(),
+							'date2' : $("#date2").val(),
+						},
 						// success : function(response){
 						//     alert(response);
 						// }, 

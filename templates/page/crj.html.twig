@@ -86,18 +86,25 @@
 								</h4>
 								<section>
 									<select name="" id="">
-										<option value="">2020</option>
+										{% for t in tab_annee %}
+											<option value="{{ t }}">{{ t }}</option>
+										{% endfor %}
 									</select>
 								</section>
 							</div>
+						</form>
+						<form action="">
 							<div id="tri">
 								<h4>Filtre par date :
 								</h4>
 								<section>
 									<input type="date" class="date_compte_rendu date1">
 									<input type="date" class="date_compte_rendu date2">
+									<button type = "submit" class="btn btn-primary btn-xs btn_filter filter_crj"><span>Filtrer</span></button>
 								</section>
 							</div>
+						</form>
+						<form action="">
 							<select name="" id="mois">
 								<option value="">Tout service</option>
 								<option value="">Direction</option>
@@ -111,6 +118,7 @@
 								<option value="">Litiges</option>
 							</select>
 						</form>
+						
 					</div>
 				</section>
 			</div>

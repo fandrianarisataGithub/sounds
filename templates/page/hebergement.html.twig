@@ -213,13 +213,13 @@
 														<span>{{ item.getDateDepart() | date('d-m-Y') }}</span>
 													</td>
 													<td>
-														<span>{{ item.getDureeSejour() | date('d-m-Y') }}</span>
+														<span>{{ item.getDureeSejour() }}</span>
 													</td>
 													<td class="td__actions">
-														<a href="#" data-toggle="modal" data-target="#modal_form" class = "btn_client_modif" data-id = "{{ item.getId() }}"> 
+														<a href="#" data-target="#modal_form" class = "btn_client_modif" data-id = "{{ item.getId() }}"> 
 															<span class="fa fa-edit"></span>
 														</a>
-														<a href="#" data-toggle="modal" data-target="#modal_form_confirme" class = "btn_client_suppr" data-id = "{{ item.getId() }}">
+														<a href="#" data-target="#modal_form_confirme" class = "btn_client_suppr" data-id = "{{ item.getId() }}">
 															<span class="fa fa-trash-o"></span>
 														</a>
 													</td>
@@ -254,8 +254,7 @@
 										</div>
 										<div class="modal-body">
 											<div id="div__conf">
-												<button class="btn btn-warning supprimer" data-id="" data-dismiss="modal" data-confirm="oui">Supprimer</button>
-												<button class="btn btn-warning annuler" data-dismiss="modal" data-confirm="non">Annuler</button>
+												<div class="modal-body modal_suppr_client"></div>
 											</div>
 										</div>
 
@@ -742,63 +741,74 @@
 			new $.fn.dataTable.FixedHeader(table);
 
 
-		/*  fiun table */
+			/*  fiun table */
 
-		/* fin datatable */
-
-
-		/* fin tri tableau heb */
-		// suppression client présent
+			/* fin datatable */
 
 
-		$(document).on('click', ".btn_client_suppr", function (ev) { // ev.preventDefault();
-			var id = $(this).attr('data-id');
-			// alert(id);
-			$('#div__conf button.supprimer').attr('data-id', id);
-			})
+			/* fin tri tableau heb */
+			// suppression client présent
 
-			$('#div__conf button.supprimer').on('click', function () {
-			var id = $(this).attr('data-id');
-			// alert(id);
-			// ajax
-			$.ajax({
-				url: "/admin/suprimer_client",
-				data: {
-					"client_id": id,
-					"pseudo_hotel": pseudo_hotel
-				},
-				type: "POST",
-				success: function (response) {
-					if (response == "deleted") {
-						table.ajax.reload(null, false);
+
+			$(document).on('click', ".btn_client_suppr", function (ev) { // ev.preventDefault();
+				ev.preventDefault();
+				var id = $(this).attr('data-id');
+				var date1 = $('#date1').val();
+				var date2 = $('#date2').val();
+				// alert(id);
+				$.ajax({
+					url: "/admin/check_client",
+					data: {
+						"client_id": id,
+						"date1" : date1,
+						"date2" : date2,
+						"action" : "suppression",
+					},
+					type: "POST",
+
+					success: function (response) {
+						$('.modal_suppr_client').html(response);
+						if($('.modal_suppr_client').children().length > 0){
+							setTimeout(function(){
+								$('#modal_form_confirme').modal('show');
+							}, 500);
+						}
+						
+					},
+					error: function (error) {
+						alert('erreur de server');
 					}
-				},
-				error: function (error) {
-					alert('erreur de server');
-				}
+				})
 			})
-		})
 
-		/* fin suppression client*/
+			/* fin suppression client*/
 
-		/* debut modif client */
+			/* debut modif client */
 
 		$(document).on('click', '.btn_client_modif', function (ev) {
 			ev.preventDefault();
 			var id = $(this).attr('data-id');
+			var date1 = $('#date1').val();
+			var date2 = $('#date2').val();
 			// alert(id);
 			$.ajax({
 				url: "/admin/check_client",
 				data: {
-				"client_id": id
+					"client_id": id,
+					"date1" : date1,
+					"date2" : date2,
+					"action" : "modification"
 				},
 				type: "POST",
 
 				success: function (response) {
 					$('.modal_modif_client').html(response);
-					setTimeout(function(){
-						$('#modal_form').modal('show');
-					}, 1000);
+				
+					if($('.modal_modif_client').children().length > 0){
+						setTimeout(function(){
+							$('#modal_form').modal('show');
+						}, 500);
+					}
 				},
 				error: function (error) {
 					alert('erreur de server');

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Services\Services;
 use App\Entity\DonneeDuJour;
 use App\Repository\HotelRepository;
 use App\Repository\ClientRepository;
@@ -57,176 +58,244 @@ class DonneeDuJourController extends AbstractController
     /**
      * @Route("/profile/historique_heb", name="historique_heb")
      */
-    public function historique_heb(Request $request, ClientRepository $repoClient, HotelRepository $repoHotel, EntityManagerInterface $manager, DonneeDuJourRepository $repoDdj)
+    public function historique_heb(Services $services, Request $request, ClientRepository $repoClient, HotelRepository $repoHotel, EntityManagerInterface $manager, DonneeDuJourRepository $repoDdj)
     {
         $response = new Response();
         
         if ($request->isXmlHttpRequest()) {
-            
-            $pseudo_hotel = $request->get('pseudo_hotel');
-            $ddj = new DonneeDuJour();
-            $current_id_hotel = $repoHotel->findOneByPseudo($pseudo_hotel)->getId();
-            //dd($current_id_hotel);
-            $all_ddj = $repoDdj->findAll();
-            // dd($all_ddj);
-            $tab_ddj = [];
-            $t = [];
-            foreach ($all_ddj as $d) {
-                $son_id_hotel = $d->getHotel()->getId();
-                //dd($son_id_hotel);
-                if ($son_id_hotel == $current_id_hotel) {
-                    array_push($tab_ddj, $d);
+            $date1 = $request->get('date1');
+            $date2 = $request->get('date2');
+            if($date1 != "" && $date2 != ""){
+                $pseudo_hotel = $request->request->get('pseudo_hotel');
+                $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+                $current_id_hotel = $l_hotel->getId();
+                $date1 = date_create($date1);
+                $date2 = date_create($date2);
+                $historique = $request->request->get('historique');
+                $all_date_asked = $services->all_date_between2_dates($date1, $date2);
+                $ddjs = $repoDdj->findAll();
+                $tab = [];
+                foreach ($ddjs as $item) {
+                    $son_id_hotel = $item->getHotel()->getId();
+                    if ($son_id_hotel == $current_id_hotel) {
+                        array_push($tab, $item);
+                    }
                 }
+                $tab_aff = [];
+                $t = [];
+                foreach ($tab as $item) {
+                    // on liste tous les jour entre sa dete arrivee et date depart
+                    $c = $item->getCreatedAt();
+                    $c_s = $c->format("Y-m-d");
+                    //dd($his_al_dates);
+                    for ($i = 0; $i < count($all_date_asked); $i++) {
+                        if ($c_s == $all_date_asked[$i]) {
+                            array_push($tab_aff, $item);
+                        }
+                    }
+                }
+                
+                foreach ($tab_aff as $item) {
+
+                    array_push($t, ['<div>' . $item->getHebTo() . '<span class="unite">%</span></div>', '<div>' . $item->getHebCa() . '<span class="unite">Ar</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '<div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_disoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
+                }
+
+                $data = json_encode($t);
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+                return $response;
             }
-            //    dd($tab_ddj);
-            foreach ($tab_ddj as $item) {
+            
+            else{
+                $pseudo_hotel = $request->get('pseudo_hotel');
+                $ddj = new DonneeDuJour();
+                $current_id_hotel = $repoHotel->findOneByPseudo($pseudo_hotel)->getId();
+                //dd($current_id_hotel);
+                $all_ddj = $repoDdj->findAll();
+                // dd($all_ddj);
+                $tab_ddj = [];
+                $t = [];
+                foreach ($all_ddj as $d) {
+                    $son_id_hotel = $d->getHotel()->getId();
+                    //dd($son_id_hotel);
+                    if ($son_id_hotel == $current_id_hotel) {
+                        array_push($tab_ddj, $d);
+                    }
+                }
+                //    dd($tab_ddj);
+                foreach ($tab_ddj as $item) {
 
-                array_push($t, ['<div>' . $item->getHebTo() . '<span class="unite">%</span></div>', '<div>' . $item->getHebCa() . '<span class="unite">Ar</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '<div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_disoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
-            }
+                    array_push($t, ['<div>' . $item->getHebTo() . '<span class="unite">%</span></div>', '<div>' . $item->getHebCa() . '<span class="unite">Ar</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '<div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_disoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
+                }
 
-            $data = json_encode($t);
-            $response->headers->set('Content-Type', 'application/json');
-            $response->setContent($data);
-            return $response;
+                $data = json_encode($t);
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+                return $response;
+            }    
         }
-        $ddj = new DonneeDuJour();
-        $pseudo_hotel = "royal_beach";
-        $current_id_hotel = $repoHotel->findOneByPseudo($pseudo_hotel)->getId();
-        //dd($current_id_hotel);
-        $all_ddj = $repoDdj->findAll();
-       // dd($all_ddj);
-       $tab_ddj = [];
-        $t = [];
-       foreach($all_ddj as $d){
-           $son_id_hotel = $d->getHotel()->getId();
-           //dd($son_id_hotel);
-          if($son_id_hotel == $current_id_hotel){
-              array_push($tab_ddj, $d);
-          }
-       }
-        //    dd($tab_ddj);
-        foreach ($tab_ddj as $item) {
-
-            array_push($t, ['<div>' . $item->getHebTo() . '<span class="unite">%</span></div>', '<div>' . $item->getHebCa() . '<span class="unite">Ar</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '<div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_diso" data-id = "' . $item->getId() . '" class="btn btn_client_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a><a href="#" data-toggle="modal" data-target="#modal_form_confirme" data-id = "' . $item->getId() . '" class="btn btn_client_suppr btn-danger btn-xs"><span class="fa fa-trash-o"></span></a></div>']);
-        }
-
-        dd($t);
+        
         
     }
 
     /**
      * @Route("/profile/historique_res", name="historique_res")
      */
-    public function historique_res(Request $request, ClientRepository $repoClient, HotelRepository $repoHotel, EntityManagerInterface $manager, DonneeDuJourRepository $repoDdj)
+    public function historique_res(Services $services, Request $request, ClientRepository $repoClient, HotelRepository $repoHotel, EntityManagerInterface $manager, DonneeDuJourRepository $repoDdj)
     {
         $response = new Response();
 
         if ($request->isXmlHttpRequest()) {
-
-            $pseudo_hotel = $request->get('pseudo_hotel');
-            $ddj = new DonneeDuJour();
-            $current_id_hotel = $repoHotel->findOneByPseudo($pseudo_hotel)->getId();
-            //dd($current_id_hotel);
-            $all_ddj = $repoDdj->findAll();
-            // dd($all_ddj);
-            $tab_ddj = [];
-            $t = [];
-            foreach ($all_ddj as $d) {
-                $son_id_hotel = $d->getHotel()->getId();
-                if ($son_id_hotel == $current_id_hotel) {
-                    array_push($tab_ddj, $d);
+            $date1 = $request->get('date1');
+            $date2 = $request->get('date2');
+            if($date1 != "" && $date2 != ""){
+                $pseudo_hotel = $request->request->get('pseudo_hotel');
+                $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+                $current_id_hotel = $l_hotel->getId();
+                $date1 = date_create($date1);
+                $date2 = date_create($date2);
+                $historique = $request->request->get('historique');
+                $all_date_asked = $services->all_date_between2_dates($date1, $date2);
+                $ddjs = $repoDdj->findAll();
+                $tab = [];
+                foreach ($ddjs as $item) {
+                    $son_id_hotel = $item->getHotel()->getId();
+                    if ($son_id_hotel == $current_id_hotel) {
+                        array_push($tab, $item);
+                    }
                 }
-            }
-            //    dd($tab_ddj);
-            foreach ($tab_ddj as $item) {
+                $tab_aff = [];
+                $t = [];
+                foreach ($tab as $item) {
+                    // on liste tous les jour entre sa dete arrivee et date depart
+                    $c = $item->getCreatedAt();
+                    $c_s = $c->format("Y-m-d");
+                    //dd($his_al_dates);
+                    for ($i = 0; $i < count($all_date_asked); $i++) {
+                        if ($c_s == $all_date_asked[$i]) {
+                            array_push($tab_aff, $item);
+                        }
+                    }
+                }
 
-                array_push($t, ['<div>' . $item->getResCa() . '<span class="unite">Ar</span></div>', '<div>' . $item->getResPDej() . '<span class="unite">Couverts</span></div>', '<div>' . $item->getResDej() . '<span class="unite">Couverts</span></div>', '<div>' . $item->getResDinner() . '<span class="unite">Couverts</span></div>', '<div>' . ($item->getResPDej() + $item->getResDinner() + $item->getResDej()) . '<span class="unite">Couverts</span></div>','<div>'. $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_formdisoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
-            }
+                foreach ($tab_aff as $item) {
 
-            $data = json_encode($t);
-            $response->headers->set('Content-Type', 'application/json');
-            $response->setContent($data);
-            return $response;
-        }
-        $ddj = new DonneeDuJour();
-        $pseudo_hotel = "royal_beach";
-        $current_id_hotel = $repoHotel->findOneByPseudo($pseudo_hotel)->getId();
-        //dd($current_id_hotel);
-        $all_ddj = $repoDdj->findAll();
-        // dd($all_ddj);
-        $tab_ddj = [];
-        $t = [];
-        foreach ($all_ddj as $d) {
-            $son_id_hotel = $d->getHotel()->getId();
-            //dd($son_id_hotel);
-            if ($son_id_hotel == $current_id_hotel) {
-                array_push($tab_ddj, $d);
+                    array_push($t, ['<div>' . $item->getResCa() . '<span class="unite">Ar</span></div>', '<div>' . $item->getResPDej() . '<span class="unite">Couverts</span></div>', '<div>' . $item->getResDej() . '<span class="unite">Couverts</span></div>', '<div>' . $item->getResDinner() . '<span class="unite">Couverts</span></div>', '<div>' . ($item->getResPDej() + $item->getResDinner() + $item->getResDej()) . '<span class="unite">Couverts</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_formdisoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
+                }
+
+                $data = json_encode($t);
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+                return $response;
+            }
+            else{
+                $pseudo_hotel = $request->get('pseudo_hotel');
+                $ddj = new DonneeDuJour();
+                $current_id_hotel = $repoHotel->findOneByPseudo($pseudo_hotel)->getId();
+                //dd($current_id_hotel);
+                $all_ddj = $repoDdj->findAll();
+                // dd($all_ddj);
+                $tab_ddj = [];
+                $t = [];
+                foreach ($all_ddj as $d) {
+                    $son_id_hotel = $d->getHotel()->getId();
+                    if ($son_id_hotel == $current_id_hotel) {
+                        array_push($tab_ddj, $d);
+                    }
+                }
+                //    dd($tab_ddj);
+                foreach ($tab_ddj as $item) {
+
+                    array_push($t, ['<div>' . $item->getResCa() . '<span class="unite">Ar</span></div>', '<div>' . $item->getResPDej() . '<span class="unite">Couverts</span></div>', '<div>' . $item->getResDej() . '<span class="unite">Couverts</span></div>', '<div>' . $item->getResDinner() . '<span class="unite">Couverts</span></div>', '<div>' . ($item->getResPDej() + $item->getResDinner() + $item->getResDej()) . '<span class="unite">Couverts</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_formdisoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
+                }
+
+                $data = json_encode($t);
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+                return $response;
             }
         }
-        //    dd($tab_ddj);
-        foreach ($tab_ddj as $item) {
-
-            array_push($t, ['<div>' . $item->getResCa() . '<span class="unite">Ar</span></div>', '<div>' . $item->getResPDej() . '<span class="unite">Couverts</span></div>', '<div>' . $item->getResDej() . '<span class="unite">Couverts</span></div>', '<div>' . $item->getResDinner() . '<span class="unite">Couverts</span></div>', '<div>' . ($item->getResPDej() + $item->getResDinner() + $item->getResDej()) . '<span class="unite">Couverts</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_diso" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a><a href="#" data-toggle="modal" data-target="#modal_form_confirme" data-id = "' . $item->getId() . '" class="btn btn_client_suppr btn-danger btn-xs"><span class="fa fa-trash-o"></span></a></div>']);
-        }
-        dd($t);
     }
 
     /**
      * @Route("/profile/historique_spa", name="historique_spa")
      */
-    public function historique_spa(Request $request, ClientRepository $repoClient, HotelRepository $repoHotel, EntityManagerInterface $manager, DonneeDuJourRepository $repoDdj)
+    public function historique_spa(Services $services, Request $request, ClientRepository $repoClient, HotelRepository $repoHotel, EntityManagerInterface $manager, DonneeDuJourRepository $repoDdj)
     {
         $response = new Response();
 
         if ($request->isXmlHttpRequest()) {
-
-            $pseudo_hotel = $request->get('pseudo_hotel');
-            $ddj = new DonneeDuJour();
-            $current_id_hotel = $repoHotel->findOneByPseudo($pseudo_hotel)->getId();
-            //dd($current_id_hotel);
-            $all_ddj = $repoDdj->findAll();
-            // dd($all_ddj);
-            $tab_ddj = [];
-            $t = [];
-            foreach ($all_ddj as $d) {
-                $son_id_hotel = $d->getHotel()->getId();
-                //dd($son_id_hotel);
-                if ($son_id_hotel == $current_id_hotel) {
-                    array_push($tab_ddj, $d);
+            $date1 = $request->get('date1');
+            $date2 = $request->get('date2');
+            if ($date1 != "" && $date2 != "") {
+                $pseudo_hotel = $request->request->get('pseudo_hotel');
+                $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+                $current_id_hotel = $l_hotel->getId();
+                $date1 = date_create($date1);
+                $date2 = date_create($date2);
+                $historique = $request->request->get('historique');
+                $all_date_asked = $services->all_date_between2_dates($date1, $date2);
+                $ddjs = $repoDdj->findAll();
+                $tab = [];
+                foreach ($ddjs as $item) {
+                    $son_id_hotel = $item->getHotel()->getId();
+                    if ($son_id_hotel == $current_id_hotel) {
+                        array_push($tab, $item);
+                    }
                 }
-            }
-            //    dd($tab_ddj);
-            foreach ($tab_ddj as $item) {
+                $tab_aff = [];
+                $t = [];
+                foreach ($tab as $item) {
+                    // on liste tous les jour entre sa dete arrivee et date depart
+                    $c = $item->getCreatedAt();
+                    $c_s = $c->format("Y-m-d");
+                    //dd($his_al_dates);
+                    for ($i = 0; $i < count($all_date_asked); $i++) {
+                        if ($c_s == $all_date_asked[$i]) {
+                            array_push($tab_aff, $item);
+                        }
+                    }
+                }
 
-                array_push($t, ['<div>' . $item->getSpaCa() . '<span class="unite">Ar</span></div>', '<div>' . $item->getSpaNAbonne() . '<span class="unite">Abonnés</span></div>', '<div>' . $item->getSpaCUnique() . '<span class="unite">Clients</span></div>', '<div>'. $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_formdisoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
-            }
+                foreach ($tab_aff as $item) {
 
-            $data = json_encode($t);
-            $response->headers->set('Content-Type', 'application/json');
-            $response->setContent($data);
-            return $response;
-        }
-        $ddj = new DonneeDuJour();
-        $pseudo_hotel = "royal_beach";
-        $current_id_hotel = $repoHotel->findOneByPseudo($pseudo_hotel)->getId();
-        //dd($current_id_hotel);
-        $all_ddj = $repoDdj->findAll();
-        // dd($all_ddj);
-        $tab_ddj = [];
-        $t = [];
-        foreach ($all_ddj as $d) {
-            $son_id_hotel = $d->getHotel()->getId();
-            //dd($son_id_hotel);
-            if ($son_id_hotel == $current_id_hotel) {
-                array_push($tab_ddj, $d);
-            }
-        }
-        //    dd($tab_ddj);
-        foreach ($tab_ddj as $item) {
+                    array_push($t, ['<div>' . $item->getSpaCa() . '<span class="unite">Ar</span></div>', '<div>' . $item->getSpaNAbonne() . '<span class="unite">Abonnés</span></div>', '<div>' . $item->getSpaCUnique() . '<span class="unite">Clients</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_formdisoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
+                }
 
-            array_push($t, ['<div>' . $item->getSpaCa() . '<span class="unite">Ar</span></div>', '<div>' . $item->getSpaNAbonne() . '<span class="unite">Abonnés</span></div>', '<div>' . $item->getSpaCUnique() . '<span class="unite">Clients</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_diso" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
+                $data = json_encode($t);
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+                return $response;
+            }
+           else{
+                $pseudo_hotel = $request->get('pseudo_hotel');
+                $ddj = new DonneeDuJour();
+                $current_id_hotel = $repoHotel->findOneByPseudo($pseudo_hotel)->getId();
+                //dd($current_id_hotel);
+                $all_ddj = $repoDdj->findAll();
+                // dd($all_ddj);
+                $tab_ddj = [];
+                $t = [];
+                foreach ($all_ddj as $d) {
+                    $son_id_hotel = $d->getHotel()->getId();
+                    //dd($son_id_hotel);
+                    if ($son_id_hotel == $current_id_hotel) {
+                        array_push($tab_ddj, $d);
+                    }
+                }
+                //    dd($tab_ddj);
+                foreach ($tab_ddj as $item) {
+
+                    array_push($t, ['<div>' . $item->getSpaCa() . '<span class="unite">Ar</span></div>', '<div>' . $item->getSpaNAbonne() . '<span class="unite">Abonnés</span></div>', '<div>' . $item->getSpaCUnique() . '<span class="unite">Clients</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_formdisoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
+                }
+
+                $data = json_encode($t);
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+                return $response;
+           }
         }
-        dd($t);
+        
     }
 
     /**

@@ -78,6 +78,31 @@ class PageController extends AbstractController
         $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
         $current_id_hotel = $l_hotel->getId();
         $donneeDJs = $repoDoneeDJ->findAll();
+
+        $all_ddj = $repoDoneeDJ->findAll();
+        $current_hotel_ddj = [];
+        foreach ($all_ddj as $d) {
+            $son_hotel = $d->getHotel()->getPseudo();
+            if ($son_hotel == $pseudo_hotel) {
+                array_push($current_hotel_ddj, $d);
+            }
+        }
+        //dd($current_hotel_ddj);
+        $tab_annee = [];
+        $tab_sans_doublant = [];
+        foreach ($current_hotel_ddj as $c) {
+            $son_created_at = $c->getCreatedAt();
+            $annee = $son_created_at->format('Y');
+            array_push($tab_annee, $annee);
+        }
+        array_push($tab_sans_doublant, $tab_annee[0]);
+        for ($i = 0; $i < count($tab_annee); $i++) {
+
+            if (!in_array($tab_annee[$i], $tab_sans_doublant)) {
+                array_push($tab_sans_doublant, $tab_annee[$i]);
+            }
+        }
+
         $tab = [];
         foreach($donneeDJs as $item){
             $son_hotel = $item->getHotel();
@@ -96,7 +121,8 @@ class PageController extends AbstractController
                 "items" => $tab,
                 "id" => "li__compte_rendu",
                 "hotel" => $data_session['pseudo_hotel'],
-                "current_page" => $data_session['current_page']
+                "current_page" => $data_session['current_page'],
+                "tab_annee" => $tab_sans_doublant,
             ]);
         }
     }
@@ -376,26 +402,48 @@ class PageController extends AbstractController
             $tab_heb_ca[$i] = number_format($tab_heb_ca[$i], 2);
         }
 
-        $tab_labels = [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sept",
-            "Oct",
-            "Nov",
-            "Dec"
-        ];
+        $tab_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
         $tab_aff = [];
         if ($request->request->count() > 0) {
-            // dd($request->request);
+                
+            if($request->request->get('action')){
+               if($request->request->get('action') == "modification"){
+                    //dd($request->request);
+                    $client_id = $request->request->get('client_id');
+                    $nom = $request->request->get('nom');
+                    $prenom = $request->request->get('prenom');
+                    $date_arrivee_client = $request->request->get('date_arrivee');
+                    $date_depart_client = $request->request->get('date_depart');
+
+                    $date_arrivee_client = date_create($date_arrivee_client);
+                    $date_depart_client = date_create($date_depart_client);
+                    $diff = $date_arrivee_client->diff($date_depart_client);
+                    $days = $diff->d;
+
+                    $client = $repo->find($client_id);
+                    $client->setNom($nom);
+                    $client->setPrenom($prenom);
+                    $client->setDateArrivee($date_arrivee_client);
+                    $client->setDateDepart($date_depart_client);
+                    $client->setDureeSejour($days);
+                    $manager->persist($client);
+                    $manager->flush();
+               }
+                if ($request->request->get('action') == "suppression") {
+                    //dd($request->request);
+                    $client_id = $request->request->get('client_id');
+                   
+
+                    $client = $repo->find($client_id);
+                  
+                    $manager->remove($client);
+                    $manager->flush();
+                }
+            }
+            //dd($request->request);
             $date1 = $request->request->get('date1');
             $date2 = $request->request->get('date2');
-
+            //dd($date1);
             //dd(gettype($date1)."  ".$date2);
 
             $date1 = date_create($date1);
@@ -1301,12 +1349,18 @@ class PageController extends AbstractController
     /**
      * @Route("/profile/{pseudo_hotel}/h_hebergement", name="h_hebergement")
      */
-    public function h_hebergement(SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel)
+    public function h_hebergement(Request $request, SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "h_hebergement";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
-
+        $value_date1 = "";
+        $value_date2 = "";
+        if($request->request->count() > 0){
+            $value_date1 = $request->request->get('date1');
+            $value_date2 = $request->request->get('date2');
+            //dd($request->request);
+        }
         // HotelRepository $repoHotel
         $user = $data_session['user'];
         $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
@@ -1316,7 +1370,9 @@ class PageController extends AbstractController
        else{
             return $this->render('page/h_hebergement.html.twig', [
                 "hotel" => $data_session['pseudo_hotel'],
-                "current_page" => $data_session['current_page']
+                "current_page" => $data_session['current_page'],
+                "value_date1" => $value_date1,
+                "value_date2" => $value_date2,
             ]);
        }
     }
@@ -1324,12 +1380,19 @@ class PageController extends AbstractController
     /**
      * @Route("/profile/{pseudo_hotel}/h_restaurant", name="h_restaurant")
      */
-    public function h_restaurant(SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel)
+    public function h_restaurant(Request $request, SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "h_restaurant";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         // HotelRepository $repoHotel
+        $value_date1 = "";
+        $value_date2 = "";
+        if ($request->request->count() > 0) {
+            $value_date1 = $request->request->get('date1');
+            $value_date2 = $request->request->get('date2');
+            //dd($request->request);
+        }
         $user = $data_session['user'];
         $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
         if ($pos == "impossible") {
@@ -1338,7 +1401,9 @@ class PageController extends AbstractController
        else{
             return $this->render('page/h_restaurant.html.twig', [
                 "hotel" => $data_session['pseudo_hotel'],
-                "current_page" => $data_session['current_page']
+                "current_page" => $data_session['current_page'],
+                "value_date1" => $value_date1,
+                "value_date2" => $value_date2,
             ]);
        }
     }
@@ -1346,12 +1411,19 @@ class PageController extends AbstractController
     /**
      * @Route("/profile/{pseudo_hotel}/h_spa", name="h_spa")
      */
-    public function h_spa(SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel)
+    public function h_spa(Request $request, SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "h_spa";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         // HotelRepository $repoHotel
+        $value_date1 = "";
+        $value_date2 = "";
+        if ($request->request->count() > 0) {
+            $value_date1 = $request->request->get('date1');
+            $value_date2 = $request->request->get('date2');
+            //dd($request->request);
+        }
         $user = $data_session['user'];
         $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
         if ($pos == "impossible") {
@@ -1360,7 +1432,9 @@ class PageController extends AbstractController
        else{
             return $this->render('page/h_spa.html.twig', [
                 "hotel" => $data_session['pseudo_hotel'],
-                "current_page" => $data_session['current_page']
+                "current_page" => $data_session['current_page'],
+                "value_date1" => $value_date1,
+                "value_date2" => $value_date2,
             ]);
        }
     }

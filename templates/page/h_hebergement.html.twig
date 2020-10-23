@@ -92,10 +92,10 @@
 						<div class="sous_titre_filtre">
 							<h3>Filtre</h3>
 						</div>
-						<form action="" class="tri">
-							<input type="date">
-							<input type="date">
-							<button class="btn btn-primary btn-xs btn_filter"><span>Filtrer</span></button>
+						<form action = "{{ path('h_hebergement', {'pseudo_hotel' : hotel}) }}" method = "POST" class="tri">
+							<input type="date" id = "date1" name = "date1" value = "{{ value_date1 }}">
+							<input type="date" id = "date2" name = "date2" value = "{{ value_date2 }}">
+							<button type = "submit"  class="btn btn-primary btn-xs btn_filter"><span>Filtrer</span></button>
 						</form>
 					</section>
 					<div class="section">
@@ -197,65 +197,69 @@
 	$(document).ready(function () {
 		var pseudo_hotel = "{{ hotel }}" ;
 		//alert(pseudo_hotel)
-        var table = $('#tableau_historique_heb').DataTable({
-        "language": {
-        "sEmptyTable": "Aucune donnée disponible dans le tableau",
-        "sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
-        "sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
-        "sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
-        "sInfoPostFix": "",
-        "sInfoThousands": ",",
-        "sLengthMenu": "Afficher _MENU_ éléments",
-        "sLoadingRecords": "Chargement...",
-        "sProcessing": "Traitement...",
-        "sSearch": "Rechercher :",
-        "sZeroRecords": "Aucun élément correspondant trouvé",
-        "oPaginate": {
-        "sFirst": "Premier",
-        "sLast": "Dernier",
-        "sNext": "Suivant",
-        "sPrevious": "Précédent"
-        },
-        "oAria": {
-        "sSortAscending": ": activer pour trier la colonne par ordre croissant",
-        "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
-        },
-        "select": {
-        "rows": {
-        "_": "%d lignes sélectionnées",
-        "0": "Aucune ligne sélectionnée",
-        "1": "1 ligne sélectionnée"
-        }
-        }
-        },
-		"ajax" : {
-                        url : "/profile/historique_heb", // any am Clientcontroller
-                        type : 'POST', 
-                        data : {'pseudo_hotel' : pseudo_hotel},
-                        // success : function(response){
-                        //     alert(response);
-                        // }, 
-                        // error : function(){
-                        //     alert('erreur server');
-                        // },
-                        "dataSrc":"",
+        		var table = $('#tableau_historique_heb').DataTable({
+					"language": {
+						"sEmptyTable": "Aucune donnée disponible dans le tableau",
+						"sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
+						"sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
+						"sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
+						"sInfoPostFix": "",
+						"sInfoThousands": ",",
+						"sLengthMenu": "Afficher _MENU_ éléments",
+						"sLoadingRecords": "Chargement...",
+						"sProcessing": "Traitement...",
+						"sSearch": "Rechercher :",
+						"sZeroRecords": "Aucun élément correspondant trouvé",
+						"oPaginate": {
+							"sFirst": "Premier",
+							"sLast": "Dernier",
+							"sNext": "Suivant",
+							"sPrevious": "Précédent"
+						},
+						"oAria": {
+							"sSortAscending": ": activer pour trier la colonne par ordre croissant",
+							"sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+						},
+						"select": {
+							"rows": {
+								"_": "%d lignes sélectionnées",
+								"0": "Aucune ligne sélectionnée",
+								"1": "1 ligne sélectionnée"
+							}
+						}
+					},
+					"ajax" : {
+								url : "/profile/historique_heb", // any am Clientcontroller
+								type : 'POST', 
+								data : {
+										'pseudo_hotel' : pseudo_hotel,
+										'date1' : $("#date1").val(),
+										'date2' : $("#date2").val(),
+								},
+								// success : function(response){
+								//     console.log(response);
+								// }, 
+								// error : function(){
+								//     alert('erreur server');
+								// },
+								"dataSrc":"",
                         
-                    },
+                    		},
 
                     //annule le tri
                     order : [[0 , 'asc']],
                     ordering : false,
-        responsive: true,
-        scrollY: false, // raha scrollena de asina val ex 400
-        scrollX: true,
-        scrollCollapse: true,
-        paging: true,
-        autoFill: true
-        });
+					responsive: true,
+					scrollY: false, // raha scrollena de asina val ex 400
+					scrollX: true,
+					scrollCollapse: true,
+					paging: true,
+					autoFill: true
+				});
 
-        new $.fn.dataTable.FixedHeader(table);
+        		new $.fn.dataTable.FixedHeader(table);
 
-		// suppression ddj 
+				// suppression ddj 
 
             $(document).on('click', ".btn_client_suppr", function(ev){
                 //ev.preventDefault();
@@ -357,6 +361,10 @@
 				})
 			})
 
+			// $(".btn_filter").click(function(e){
+			// 	e.preventDefault();
+			// 	table.ajax.reload(null, false);
+			// })
 
 
     });
