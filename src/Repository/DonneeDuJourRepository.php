@@ -23,6 +23,18 @@ class DonneeDuJourRepository extends ServiceEntityRepository
         return $this->findBy(array(), array('createdAt' => 'DESC'));
     }
 
+    /**
+     * @return Query 
+     */
+    public function find_all_ddj()
+    {
+        return $this->createQueryBuilder('d')
+            ->orderBy('d.createdAt', 'DESC')
+            ->getQuery()
+        ;
+    }
+
+    
     // /**
     //  * @return DonneeDuJour[] Returns an array of DonneeDuJour objects
     //  */

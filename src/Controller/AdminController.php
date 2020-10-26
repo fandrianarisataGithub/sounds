@@ -538,7 +538,15 @@ class AdminController extends AbstractController
                     if(in_array($ext, $tab_ext)){
                         $targetPath = "uploads/" . $_FILES['fichier']['name'];
                         if (move_uploaded_file($sourcePath, $targetPath)) {
-                            $data = json_encode($targetPath);
+                            $user->setImage($targetPath);
+                            $manager->flush();
+                            $html = '
+                                <div class="pdp_image" style="background-image : url({{ asset('. $targetPath .') | raw }});">
+                                    <input type="file" name="fichier" id="fichier">
+                                    <span class="icone_upload fa fa-plus"></span>
+                                </div>
+                            ';
+                            $data = json_encode($html);
                             $response->headers->set('Content-Type', 'application/json');
                             $response->setContent($data);
                             return $response;
@@ -557,6 +565,60 @@ class AdminController extends AbstractController
             }
                 
             
+           
+        }
+    }
+
+    /**
+     * @Route("/profile/edit_user_compte" , name = "edit_user_compte")
+     */
+    public function edit_user_compte(UserPasswordEncoderInterface $passEnc, Request $request, UserRepository $repoUser, EntityManagerInterface $manager)
+    {
+        $response = new Response();
+        if($request->isXmlHttpRequest()){
+            
+            $email = $request->request->get('email');
+            $pass = $request->request->get('pass');
+            $id = $request->request->get('id');
+            $c_pass = $request->request->get('c_pass');
+            $user = $repoUser->find($id);
+            $data = "";
+            if(!empty($email)){
+                $user->setEmail($email);
+                
+                if (!empty($pass) && !empty($c_pass)) {
+                    if ($c_pass == $pass) {
+                        $hash = $passEnc->encodePassword($user, $pass);
+                        $user->setPassword($hash);
+                        $manager->flush();
+                        $data = json_encode($user->getEmail());
+                    } else {
+                        $data = json_encode("Les mots de passes entrés ne sont pas identiques");
+                    }
+                }
+                else{
+                    $manager->flush();
+                    $data = json_encode($user->getEmail());
+                  
+                }
+            }
+            else{
+                if (!empty($pass) && !empty($c_pass)) {
+                    if ($c_pass == $pass) {
+                        $hash = $passEnc->encodePassword($user, $pass);
+                        $user->setPassword($hash);
+                        $manager->flush();
+                        $data = json_encode($user->getEmail());
+                       
+                    } else {
+                        $data = json_encode("Les mots de passes entrés ne sont pas identiques");
+                    }
+                } 
+            }
+            
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+            return $response;
            
         }
     }

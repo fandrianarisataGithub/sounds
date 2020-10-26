@@ -80,26 +80,29 @@
 				<section class="section_part" id="section_part_top">
 					<div class="sous_titre">
 						<h2>Compte rendu journalier</h2>
-						<form action="" class="tri ">
+						<form action="{{ path('crj', {'pseudo_hotel' : hotel }) }}" method = "POST" class="tri">
 							<div id="tri_annee">
 								<h4>Filtre par Année :
 								</h4>
+								<input type="hidden" name = "action" value = "tri_annee">
 								<section>
-									<select name="" id="">
+									<select name="annee">
 										{% for t in tab_annee %}
 											<option value="{{ t }}">{{ t }}</option>
 										{% endfor %}
 									</select>
 								</section>
+								<button type = "submit" class="btn btn-primary btn-xs btn_filter filter_crj"><span>Filtrer</span></button>
 							</div>
 						</form>
-						<form action="">
+						<form action="{{ path('crj', {'pseudo_hotel' : hotel }) }}" method = "POST">
 							<div id="tri">
 								<h4>Filtre par date :
 								</h4>
+								<input type="hidden" name = "action" value = "tri_interval">
 								<section>
-									<input type="date" class="date_compte_rendu date1">
-									<input type="date" class="date_compte_rendu date2">
+									<input type="date" class="date_compte_rendu date1" name = "date1">
+									<input type="date" class="date_compte_rendu date2" name = "date2">
 									<button type = "submit" class="btn btn-primary btn-xs btn_filter filter_crj"><span>Filtrer</span></button>
 								</section>
 							</div>
@@ -129,7 +132,7 @@
 					
 					<!-- unité compte rendu -->
 					{% set i = 0 %}
-					{% for item in items %}
+					{% for item in pagination %}
 							<div class="unite data_c">
 								<div class="tab_content data_crj data_crj_active" id="page{% set i = i + 1 %}{{ i }}">
 									<div class="sous_titre">
@@ -206,7 +209,11 @@
 							</div>
 					{% endfor %}
 
-				<ul id="pagination-demo" class="pagination-lg pull-right"></ul>
+					{# display navigation #}
+					<div class="navigation">
+						{{ knp_pagination_render(pagination) }}
+					</div>
+
 
 
 			</div>
@@ -229,51 +236,8 @@
 <script>
 	// nombre des coimpte rendu
 
-	var nombre_crj = document.querySelectorAll(".data_crj").length;
 
-	$('#pagination-demo').twbsPagination({
-
-		totalPages: nombre_crj,
-		// the current page that show on start
-		startPage: 1,
-
-		// maximum visible pages
-		visiblePages: 5,
-
-		initiateStartPageClick: true,
-
-		// template for pagination links
-		href: false,
-
-		// variable name in href template for page number
-		hrefVariable: '[[ number ]]',
-
-		// Text labels
-		first: 'Premier',
-		prev: 'Précédent',
-		next: 'Suivant',
-		last: 'Dernier',
-
-		// carousel-style pagination
-		loop: false,
-
-		// callback function
-		onPageClick: function (event, page) {
-			$('.data_crj_active').removeClass('data_crj_active');
-			$('#page' + page).addClass('data_crj_active');
-		},
-
-		// pagination Classes
-		paginationClass: 'pagination',
-		nextClass: 'next',
-		prevClass: 'prev',
-		lastClass: 'last',
-		firstClass: 'first',
-		pageClass: 'page',
-		activeClass: 'active',
-		disabledClass: 'disabled'
-
-	});
+	
 
 </script>
 

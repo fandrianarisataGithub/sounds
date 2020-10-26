@@ -95,29 +95,20 @@
 				</div>
 				<form action="" id="form-owner" enctype="multipart/form-data">
 					<div class="form-group pdp_profil">
-						<div class="pdp_image" style="">
-							<input type="file" name="fichier" id="fichier">
-							<span class="icone_upload fa fa-plus"></span>
-						</div>
+						<section id = "profile">
+							<div class="pdp_image" style="background-image : url({{ asset(app.user.image) }});">
+								<input type="file" name="fichier" id="fichier">
+								<span class="icone_upload fa fa-plus"></span>
+							</div>
+						</section>
 						<div class="pdp_profil_n_p">
-							<p class="p_nom">Mon nom</p>
-							<p class="p_prenom">Mon prénom</p>
-							<p class="p_prenom">Mon identifiant</p>
+							<p class="p_nom">{{ app.user.nom }}</p>
+							<p class="p_prenom">{{ app.user.prenom }}</p>
 						</div>
 					</div>
 					<div class="form-group">
 						<span class="span__label"></span>
-						<input type="text" name="" data-placeholder="Adresse mail" class="form-control" id="username" placeholder="Adresse mail" value="Unadresse@gmail.com">
-					</div>
-					<div class="form-group">
-						<span class="span__label"></span>
-						<input type="password" name="" data-placeholder="Mot de passe" class="form-control" id="passsword" placeholder="Mot de passe" value="un mot de passe">
-						<a href="#" class="show_password">
-							<span class="fa fa-eye"></span>
-						</a>
-						<a href="#" class="edit_pass">
-							<span class="fa fa-edit"></span>
-						</a>
+						<input type="text" name="" data-placeholder="Adresse mail" class="form-control" id="username" placeholder="Adresse mail" value="{{ app.user.email }}">
 					</div>
 					<div class="infos_pass form-group">
 						<span class="span__label"></span>
@@ -127,8 +118,13 @@
 						<span class="span__label"></span>
 						<input type="password" name="" data-placeholder="Confirmer le mot de passe" class="form-control" id="c_passsword" placeholder="Confirmer le mot de passe">
 					</div>
+					<div class = "form-group" id = "infos_edit">
+						<p>
+							ecqskgqkcg jhgjdjg
+						</p>
+					</div>
 					<div class="form-group">
-						<button type="submit" class="form-control btn btn-warning" id="btn_register">Enregistrer</button>
+						<button type="submit" class="form-control btn btn-warning" id="btn_edit_user"><span>Enregistrer</span></button>
 					</div>
 				</form>
 			</div>
@@ -272,30 +268,6 @@
 				}
 			})
 
-			/* / annimation input */
-
-			/* animation password show hide */
-
-			$(".show_password").click(function (e) {
-				e.preventDefault();
-				if ($(this).children('span').hasClass('fa-eye')) {
-					$(this).children('span').removeClass('fa-eye');
-					$(this).children('span').addClass('fa-eye-slash');
-					$(this).prev().attr("type", "text");
-				} 
-				else if ($(this).children('span').hasClass('fa-eye-slash')) {
-					$(this).children('span').removeClass('fa-eye-slash');
-					$(this).children('span').addClass('fa-eye');
-					$(this).prev().attr("type", "password");
-				}
-			})
-
-			$(".edit_pass").click(function (e) {
-					e.preventDefault();
-					$(".infos_pass").toggle();
-			})
-
-			/*  / animation password show hide */
 
 			/* ajax pour l'affichage de tous les users */
 
@@ -475,8 +447,8 @@
 						alert('Veuiller choisir un fichier image');
 					}
 					else{
-						//background-image: url(images/directeur.jpg); .pdp_image
-						$('.pdp_image').css('background-image', "url("+{{ asset('response') }}+")"); // tsy mety le affichage 
+						location.reload();
+						//$('.pdp_image').css('background-image', "url({{ asset( "+response+" ) }})");
 					}
 				},
 				error: function(){
@@ -485,6 +457,52 @@
 			})
 		})
 
+		/* edit user */
+
+		$('#btn_edit_user').click(function(e){
+			e.preventDefault();
+			var pass = $('#n_passsword').val();
+			var c_pass = $('#c_passsword').val();
+			var email = $('#username').val();
+			var id_user = "{{ app.user.id }}";
+			var data = {
+				"email"  : email,
+				"c_pass" : c_pass,
+				"pass" : pass,
+				"id" : id_user,
+			};
+			$.ajax({
+				url : "/profile/edit_user_compte",
+				type : "POST",
+				data : data,
+				beforeSend : function(){
+					$('#btn_edit_user span').text('Patienter ...');
+				},
+				success : function(response){
+					if(response == "Les mots de passes entrés ne sont pas identiques"){
+						$('#infos_edit p').text(response);
+						$('#infos_edit').fadeIn('slow');
+					}
+					else{
+						$('#form-owner')[0].reset();
+						$('#username').val(response);
+					}
+				},
+				error : function(error){
+					alert('erreur modif profile user');
+				},
+				complete : function(){
+					$('#btn_edit_user span').text('Enregistrer');
+					$('#n_passsword').focus(function(){
+						$('#infos_edit').fadeOut('slow');
+					})
+					$('#c_passsword').focus(function(){
+						$('#infos_edit').fadeOut('slow');
+					})
+				}
+			})
+
+		})
 	
 
 

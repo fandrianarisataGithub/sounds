@@ -15,6 +15,7 @@ use App\Repository\ClientRepository;
 use App\Repository\FicheHotelRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\DonneeDuJourRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -70,7 +71,7 @@ class PageController extends AbstractController
     /**
      * @Route("/profile/{pseudo_hotel}/crj", name="crj")
      */
-    public function crj(SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel, DonneeDuJourRepository $repoDoneeDJ)
+    public function crj(Request $request, PaginatorInterface $paginator, SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel, DonneeDuJourRepository $repoDoneeDJ)
     {
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "crj";
@@ -111,6 +112,28 @@ class PageController extends AbstractController
                 array_push($tab, $item);
             }
         }
+        
+        /** Pour la pagination */
+
+        $query = $repoDoneeDJ->find_all_ddj();
+        //dd($query);
+        $pagination = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
+
+        /** fin pour la pagination */
+
+        /** si il ya des requetes */
+
+        if($request->request->count() > 0){
+            $action = $request->request->get('action');
+           
+        }
+
+        /** fin requete */
+    
         $user = $data_session['user'];
         $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
         if ($pos == "impossible") {
@@ -118,7 +141,7 @@ class PageController extends AbstractController
         }
         else{
             return $this->render('page/crj.html.twig', [
-                "items" => $tab,
+                "pagination" => $pagination,
                 "id" => "li__compte_rendu",
                 "hotel" => $data_session['pseudo_hotel'],
                 "current_page" => $data_session['current_page'],
@@ -129,7 +152,7 @@ class PageController extends AbstractController
 
     /**
      * @Route("/profile/{pseudo_hotel}/hebergement", name="hebergement")
-     */
+    */
     public function hebergement(Services $services, $pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ, Request $request, EntityManagerInterface $manager, ClientRepository $repo, SessionInterface $session, HotelRepository $repoHotel)
     {
         $response = new Response();
@@ -2702,7 +2725,6 @@ class PageController extends AbstractController
                     $tab_spa_cu[$i] = number_format(($tab_spa_cu[$i] / $tab_ecu[$i]), 2);
                 }
 
-
                 $data = json_encode($tab_spa_cu);
 
                 $response->headers->set('Content-Type', 'application/json');
@@ -2711,6 +2733,4 @@ class PageController extends AbstractController
             }
         }
     }
-
-
 }
