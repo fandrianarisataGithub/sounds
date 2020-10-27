@@ -11,72 +11,8 @@
 <section
 	id="contents" class="container-fluid">
 	<!-- entete content -->
-	<div id="top-content">
-        <div id="entete_fixed">
-            <ul>
-                <li>
-                    <a href="#" id="btn_drop_side_menu">
-                        <i data-show="show-side-navigation1" class="fa fa-bars show-side-btn"></i>
-                    </a>
-                </li>
-                <li
-								{% if hotel == "royal_beach" %}
-									class="logo_active"
-								{% endif %}
-							>
-								<a href="{{ path('royal_beach', {'current_page' : current_page }) }}">
-									<div>
-										<img src="{{asset('images/hazo1.png')}}" alt="logo1">
-									</div>
-								</a>
-							</li>
-							<li
-								{% if hotel == "calypso" %}
-									class="logo_active"
-								{% endif %}
-							>
-								<a href="{{ path('calypso', {'current_page' : current_page }) }}">
-									<div>
-										<img src="{{ asset('images/hazo2.png') }}" alt="logo2">
-									</div>
-								</a>
-							</li>
-							<li 
-								{% if hotel == "baobab_tree" %}
-									class="logo_active"
-								{% endif %}
-							>
-								<a href="{{ path('baobab_tree', {'current_page' : current_page }) }}">
-									<div>
-										<img src="{{ asset('images/hazo3.png') }}" alt="logo3">
-									</div>
-								</a>
-							</li>
-							<li
-								{% if hotel == "vanila_hotel" %}
-									class="logo_active"
-								{% endif %}
-							>
-								<a href="{{ path('vanila_hotel', {'current_page' : current_page }) }}">
-									<div>
-										<img src="{{ asset('images/hazo4.png') }}" alt="logo4">
-									</div>
-								</a>
-							</li>
-
-                <li id="log_out_entete">
-                    <div>
-                        <a href="{{ path('app_logout') }}">
-                            <span aria-hidden="true" class="fa fa-power-off fa-2x"></span>
-                        </a>
-                    </div>
-                </li>
-            </ul>
-        </div>
-
-	</div>
+        {% include "nav2.html.twig" %}
 	<!-- / entete content -->
-
 	<!-- contenue nouveau client -->
 	<div id="hrs_content">
 		<div>
