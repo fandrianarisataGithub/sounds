@@ -88,7 +88,15 @@
 								<section>
 									<select name="annee">
 										{% for t in tab_annee %}
-											<option value="{{ t }}">{{ t }}</option>
+											<option value="{{ t }}" 
+
+												{% if annee_courante is defined %}
+													{% if annee_courante == t %}
+														selected = "selected"
+													{% endif %}
+												{% endif %}
+
+											 >{{ t }}</option>
 										{% endfor %}
 									</select>
 								</section>
@@ -101,24 +109,36 @@
 								</h4>
 								<input type="hidden" name = "action" value = "tri_interval">
 								<section>
-									<input type="date" class="date_compte_rendu date1" name = "date1">
-									<input type="date" class="date_compte_rendu date2" name = "date2">
+									<input type="date" class="date_compte_rendu date1" name = "date1" 
+										{% if date1 is defined %}
+											value = "{{ date1 }}"
+										{% else %}
+											value = ""
+										{% endif %}
+									>
+									<input type="date" class="date_compte_rendu date2" name = "date2"
+										{% if date2 is defined %}
+											value = "{{ date2 }}"
+											{% else %}
+												value = ""
+										{% endif %}
+									>
 									<button type = "submit" class="btn btn-primary btn-xs btn_filter filter_crj"><span>Filtrer</span></button>
 								</section>
 							</div>
 						</form>
-						<form action="">
+						<form action="" class="form_tri_services">
 							<select name="" id="mois">
-								<option value="">Tout service</option>
-								<option value="">Direction</option>
-								<option value="">Service RH</option>
-								<option value="">Commercial</option>
-								<option value="">Compta</option>
-								<option value="">Réception</option>
-								<option value="">Restaurant</option>
-								<option value="">Spa</option>
-								<option value="">Service techniques</option>
-								<option value="">Litiges</option>
+								<option value="tous_service">Tout service</option>
+								<option value="direction">Direction</option>
+								<option value="service_rh">Service RH</option>
+								<option value="commercial">Commercial</option>
+								<option value="comptabilite">Compta</option>
+								<option value="reception">Réception</option>
+								<option value="restaurant">Restaurant</option>
+								<option value="spa">Spa</option>
+								<option value="service_technique">Service techniques</option>
+								<option value="litiges">Litiges</option>
 							</select>
 						</form>
 						
@@ -235,7 +255,19 @@
 
 <script>
 	// nombre des coimpte rendu
-
+	$(document).ready(function(){
+		$('.form_tri_services select').on('change', function(){
+			var val = $(this).val();
+			//alert(val);
+			if(val != 'tous_service'){
+				$('.data-service > div').fadeOut();
+				$('.'+val).fadeIn();
+			}
+			else{
+				$('.data-service > div').fadeIn();
+			}
+		})
+	})
 
 	
 

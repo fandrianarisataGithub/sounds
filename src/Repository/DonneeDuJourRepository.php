@@ -26,12 +26,44 @@ class DonneeDuJourRepository extends ServiceEntityRepository
     /**
      * @return Query 
      */
-    public function find_all_ddj()
+    public function find_all_ddj($hotel)
     {
         return $this->createQueryBuilder('d')
+            ->andWhere('d.hotel = :hotel')
+            ->setParameter('hotel', $hotel)
             ->orderBy('d.createdAt', 'DESC')
             ->getQuery()
         ;
+    }
+
+    /**
+     * @return Query
+     */
+    public function find_all_ddj_between($date1, $date2, $hotel)
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.hotel = :hotel')
+            ->andWhere('d.createdAt <= :date2')
+            ->andWhere('d.createdAt >= :date1')
+            ->setParameter('hotel', $hotel)
+            ->setParameter('date1', $date1)
+            ->setParameter('date2', $date2)
+            ->orderBy('d.createdAt', 'DESC')
+            ->getQuery();
+    }
+
+    /**
+     *@return Query
+     */
+    public function find_all_ddj_by_year($year, $hotel)
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('YEAR(d.createdAt) = :val')
+            ->andWhere('d.hotel = :hotel')
+            ->setParameter('val', $year)
+            ->setParameter('hotel', $hotel)
+            ->orderBy('d.createdAt', 'DESC')
+            ->getQuery();
     }
 
     

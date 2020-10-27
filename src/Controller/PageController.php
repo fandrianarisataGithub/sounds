@@ -104,50 +104,93 @@ class PageController extends AbstractController
             }
         }
 
-        $tab = [];
-        foreach($donneeDJs as $item){
-            $son_hotel = $item->getHotel();
-            $son_id_hotel = $son_hotel->getId();
-            if($son_id_hotel == $current_id_hotel){
-                array_push($tab, $item);
-            }
-        }
-        
-        /** Pour la pagination */
-
-        $query = $repoDoneeDJ->find_all_ddj();
-        //dd($query);
-        $pagination = $paginator->paginate(
-            $query, /* query NOT result */
-            $request->query->getInt('page', 1), /*page number*/
-            10 /*limit per page*/
-        );
-
-        /** fin pour la pagination */
 
         /** si il ya des requetes */
 
         if($request->request->count() > 0){
             $action = $request->request->get('action');
-           
-        }
-
-        /** fin requete */
-    
-        $user = $data_session['user'];
-        $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
-        if ($pos == "impossible") {
-            return $this->render('/page/error.html.twig');
+            //dd($action);
+            if($action == "tri_annee"){
+                $query = $repoDoneeDJ->find_all_ddj_by_year($request->request->get('annee'), $l_hotel);
+                $pagination = $paginator->paginate(
+                    $query, /* query NOT result */
+                    $request->query->getInt('page', 1), /*page number*/
+                    10 /*limit per page*/
+                );
+                //dd($pagination);
+                $user = $data_session['user'];
+                $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
+                if ($pos == "impossible") {
+                    return $this->render('/page/error.html.twig');
+                } else {
+                    return $this->render('page/crj.html.twig', [
+                        "pagination" => $pagination,
+                        "id" => "li__compte_rendu",
+                        "hotel" => $data_session['pseudo_hotel'],
+                        "current_page" => $data_session['current_page'],
+                        "tab_annee" => $tab_sans_doublant,
+                        "annee_courante" => $request->request->get('annee')
+                    ]);
+                }
+            }
+            else{
+                $date1 = date_create($request->request->get('date1'));
+                $date2 = date_create($request->request->get('date2'));
+                $query = $repoDoneeDJ->find_all_ddj_between($date1, $date2, $l_hotel);
+                //dd($j);
+                $pagination = $paginator->paginate(
+                    $query, /* query NOT result */
+                    $request->query->getInt('page', 1), /*page number*/
+                    10 /*limit per page*/
+                );
+                //dd($pagination);
+                $user = $data_session['user'];
+                $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
+                if ($pos == "impossible") {
+                    return $this->render('/page/error.html.twig');
+                } else {
+                    return $this->render('page/crj.html.twig', [
+                        "pagination" => $pagination,
+                        "id" => "li__compte_rendu",
+                        "date1" => $date1->format('Y-m-d'),
+                        "date2" => $date2->format('Y-m-d'),
+                        "hotel" => $data_session['pseudo_hotel'],
+                        "current_page" => $data_session['current_page'],
+                        "tab_annee" => $tab_sans_doublant,
+                        "annee_courante" => $request->request->get('annee')
+                    ]);
+                }
+            }
         }
         else{
-            return $this->render('page/crj.html.twig', [
-                "pagination" => $pagination,
-                "id" => "li__compte_rendu",
-                "hotel" => $data_session['pseudo_hotel'],
-                "current_page" => $data_session['current_page'],
-                "tab_annee" => $tab_sans_doublant,
-            ]);
+            /** Pour la pagination */
+
+            $query = $repoDoneeDJ->find_all_ddj($l_hotel);
+            //dd($query);
+            $pagination = $paginator->paginate(
+                $query, /* query NOT result */
+                $request->query->getInt('page', 1), /*page number*/
+                10 /*limit per page*/
+            );
+
+            /** fin pour la pagination */
+            /** fin requete */
+
+            $user = $data_session['user'];
+            $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
+            if ($pos == "impossible") {
+                return $this->render('/page/error.html.twig');
+            } else {
+                return $this->render('page/crj.html.twig', [
+                    "pagination" => $pagination,
+                    "id" => "li__compte_rendu",
+                    "hotel" => $data_session['pseudo_hotel'],
+                    "current_page" => $data_session['current_page'],
+                    "tab_annee" => $tab_sans_doublant,
+                ]);
+            }
         }
+       
     }
 
     /**
