@@ -49,11 +49,17 @@ class Hotel
      */
     private $user;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Fournisseur::class, mappedBy="hotel")
+     */
+    private $fournisseurs;
+
     public function __construct()
     {
         $this->clients = new ArrayCollection();
         $this->donneeDuJours = new ArrayCollection();
         $this->user = new ArrayCollection();
+        $this->fournisseurs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -180,6 +186,34 @@ class Hotel
     {
         if ($this->user->contains($user)) {
             $this->user->removeElement($user);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Fournisseur[]
+     */
+    public function getFournisseurs(): Collection
+    {
+        return $this->fournisseurs;
+    }
+
+    public function addFournisseur(Fournisseur $fournisseur): self
+    {
+        if (!$this->fournisseurs->contains($fournisseur)) {
+            $this->fournisseurs[] = $fournisseur;
+            $fournisseur->addHotel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFournisseur(Fournisseur $fournisseur): self
+    {
+        if ($this->fournisseurs->contains($fournisseur)) {
+            $this->fournisseurs->removeElement($fournisseur);
+            $fournisseur->removeHotel($this);
         }
 
         return $this;

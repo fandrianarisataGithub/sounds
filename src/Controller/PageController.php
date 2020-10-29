@@ -7,21 +7,26 @@ use App\Entity\User;
 use App\Entity\Client;
 use App\Entity\FicheHotel;
 use App\Services\Services;
+use App\Entity\Fournisseur;
 use App\Entity\DonneeDuJour;
 use App\Form\DonneeDuJourType;
+use App\Form\FournisseurFileType;
 use App\Repository\UserRepository;
 use App\Repository\HotelRepository;
 use App\Repository\ClientRepository;
 use App\Repository\FicheHotelRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\FournisseurRepository;
 use App\Repository\DonneeDuJourRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 
 
@@ -1318,6 +1323,94 @@ class PageController extends AbstractController
                 'tab_spa_na' => $tab_spa_na,
             ]);
         }
+    }
+
+    /**
+     * @Route("/profile/{pseudo_hotel}/fournisseur", name="fournisseur")
+     */
+    public function fournisseur(FournisseurRepository $repoFour, EntityManagerInterface $manager, Services $services, Request $request, SessionInterface $session, $pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ, HotelRepository $repoHotel)
+    {
+        $data_session = $session->get('hotel');
+        $data_session['current_page'] = "fournisseur";
+        $data_session['pseudo_hotel'] = $pseudo_hotel;
+        $form_add = $this->createform(FournisseurFileType::class);
+
+        $form_add->handleRequest($request);
+
+        if($form_add->isSubmitted() && $form_add->isValid()){
+            $fichier = $form_add->get('fichier')->getData();
+            //dd($fichier->getRealPath()); // tmp name
+            $originalFilename1 = pathinfo($fichier->getClientOriginalName(), PATHINFO_FILENAME);
+            //dd($fichier->getClientOriginalName());
+            //dd($originalFilename1);
+            // this is needed to safely include the file name as part of the URL
+            $safeFilename1 = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename1);
+            $newFilename1 = $safeFilename1 . '.' . $fichier->guessExtension();
+            
+
+            $allow_ext = ['xls', 'csv', 'xlsx'];
+            if(in_array($fichier->guessExtension(), $allow_ext)){
+               
+               $fileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($fichier->getRealPath()); // d'après dd($fichier)
+               //dd($fileType);
+               $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($fileType);
+               $spreadsheet = $reader->load($fichier->getRealPath()); // le nom temporaire
+               $data = $spreadsheet->getActiveSheet()->toArray();
+               //dd($data); 
+               // on compte depuis la ligne nu 2 dans $data
+               for($i = 2; $i < count($data); $i++){
+                    $createdAt = date_create($services->parseMyDate($data[$i][0]));
+                    $numero_facture = $data[$i][1];
+                    $type = $data[$i][2];
+                    $nom_fournisseur = $data[$i][3];
+                    $montant = $data[$i][4];
+                    $echeance = date_create($services->parseMyDate($data[$i][5]));
+                    $mode_pmt = $data[$i][6];
+                    $montant_paye = $data[$i][7];
+                    $date_pmt = date_create($services->parseMyDate($data[$i][8]));
+                    $remarque = $data[$i][9];
+                    $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+                    $fournisseur = new Fournisseur();
+                    $fournisseur->setCreatedAt($createdAt);
+                    $fournisseur->setNumeroFacture($numero_facture);
+                    $fournisseur->setType($type);
+                    $fournisseur->setNomFournisseur($nom_fournisseur);
+                    $fournisseur->setMontant($montant);
+                    $fournisseur->setEcheance($echeance);
+                    $fournisseur->setModePmt($mode_pmt);
+                    $fournisseur->setMontantPaye($montant_paye);
+                    $fournisseur->setDatePmt($date_pmt);
+                    $fournisseur->setRemarque($remarque);
+                    $fournisseur->addHotel($hotel);
+                    //dd($fournisseur);
+                    // on saute les doublants
+                    $fours = $repoFour->findAll();
+                    foreach($fours as $four){
+                        $son_num_fact = $four->getNumeroFacture();
+                        if($numero_facture != $son_num_fact){
+                            $manager->persist($fournisseur);
+                        }
+                    }
+               }
+                $manager->flush();
+            }
+            else{
+                return $this->render('page/fournisseur.html.twig', [
+                    "id"            => "li__fournisseur",
+                    "hotel"         => $data_session['pseudo_hotel'],
+                    "current_page"  => $data_session['current_page'],
+                    "form_add"      => $form_add->createView(),
+                    "message" => "Veuillez choisir un fichier valide",
+                ]);
+            }
+        }
+
+        return $this->render('page/fournisseur.html.twig', [
+            "id"            => "li__fournisseur",
+            "hotel"         => $data_session['pseudo_hotel'],
+            "current_page"  => $data_session['current_page'],
+            "form_add"      => $form_add->createView(),
+        ]);
     }
 
     /**

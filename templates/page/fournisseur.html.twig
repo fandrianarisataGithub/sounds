@@ -1,0 +1,234 @@
+{% extends "base.html.twig" %}
+{% block title %}
+	Fournisseur
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
+{% endblock %}
+
+{% block body %}
+
+	<section
+		id="contents" class="container-fluid">
+		<!-- entete content -->
+		{% include "nav2.html.twig" %}
+		<!-- / entete content -->
+
+		<!-- contenue  -->
+			<div id="hrs_content"> <div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<section class="section_part" id="section_part_top">
+						<div class="sous_titre">
+							<h3>Fournisseur</h3>
+						</div>
+					</section>
+				</div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<div class="div__form_upload_excel">
+						<h3>Importer un fichier au format (.xls, csv, xlsx)</h3>
+						{% if message is defined %}
+							<div class="message_import bg-danger">
+								<p>
+									{{ message }}
+								</p>
+							</div>
+						{% endif %}
+						{{ form_start(form_add, {
+							'attr' : {
+								'id' : 'form_import_excel'
+							}
+						}) }}
+							{{ form_row(form_add.fichier) }}
+							<input type="submit" value = "Importer" class = "btn btn-default btn-sm">
+						{{ form_end(form_add) }}
+					</div>
+				</div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<section class="section_part tab_content margin_tab">
+						<section class=" filtre">
+							<div class="sous_titre_filtre">
+								<h3>Filtre</h3>
+							</div>
+							<form action="" method="POST" class="tri">
+								<input type="date" name="date1" id="date1" value="">
+								<input type="date" name="date2" id="date2" value="">
+								<button type="submit" class="btn btn-primary btn-xs btn_filter">
+									<span>Filtrer</span>
+								</button>
+							</form>
+						</section>
+						<div class="section">
+
+							<div class="tableau tab_historique">
+								<table class="display" id="tableau_historique_spa" style="width:100%">
+									<thead>
+										<tr>
+											<td>
+												<span>DATE</span>
+											</td>
+											<td>
+												<span>N FACTURE</span>
+											</td>
+											<td>
+												<span>TYPE</span>
+											</td>
+											<td>
+												<span>FOURNISSEUR</span>
+											</td>
+											<td>
+												<span>MONTANT</span>
+											</td>
+                                            <td>
+												<span>ECHEANCE</span>
+											</td>
+											<td>
+												<span>MODE PMT</span>
+											</td>
+											<td>
+												<span>MONTANT PAYE</span>
+											</td>
+											<td>
+												<span>DATE PMT</span>
+											</td>
+											<td>
+												<span>REMARQUE</span>
+											</td>
+											<td>
+												<span>ACTIONS</span>
+											</td>
+										</tr>
+									</thead>
+									<tbody>
+                                        
+                                    </tbody>
+								</table>
+							</div>
+						</div>
+
+						<!-- Modal modif  -->
+						<div class="modal fade" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							<div class="modal-dialog opacity-animate4">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+										<h3 class="modal-title" style="text-align: center;">Modification</h3>
+									</div>
+									<div class="modal-body" id="modal_modif_ddj"></div>
+
+								</div>
+							</div>
+						</div>
+						<!-- fin Modal modif  -->
+
+						<!-- Modal suppr  -->
+						<div class="modal fade" id="modal_form_confirme" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							<div class="modal-dialog opacity-animate4">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h3 class="modal-title" style="text-align: center;">Voulez-vous vraiment supprimer cet élément ?</h3>
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+
+									</div>
+									<div class="modal-body">
+										<div id="div__conf">
+											<button class="btn btn-warning supprimer" data-id="" data-dismiss="modal" data-confirm="oui">Supprimer</button>
+											<button class="btn btn-warning annuler" data-dismiss="modal" data-confirm="non">Annuler</button>
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+						<!-- fin Modal suppr  -->
+
+					</section>
+				</div>
+			</div>
+		</div>
+		<!-- / contenue  -->
+	</section>
+
+
+{% endblock %}
+
+{% block javascripts %}
+
+	<script src="{{ asset('js/cleave.min.js') }}"></script>
+
+	<script>
+
+
+		$(document).ready(function () { // pour le tableau
+            var pseudo_hotel = "{{ hotel }}";
+            var table = $('#tableau_historique_spa').DataTable({
+                "language": {
+                    "sEmptyTable": "Aucune donnée disponible dans le tableau",
+                    "sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
+                    "sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
+                    "sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
+                    "sInfoPostFix": "",
+                    "sInfoThousands": ",",
+                    "sLengthMenu": "Afficher _MENU_ éléments",
+                    "sLoadingRecords": "Chargement...",
+                    "sProcessing": "Traitement...",
+                    "sSearch": "Rechercher :",
+                    "sZeroRecords": "Aucun élément correspondant trouvé",
+                    "oPaginate": {
+                        "sFirst": "Premier",
+                        "sLast": "Dernier",
+                        "sNext": "Suivant",
+                        "sPrevious": "Précédent"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": activer pour trier la colonne par ordre croissant",
+                        "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+                    },
+                    "select": {
+                        "rows": {
+                            "_": "%d lignes sélectionnées",
+                            "0": "Aucune ligne sélectionnée",
+                            "1": "1 ligne sélectionnée"
+                        }
+                    }
+                },
+                "ajax": {
+                    url: "/profile/historique_fournisseur", // any am Clientcontroller
+                    type: 'POST',
+                    data: {
+						'pseudo_hotel': pseudo_hotel,
+						'date1': $("#date1").val(),
+						'date2': $("#date2").val()
+                    },
+                    // success : function(response){
+                    //     alert(response);
+                    // },
+                    // error : function(){
+                    //     alert('erreur server');
+                    // },
+                    "dataSrc": ""
+
+                },
+
+                // annule le tri
+                order: [
+                    [0, 'asc']
+                ],
+                ordering: false,
+                responsive: true,
+                scrollY: false,
+                scrollX: true,
+                scrollCollapse: true,
+                paging: true,
+                autoFill: true
+            });
+                new $.fn.dataTable.FixedHeader(table);
+
+            // fin tableau
+            
+
+        });
+	</script>
+
+
+{% endblock %}

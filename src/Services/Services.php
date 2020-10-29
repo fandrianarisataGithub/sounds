@@ -51,4 +51,18 @@ class Services
                 }
             }
         }
+
+        public function parseMyDate(string $format) : string
+        {
+            $tab = explode("/", $format);
+            // si on est en 2100 on devra faire un mis à jour ici pour la config de l'année
+             
+            $annee = end($tab);
+            $annee = 2000 + $annee;
+            
+            return $tab[0]."-".$tab[1]."-".$annee;
+            
+            
+
+        }
     } 

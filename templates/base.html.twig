@@ -212,6 +212,24 @@
 								</a>
 							</li>
 
+							<li  {% if id is defined and id is not null and id == "li__fournisseur"  %}
+								id = "{{ id }}"
+							{% endif %}>
+								<a href="{{ path('fournisseur', {'pseudo_hotel' : hotel}) }}">
+									<i aria-hidden="true" id="fournisseur">
+									{% if id is defined and id is not null and id == "li__spa"  %}
+										<img src="{{ asset('images/fournisseur_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+									{% else %}
+										<img src="{{ asset('images/fournisseur.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+									{% endif %}
+
+										<img src="{{ asset('images/fournisseur_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
+									</i>
+									<span>Fournisseur</span>
+								</a>
+							</li>
+
+
 							<li {% if id is defined and id is not null and id == "fiche_hotel" %}
 								id = "{{ id }}"
 							{% endif %}>
