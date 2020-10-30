@@ -25,71 +25,84 @@ class FourController extends AbstractController
             $date1 = $request->get('date1');
             $date2 = $request->get('date2');
             if ($date1 != "" && $date2 != "") {
-                $pseudo_hotel = $request->request->get('pseudo_hotel');
-                $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
-                $current_id_hotel = $l_hotel->getId();
+                //$pseudo_hotel = $request->request->get('pseudo_hotel');
+                $pseudo_hotel = "royal_beach";
+                $current_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+                $current_id_hotel = $current_hotel->getId();
                 $date1 = date_create($date1);
                 $date2 = date_create($date2);
-                $historique = $request->request->get('historique');
                 $all_date_asked = $services->all_date_between2_dates($date1, $date2);
-                $fours = $repoFour->findAll();
-                $tab = [];
-                foreach ($fours as $item) {
-                    $son_id_hotel = $item->getHotel()->getId();
-                    if ($son_id_hotel == $current_id_hotel) {
-                        array_push($tab, $item);
-                    }
-                }
-                $tab_aff = [];
+
+                $fours = $current_hotel->getFournisseurs();
+
                 $t = [];
-                foreach ($tab as $item) {
-                    // on liste tous les jour entre sa date arrivee et date depart
-                    $c = $item->getCreatedAt();
-                    $c_s = $c->format("Y-m-d");
-                    //dd($his_al_dates);
-                    for ($i = 0; $i < count($all_date_asked); $i++) {
-                        if ($c_s == $all_date_asked[$i]) {
-                            array_push($tab_aff, $item);
+                $tab_num_fact = [];
+                foreach ($fours as $item) {
+                    if (($item->getCreatedAt() >= $date1) && ($item->getCreatedAt() <= $date2)) {
+                        if (!in_array($item->getNumeroFacture(), $tab_num_fact)) {
+                            array_push($tab_num_fact, $item->getNumeroFacture());
+                            array_push($t, ['<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getType() . '</div>', '<div>' . $item->getNomFournisseur() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $item->getEcheance()->format('d-m-Y') . '</div>', '<div>' . $item->getModePmt() . '</div>', '<div>' . $item->getMontantPaye() . '</div>', '<div>' . $item->getDatePmt()->format('d-m-Y') . '</div>', '<div>' . $item->getRemarque() . '</div>']);
                         }
                     }
-                }
-
-                foreach ($tab_aff as $item) {
-
-                    array_push($t, ['<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getType() . '</div>', '<div>' . $item->getNomFournisseur() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $item->getEcheance() . '</div>', '<div>' . $item->getModePmt() . '</div>', '<div>' . $item->getMontantPaye() . '</div>', '<div>' . $item->getDatePmt()->format('d-m-Y') . '</div>', '<div>' . $item->getRemarque() . '</div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_formdisoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
                 }
 
                 $data = json_encode($t);
                 $response->headers->set('Content-Type', 'application/json');
                 $response->setContent($data);
                 return $response;
+                
             } else {
                 $pseudo_hotel = $request->get('pseudo_hotel');
-                $four = new Fournisseur();
                 $current_id_hotel = $repoHotel->findOneByPseudo($pseudo_hotel)->getId();
-                //dd($current_id_hotel);
-                $fours = $repoFour->findAll();
-                // dd($all_ddj);
-                $tab_ddj = [];
+                $current_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+                $fours = $current_hotel->getFournisseurs();
+                //dd($fours);
                 $t = [];
-                foreach ($fours as $d) {
-                    $son_id_hotel = $d->getHotel()->getId();
-                    //dd($son_id_hotel);
-                    if ($son_id_hotel == $current_id_hotel) {
-                        array_push($tab_ddj, $d);
+                $tab_num_fact = [];
+                foreach ($fours as $item) {
+                    if (!in_array($item->getNumeroFacture(), $tab_num_fact)) {
+                        array_push($tab_num_fact, $item->getNumeroFacture());
+                        array_push($t, ['<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getType() . '</div>', '<div>' . $item->getNomFournisseur() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $item->getEcheance()->format('d-m-Y') . '</div>', '<div>' . $item->getModePmt() . '</div>', '<div>' . $item->getMontantPaye() . '</div>', '<div>' . $item->getDatePmt()->format('d-m-Y') . '</div>', '<div>' . $item->getRemarque() . '</div>']);
                     }
                 }
-                //    dd($tab_ddj);
-                foreach ($tab_ddj as $item) {
-
-                    array_push($t, ['<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getType() . '</div>', '<div>' . $item->getNomFournisseur() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $item->getEcheance() . '</div>', '<div>' . $item->getModePmt() . '</div>', '<div>' . $item->getMontantPaye() . '</div>', '<div>' . $item->getDatePmt()->format('d-m-Y') . '</div>', '<div>' . $item->getRemarque() . '</div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_formdisoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
-                }
-
+                //dd($t);
+                                
                 $data = json_encode($t);
                 $response->headers->set('Content-Type', 'application/json');
                 $response->setContent($data);
                 return $response;
             }
+        }
+        else{
+           
+            $date1 = "21-05-2020";
+            $date2 = "27-05-2020";
+           if ($date1 != "" && $date2 != "") {
+                //$pseudo_hotel = $request->request->get('pseudo_hotel');
+                $pseudo_hotel = "royal_beach";
+                $current_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+                $current_id_hotel = $current_hotel->getId();
+                $date1 = date_create($date1);
+                $date2 = date_create($date2);
+                $all_date_asked = $services->all_date_between2_dates($date1, $date2);
+
+                $fours = $current_hotel->getFournisseurs();
+
+                $t = [];
+                $tab_num_fact = [];
+                foreach ($fours as $item) {
+                    if(($item->getCreatedAt() >= $date1) && ($item->getCreatedAt() <= $date2)){
+                        if (!in_array($item->getNumeroFacture(), $tab_num_fact)) {
+                            array_push($tab_num_fact, $item->getNumeroFacture());
+                            array_push($t, ['<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getType() . '</div>', '<div>' . $item->getNomFournisseur() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $item->getEcheance()->format('d-m-Y') . '</div>', '<div>' . $item->getModePmt() . '</div>', '<div>' . $item->getMontantPaye() . '</div>', '<div>' . $item->getDatePmt()->format('d-m-Y') . '</div>', '<div>' . $item->getRemarque() . '</div>']);
+                        }
+                    }
+                   
+                }
+                
+              
+             dd($t);
+           }              
         }
     }
 }

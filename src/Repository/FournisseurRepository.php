@@ -23,6 +23,7 @@ class FournisseurRepository extends ServiceEntityRepository
     {
         return $this->findBy(array(), array('createdAt' => 'DESC'));
     }
+
     // /**
     //  * @return Fournisseur[] Returns an array of Fournisseur objects
     //  */

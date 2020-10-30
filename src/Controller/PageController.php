@@ -1350,6 +1350,15 @@ class PageController extends AbstractController
 
             $allow_ext = ['xls', 'csv', 'xlsx'];
             if(in_array($fichier->guessExtension(), $allow_ext)){
+
+                // on supprime tous les données présents
+
+                $current_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+                $fours = $current_hotel->getFournisseurs();
+                foreach ($fours as $item) {
+                    $manager->remove($item);
+                    $manager->flush();
+                }
                
                $fileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($fichier->getRealPath()); // d'après dd($fichier)
                //dd($fileType);
@@ -1385,12 +1394,18 @@ class PageController extends AbstractController
                     //dd($fournisseur);
                     // on saute les doublants
                     $fours = $repoFour->findAll();
-                    foreach($fours as $four){
-                        $son_num_fact = $four->getNumeroFacture();
-                        if($numero_facture != $son_num_fact){
-                            $manager->persist($fournisseur);
+                    if(count($fours) == 0){
+                        $manager->persist($fournisseur);
+                    }
+                    else{
+                        foreach ($fours as $four) {
+                            $son_num_fact = $four->getNumeroFacture();
+                            if ($numero_facture != $son_num_fact) {
+                                $manager->persist($fournisseur);
+                            }
                         }
                     }
+                    
                }
                 $manager->flush();
             }
@@ -1403,6 +1418,28 @@ class PageController extends AbstractController
                     "message" => "Veuillez choisir un fichier valide",
                 ]);
             }
+        }
+
+        if(($request->request->get('date1') != "") && ($request->request->get('date2') != "")){
+            return $this->render('page/fournisseur.html.twig', [
+                "id"            => "li__fournisseur",
+                "hotel"         => $data_session['pseudo_hotel'],
+                "current_page"  => $data_session['current_page'],
+                "form_add"      => $form_add->createView(),
+                'date1' => $request->request->get('date1'),
+                'date2' => $request->request->get('date2'),
+            ]);
+        }
+        else if (($request->request->get('date1') == "") && ($request->request->get('date2') == "")) {
+            //dd('tsisy e');
+            return $this->render('page/fournisseur.html.twig', [
+                "id"            => "li__fournisseur",
+                "hotel"         => $data_session['pseudo_hotel'],
+                "current_page"  => $data_session['current_page'],
+                "form_add"      => $form_add->createView(),
+                'date1' => $request->request->get('date1'),
+                'date2' => $request->request->get('date2'),
+            ]);
         }
 
         return $this->render('page/fournisseur.html.twig', [
