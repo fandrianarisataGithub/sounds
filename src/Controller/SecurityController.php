@@ -58,34 +58,33 @@ class SecurityController extends AbstractController
     {
         if ($request->request->count() > 0) {
             $adresse = $request->request->get('email');
-            //dd($adresse);
             $user = $repoUser->findOneByEmail($adresse);
-            //dd($user);
-            $pass = "password";
-            $hash = $passEnc->encodePassword($user, $pass);
-            $user->setPassword($hash);
-            $manager->flush();
-            // Ici nous enverrons l'e-mail
-            $message = (new \Swift_Message('Nouveau contact'))
-            // On attribue l'expéditeur
-            ->setFrom("fandrianarisata2@gmail.com") // le mpandefa
-
-            // On attribue le destinataire
-            ->setTo($adresse) // le mpandray
-
-                // On crée le texte avec la vue
-                ->setBody(
-                    $this->renderView(
-                        'emails/mail.html.twig',
-                        ['pass' => $pass]
-                    ),
-                    'text/html'
-                );
-                //dd($message);
-            $mailer->send($message);
-
-            $this->addFlash('message', 'Votre message a été transmis, nous vous répondrons dans les meilleurs délais.'); // Permet un message flash de renvoi
-            
+           if($user){
+                $pass = "password" . rand(0, 100);
+                $hash = $passEnc->encodePassword($user, $pass);
+                $user->setPassword($hash);
+                $manager->flush();
+                // Ici nous enverrons l'e-mail
+                $message = (new \Swift_Message('Nouveau contact'))
+                    ->setFrom("enac.fenitriniaina@gmail.com")
+                    ->setTo($adresse)
+                    ->setBody(
+                        $this->renderView(
+                            'emails/mail.html.twig',
+                            ['pass' => $pass]
+                        ),
+                        'text/html'
+                    );
+                $mailer->send($message);
+                return $this->render('security/forgot_password.html.twig', [
+                    'mp' => "Un message vient d'être envoyer à votre adresse email, <br>Veuiller consulter votre boite de messagerie", 
+                ]);
+           }
+           else{
+                return $this->render('security/forgot_password.html.twig', [
+                    'mp' => "Cet adresse n'existe pas en tant qu'adresse d'utilisateur",
+                ]); 
+           }           
         }
         return $this->render('security/forgot_password.html.twig');
     }

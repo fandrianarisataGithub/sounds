@@ -25,8 +25,8 @@ class FourController extends AbstractController
             $date1 = $request->get('date1');
             $date2 = $request->get('date2');
             if ($date1 != "" && $date2 != "") {
-                //$pseudo_hotel = $request->request->get('pseudo_hotel');
-                $pseudo_hotel = "royal_beach";
+                $pseudo_hotel = $request->request->get('pseudo_hotel');
+                //$pseudo_hotel = "royal_beach";
                 $current_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
                 $current_id_hotel = $current_hotel->getId();
                 $date1 = date_create($date1);
