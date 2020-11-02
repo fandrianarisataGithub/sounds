@@ -8,6 +8,7 @@ use App\Entity\Client;
 use App\Entity\FicheHotel;
 use App\Services\Services;
 use App\Entity\Fournisseur;
+use App\Entity\ClientUpload;
 use App\Entity\DonneeDuJour;
 use App\Form\DonneeDuJourType;
 use App\Form\FournisseurFileType;
@@ -17,6 +18,7 @@ use App\Repository\ClientRepository;
 use App\Repository\FicheHotelRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\FournisseurRepository;
+use App\Repository\ClientUploadRepository;
 use App\Repository\DonneeDuJourRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -1447,6 +1449,143 @@ class PageController extends AbstractController
             "hotel"         => $data_session['pseudo_hotel'],
             "current_page"  => $data_session['current_page'],
             "form_add"      => $form_add->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/profile/{pseudo_hotel}/client_upload", name="client_upload")
+     */
+    public function client_upload(ClientUploadRepository $repoCup, EntityManagerInterface $manager, Services $services, Request $request, SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel)
+    {
+        $data_session = $session->get('hotel');
+        $data_session['current_page'] = "client_upload";
+        $data_session['pseudo_hotel'] = $pseudo_hotel;
+        $form_add = $this->createform(FournisseurFileType::class);
+        
+        $form_add->handleRequest($request);
+        
+        if ($form_add->isSubmitted() && $form_add->isValid()) {
+            $fichier = $form_add->get('fichier')->getData();
+            //dd($fichier->getRealPath()); // tmp name
+            $originalFilename1 = pathinfo($fichier->getClientOriginalName(), PATHINFO_FILENAME);
+            //dd($fichier->getClientOriginalName());
+            //dd($originalFilename1);
+            // this is needed to safely include the file name as part of the URL
+            $safeFilename1 = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename1);
+            $newFilename1 = $safeFilename1 . '.' . $fichier->guessExtension();
+
+
+            $allow_ext = ['xls', 'csv', 'xlsx'];
+            if (in_array($fichier->guessExtension(), $allow_ext)) {
+
+                // on supprime tous les données présents
+
+                $current_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+                $fours = $current_hotel->getClientUploads();
+                foreach ($fours as $item) {
+                    $manager->remove($item);
+                    $manager->flush();
+                }
+
+                $fileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($fichier->getRealPath()); // d'après dd($fichier)
+                //dd($fileType);
+                $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($fileType);
+                $spreadsheet = $reader->load($fichier->getRealPath()); // le nom temporaire
+                $data = $spreadsheet->getActiveSheet()->toArray();
+                //dd($data); 
+                // on compte depuis la ligne nu 2 dans $data
+                for ($i = 3; $i < count($data); $i++) {
+                    $annee = $data[$i][0];
+                    $type_client = $data[$i][1];
+                    $numero_facture = $data[$i][2];
+                    $nom = $data[$i][3];
+                    $personne_hebergee = $data[$i][4];
+                    $montant = $data[$i][5];
+                    $createdAt = date_create($services->parseMyDate($data[$i][6])); // mety misy diso
+                    //dd($createdAt);
+                    
+                    $montant_paye = $data[$i][7];
+                    $date_pmt = "";
+                    if($data[$i][8] != ""){
+                        $date_pmt = date_create($services->parseMyDate($data[$i][8]));
+                    }
+                    //dd($createdAt);
+                    $mode_pmt = $data[$i][9];
+                    $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+
+                    
+                    $cup = new ClientUpload();
+                    $cup->setAnnee($annee);
+                    $cup->setTypeClient($type_client);
+                    $cup->setNumeroFacture($numero_facture);
+                    $cup->setNom($nom);
+                    $cup->setPersonneHebergee($personne_hebergee);
+                    $cup->setMontant($montant);
+                    //dd(gettype($createdAt));
+                    $cup->setDate($createdAt);
+                    //dd($cup->getdate());
+                    $cup->setMontantPayer($montant_paye);
+                    // dd($date_pmt);
+                    if($date_pmt){
+                        $cup->setDatePmt($date_pmt);
+                    }
+                    if(!$date_pmt){
+                        $cup->setDatePmt(null);
+                    }
+                    $cup->setModePmt($mode_pmt);
+                    $cup->addHotel($hotel);
+                    //dd($cup);
+                    // on saute les doublants
+                    $cups = $repoCup->findAll();
+                    if (count($cups) == 0) {
+                        $manager->persist($cup);
+                    } else {
+                        foreach ($cups as $c) {
+                            $son_num_fact = $c->getNumeroFacture();
+                            if ($numero_facture != $son_num_fact) {
+                                $manager->persist($cup);
+                            }
+                        }
+                    }
+                }
+                $manager->flush();
+            } else {
+                return $this->render('page/client_upload.html.twig', [
+                    "id"            => "li__client_upload",
+                    "hotel"         => $data_session['pseudo_hotel'],
+                    "current_page"  => $data_session['current_page'],
+                    "form_add"      => $form_add->createView(),
+                    "message" => "Veuillez choisir un fichier valide",
+                ]);
+            }
+        }
+        if (($request->request->get('date1') != "") && ($request->request->get('date2') != "")) {
+            return $this->render('page/client_upload.html.twig', [
+                "id"            => "li__client_upload",
+                "hotel"         => $data_session['pseudo_hotel'],
+                "current_page"  => $data_session['current_page'],
+                "form_add"      => $form_add->createView(),
+                'date1' => $request->request->get('date1'),
+                'date2' => $request->request->get('date2'),
+            ]);
+        } else if (($request->request->get('date1') == "") && ($request->request->get('date2') == "")) {
+            //dd('tsisy e');
+            return $this->render('page/client_upload.html.twig', [
+                "id"            => "li__client_upload",
+                "hotel"         => $data_session['pseudo_hotel'],
+                "current_page"  => $data_session['current_page'],
+                "form_add"      => $form_add->createView(),
+                'date1' => $request->request->get('date1'),
+                'date2' => $request->request->get('date2'),
+            ]);
+        }
+        return $this->render('page/client_upload.html.twig', [
+            "id"            => "li__client_upload",
+            "hotel"         => $data_session['pseudo_hotel'],
+            "current_page"  => $data_session['current_page'],
+            "form_add"      => $form_add->createView(),
+            'date1' => $request->request->get('date1'),
+            'date2' => $request->request->get('date2'),
         ]);
     }
 

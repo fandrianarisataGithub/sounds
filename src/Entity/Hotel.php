@@ -2,10 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\HotelRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\HotelRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass=HotelRepository::class)
@@ -54,12 +54,18 @@ class Hotel
      */
     private $fournisseurs;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=ClientUpload::class, mappedBy="hotel")
+     */
+    private $clientUploads;
+
     public function __construct()
     {
         $this->clients = new ArrayCollection();
         $this->donneeDuJours = new ArrayCollection();
         $this->user = new ArrayCollection();
         $this->fournisseurs = new ArrayCollection();
+        $this->clientUploads = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -214,6 +220,34 @@ class Hotel
         if ($this->fournisseurs->contains($fournisseur)) {
             $this->fournisseurs->removeElement($fournisseur);
             $fournisseur->removeHotel($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ClientUpload[]
+     */
+    public function getClientUploads(): Collection
+    {
+        return $this->clientUploads;
+    }
+
+    public function addClientUpload(ClientUpload $clientUpload): self
+    {
+        if (!$this->clientUploads->contains($clientUpload)) {
+            $this->clientUploads[] = $clientUpload;
+            $clientUpload->addHotel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClientUpload(ClientUpload $clientUpload): self
+    {
+        if ($this->clientUploads->contains($clientUpload)) {
+            $this->clientUploads->removeElement($clientUpload);
+            $clientUpload->removeHotel($this);
         }
 
         return $this;

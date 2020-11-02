@@ -58,11 +58,12 @@ class Services
             // si on est en 2100 on devra faire un mis à jour ici pour la config de l'année
              
             $annee = end($tab);
-            $annee = 2000 + $annee;
-            
+            $nb_chiffre = intval(log10(ceil($annee)) + 1);
+            if($nb_chiffre == 2){
+                $annee = 2000 + $annee;
+            }
+             //dd($tab[0]."-".$tab[1]."-".$annee);         
             return $tab[0]."-".$tab[1]."-".$annee;
             
-            
-
         }
     } 

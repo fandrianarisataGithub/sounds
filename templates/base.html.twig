@@ -217,7 +217,7 @@
 							{% endif %}>
 								<a href="{{ path('fournisseur', {'pseudo_hotel' : hotel}) }}">
 									<i aria-hidden="true" id="fournisseur">
-									{% if id is defined and id is not null and id == "li__spa"  %}
+									{% if id is defined and id is not null and id == "li__fournisseur"  %}
 										<img src="{{ asset('images/fournisseur_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
 									{% else %}
 										<img src="{{ asset('images/fournisseur.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
@@ -226,6 +226,22 @@
 										<img src="{{ asset('images/fournisseur_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
 									</i>
 									<span>Fournisseur</span>
+								</a>
+							</li>
+							<li  {% if id is defined and id is not null and id == "li__client_upload"  %}
+								id = "{{ id }}"
+							{% endif %}>
+								<a href="{{ path('client_upload', {'pseudo_hotel' : hotel}) }}">
+									<i aria-hidden="true" id="client">
+									{% if id is defined and id is not null and id == "li__client_upload"  %}
+										<img src="{{ asset('images/client_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+									{% else %}
+										<img src="{{ asset('images/client.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+									{% endif %}
+
+										<img src="{{ asset('images/client_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
+									</i>
+									<span>Client</span>
 								</a>
 							</li>
 
