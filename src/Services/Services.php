@@ -53,17 +53,25 @@ class Services
         }
 
         public function parseMyDate(string $format) : string
-        {
+        {   
             $tab = explode("/", $format);
             // si on est en 2100 on devra faire un mis à jour ici pour la config de l'année
-             
-            $annee = end($tab);
-            $nb_chiffre = intval(log10(ceil($annee)) + 1);
-            if($nb_chiffre == 2){
-                $annee = 2000 + $annee;
+            if(count($tab) > 2){
+                $annee = end($tab);
+                $nb_chiffre = intval(log10(ceil($annee)) + 1);
+                if ($nb_chiffre == 2) {
+                    $annee = 2000 + $annee;
+                    //dd($tab[0]."-".$tab[1]."-".$annee);         
+                    return $tab[0] . "-" . $tab[1] . "-" . $annee;
+                    
+                } else if ($nb_chiffre == 4) {
+                    return $tab[1] . "-" . $tab[0] . "-" . $annee;
+                } else {
+                    return "erreur";
+                }
             }
-             //dd($tab[0]."-".$tab[1]."-".$annee);         
-            return $tab[0]."-".$tab[1]."-".$annee;
-            
+            else{
+                return "erreur";
+            }  
         }
     } 

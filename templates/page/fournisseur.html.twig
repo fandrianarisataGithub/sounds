@@ -30,7 +30,7 @@
 						{% if message is defined %}
 							<div class="message_import bg-danger">
 								<p>
-									{{ message }}
+									{{ message | raw }}
 								</p>
 							</div>
 						{% endif %}
