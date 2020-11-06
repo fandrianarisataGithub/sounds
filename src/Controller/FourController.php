@@ -40,8 +40,20 @@ class FourController extends AbstractController
                 foreach ($fours as $item) {
                     if (($item->getCreatedAt() >= $date1) && ($item->getCreatedAt() <= $date2)) {
                         if (!in_array($item->getNumeroFacture(), $tab_num_fact)) {
+                            $createdAt = $item->getCreatedAt();
+                            if ($createdAt != "") {
+                                $createdAt = $createdAt->format("d-m-Y");
+                            }
+                            $echeance = $item->getEcheance();
+                            if ($echeance != "") {
+                                $echeance = $echeance->format("d-m-Y");
+                            }
+                            $date_pmt = $item->getDatePmt();
+                            if ($date_pmt != "") {
+                                $date_pmt = $date_pmt->format("d-m-Y");
+                            }
                             array_push($tab_num_fact, $item->getNumeroFacture());
-                            array_push($t, ['<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getType() . '</div>', '<div>' . $item->getNomFournisseur() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $item->getEcheance()->format('d-m-Y') . '</div>', '<div>' . $item->getModePmt() . '</div>', '<div>' . $item->getMontantPaye() . '</div>', '<div>' . $item->getDatePmt()->format('d-m-Y') . '</div>', '<div>' . $item->getRemarque() . '</div>']);
+                            array_push($t, ['<div>' . $createdAt . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getType() . '</div>', '<div>' . $item->getNomFournisseur() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $echeance . '</div>', '<div>' . $item->getModePmt() . '</div>', '<div>' . $item->getMontantPaye() . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getRemarque() . '</div>']);
                         }
                     }
                 }
@@ -61,8 +73,21 @@ class FourController extends AbstractController
                 $tab_num_fact = [];
                 foreach ($fours as $item) {
                     if (!in_array($item->getNumeroFacture(), $tab_num_fact)) {
+
+                        $createdAt = $item->getCreatedAt();
+                        if ($createdAt != "") {
+                            $createdAt = $createdAt->format("d-m-Y");
+                        }
+                        $echeance = $item->getEcheance();
+                        if($echeance != ""){
+                            $echeance = $echeance->format("d-m-Y");
+                        }
+                        $date_pmt = $item->getDatePmt();
+                        if ($date_pmt != "") {
+                            $date_pmt = $date_pmt->format("d-m-Y");
+                        }
                         array_push($tab_num_fact, $item->getNumeroFacture());
-                        array_push($t, ['<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getType() . '</div>', '<div>' . $item->getNomFournisseur() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $item->getEcheance()->format('d-m-Y') . '</div>', '<div>' . $item->getModePmt() . '</div>', '<div>' . $item->getMontantPaye() . '</div>', '<div>' . $item->getDatePmt()->format('d-m-Y') . '</div>', '<div>' . $item->getRemarque() . '</div>']);
+                        array_push($t, ['<div>' . $createdAt . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getType() . '</div>', '<div>' . $item->getNomFournisseur() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $echeance . '</div>', '<div>' . $item->getModePmt() . '</div>', '<div>' . $item->getMontantPaye() . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getRemarque() . '</div>']);
                     }
                 }
                 //dd($t);

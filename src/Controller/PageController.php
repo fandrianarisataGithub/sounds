@@ -1371,6 +1371,31 @@ class PageController extends AbstractController
                // on compte depuis la ligne nu 2 dans $data
                $error_fichier = 0;
                for($i = 2; $i < count($data); $i++){
+
+                    $fournisseur = new Fournisseur();
+
+                    $createdAtData = $data[$i][0];
+                   
+                    $echeanceData = $data[$i][5];
+                    
+                    $date_pmtData = $data[$i][8];
+                    
+                    if($createdAtData != ""){
+                        $createdAt_s = $services->parseMyDate($createdAtData);
+                        $createdAt = date_create($createdAt_s);
+                        $fournisseur->setCreatedAt($createdAt);
+                    }
+                    
+                    if ($echeanceData != "") {
+                        $echeance_s = $services->parseMyDate($echeanceData);
+                        $echeance = date_create($echeance_s);
+                        $fournisseur->setEcheance($echeance);
+                    }
+                    if ($date_pmtData != "") {
+                        $date_pmt_s = $services->parseMyDate($date_pmtData);
+                        $date_pmt = date_create($date_pmt_s);
+                        $fournisseur->setDatePmt($date_pmt);
+                    }
                     $numero_facture = $data[$i][1];
                     $type = $data[$i][2];
                     $nom_fournisseur = $data[$i][3];
@@ -1381,27 +1406,15 @@ class PageController extends AbstractController
                     
                     $remarque = $data[$i][9];
                     $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
-                    $fournisseur = new Fournisseur();
-                    if($services->parseMyDate($data[$i][0]) != "erreur"){
-                        $createdAt = date_create($services->parseMyDate($data[$i][0]));
-                        $fournisseur->setCreatedAt($createdAt);
-                    }
+                
                     $fournisseur->setNumeroFacture($numero_facture);
                     $fournisseur->setType($type);
                     $fournisseur->setNomFournisseur($nom_fournisseur);
                     $fournisseur->setMontant($montant);
-                    if ($services->parseMyDate($data[$i][5]) != "erreur") {
-                        $echeance = date_create($services->parseMyDate($data[$i][5]));
-                        $fournisseur->setEcheance($echeance);
-                    }
-                    
+                   
                     $fournisseur->setModePmt($mode_pmt);
                     $fournisseur->setMontantPaye($montant_paye);
-                    if ($services->parseMyDate($data[$i][8]) != "erreur") {
-                        $date_pmt = date_create($services->parseMyDate($data[$i][8]));
-                        $fournisseur->setDatePmt($date_pmt);
-                    }
-                    
+                   
                     $fournisseur->setRemarque($remarque);
                     $fournisseur->addHotel($hotel);
                     //dd($fournisseur);
@@ -1438,7 +1451,7 @@ class PageController extends AbstractController
                         "form_add"      => $form_add->createView(),
                         'date1' => $request->request->get('date1'),
                         'date2' => $request->request->get('date2'),
-                        "message" => "le format de date à la ligne ".$error_fichier." du fichier n'est pas valide <br> Seuls les formats comme 01/05/20 et 01/05/2020 sont acceptés",
+                        "message" => "le format de date à la ligne " . ($error_fichier + 1) ." du fichier n'est pas valide <br> Seuls les formats comme 01/05/20 et 01/05/2020 sont acceptés",
                     ]);
                 }
             }
@@ -1527,43 +1540,69 @@ class PageController extends AbstractController
                 // on compte depuis la ligne nu 2 dans $data
                 $error_fichier = 0;
                 for ($i = 2; $i < count($data); $i++) {
+                    $cup = new ClientUpload();
                     $annee = $data[$i][0];
                     $type_client = $data[$i][1];
                     $numero_facture = $data[$i][2];
                     $nom = $data[$i][3];
                     $personne_hebergee = $data[$i][4];
                     $montant = $data[$i][5];
-                    $createdAt_s = $services->parseMyDate($data[$i][6]);
-                    $createdAt = "";
-                    
-                    if($createdAt_s != "erreur"){
-                        $createdAt = date_create($createdAt_s); 
-                    }
-                    $montant_paye = $data[$i][7];
-                    $date_pmt = "";
-                    if($data[$i][8] != ""){
-                        $date_pmt_s = $services->parseMyDate($data[$i][8]);
-                        if($date_pmt_s != "erreur"){
-                            $date_pmt = date_create($date_pmt_s);
+                    $createdAtData = $data[$i][6];
+                    $date_pmtData = $data[$i][8];
+                    if($createdAtData != ""){
+                        //dd($createdAtData);
+                        $createdAt_s = $services->parseMyDate($createdAtData);
+                        if($createdAt_s != "erreur"){
+                            $date = date_create($createdAt_s);
+                            $cup->setDate($date);
+                        }
+                        else{
+                            $error_fichier = $i;
+                            return $this->render('page/client_upload.html.twig', [
+                                "id"            => "li__client_upload",
+                                "hotel"         => $data_session['pseudo_hotel'],
+                                "current_page"  => $data_session['current_page'],
+                                "form_add"      => $form_add->createView(),
+                                'date1' => $request->request->get('date1'),
+                                'date2' => $request->request->get('date2'),
+                                "message" => "le format de date à la ligne " . ($error_fichier + 1) . " du fichier n'est pas valide <br> Seuls les formats comme 01/05/20 et 01/05/2020 sont acceptés",
+                            ]);
                         }
                     }
+                    if ($date_pmtData != "") {
+                        $date_pmt_s = $services->parseMyDate($date_pmtData);
+                        
+                        if ($date_pmt_s != "erreur") {
+                            $date_pmt = date_create($date_pmt_s);
+                            $cup->setDatePmt($date_pmt);
+                        } else {
+                            $error_fichier = $i;
+                            return $this->render('page/client_upload.html.twig', [
+                                "id"            => "li__client_upload",
+                                "hotel"         => $data_session['pseudo_hotel'],
+                                "current_page"  => $data_session['current_page'],
+                                "form_add"      => $form_add->createView(),
+                                'date1' => $request->request->get('date1'),
+                                'date2' => $request->request->get('date2'),
+                                "message" => "le format de date à la ligne " . ($error_fichier + 1) . " du fichier n'est pas valide <br> Seuls les formats comme 01/05/20 et 01/05/2020 sont acceptés",
+                            ]);
+                        }
+                    }
+                    $montant_paye = $data[$i][7];
+                   
                     //dd($createdAt);
                     $mode_pmt = $data[$i][9];
                     $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
-                    $cup = new ClientUpload();
+                   
                     $cup->setAnnee($annee);
                     $cup->setTypeClient($type_client);
                     $cup->setNumeroFacture($numero_facture);
                     $cup->setNom($nom);
                     $cup->setPersonneHebergee($personne_hebergee);
                     $cup->setMontant($montant);
-                    if($createdAt != ""){
-                        $cup->setDate($createdAt);
-                    }
+                   
                     $cup->setMontantPayer($montant_paye);
-                    if ($date_pmt != "") {
-                        $cup->setDatePmt($date_pmt);
-                    }
+                   
                     $cup->setModePmt($mode_pmt);
                     $cup->addHotel($hotel);
                     //dd($cup);
@@ -1579,9 +1618,12 @@ class PageController extends AbstractController
                             }
                         }
                     }
-                    if($createdAt_s == "erreur" || $date_pmt_s == "erreur"){
+                    if (
+                        $services->parseMyDate($data[$i][6]) == "erreur" ||
+                        $services->parseMyDate($data[$i][8]) == "erreur"
+                    ) {
                         $error_fichier = $i;
-                    }
+                    } 
                 }
                 
                 if($error_fichier == 0){
@@ -1595,7 +1637,7 @@ class PageController extends AbstractController
                         "form_add"      => $form_add->createView(),
                         'date1' => $request->request->get('date1'),
                         'date2' => $request->request->get('date2'),
-                        "message" => "le format de date à la ligne " . $error_fichier . " du fichier n'est pas valide <br> Seuls les formats comme 01/05/20 et 01/05/2020 sont acceptés",
+                        "message" => "le format de date à la ligne " . ($error_fichier + 1) . " du fichier n'est pas valide <br> Seuls les formats comme 01/05/20 et 01/05/2020 sont acceptés",
                     ]);
                 }
             } else {

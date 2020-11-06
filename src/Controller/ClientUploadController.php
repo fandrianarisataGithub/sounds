@@ -41,12 +41,16 @@ class ClientUploadController extends AbstractController
                 foreach ($cups as $item) {
                     if (($item->getDate() >= $date1) && ($item->getDate() <= $date2)) {
                         if (!in_array($item->getNumeroFacture(), $tab_num_fact)) {
-                            $date_pmt = "";
-                            if ($item->getDatePmt()) {
-                                $date_pmt = $item->getDatePmt()->format("d-m-Y");
+                            $date = $item->getDate();
+                            if ($date != "") {
+                                $date = $date->format("d-m-Y");
+                            }
+                            $date_pmt = $item->getDatePmt();
+                            if ($date_pmt != "") {
+                                $date_pmt = $date_pmt->format("d-m-Y");
                             }
                             array_push($tab_num_fact, $item->getNumeroFacture());
-                            array_push($t, ['<div>' . $item->getAnnee() . '</div>', '<div>' . $item->getTypeClient() . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getNom() . '</div>', '<div>' . $item->getPersonneHebergee() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $item->getDate()->format('d-m-Y') . '</div>', '<div>' . $item->getMontantPayer() . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getModePmt() . '</div>']);
+                            array_push($t, ['<div>' . $item->getAnnee() . '</div>', '<div>' . $item->getTypeClient() . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getNom() . '</div>', '<div>' . $item->getPersonneHebergee() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $date . '</div>', '<div>' . $item->getMontantPayer() . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getModePmt() . '</div>']);
                         }
                     }
                 }
@@ -65,13 +69,16 @@ class ClientUploadController extends AbstractController
                 $tab_num_fact = [];
                 foreach ($cups as $item) {
                     if (!in_array($item->getNumeroFacture(), $tab_num_fact)) {
-                        $date_pmt = "";
-                        if($item->getDatePmt()){
-                            $date_pmt = $item->getDatePmt()->format("d-m-Y");
+                        $date = $item->getDate();
+                        if($date != ""){
+                            $date = $date->format("d-m-Y");
                         }
-                        
+                        $date_pmt = $item->getDatePmt();
+                        if($date_pmt != ""){
+                            $date_pmt = $date_pmt->format("d-m-Y");
+                        }
                         array_push($tab_num_fact, $item->getNumeroFacture());
-                        array_push($t, ['<div>' . $item->getAnnee() . '</div>', '<div>' . $item->getTypeClient() . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getNom() . '</div>', '<div>' . $item->getPersonneHebergee() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $item->getDate()->format('d-m-Y') . '</div>', '<div>' . $item->getMontantPayer() . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getModePmt() . '</div>']);
+                        array_push($t, ['<div>' . $item->getAnnee() . '</div>', '<div>' . $item->getTypeClient() . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getNom() . '</div>', '<div>' . $item->getPersonneHebergee() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $date . '</div>', '<div>' . $item->getMontantPayer() . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getModePmt() . '</div>']);
                     }
                 }
                 //dd($t);
@@ -82,26 +89,6 @@ class ClientUploadController extends AbstractController
                 return $response;
             }
         } 
-        else{
-            // $pseudo_hotel = $request->get('pseudo_hotel');
-            $pseudo_hotel = "royal_beach";
-            $current_id_hotel = $repoHotel->findOneByPseudo($pseudo_hotel)->getId();
-            $current_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
-            $cups = $current_hotel->getClientUploads();
-            //dd($fours);
-            $t = [];
-            $tab_num_fact = [];
-            foreach ($cups as $item) {
-                if (!in_array($item->getNumeroFacture(), $tab_num_fact)) {
-                    $date_pmt = "";
-                    if ($item->getDatePmt()) {
-                        $date_pmt = $item->getDatePmt()->format("d-m-Y");
-                    }
-                    array_push($tab_num_fact, $item->getNumeroFacture());
-                    array_push($t, ['<div>' . $item->getAnnee() . '</div>', '<div>' . $item->getTypeClient() . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getNom() . '</div>', '<div>' . $item->getPersonneHebergee() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $item->getDate()->format('d-m-Y') . '</div>', '<div>' . $item->getMontantPayer() . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getModePmt() . '</div>']);
-                }
-            }
-            dd($t);
-        }
+       
     }
 }
