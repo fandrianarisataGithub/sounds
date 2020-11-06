@@ -20,7 +20,7 @@ class ClientUpload
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $annee;
 
@@ -89,7 +89,7 @@ class ClientUpload
         return $this->annee;
     }
 
-    public function setAnnee(string $annee): self
+    public function setAnnee(?string $annee): self
     {
         $this->annee = $annee;
 
