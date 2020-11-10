@@ -1363,8 +1363,8 @@ class PageController extends AbstractController
                 }
                
                $fileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($fichier->getRealPath()); // d'après dd($fichier)
-               //dd($fileType);
-               $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($fileType);
+                //dd($fileType);
+                $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($fileType); // ty le taloha
                $spreadsheet = $reader->load($fichier->getRealPath()); // le nom temporaire
                $data = $spreadsheet->getActiveSheet()->toArray();
                //dd($data); 
