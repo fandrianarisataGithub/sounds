@@ -126,7 +126,11 @@
 					</div>
 					<div id="aside2">
 						<div class="heading">
-							<img src="{{asset(app.user.image) }}" alt="">
+							{% if app.user.image %}
+								<img src="{{asset(app.user.image) }}" alt="pdp">
+							{% else %}
+								<img src="{{asset('images/user_pdp.png') }}" alt="pdp">
+							{% endif %}
 							<div class="info">
 								<h3>
 									<a href="{{ path('setting',{'pseudo_hotel' : hotel}) }}" >{% if app.user %}
@@ -338,7 +342,6 @@
 			<script src="https://cdn.datatables.net/responsive/2.2.4/js/dataTables.responsive.min.js"></script>
 			<script src="https://cdn.datatables.net/responsive/2.2.4/js/responsive.bootstrap.min.js"></script>
 			<script src='{{ asset('js/dashboard.js') }}'></script>
-			<script src='{{ asset('js/currency.js') }}'></script>
 			{% block javascripts %}{% endblock %}
 		</body>
 	</html>

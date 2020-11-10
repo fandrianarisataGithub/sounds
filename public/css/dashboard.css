@@ -496,6 +496,7 @@
       height: 120px ;
       margin: auto;
       margin-top: 20px;
+      border: 1px solid #fff;
   }
   
   .side-nav .info {

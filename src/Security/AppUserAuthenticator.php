@@ -110,7 +110,7 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
         
         if(!$l_hotel){
             
-            $hotel_cible = 'tous';
+            $hotel_cible = 'royal_beach';
 
             $session  = $request->getSession();
 
@@ -130,7 +130,6 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
             return new RedirectResponse($this->urlGenerator->generate('hebergement', ['pseudo_hotel' => $hotel['pseudo_hotel']]));
         }
         else{
-            //dd($l_hotel);
             $hotel_cible = $l_hotel->getPseudo();
             $session  = $request->getSession();
             // le nom de l'hotel qui va s'ouvrir pour les admin seulement
