@@ -1348,10 +1348,10 @@ class PageController extends AbstractController
             // this is needed to safely include the file name as part of the URL
             $safeFilename1 = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename1);
             $newFilename1 = $safeFilename1 . '.' . $fichier->guessExtension();
-            
+            //dd($fichier->guessExtension());
 
-            $allow_ext = ['xls', 'csv', 'xlsx'];
-            if(in_array($fichier->guessExtension(), $allow_ext)){
+            //$allow_ext = ['xls', 'csv', 'xlsx'];
+            if($fichier->guessExtension()){
 
                 // on supprime tous les données présents
 
@@ -1386,9 +1386,9 @@ class PageController extends AbstractController
                     }
                     
                     $nom_fournisseur = $data[$i][3];
-                    $montant = "";
+                    $montant = 0;
                     if($data[$i][4] != null){
-                        $montant = $data[$i][4];
+                        $montant = $this->parse_money($data[$i][4]);
                     }
                     
                     $mode_pmt= "";
@@ -1396,9 +1396,11 @@ class PageController extends AbstractController
                         $mode_pmt = $data[$i][6];
                     }
                     
-                    $montant_paye = "";
+                    $montant_paye = 0;
+                    $reste = $montant;
                     if($data[$i][7] != null){
-                        $montant_paye = $data[$i][7];
+                        $montant_paye = $this->parse_money($data[$i][7]);
+                       
                     }
                     
                     $remarque = "";
@@ -1413,7 +1415,11 @@ class PageController extends AbstractController
                         $fournisseur->setType($type);
                         $fournisseur->setNomFournisseur($nom_fournisseur);
                         $fournisseur->setMontant($montant);
-
+                        $fournisseur->setReste($reste);
+                        if($montant_paye != 0){
+                            $reste = $montant - $montant_paye;
+                            $fournisseur->setReste($reste);
+                        }
                         $fournisseur->setModePmt($mode_pmt);
                         $fournisseur->setMontantPaye($montant_paye);
 
@@ -1456,7 +1462,7 @@ class PageController extends AbstractController
                             $error_fichier = $i;
                         } 
                     }  
-                    //dd($fournisseur);               
+                    // dd($fournisseur);               
                 }
                 if($error_fichier == 0){
                     $manager->flush();
@@ -1472,15 +1478,6 @@ class PageController extends AbstractController
                         "message" => "le format de date à la ligne " . ($error_fichier + 1) ." du fichier n'est pas valide <br> Seuls les formats comme 01/05/20 et 01/05/2020 sont acceptés",
                     ]);
                 }
-            }
-            else{
-                return $this->render('page/fournisseur.html.twig', [
-                    "id"            => "li__fournisseur",
-                    "hotel"         => $data_session['pseudo_hotel'],
-                    "current_page"  => $data_session['current_page'],
-                    "form_add"      => $form_add->createView(),
-                    "message" => "Veuillez choisir un fichier valide",
-                ]);
             }
         }
 
@@ -1515,6 +1512,77 @@ class PageController extends AbstractController
     }
 
     /**
+     * @Route("/profile/{pseudo_hotel}/recap_fournisseur", name="recap_fournisseur")
+     */
+    public function recap_fournisseur(FournisseurRepository $repoFour, EntityManagerInterface $manager, Services $services, Request $request, SessionInterface $session, $pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ, HotelRepository $repoHotel)
+    {
+        $data_session = $session->get('hotel');
+        $data_session['current_page'] = "client_upload";
+        $data_session['pseudo_hotel'] = $pseudo_hotel;
+        $fours = $repoFour->findAll();
+        $tab_fours_recap_p_av = [];
+        $tab_fours_recap_p_ret = [];
+        $today = new \DateTime();
+        $today = date_create($today->format("d-m-Y"));
+        $tab_echeance = [];
+        $tab_par_echeance = [];
+       foreach($fours as $four){
+           foreach($four->getHotel() as $item){
+                if($item->getPseudo() == $pseudo_hotel){
+                    //array_push($tab_fours_recap, $four);
+                    $son_echeance = $four->getEcheance();
+                    if($son_echeance != null){
+                        //dd($son_echeance);
+                        if($son_echeance > $today){
+                            $reste = $four->getReste();
+                            if($reste > 0){
+                                array_push($tab_fours_recap_p_av, $four);
+                                if(!in_array($son_echeance, $tab_echeance)){
+                                    array_push($tab_echeance, $son_echeance);
+                                }
+                            }
+                        }
+                        else if($son_echeance < $today){
+                            // calcul du reste à payer
+                            $reste = $four->getReste();
+                            if($reste > 0){
+                                // tsy mbol nahaloha 
+                                array_push($tab_fours_recap_p_ret, $four);
+                            }
+                        }
+                    }
+                }
+           }
+        }
+        for($i=0; $i< count($tab_echeance); $i++){
+            $x = $repoFour->findByEcheances($tab_echeance[$i]);
+            array_push($tab_par_echeance, $x);
+        }
+        //dd($tab_par_echeance);
+        
+        
+        //dd($tab_fours_recap_p_av);
+        return $this->render("page/recap_fournisseur.html.twig",[
+            "id"            => "li__fournisseur",
+            "hotel"         => $data_session['pseudo_hotel'],
+            "current_page"  => $data_session['current_page'],
+            'tab_fours_recap_p_av' => $tab_par_echeance,
+            'tab_fours_recap_p_ret' => $tab_fours_recap_p_ret,
+            'today' => $today,
+            'tab_echeance' => $tab_echeance,
+        ]);
+    }
+    
+    public function parse_money($vola){
+        $tab_vola = explode(",", $vola);
+        $s = $tab_vola[0];
+        for ($i = 1; $i < count($tab_vola); $i++) {
+            $s .= $tab_vola[$i];
+        }
+        return doubleval($s);
+    }
+
+    /**
      * @Route("/profile/{pseudo_hotel}/client_upload", name="client_upload")
      */
     public function client_upload(ClientUploadRepository $repoCup, EntityManagerInterface $manager, Services $services, Request $request, SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel)
@@ -1538,7 +1606,7 @@ class PageController extends AbstractController
 
 
             $allow_ext = ['xls', 'csv', 'xlsx'];
-            //if (in_array($fichier->guessExtension(), $allow_ext)) {
+            if ($fichier->guessExtension()) {
 
                 // on supprime tous les données présents
 
@@ -1658,6 +1726,7 @@ class PageController extends AbstractController
                         "message" => "le format de date à la ligne " . ($error_fichier + 1) . " du fichier n'est pas valide <br> Seuls les formats comme 01/05/20 et 01/05/2020 sont acceptés",
                     ]);
                 }
+            }
         }
         if (($request->request->get('date1') != "") && ($request->request->get('date2') != "")) {
             return $this->render('page/client_upload.html.twig', [

@@ -53,7 +53,7 @@ class FourController extends AbstractController
                                 $date_pmt = $date_pmt->format("d-m-Y");
                             }
                             array_push($tab_num_fact, $item->getNumeroFacture());
-                            array_push($t, ['<div>' . $createdAt . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getType() . '</div>', '<div>' . $item->getNomFournisseur() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $echeance . '</div>', '<div>' . $item->getModePmt() . '</div>', '<div>' . $item->getMontantPaye() . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getRemarque() . '</div>']);
+                            array_push($t, ['<div>' . $createdAt . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getType() . '</div>', '<div>' . $item->getNomFournisseur() . '</div>', '<div class="montant">' . $item->getMontant() . '</div>', '<div>' . $echeance . '</div>', '<div>' . $item->getModePmt() . '</div>', '<div class="montant">' . $item->getMontantPaye() . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getRemarque() . '</div>']);
                         }
                     }
                 }
@@ -87,7 +87,7 @@ class FourController extends AbstractController
                             $date_pmt = $date_pmt->format("d-m-Y");
                         }
                         array_push($tab_num_fact, $item->getNumeroFacture());
-                        array_push($t, ['<div>' . $createdAt . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getType() . '</div>', '<div>' . $item->getNomFournisseur() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $echeance . '</div>', '<div>' . $item->getModePmt() . '</div>', '<div>' . $item->getMontantPaye() . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getRemarque() . '</div>']);
+                        array_push($t, ['<div>' . $createdAt . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getType() . '</div>', '<div>' . $item->getNomFournisseur() . '</div>', '<div class="montant">' . $item->getMontant() . '</div>', '<div>' . $echeance . '</div>', '<div>' . $item->getModePmt() . '</div>', '<div class="montant">' . $item->getMontantPaye() . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getRemarque() . '</div>']);
                     }
                 }
                 //dd($t);

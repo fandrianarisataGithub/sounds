@@ -24,22 +24,19 @@ class FournisseurRepository extends ServiceEntityRepository
         return $this->findBy(array(), array('createdAt' => 'DESC'));
     }
 
-    // /**
-    //  * @return Fournisseur[] Returns an array of Fournisseur objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Fournisseur[] Returns an array of Fournisseur objects
+     */
+    public function findByEcheances($value)
     {
         return $this->createQueryBuilder('f')
-            ->andWhere('f.exampleField = :val')
+            ->andWhere('f.echeance = :val')
             ->setParameter('val', $value)
             ->orderBy('f.id', 'ASC')
-            ->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?Fournisseur

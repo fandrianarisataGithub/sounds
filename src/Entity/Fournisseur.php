@@ -75,6 +75,11 @@ class Fournisseur
      */
     private $hotel;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $reste;
+
 
     public function __construct()
     {
@@ -228,6 +233,18 @@ class Fournisseur
         if ($this->hotel->contains($hotel)) {
             $this->hotel->removeElement($hotel);
         }
+
+        return $this;
+    }
+
+    public function getReste(): ?string
+    {
+        return $this->reste;
+    }
+
+    public function setReste(?string $reste): self
+    {
+        $this->reste = $reste;
 
         return $this;
     }
