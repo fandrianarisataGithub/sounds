@@ -1349,125 +1349,136 @@ class PageController extends AbstractController
             $safeFilename1 = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename1);
             $newFilename1 = $safeFilename1 . '.' . $fichier->guessExtension();
             //dd($fichier->guessExtension());
-
             //$allow_ext = ['xls', 'csv', 'xlsx'];
             if($fichier->guessExtension()){
-
-                // on supprime tous les données présents
-
-                $current_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
-                $fours = $current_hotel->getFournisseurs();
-                foreach ($fours as $item) {
-                    $manager->remove($item);
-                    $manager->flush();
-                }
-               
+                // on supprime tous les données présent
                $fileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($fichier->getRealPath()); // d'après dd($fichier)
                 //dd($fileType);
                 $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($fileType); // ty le taloha
-               $spreadsheet = $reader->load($fichier->getRealPath()); // le nom temporaire
-               $data = $spreadsheet->getActiveSheet()->toArray();
-               //dd($data); 
-               // on compte depuis la ligne nu 2 dans $data
-               $error_fichier = 0;
-               for($i = 2; $i < count($data); $i++){
-                    $fournisseur = new Fournisseur();
+                $sheetname = "FOURNISSEURS";
+                $reader->setLoadSheetsOnly($sheetname);
+                $spreadsheet = $reader->load($fichier->getRealPath()); // le nom temporaire
+                //dd($spreadsheet);
+                //$data = $spreadsheet->getActiveSheet()->toArray();
+                //dd($spreadsheet);
+                if($spreadsheet->getSheetByName("FOURNISSEURS")){
+                    $current_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+                    $fours = $current_hotel->getFournisseurs();
+                    foreach ($fours as $item) {
+                        $manager->remove($item);
+                        $manager->flush();
+                    }
+                    $data = $spreadsheet->getSheetByName("FOURNISSEURS")->toArray();
+                    //dd($data);
+                    $error_fichier = 0;
+                    for ($i = 2; $i < count($data); $i++) {
+                        $fournisseur = new Fournisseur();
 
-                    $createdAtData = $data[$i][0];
-                   
-                    $echeanceData = $data[$i][5];
-                    
-                    $date_pmtData = $data[$i][8];
-                    
-                    $numero_facture = $data[$i][1];
-                    $type = "";
-                    if($data[$i][2] != null){
-                        $type = $data[$i][2];
-                    }
-                    
-                    $nom_fournisseur = $data[$i][3];
-                    $montant = 0;
-                    if($data[$i][4] != null){
-                        $montant = $this->parse_money($data[$i][4]);
-                    }
-                    
-                    $mode_pmt= "";
-                    if($data[$i][6] != null){
-                        $mode_pmt = $data[$i][6];
-                    }
-                    
-                    $montant_paye = 0;
-                    $reste = $montant;
-                    if($data[$i][7] != null){
-                        $montant_paye = $this->parse_money($data[$i][7]);
-                       
-                    }
-                    
-                    $remarque = "";
-                    if($data[$i][9] != null){
+                        $createdAtData = $data[$i][0];
+
+                        $echeanceData = $data[$i][5];
+
+                        $date_pmtData = $data[$i][8];
+
+                        $numero_facture = $data[$i][1];
+                        $type = "";
+                        if ($data[$i][2] != null) {
+                            $type = $data[$i][2];
+                        }
+
+                        $nom_fournisseur = $data[$i][3];
+                        $montant = 0;
+                        if ($data[$i][4] != null) {
+                            $montant = $this->parse_money($data[$i][4]);
+                        }
+
+                        $mode_pmt = "";
+                        if ($data[$i][6] != null) {
+                            $mode_pmt = $data[$i][6];
+                        }
+
+                        $montant_paye = 0;
+                        $reste = $montant;
+                        if ($data[$i][7] != null) {
+                            $montant_paye = $this->parse_money($data[$i][7]);
+                        }
+
+                        $remarque = "";
+                        if ($data[$i][9] != null) {
                             $remarque = $data[$i][9];
-                    }
-                    
-                    $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
-                    
-                    if($numero_facture != ""){
-                        $fournisseur->setNumeroFacture($numero_facture);
-                        $fournisseur->setType($type);
-                        $fournisseur->setNomFournisseur($nom_fournisseur);
-                        $fournisseur->setMontant($montant);
-                        $fournisseur->setReste($reste);
-                        if($montant_paye != 0){
-                            $reste = $montant - $montant_paye;
+                        }
+
+                        $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+
+                        if ($numero_facture != "") {
+                            $fournisseur->setNumeroFacture($numero_facture);
+                            $fournisseur->setType($type);
+                            $fournisseur->setNomFournisseur($nom_fournisseur);
+                            $fournisseur->setMontant($montant);
                             $fournisseur->setReste($reste);
-                        }
-                        $fournisseur->setModePmt($mode_pmt);
-                        $fournisseur->setMontantPaye($montant_paye);
+                            if ($montant_paye != 0) {
+                                $reste = $montant - $montant_paye;
+                                $fournisseur->setReste($reste);
+                            }
+                            $fournisseur->setModePmt($mode_pmt);
+                            $fournisseur->setMontantPaye($montant_paye);
 
-                        $fournisseur->setRemarque($remarque);
-                        $fournisseur->addHotel($hotel);
-                        if ($createdAtData != "") {
-                            $createdAt_s = $services->parseMyDate($createdAtData);
-                            $createdAt = date_create($createdAt_s);
-                            $fournisseur->setCreatedAt($createdAt);
-                        }
+                            $fournisseur->setRemarque($remarque);
+                            $fournisseur->addHotel($hotel);
+                            if ($createdAtData != "") {
+                                $createdAt_s = $services->parseMyDate($createdAtData);
+                                $createdAt = date_create($createdAt_s);
+                                $fournisseur->setCreatedAt($createdAt);
+                            }
 
-                        if ($echeanceData != "") {
-                            $echeance_s = $services->parseMyDate($echeanceData);
-                            $echeance = date_create($echeance_s);
-                            $fournisseur->setEcheance($echeance);
-                        }
+                            if ($echeanceData != "") {
+                                $echeance_s = $services->parseMyDate($echeanceData);
+                                $echeance = date_create($echeance_s);
+                                $fournisseur->setEcheance($echeance);
+                            }
 
-                        if ($date_pmtData != "") {
-                            $date_pmt_s = $services->parseMyDate($date_pmtData);
-                            $date_pmt = date_create($date_pmt_s);
-                            $fournisseur->setDatePmt($date_pmt);
-                        }
-                        
-                        $fours = $repoFour->findAll();
-                        if (count($fours) == 0) {
-                            $manager->persist($fournisseur);
-                        } else {
-                            foreach ($fours as $four) {
-                                $son_num_fact = $four->getNumeroFacture();
-                                if ($numero_facture != $son_num_fact) {
-                                    $manager->persist($fournisseur);
+                            if ($date_pmtData != "") {
+                                $date_pmt_s = $services->parseMyDate($date_pmtData);
+                                $date_pmt = date_create($date_pmt_s);
+                                $fournisseur->setDatePmt($date_pmt);
+                            }
+
+                            $fours = $repoFour->findAll();
+                            if (count($fours) == 0) {
+                                $manager->persist($fournisseur);
+                            } else {
+                                foreach ($fours as $four) {
+                                    $son_num_fact = $four->getNumeroFacture();
+                                    if ($numero_facture != $son_num_fact) {
+                                        $manager->persist($fournisseur);
+                                    }
                                 }
                             }
+                            if (
+                                $services->parseMyDate($data[$i][0]) == "erreur" ||
+                                $services->parseMyDate($data[$i][5]) == "erreur" ||
+                                $services->parseMyDate($data[$i][8]) == "erreur"
+                            ) {
+                                $error_fichier = $i;
+                            }
                         }
-                        if (
-                            $services->parseMyDate($data[$i][0]) == "erreur" ||
-                            $services->parseMyDate($data[$i][5]) == "erreur" ||
-                            $services->parseMyDate($data[$i][8]) == "erreur"
-                        ) {
-                            $error_fichier = $i;
-                        } 
-                    }  
-                    // dd($fournisseur);               
+                        // dd($fournisseur);               
+                    }
+                    if ($error_fichier == 0) {
+                        $manager->flush();
+                    } else if ($error_fichier > 0) {
+                        return $this->render('page/fournisseur.html.twig', [
+                            "id"            => "li__fournisseur",
+                            "hotel"         => $data_session['pseudo_hotel'],
+                            "current_page"  => $data_session['current_page'],
+                            "form_add"      => $form_add->createView(),
+                            'date1' => $request->request->get('date1'),
+                            'date2' => $request->request->get('date2'),
+                            "message" => "le format de date à la ligne " . ($error_fichier + 1) . " du fichier n'est pas valide <br> Seuls les formats comme 01/05/20 et 01/05/2020 sont acceptés",
+                        ]);
+                    }
                 }
-                if($error_fichier == 0){
-                    $manager->flush();
-                }
-                else if($error_fichier > 0){
+                else{
                     return $this->render('page/fournisseur.html.twig', [
                         "id"            => "li__fournisseur",
                         "hotel"         => $data_session['pseudo_hotel'],
@@ -1475,7 +1486,7 @@ class PageController extends AbstractController
                         "form_add"      => $form_add->createView(),
                         'date1' => $request->request->get('date1'),
                         'date2' => $request->request->get('date2'),
-                        "message" => "le format de date à la ligne " . ($error_fichier + 1) ." du fichier n'est pas valide <br> Seuls les formats comme 01/05/20 et 01/05/2020 sont acceptés",
+                        "message" => "Le nom de feuille 'FOURNISSEURS' n'existe pas dans ce fichier",
                     ]);
                 }
             }
