@@ -1336,7 +1336,7 @@ class PageController extends AbstractController
         $data_session['current_page'] = "fournisseur";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         $form_add = $this->createform(FournisseurFileType::class);
-
+        $text = "tsisy";
         $form_add->handleRequest($request);
 
         if($form_add->isSubmitted() && $form_add->isValid()){
@@ -1351,8 +1351,10 @@ class PageController extends AbstractController
             //dd($fichier->guessExtension());
             //$allow_ext = ['xls', 'csv', 'xlsx'];
             if($fichier->guessExtension()){
+                $text = " 1. Fichié bien arrivé <br>";
                 // on supprime tous les données présent
-               $fileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($fichier->getRealPath()); // d'après dd($fichier)
+                $fileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($fichier->getRealPath()); // d'après dd($fichier)
+                $text = " 2. Type de fichier reconnu <br>";
                 //dd($fileType);
                 $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($fileType); // ty le taloha
                 $sheetname = "FOURNISSEURS";
@@ -1362,6 +1364,7 @@ class PageController extends AbstractController
                 //$data = $spreadsheet->getActiveSheet()->toArray();
                 //dd($spreadsheet);
                 if($spreadsheet->getSheetByName("FOURNISSEURS")){
+                    $text = " 3. Présence de feuille FOURNISSEURS <br>";
                     $current_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
                     $fours = $current_hotel->getFournisseurs();
                     foreach ($fours as $item) {
@@ -1369,7 +1372,7 @@ class PageController extends AbstractController
                         $manager->flush();
                     }
                     $data = $spreadsheet->getSheetByName("FOURNISSEURS")->toArray();
-                    //dd($data);
+                    $text = "on peut lire une donnée " . $data[5][0];
                     $error_fichier = 0;
                     for ($i = 2; $i < count($data); $i++) {
                         $fournisseur = new Fournisseur();
@@ -1467,7 +1470,9 @@ class PageController extends AbstractController
                     if ($error_fichier == 0) {
                         $manager->flush();
                     } else if ($error_fichier > 0) {
+                        $text = " 4. erreur dans le contenu <br>";
                         return $this->render('page/fournisseur.html.twig', [
+                            "test" => $text,
                             "id"            => "li__fournisseur",
                             "hotel"         => $data_session['pseudo_hotel'],
                             "current_page"  => $data_session['current_page'],
@@ -1479,8 +1484,10 @@ class PageController extends AbstractController
                     }
                 }
                 else{
+                    $text = " 5. Absence de la feuille FOURNISSEURS <br>";
                     return $this->render('page/fournisseur.html.twig', [
                         "id"            => "li__fournisseur",
+                        "test" => $text,
                         "hotel"         => $data_session['pseudo_hotel'],
                         "current_page"  => $data_session['current_page'],
                         "form_add"      => $form_add->createView(),
@@ -1490,36 +1497,46 @@ class PageController extends AbstractController
                     ]);
                 }
             }
+            else{
+                $text = " 6. problème d'extension <br>";
+                return $this->render('page/fournisseur.html.twig', [
+                    "id"            => "li__fournisseur",
+                    "test" => $text,
+                    "hotel"         => $data_session['pseudo_hotel'],
+                    "current_page"  => $data_session['current_page'],
+                    "form_add"      => $form_add->createView(),
+                    'date1' => $request->request->get('date1'),
+                    'date2' => $request->request->get('date2'),
+                    "message" => "Le nom de feuille 'FOURNISSEURS' n'existe pas dans ce fichier",
+                ]);
+            }
         }
 
-        if(($request->request->get('date1') != "") && ($request->request->get('date2') != "")){
-            return $this->render('page/fournisseur.html.twig', [
-                "id"            => "li__fournisseur",
-                "hotel"         => $data_session['pseudo_hotel'],
-                "current_page"  => $data_session['current_page'],
-                "form_add"      => $form_add->createView(),
-                'date1' => $request->request->get('date1'),
-                'date2' => $request->request->get('date2'),
-            ]);
-        }
-        else if (($request->request->get('date1') == "") && ($request->request->get('date2') == "")) {
-            //dd('tsisy e');
-            return $this->render('page/fournisseur.html.twig', [
-                "id"            => "li__fournisseur",
-                "hotel"         => $data_session['pseudo_hotel'],
-                "current_page"  => $data_session['current_page'],
-                "form_add"      => $form_add->createView(),
-                'date1' => $request->request->get('date1'),
-                'date2' => $request->request->get('date2'),
-            ]);
+        else {
+            if (($request->request->get('date1') != "") && ($request->request->get('date2') != "")) {
+                return $this->render('page/fournisseur.html.twig', [
+                    "id"            => "li__fournisseur",
+                    "test" => "on a mentionner des dates",
+                    "hotel"         => $data_session['pseudo_hotel'],
+                    "current_page"  => $data_session['current_page'],
+                    "form_add"      => $form_add->createView(),
+                    'date1' => $request->request->get('date1'),
+                    'date2' => $request->request->get('date2'),
+                ]);
+            } else if (($request->request->get('date1') == "") && ($request->request->get('date2') == "")) {
+                //dd('tsisy e');
+                return $this->render('page/fournisseur.html.twig', [
+                    "id"            => "li__fournisseur",
+                    "test" => "dates de tri vide form pas submitted",
+                    "hotel"         => $data_session['pseudo_hotel'],
+                    "current_page"  => $data_session['current_page'],
+                    "form_add"      => $form_add->createView(),
+                    'date1' => $request->request->get('date1'),
+                    'date2' => $request->request->get('date2'),
+                ]);
+            }
         }
 
-        return $this->render('page/fournisseur.html.twig', [
-            "id"            => "li__fournisseur",
-            "hotel"         => $data_session['pseudo_hotel'],
-            "current_page"  => $data_session['current_page'],
-            "form_add"      => $form_add->createView(),
-        ]);
     }
 
     /**

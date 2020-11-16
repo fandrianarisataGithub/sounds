@@ -26,6 +26,11 @@
 									<span>Récap fournisseur</span>
 								</a>
 							</div>
+							<div>
+								{% if test is defined %}
+									<div>{{ test | raw }}</div>
+								{% endif %}
+							</div>
 						</div>
 					</section>
 				</div>
