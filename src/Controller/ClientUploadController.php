@@ -50,7 +50,7 @@ class ClientUploadController extends AbstractController
                                 $date_pmt = $date_pmt->format("d-m-Y");
                             }
                             array_push($tab_num_fact, $item->getNumeroFacture());
-                            array_push($t, ['<div>' . $item->getAnnee() . '</div>', '<div>' . $item->getTypeClient() . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getNom() . '</div>', '<div>' . $item->getPersonneHebergee() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $date . '</div>', '<div>' . $item->getMontantPayer() . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getModePmt() . '</div>']);
+                            array_push($t, ['<div>' . $item->getAnnee() . '</div>', '<div>' . $item->getTypeClient() . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getNom() . '</div>', '<div>' . $item->getPersonneHebergee() . '</div>', '<div>' . $services->to_money($item->getMontant()) . '</div>', '<div>' . $date . '</div>', '<div>' . $services->to_money($item->getMontantPayer()) . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getModePmt() . '</div>']);
                         }
                     }
                 }
@@ -78,7 +78,7 @@ class ClientUploadController extends AbstractController
                             $date_pmt = $date_pmt->format("d-m-Y");
                         }
                         array_push($tab_num_fact, $item->getNumeroFacture());
-                        array_push($t, ['<div>' . $item->getAnnee() . '</div>', '<div>' . $item->getTypeClient() . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getNom() . '</div>', '<div>' . $item->getPersonneHebergee() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $date . '</div>', '<div>' . $item->getMontantPayer() . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getModePmt() . '</div>']);
+                        array_push($t, ['<div>' . $item->getAnnee() . '</div>', '<div>' . $item->getTypeClient() . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getNom() . '</div>', '<div>' . $item->getPersonneHebergee() . '</div>', '<div>' . $services->to_money($item->getMontant()) . '</div>', '<div>' . $date . '</div>', '<div>' . $services->to_money($item->getMontantPayer()) . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getModePmt() . '</div>']);
                     }
                 }
                 //dd($t);

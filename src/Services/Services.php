@@ -77,4 +77,25 @@ class Services
                 return null;
             }
         }
+        public function to_money($amount):string
+        {
+             $amount = floatval($amount);
+        // $formatter = new \NumberFormatter('en_GB',  \NumberFormatter::CURRENCY);
+        // //echo 'UK: ', $formatter->formatCurrency($amount, 'EUR'), PHP_EOL;
+        // $x = $formatter->formatCurrency($amount, 'USD');
+
+        // $y = str_replace("US$", " ", $x);
+        // $z = str_replace(",", " ", $y);
+        $y = number_format($amount, 2);
+        $z = str_replace(",", " ", $y);
+            
+            return $z;
+        }
+
+        public function no_space($value)
+        {
+            $x = str_replace(" ", "", $value);
+        
+            return doubleval($x);
+        }
     } 
