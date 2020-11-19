@@ -23,31 +23,7 @@ class DonneeDuJourController extends AbstractController
         $response = new Response();
         
         if ($request->isXmlHttpRequest()) {
-            // saika natao ajax fa efa vita tsy ajax 
-            // $heb_to = $request->get('heb_to');
-            // $heb_ca = $request->get('heb_ca');
-            // $res_n_couvert = $request->get('res_n_couvert');
-            // $res_ca = $request->get('res_ca');
-            // $res_p_dej = $request->get('res_p_dej');
-            // $res_dej = $request->get('res_dej');
-            // $res_dinner = $request->get('res_dinner');
-            // $spa_ca = $request->get('spa_ca');
-            // $spa_n_abonne = $request->get('spa_n_abonne');
-            // $spa_c_unique = $request->get('spa_c_unique');
-            // $crj_direction = $request->get('crj_direction');
-            // $crj_service_rh = $request->get('crj_service_rh');
-            // $crj_commercial = $request->get('crj_commercial');
-            // $crj_comptable = $request->get('crj_comptable');
-            // $crj_reception = $request->get('crj_reception');
-            // $crj_restaurant = $request->get('crj_restaurant');
-            // $crj_spa = $request->get('crj_spa');
-            // $crj_s_technique = $request->get('crj_s_technique');
-            // $crj_litiges = $request->get('crj_litiges');
-            // $created_at = new \DateTime();
-            // $pseudo_hotel = $request->get('pseudo_hotel');
-
-            
-
+          
             $data = json_encode("deleted");
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent($data);
@@ -97,7 +73,7 @@ class DonneeDuJourController extends AbstractController
                 
                 foreach ($tab_aff as $item) {
 
-                    array_push($t, ['<div>' . $item->getHebTo() . '<span class="unite">%</span></div>', '<div>' . $item->getHebCa() . '<span class="unite">Ar</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '<div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_disoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
+                    array_push($t, ['<div>' . $item->getHebTo() . '<span class="unite">%</span></div>', '<div>' . $services->to_money($item->getHebCa()) . '<span class="unite">Ar</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '<div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_disoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
                 }
 
                 $data = json_encode($t);
@@ -125,7 +101,7 @@ class DonneeDuJourController extends AbstractController
                 //    dd($tab_ddj);
                 foreach ($tab_ddj as $item) {
 
-                    array_push($t, ['<div>' . $item->getHebTo() . '<span class="unite">%</span></div>', '<div>' . $item->getHebCa() . '<span class="unite">Ar</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '<div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_disoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
+                    array_push($t, ['<div>' . $item->getHebTo() . '<span class="unite">%</span></div>', '<div>' . $services->to_money($item->getHebCa()) . '<span class="unite">Ar</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '<div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_disoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
                 }
 
                 $data = json_encode($t);
@@ -180,7 +156,7 @@ class DonneeDuJourController extends AbstractController
 
                 foreach ($tab_aff as $item) {
 
-                    array_push($t, ['<div>' . $item->getResCa() . '<span class="unite">Ar</span></div>', '<div>' . $item->getResPDej() . '<span class="unite">Couverts</span></div>', '<div>' . $item->getResDej() . '<span class="unite">Couverts</span></div>', '<div>' . $item->getResDinner() . '<span class="unite">Couverts</span></div>', '<div>' . ($item->getResPDej() + $item->getResDinner() + $item->getResDej()) . '<span class="unite">Couverts</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_formdisoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
+                    array_push($t, ['<div>' . $services->to_money($item->getResCa()) . '<span class="unite">Ar</span></div>', '<div>' . $item->getResPDej() . '<span class="unite">Couverts</span></div>', '<div>' . $item->getResDej() . '<span class="unite">Couverts</span></div>', '<div>' . $item->getResDinner() . '<span class="unite">Couverts</span></div>', '<div>' . ($item->getResPDej() + $item->getResDinner() + $item->getResDej()) . '<span class="unite">Couverts</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_formdisoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
                 }
 
                 $data = json_encode($t);
@@ -206,7 +182,7 @@ class DonneeDuJourController extends AbstractController
                 //    dd($tab_ddj);
                 foreach ($tab_ddj as $item) {
 
-                    array_push($t, ['<div>' . $item->getResCa() . '<span class="unite">Ar</span></div>', '<div>' . $item->getResPDej() . '<span class="unite">Couverts</span></div>', '<div>' . $item->getResDej() . '<span class="unite">Couverts</span></div>', '<div>' . $item->getResDinner() . '<span class="unite">Couverts</span></div>', '<div>' . ($item->getResPDej() + $item->getResDinner() + $item->getResDej()) . '<span class="unite">Couverts</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_formdisoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
+                    array_push($t, ['<div>' . $services->to_money($item->getResCa()) . '<span class="unite">Ar</span></div>', '<div>' . $item->getResPDej() . '<span class="unite">Couverts</span></div>', '<div>' . $item->getResDej() . '<span class="unite">Couverts</span></div>', '<div>' . $item->getResDinner() . '<span class="unite">Couverts</span></div>', '<div>' . ($item->getResPDej() + $item->getResDinner() + $item->getResDej()) . '<span class="unite">Couverts</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_formdisoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
                 }
 
                 $data = json_encode($t);
@@ -259,7 +235,7 @@ class DonneeDuJourController extends AbstractController
 
                 foreach ($tab_aff as $item) {
 
-                    array_push($t, ['<div>' . $item->getSpaCa() . '<span class="unite">Ar</span></div>', '<div>' . $item->getSpaNAbonne() . '<span class="unite">Abonnés</span></div>', '<div>' . $item->getSpaCUnique() . '<span class="unite">Clients</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_formdisoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
+                    array_push($t, ['<div>' . $services->to_money($item->getSpaCa()) . '<span class="unite">Ar</span></div>', '<div>' . $item->getSpaNAbonne() . '<span class="unite">Abonnés</span></div>', '<div>' . $item->getSpaCUnique() . '<span class="unite">Clients</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_formdisoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
                 }
 
                 $data = json_encode($t);
@@ -286,7 +262,7 @@ class DonneeDuJourController extends AbstractController
                 //    dd($tab_ddj);
                 foreach ($tab_ddj as $item) {
 
-                    array_push($t, ['<div>' . $item->getSpaCa() . '<span class="unite">Ar</span></div>', '<div>' . $item->getSpaNAbonne() . '<span class="unite">Abonnés</span></div>', '<div>' . $item->getSpaCUnique() . '<span class="unite">Clients</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_formdisoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
+                    array_push($t, ['<div>' . $services->to_money($item->getSpaCa()) . '<span class="unite">Ar</span></div>', '<div>' . $item->getSpaNAbonne() . '<span class="unite">Abonnés</span></div>', '<div>' . $item->getSpaCUnique() . '<span class="unite">Clients</span></div>', '<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_formdisoana" data-id = "' . $item->getId() . '" class="btn btn_ddj_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a></div>']);
                 }
 
                 $data = json_encode($t);
