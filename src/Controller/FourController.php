@@ -55,7 +55,7 @@ class FourController extends AbstractController
                             
 
                             array_push($tab_num_fact, $item->getNumeroFacture());
-                            array_push($t, ['<div>' . $createdAt . '</div>', '<div>' . $item->getType() . '</div>', '<div>' . $item->getNomFournisseur() . '</div>','<div>' . $item->getNumeroFacture() . '</div>', '<div class="montant">' . $services->to_money($item->getMontant()) . '</div>', '<div>' . $echeance . '</div>', '<div>' . $item->getModePmt() . '</div>', '<div class="montant">' . $services->to_money($item->getMontantPaye()) . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getRemarque() . '</div>']);
+                            array_push($t, ['<div>' . $createdAt . '</div>', '<div>' . $item->getType() . '</div>', '<div class="nom_fournisseur">' . $item->getNomFournisseur() . '</div>','<div>' . $item->getNumeroFacture() . '</div>', '<div class="montant">' . $services->to_money($item->getMontant()) . '</div>', '<div>' . $echeance . '</div>', '<div>' . $item->getModePmt() . '</div>', '<div class="montant">' . $services->to_money($item->getMontantPaye()) . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getRemarque() . '</div>']);
                         }
                     }
                 }
@@ -89,7 +89,7 @@ class FourController extends AbstractController
                             $date_pmt = $date_pmt->format("d-m-Y");
                         }
                         array_push($tab_num_fact, $item->getNumeroFacture());
-                        array_push($t, ['<div>' . $createdAt . '</div>', '<div>' . $item->getType() . '</div>', '<div>' . $item->getNomFournisseur() . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div class="montant">' . $services->to_money($item->getMontant()) . '</div>', '<div>' . $echeance . '</div>', '<div>' . $item->getModePmt() . '</div>', '<div class="montant">' . $services->to_money($item->getMontantPaye()) . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getRemarque() . '</div>']);
+                        array_push($t, ['<div>' . $createdAt . '</div>', '<div>' . $item->getType() . '</div>', '<div class="nom_fournisseur">' . $item->getNomFournisseur() . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div class="montant">' . $services->to_money($item->getMontant()) . '</div>', '<div>' . $echeance . '</div>', '<div>' . $item->getModePmt() . '</div>', '<div class="montant">' . $services->to_money($item->getMontantPaye()) . '</div>', '<div>' . $date_pmt . '</div>', '<div>' . $item->getRemarque() . '</div>']);
                     }
                 }
                 //dd($t);
@@ -99,43 +99,6 @@ class FourController extends AbstractController
                 $response->setContent($data);
                 return $response;
             }
-        }
-        else{
-
-            $z = $services->to_money(122145.25);
-            //dd($services->no_space($z));
-            $x = $services->no_space($z);
-            
-
-
-            $date1 = "21-05-2020";
-            $date2 = "27-05-2020";
-           if ($date1 != "" && $date2 != "") {
-                //$pseudo_hotel = $request->request->get('pseudo_hotel');
-                $pseudo_hotel = "royal_beach";
-                $current_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
-                $current_id_hotel = $current_hotel->getId();
-                $date1 = date_create($date1);
-                $date2 = date_create($date2);
-                $all_date_asked = $services->all_date_between2_dates($date1, $date2);
-
-                $fours = $current_hotel->getFournisseurs();
-
-                $t = [];
-                $tab_num_fact = [];
-                foreach ($fours as $item) {
-                    if(($item->getCreatedAt() >= $date1) && ($item->getCreatedAt() <= $date2)){
-                        if (!in_array($item->getNumeroFacture(), $tab_num_fact)) {
-                            array_push($tab_num_fact, $item->getNumeroFacture());
-                            array_push($t, ['<div>' . $item->getCreatedAt()->format('d-m-Y') . '</div>', '<div>' . $item->getNumeroFacture() . '</div>', '<div>' . $item->getType() . '</div>', '<div>' . $item->getNomFournisseur() . '</div>', '<div>' . $item->getMontant() . '</div>', '<div>' . $item->getEcheance()->format('d-m-Y') . '</div>', '<div>' . $item->getModePmt() . '</div>', '<div>' . $item->getMontantPaye() . '</div>', '<div>' . $item->getDatePmt()->format('d-m-Y') . '</div>', '<div>' . $item->getRemarque() . '</div>']);
-                        }
-                    }
-                   
-                }
-                
-              
-             dd($t);
-           }              
         }
     }
 }

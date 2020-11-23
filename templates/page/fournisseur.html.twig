@@ -63,6 +63,12 @@
 								</button>
 							</form>
 						</section>
+						<section class=" filtre cacher">
+							<form action="">
+								<button class="btn btn-info btn-xs" id="btn_cacher_fournisseur" etat = "non"><span>Cacher certains détails</span></button>
+							</form>
+						</section>
+
 						<div class="section">
 
 							<div class="tableau tab_historique">
@@ -228,21 +234,27 @@
 
             // fin tableau
             var montant2 = $('.montant');
-			
+			$("#btn_cacher_fournisseur").on('click', function(ev){
+				ev.preventDefault();
+				var etat = $(this).attr('etat');
+				if(etat == "non"){
+					$('.montant').css('opacity', '0');
+					$('.nom_fournisseur').css('opacity', '0');
+					$(this).attr('etat', "oui");
+					$("#btn_cacher_fournisseur span").text("Affichier les détails")
+				}
+				else{
+					$('.montant').css('opacity', '1');
+					$('.nom_fournisseur').css('opacity', '1');
+					$(this).attr('etat', "non");
+					$("#btn_cacher_fournisseur span").text("Cacher certains détails")
+				}
+				
+			})
 
 		});
 
-		// var montant2 = document.getElementsByClassName("montant");
-		// var t = montant2.length;
-		// alert(t);
-		// var test = new Intl.NumberFormat();
-		// if (t > 0) {
-		// 	for (var i = 0; i < t; i++) {
-		// 		var val = test.format(montant2[i].innerHTML);
-		// 		alert(val);
-		// 		montant2[i].innerHTML = val;
-		// 	}
-		// }
+		
 	</script>
 
 

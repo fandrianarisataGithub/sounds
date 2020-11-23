@@ -38,6 +38,14 @@
                             <h3><span>Facture en retard de paiement</span></h3>
                             <div class="ligne_titre"></div>
                         </div>
+                        <section class=" filtre cacher">
+                            <form action="">
+                                <button class="btn btn-info btn-xs" id="btn_cacher_fournisseur" etat="non">
+                                    <span>Cacher certains détails</span>
+                                </button>
+                            </form>
+                        </section>
+
                         <div class="tableau_fournisseur">
                             <div class="date_tab_fournisseur">
                                 <span>{{ today | date('d/m/Y') }}</span>
@@ -60,7 +68,7 @@
                                                         <span>{{ item.getType() | raw }}</span>
                                                     </td>
                                                     <td>
-                                                        <span>{{ item.getNomFournisseur() | raw }}</span>
+                                                        <span class="nom_fournisseur">{{ item.getNomFournisseur() | raw }}</span>
                                                     </td>
                                                     <td>
                                                         <span>{{ item.getNumeroFacture() | raw }}</span>
@@ -134,7 +142,7 @@
                                                         <span>{{ t.getType() | raw }}</span>
                                                     </td>
                                                     <td>
-                                                        <span>{{ t.getNomFournisseur() | raw }}</span>
+                                                        <span class="nom_fournisseur">{{ t.getNomFournisseur() | raw }}</span>
                                                     </td>
                                                     <td>
                                                         <span>{{ t.getNumeroFacture() | raw }}</span>
@@ -194,7 +202,26 @@
 
 	<script>
 
-    
+        $(document).ready(function(){
+            $("#btn_cacher_fournisseur").on('click', function(ev){
+				ev.preventDefault();
+				var etat = $(this).attr('etat');
+				if(etat == "non"){
+					$('.montant').css('opacity', '0');
+					$('.nom_fournisseur').css('opacity', '0');
+					$(this).attr('etat', "oui");
+					$("#btn_cacher_fournisseur span").text("Affichier les détails")
+				}
+				else{
+					$('.montant').css('opacity', '1');
+					$('.nom_fournisseur').css('opacity', '1');
+					$(this).attr('etat', "non");
+					$("#btn_cacher_fournisseur span").text("Cacher certains détails")
+				}
+				
+			})
+
+        })
 		
         
 	</script>
