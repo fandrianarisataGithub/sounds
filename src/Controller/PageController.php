@@ -1580,6 +1580,7 @@ class PageController extends AbstractController
                 }
            }
         }
+        
         for($i=0; $i< count($tab_echeance); $i++){
             $x = $repoFour->findByEcheances($tab_echeance[$i]);
             array_push($tab_par_echeance, $x);

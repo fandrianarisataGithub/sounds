@@ -440,8 +440,6 @@ class DonneeDuJourController extends AbstractController
 
             $manager->flush();
 
-
-
             $data = json_encode("ok");
             $response->headers->set('Content-type', 'application/json');
             $response->setContent($data);

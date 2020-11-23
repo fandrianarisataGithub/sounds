@@ -44,38 +44,60 @@
                             </div>
                             <div class="tableau">
                                 <table class="table">
-                                   <thead>
-                                         <tr>
+                                    <thead>
+                                        <tr>
                                             <th><span>TYPE</span></th>
                                             <th><span>FOURNISSEUR</span></th>
+                                            <th><span>N° FACTURE</span></th>
                                             <th><span>MONTANT</span></th>
                                             <th><span>RESTE A PAYER</span></th>
-                                            <th><span>N° FACTURE</span></th>
                                         </tr>
-                                   </thead>
-                                   <tbody>
-                                   {% for item in tab_fours_recap_p_ret %}
+                                    </thead>
+                                    <tbody>
+                                        {% for item in tab_fours_recap_p_ret %}
+                                                <tr>
+                                                    <td>
+                                                        <span>{{ item.getType() | raw }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>{{ item.getNomFournisseur() | raw }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>{{ item.getNumeroFacture() | raw }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="montant m_m">{{ item.getMontant() }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="montant m_r">{{ item.getReste() }}</span>
+                                                    </td>
+                                                </tr>
+                                        {% endfor %}                                      
+                                    </tbody>
+                                    <tfooter>
                                         <tr>
-                                            <td>
-                                                <span>{{ item.getType() | raw }}</span>
-                                            </td>
-                                            <td>
-                                                <span>{{ item.getNomFournisseur() | raw }}</span>
-                                            </td>
-                                            <td>
-                                                <span class="montant">{{ item.getMontant() }}</span>
-                                            </td>
-                                            <td>
-                                                <span class="montant">{{ item.getReste() }}</span>
-                                            </td>
-                                            <td>
-                                                <span>{{ item.getNumeroFacture() | raw }}</span>
-                                            </td>
+                                            <td colspan="3"><span><b style="font-size:14px">Sous-total</b></span></td>
+                                            <td><span class="montant m_m_a" style="font-weight:600 !important">
+                                                    {% set s = 0 %}
+                                                {% for item in tab_fours_recap_p_ret %}
+                                                    {% set x = item.getMontant() %}
+                                                    {% set s = s + x %}
+                                                {% endfor %}
+                                                {{ s }}
+                                            
+                                            </span></td>
+                                            <td><span class="montant m_r_a" style="font-weight:600 !important">
+                                            
+                                                {% set s = 0 %}
+                                                    {% for item in tab_fours_recap_p_ret %}
+                                                        {% set x = item.getReste() %}
+                                                        {% set s = s + x %}
+                                                    {% endfor %}
+                                                {{ s }}
+                                            </span></td>
+                                            <td><span></span></td>
                                         </tr>
-
-                                   {% endfor %}
-                                       
-                                   </tbody>
+                                    </tfooter>
                                 </table>
                             </div>
                         </div>
@@ -100,9 +122,9 @@
                                          <tr>
                                             <th><span>TYPE</span></th>
                                             <th><span>FOURNISSEUR</span></th>
+                                            <th><span>N° FACTURE</span></th>
                                             <th><span>MONTANT</span></th>
                                             <th><span>RESTE A PAYER</span></th>
-                                            <th><span>N° FACTURE</span></th>
                                         </tr>
                                    </thead>
                                    <tbody>                                       
@@ -115,18 +137,42 @@
                                                         <span>{{ t.getNomFournisseur() | raw }}</span>
                                                     </td>
                                                     <td>
-                                                        <span class="montant">{{ t.getMontant() }}</span>
-                                                    </td>
-                                                    <td>
-                                                        <span class="montant">{{ t.getReste() }}</span>
-                                                    </td>
-                                                    <td>
                                                         <span>{{ t.getNumeroFacture() | raw }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="montant m_m">{{ t.getMontant() }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="montant m_r">{{ t.getReste() }}</span>
                                                     </td>
                                                 </tr>
 
                                         {% endfor %}
-                                   </tbody>
+                                    </tbody>
+                                    <tfooter>
+                                        <tr>
+                                            <td colspan="3"><span><b style="font-size:14px">Sous-total</b></span></td>
+                                            <td><span class="montant m_m_a" style="font-weight:600 !important">
+                                                    {% set s = 0 %}
+                                                {% for item in item %}
+                                                    {% set x = item.getMontant() %}
+                                                    {% set s = s + x %}
+                                                {% endfor %}
+                                                {{ s }}
+                                            
+                                            </span></td>
+                                            <td><span class="montant m_r_a" style="font-weight:600 !important">
+                                            
+                                                {% set s = 0 %}
+                                                    {% for item in item %}
+                                                        {% set x = item.getReste() %}
+                                                        {% set s = s + x %}
+                                                    {% endfor %}
+                                                {{ s }}
+                                            </span></td>
+                                            <td><span></span></td>
+                                        </tr>
+                                    </tfooter>
                                 </table>
                             </div>
                         </div>
@@ -148,7 +194,7 @@
 
 	<script>
 
-
+    
 		
         
 	</script>
