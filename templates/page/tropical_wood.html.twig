@@ -1,0 +1,226 @@
+{% extends "base.html.twig" %}
+{% block title %}
+	Tropical wood
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
+{% endblock %}
+
+{% block body %}
+
+	<section id="contents" class="container-fluid">
+		<!-- entete content -->
+		{% include "nav2.html.twig" %}
+		<!-- / entete content -->
+		<!-- contenue  -->
+			<div id="hrs_content"> <div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<section class="section_part" id="section_part_top">
+						<div class="sous_titre sous_titre_tw">
+							<h3>Tableau de bord - Clients</h3>
+						</div>
+					</section>
+				</div>
+				{% if tri == false %}
+					<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+						<div class="div__form_upload_excel import_trop">
+							<h3>Importer un fichier au format (.xls, csv, xlsx)</h3>
+							{% if message is defined %}
+								<div class="message_import bg-danger">
+									<p>
+										{{ message | raw }}
+									</p>
+								</div>
+							{% endif %}
+							{{ form_start(form_add, {
+												'attr' : {
+													'id' : 'form_import_excel'
+												}
+											}) }}
+							{{ form_row(form_add.fichier) }}
+							<input type="submit" value="Importer" class="btn btn-default btn-sm">
+							{{ form_end(form_add) }}
+						</div>
+					</div>
+				{% endif %}
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+				<h4 class="titre_gris">Date de confirmation: </h4>
+					<form action="{{ path('tri.date_confirmation') }}" method="post">
+						<div class="form-group date_confirmation">
+							<span class="fa fa-calendar"></span>
+							<input type="date" name="date1" class="date_conf-item" {% if date1 is defined %}
+								value = {{date1}}
+							{% endif %}>
+							<span class="date_conf-item"> - </span>
+							<input type="date" name="date2" class="date_conf-item" {% if date2 is defined %}
+								value = {{date2}}
+							{% endif %}>
+							<button type = "submit" class="btn btn-primary btn-xs btn_filter filter_crj"><span>Filtrer</span></button>
+						</div>
+					</form>
+				</div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<h4 class="titre_gris">Type de transaction: </h4>
+					<div class="liste_btn">
+						<a href="{{ path('tri.tropical', {'message':'Client OF', 'option' : '1'}) }}" class="btn btn-default btn_dore" data="Client OF"><span>Officiel</span></a>
+						<a href="{{ path('tri.tropical', {'message':'Client NO', 'option' : '1'}) }}" class="btn btn-default btn_dore" data="Client NO"><span>Non officiel</span></a>
+						<a href="{{ path('tri.tropical', {'message':'VIP', 'option' : '1'}) }}" class="btn btn-default btn_dore" data="VIP"><span>VIP</span></a>
+						<a href="{{ path('tri.tropical', {'message':'Groupe', 'option' : '1'}) }}" class="btn btn-default btn_gris" data="Groupe"><span>Groupe</span></a>
+					</div>
+				</div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<h4 class="titre_gris">Etat de production: </h4>
+					<div class="liste_btn">
+						<a href="{{ path('tri.tropical', {'message':'A faire', 'option' : '2'}) }}" class="btn btn-default btn_dore" data="A faire"><span>A faire</span></a>
+						<a href="{{ path('tri.tropical', {'message':'En production', 'option' : '2'}) }}" class="btn btn-default btn_dore" data="En production"><span>En production</span></a>
+						<a href="{{ path('tri.tropical', {'message':'En pause', 'option' : '2'}) }}" class="btn btn-default btn_dore" data="En pause"><span>En pause</span></a>
+						<a href="{{ path('tri.tropical', {'message':'Fini', 'option' : '2'}) }}" class="btn btn-default btn_dore" data="Fini"><span>Fini</span></a>
+					</div>
+				</div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<h4 class="titre_gris">Etat de paiement: </h4>
+					<div class="liste_btn">
+						<a href="{{ path('tri.tropical', {'message':'Aucun', 'option' : '3'}) }}" class="btn btn-default btn_dore" data="Aucun paiement"><span>Aucun paiement</span></a>
+						<a href="{{ path('tri.tropical', {'message':'partiel', 'option' : '3'}) }}" class="btn btn-default btn_dore" data="Paiement partiel"><span>Paiement partiel effectué</span></a>
+						<a href="{{ path('tri.tropical', {'message':'total', 'option' : '3'}) }}" class="btn btn-default btn_gris" data="Paiement total"><span>Paiement total effectué</span></a>
+					</div>
+				</div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<div class="liste_form_search">
+						<form action="{{ path('trop_search') }}" method="post">
+							<button type="submit"><span class="fa fa-search"></span></button>
+							<input type="text" name="entreprise_contact" class="form-control" placeholder="Entreprises/Contacts">
+							<input type="hidden" name="type_transaction" class="form-control" placeholder="Type de transaction" value="vide">
+						</form>
+						<form action="{{ path('trop_search') }}" method="post">
+							<button type="submit"><span class="fa fa-search"></span></button>
+							<input type="text" name="type_transaction" class="form-control" placeholder="Type de transaction">
+							<input type="hidden" name="entreprise_contact" class="form-control" placeholder="Entreprises/Contacts"  value="vide">
+						</form>
+					</div>
+				</div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<div class="tableau_tropical">
+						<div class="table_content">
+							<div class="table_header">
+								<div class="t_header_row">
+									<div>
+										<span>Entreprise <br>Contact</span>
+									</div>
+									<div>
+										<span>Détails</span>
+									</div>
+									<div>
+										<span>Type de transaction</span>
+									</div>
+									<div>
+										<span>Etat de production</span>
+									</div>
+									<div>
+										<span>Paiement</span>
+									</div>
+									<div>
+										<span>Reste à payé</span>
+									</div>
+									<div>
+										<span>Montant total</span>
+									</div>
+									<div>
+										<span>Date de confirmation</span>
+									</div>
+									<div>
+										<span>Devis</span>
+									</div>
+								</div>
+							</div>
+							<div class="table_body">
+								{% for data in datas %}
+									{% if data|length > 0 %}
+										<div>
+											<div class="t_body_row">
+												<div class="td_long" colspan="9">
+													<span>{{ data[0].getEntreprise() | raw }}</span>
+												</div>
+											</div>
+											{% for item in data %}
+												<div class="t_body_row sous_tab_body">
+													<div>
+														<span>{{ item.getIdPro() | raw }}</span>
+													</div>
+													<div>
+														<span>{{ item.getDetail() | raw }}</span>
+													</div>
+													<div>
+														<span class="value" data="{{ item.getTypeTransaction() | trim }}">{{ item.getTypeTransaction() | raw }}</span>
+													</div>
+													<div>
+														<span class="value" data="{{ item.getEtatProduction() | trim }}">{{ item.getEtatProduction() | raw }}</span>
+													</div>
+													<div>
+														<span class="montant value" {% set m_a = item.getTotalReglement() | trim %} {% set m_t = item.getMontantTotal() | trim %} {% if m_a == 0 %} data="Aucun paiement" {% endif %} {% if m_t == m_a %} data="Paiement total" {% endif %} {% if m_t > m_a %} data="Paiement partiel" {% endif %}>{{ item.getTotalReglement() }}</span>
+													</div>
+													<div>
+														<span class="montant">
+															{% set total = item.getMontantTotal() %}
+															{% set avance = item.getTotalReglement() %}
+															{{ total - avance }}
+														</span>
+													</div>
+													<div>
+														<span class="montant">{{ item.getMontantTotal() }}</span>
+													</div>
+													<div>
+														<span>{{ item.getDateconfirmation() | date('d-m-Y') }}</span>
+													</div>
+													<div>
+														<span>{{ item.getDevis() }}</span>
+													</div>
+												</div>
+											{% endfor %}
+										</div>
+									{% endif %}
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- / contenue  -->
+	</section>
+{% endblock %}
+
+{% block javascripts %}
+	<script src="{{ asset('js/cleave.min.js') }}"></script>
+	<script>
+		$(document).ready(function(){
+			$('.logo_active').removeClass('logo_active');
+			$('#li_tropical').addClass('logo_active');
+			$('#li_tropical a div img').css('width', '53px');
+
+			// les tris au liste de bouton 
+			/*$('.liste_btn a').on('click', function(ev){
+				ev.preventDefault();
+				var data = $(this).attr('data');
+				var value = document.querySelectorAll('.value');
+				for (var i = 0; i < value.length; i++) {
+					value[i].parentElement.parentElement.style.display ="flex"
+				}
+				for (var i = 0; i < value.length; i++) {
+					if(value[i].getAttribute("data") == data){
+						value[i].parentElement.parentElement.style.display ="flex"
+					}
+					else{
+						value[i].parentElement.parentElement.style.display ="none"
+					}
+				}
+				
+
+			})*/
+
+		})
+		
+	</script>
+{% endblock %}
+

@@ -11,6 +11,7 @@ use App\Entity\Fournisseur;
 use App\Entity\ClientUpload;
 use App\Entity\DonneeDuJour;
 use App\Form\DonneeDuJourType;
+use App\Entity\DataTropicalWood;
 use App\Form\FournisseurFileType;
 use App\Repository\UserRepository;
 use App\Repository\HotelRepository;
@@ -22,6 +23,7 @@ use App\Repository\ClientUploadRepository;
 use App\Repository\DonneeDuJourRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
+use App\Repository\DataTropicalWoodRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Date;
@@ -2049,6 +2051,88 @@ class PageController extends AbstractController
 
         return $this->redirectToRoute($data_session['current_page'], ['pseudo_hotel' => $data_session['pseudo_hotel']]);
     }
+
+    /**
+     * @Route("/profile/tropical_wood", name="tropical_wood")
+     */
+    public function tropical_wood(SessionInterface $session, Request $request, Services $services, EntityManagerInterface $manager, DataTropicalWoodRepository $repoTrop)
+    {
+        $data_session = $session->get('hotel');
+        $form_add = $this->createForm(FournisseurFileType::class);
+        $form_add->handleRequest($request);
+        $text = "tsisy";  
+        if($form_add->isSubmitted() && $form_add->isValid()){
+            
+            $fichier = $form_add->get('fichier')->getData();
+            $originalFilename1 = pathinfo($fichier->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename1 = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename1);
+            $newFilename1 = $safeFilename1 . '.' . $fichier->guessExtension();
+            $fileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($fichier->getRealPath()); // d'après dd($fichier)
+            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($fileType); // ty le taloha
+            /* $sheetname = "FOURNISSEURS";
+            $reader->setLoadSheetsOnly($sheetname);*/
+            $spreadsheet = $reader->load($fichier->getRealPath()); // le nom temporaire
+            $data = $spreadsheet->getActiveSheet()->toArray();
+            $d_aff = [];
+            for ($i = 1; $i < count($data); $i++) {
+                array_push($d_aff, $data[$i]);
+            }
+            // dd($d_aff);
+            for($i = 0; $i < count($d_aff); $i++){
+                $data_tw = new DataTropicalWood();
+                $idPro = $d_aff[$i][0];
+                $entreprise = $d_aff[$i][3];
+                $type_transaction = $d_aff[$i][1];
+                $detail = $d_aff[$i][4];
+                $etat_production = $d_aff[$i][2];
+                $montant_total = $services->no_space(str_replace(",", " ", $d_aff[$i][5]));
+                $montant_paye =  $services->no_space(str_replace(",", " ",$d_aff[$i][7])); // 6 le avance
+                $montant_avance = $services->no_space(str_replace(",", " ",$d_aff[$i][6]));
+                $date_confirmation = date_create($services->parseMyDate($d_aff[$i][8]));
+                
+                // préparation de l'objet
+                $data_tw->setTypeTransaction($type_transaction);
+                $data_tw->setIdPro($idPro);
+                $data_tw->setEntreprise($entreprise);
+                $data_tw->setDetail($detail);
+                $data_tw->setEtatProduction($etat_production);
+                $data_tw->setMontantTotal($montant_total);
+                $data_tw->setMontantPaye($montant_paye);
+                $data_tw->setTotalReglement($montant_avance);
+                $data_tw->setDateConfirmation($date_confirmation);
+                // dd($data_tw);
+                // eviter les doublant au niveau de num fact
+                $doubles = $repoTrop->findBy(["idPro" => $idPro]);
+                if(count($doubles) == 0){
+                    $manager->persist($data_tw);
+                }
+            }
+           $manager->flush();
+
+           // on liste tous les data    
+        }
+        $datas = $repoTrop->findAll();
+        // on liste selon le nom de l'entreprise
+        $noms = [];
+        $les_datas = [];
+        foreach ($datas as $data) {
+            $entreprise = $data->getEntreprise();
+            if (!in_array($entreprise, $noms)) {
+                array_push($noms, $entreprise);
+                // on select tous les datas de même nom
+                $ens = $repoTrop->findBy(["entreprise" => $entreprise]);
+                array_push($les_datas, $ens);
+            }
+        }     
+        return $this->render('page/tropical_wood.html.twig',[
+            "hotel" => $data_session['pseudo_hotel'],
+            "current_page" => $data_session['current_page'],
+            "form_add"      => $form_add->createView(),
+            'datas'       => $les_datas,
+            'tri' => false,
+        ]);
+    }
+
 
     /**
      * @Route("/profile/filtre/graph/heb_to/{pseudo_hotel}", name = "filtre_graph_heb_to")

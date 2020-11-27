@@ -115,6 +115,16 @@
 									</a>
 								</li>
 							{% endif %}
+							{% if app.user.hotel == 'tous' %}
+								<li id="li_tropical">
+									<a href="{{ path('tropical_wood') }}">
+										<div>
+											<img src="{{ asset('images/tropical.png') }}" alt="tw">
+										</div>
+									</a>
+								</li>
+							{% endif %}
+
 							<li id="log_out">
 								<div>
 									<a href="{{ path('app_logout') }}">

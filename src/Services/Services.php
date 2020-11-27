@@ -95,7 +95,7 @@ class Services
         public function no_space($value)
         {
             $x = str_replace(" ", "", $value);
-        
+            //dd($x);
             return doubleval($x);
         }
     } 
