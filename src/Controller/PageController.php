@@ -2100,12 +2100,12 @@ class PageController extends AbstractController
                 $data_tw->setMontantPaye($montant_paye);
                 $data_tw->setTotalReglement($montant_avance);
                 $data_tw->setDateConfirmation($date_confirmation);
+                $manager->persist($data_tw);
                 // dd($data_tw);
-                // eviter les doublant au niveau de num fact
-                $doubles = $repoTrop->findBy(["idPro" => $idPro]);
-                if(count($doubles) == 0){
-                    $manager->persist($data_tw);
-                }
+                //eviter les doublant au niveau de num fact
+            }
+            foreach($repoTrop->findAll() as $t){
+                $manager->remove($t);   
             }
            $manager->flush();
 

@@ -99,7 +99,7 @@ class DataTropicalWood
         return $this->entreprise;
     }
 
-    public function setEntreprise(string $entreprise): self
+    public function setEntreprise(?string $entreprise): self
     {
         $this->entreprise = $entreprise;
 
@@ -111,7 +111,7 @@ class DataTropicalWood
         return $this->contact;
     }
 
-    public function setContact(string $contact): self
+    public function setContact(?string $contact): self
     {
         $this->contact = $contact;
 
@@ -123,7 +123,7 @@ class DataTropicalWood
         return $this->detail;
     }
 
-    public function setDetail(string $detail): self
+    public function setDetail(?string $detail): self
     {
         $this->detail = $detail;
 

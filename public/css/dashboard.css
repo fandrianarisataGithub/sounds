@@ -1859,7 +1859,7 @@ span.fa-calendar{
   li#log_out {
       text-align: center;
       position: absolute;
-      bottom: 100px;
+      bottom: 0px;
   }
   
   li#log_out div {
