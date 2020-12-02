@@ -43,6 +43,46 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return DataTropicalWood[] Returns an array of DataTropicalWood objects
+     */
+    public function filtrer(\Datetime $date1, \DateTime $date2, array $type_transaction, array $etat_production, array $etat_paiement)
+    {
+        $t = count($etat_paiement);
+       
+        if($t == 1){
+            // tsisy zany
+            return $this->createQueryBuilder('d')
+            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+            ->setParameter('date1', $date1)
+            ->setParameter('date2', $date2)
+            ->orWhere('d.type_transaction IN(:tab1)')
+            ->setParameter('tab1', $type_transaction)
+            ->orWhere('d.etat_production IN(:tab2)')
+            ->setParameter('tab2', $etat_production)
+            ->getQuery()
+            ->getResult();
+        }
+        else if($t>1){
+            // on enlève le premier element
+            
+        }
+        return $this->createQueryBuilder('d')
+            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+            ->setParameter('date1', $date1)
+            ->setParameter('date2', $date2)
+            ->orWhere('d.type_transaction IN(:tab1)')
+            ->setParameter('tab1', $type_transaction)
+            ->orWhere('d.etat_production IN(:tab2)')
+            ->setParameter('tab2', $etat_production)
+            ->orWhere('d.paiement IN(:tab3)')
+            ->setParameter('tab3', $etat_paiement)
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
     // /**
     //  * @return DataTropicalWood[] Returns an array of DataTropicalWood objects
     //  */

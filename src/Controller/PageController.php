@@ -2088,8 +2088,7 @@ class PageController extends AbstractController
                 $montant_total = $services->no_space(str_replace(",", " ", $d_aff[$i][5]));
                 $montant_paye =  $services->no_space(str_replace(",", " ",$d_aff[$i][7])); // 6 le avance
                 $montant_avance = $services->no_space(str_replace(",", " ",$d_aff[$i][6]));
-                $date_confirmation = date_create($services->parseMyDate($d_aff[$i][8]));
-                
+                $date_confirmation = date_create($services->parseMyDate($d_aff[$i][8]));               
                 // préparation de l'objet
                 $data_tw->setTypeTransaction($type_transaction);
                 $data_tw->setIdPro($idPro);
@@ -2123,7 +2122,57 @@ class PageController extends AbstractController
                 $ens = $repoTrop->findBy(["entreprise" => $entreprise]);
                 array_push($les_datas, $ens);
             }
-        }     
+        }
+        if ($request->request->count()) {
+            //dd($request->request);
+            $date1 = date_create($request->request->get('date1'));
+            $date2 = date_create($request->request->get('date2'));
+            $type_transaction = $request->request->get('type_transaction');
+            $type_transaction = explode("*", $type_transaction);
+            $etat_production = $request->request->get('etat_production');
+            $etat_production = explode("*", $etat_production);
+            $etat_paiement = $request->request->get('etat_paiement');
+            $etat_paiement = explode("*", $etat_paiement);
+            $les_datas = [];
+            $table = [];
+            
+            if($date1 !="" && $date2 !=""){
+                // on select les obj dans cette interval
+                $all = $repoTrop->findAll();
+                foreach ($all as $item) {
+                    $date = $item->getDateConfirmation();
+                    if (($date >= $date1) && ($date <= $date2)) {
+                        if(!in_array($item, $table)){
+                            array_push($table, $item);
+                        }
+                    }
+                }
+                $em = $this->getDoctrine()->getManager();
+                $sql = "SELECT * FROM data_tropical_wood";
+                $sql .= " WHERE (date_confirmation BETWEEN " .$request->request->get('date1'). " AND ". $request->request->get('date2') .") " ;
+                if(count($type_transaction) > 1){
+                    for($i=1; $i< count($type_transaction); $i++){
+                        $sql .= " AND type_transaction = '" . $type_transaction[$i]."'";
+                    }
+                }
+                if (count($etat_production) > 1) {
+                    for ($i = 1; $i < count($etat_production); $i++) {
+                        $sql .= " AND etat_production = '" . $etat_production[$i] ."'";
+                    }
+                }
+                if (count($etat_paiement) > 1) {
+                    for ($i = 1; $i < count($etat_paiement); $i++) {
+                        $sql .= " AND etat_paiement = '" . $etat_paiement[$i]."'";
+                    }
+                }
+                $x = $repoTrop->filtrer($date1, $date2, $type_transaction, $etat_production, $etat_paiement);
+                
+            }
+            else{
+                // on filtre juste par les val des tableaux
+            }
+
+        }   
         return $this->render('page/tropical_wood.html.twig',[
             "hotel" => $data_session['pseudo_hotel'],
             "current_page" => $data_session['current_page'],
@@ -2132,8 +2181,6 @@ class PageController extends AbstractController
             'tri' => false,
         ]);
     }
-
-
     /**
      * @Route("/profile/filtre/graph/heb_to/{pseudo_hotel}", name = "filtre_graph_heb_to")
      */

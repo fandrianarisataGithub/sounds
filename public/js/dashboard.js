@@ -13,6 +13,7 @@ $(document).ready(function() {
 })
 
 /* fin loader */
+
 var montant = document.querySelectorAll(".montant");
 var t = montant.length;
 var test = new Intl.NumberFormat();

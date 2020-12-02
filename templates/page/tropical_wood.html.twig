@@ -49,41 +49,53 @@
 					<form action="{{ path('tri.date_confirmation') }}" method="post">
 						<div class="form-group date_confirmation">
 							<span class="fa fa-calendar"></span>
-							<input type="date" name="date1" class="date_conf-item" {% if date1 is defined %}
+							<input type="date" name="date1" id="date1" class="date_conf-item" {% if date1 is defined %}
 								value = {{date1}}
 							{% endif %}>
 							<span class="date_conf-item"> - </span>
-							<input type="date" name="date2" class="date_conf-item" {% if date2 is defined %}
+							<input type="date" name="date2" id="date2" class="date_conf-item" {% if date2 is defined %}
 								value = {{date2}}
 							{% endif %}>
-							<button type = "submit" class="btn btn-primary btn-xs btn_filter filter_crj"><span>Filtrer</span></button>
+							{# <button type = "submit" class="btn btn-primary btn-xs btn_filter filter_crj"><span>Filtrer</span></button> #}
 						</div>
 					</form>
 				</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 					<h4 class="titre_gris">Type de transaction: </h4>
-					<div class="liste_btn">
-						<a href="{{ path('tri.tropical', {'message':'Client OF', 'option' : '1'}) }}" class="btn btn-default btn_dore" data="Client OF"><span>Officiel</span></a>
-						<a href="{{ path('tri.tropical', {'message':'Client NO', 'option' : '1'}) }}" class="btn btn-default btn_dore" data="Client NO"><span>Non officiel</span></a>
-						<a href="{{ path('tri.tropical', {'message':'VIP', 'option' : '1'}) }}" class="btn btn-default btn_dore" data="VIP"><span>VIP</span></a>
-						<a href="{{ path('tri.tropical', {'message':'Groupe', 'option' : '1'}) }}" class="btn btn-default btn_gris" data="Groupe"><span>Groupe</span></a>
+					<div class="liste_btn" data="type_transaction">
+						<a href="#" class="btn btn-default btn_gris" data="Client OF"><span>Officiel</span></a>
+						<a href="#" class="btn btn-default btn_gris" data="Client NO"><span>Non officiel</span></a>
+						<a href="#" class="btn btn-default btn_gris" data="VIP"><span>VIP</span></a>
+						<a href="#" class="btn btn-default btn_gris" data="Groupe"><span>Groupe</span></a>
 					</div>
 				</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 					<h4 class="titre_gris">Etat de production: </h4>
-					<div class="liste_btn">
-						<a href="{{ path('tri.tropical', {'message':'A faire', 'option' : '2'}) }}" class="btn btn-default btn_dore" data="A faire"><span>A faire</span></a>
-						<a href="{{ path('tri.tropical', {'message':'En production', 'option' : '2'}) }}" class="btn btn-default btn_dore" data="En production"><span>En production</span></a>
-						<a href="{{ path('tri.tropical', {'message':'En pause', 'option' : '2'}) }}" class="btn btn-default btn_dore" data="En pause"><span>En pause</span></a>
-						<a href="{{ path('tri.tropical', {'message':'Fini', 'option' : '2'}) }}" class="btn btn-default btn_dore" data="Fini"><span>Fini</span></a>
+					<div class="liste_btn" data="etat_production">
+						<a href="#" class="btn btn-default btn_gris" data="A faire"><span>A faire</span></a>
+						<a href="#" class="btn btn-default btn_gris" data="En production"><span>En production</span></a>
+						<a href="#" class="btn btn-default btn_gris" data="En pause"><span>En pause</span></a>
+						<a href="#" class="btn btn-default btn_gris" data="Fini"><span>Fini</span></a>
 					</div>
 				</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 					<h4 class="titre_gris">Etat de paiement: </h4>
-					<div class="liste_btn">
-						<a href="{{ path('tri.tropical', {'message':'Aucun', 'option' : '3'}) }}" class="btn btn-default btn_dore" data="Aucun paiement"><span>Aucun paiement</span></a>
-						<a href="{{ path('tri.tropical', {'message':'partiel', 'option' : '3'}) }}" class="btn btn-default btn_dore" data="Paiement partiel"><span>Paiement partiel effectué</span></a>
-						<a href="{{ path('tri.tropical', {'message':'total', 'option' : '3'}) }}" class="btn btn-default btn_gris" data="Paiement total"><span>Paiement total effectué</span></a>
+					<div class="liste_btn" data="etat_paiement">
+						<a href="#" class="btn btn-default btn_gris" data="Aucun paiement"><span>Aucun paiement</span></a>
+						<a href="#" class="btn btn-default btn_gris" data="Paiement partiel"><span>Paiement partiel effectué</span></a>
+						<a href="#" class="btn btn-default btn_gris" data="Paiement total"><span>Paiement total effectué</span></a>
+					</div>
+				</div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<div>
+						<form action="{{ path('tropical_wood') }}" method="post" name="form_for_tri" id="form_for_tri">
+							<input type="hidden" id="hidden_date1" name="date1">
+							<input type="hidden" id="hidden_date2" name="date2">
+							<input type="hidden" name="type_transaction" id="form_type_transaction">
+							<input type="hidden" name="etat_production" id="form_etat_production">
+							<input type="hidden" name="etat_paiement" id="form_etat_paiement">
+							<button type="submit" class="btn btn-default btn_black">Filtrer</button>
+						</form>
 					</div>
 				</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
@@ -135,6 +147,9 @@
 								</div>
 							</div>
 							<div class="table_body">
+							{% set liste_paiement = [] %}
+							{% set liste_reste = [] %}
+							{% set liste_total_montant = [] %}
 								{% for data in datas %}
 									{% if data|length > 0 %}
 										<div>
@@ -164,7 +179,8 @@
 														<span class="montant">
 															{% set total = item.getMontantTotal() %}
 															{% set avance = item.getTotalReglement() %}
-															{{ total - avance }}
+															{% set reste = total - avance %}
+															{{ reste }}
 														</span>
 													</div>
 													<div>
@@ -178,9 +194,105 @@
 													</div>
 												</div>
 											{% endfor %}
+												<div class="t_body_row sous_tab_body">
+													<div>
+														<span>Sous-total</span> 
+													</div>
+													<div>
+														<span></span>
+													</div>
+													<div>
+														<span></span>
+													</div>
+													<div>
+														<span></span>
+													</div>
+													<div>
+														<span class="montant value total_paiement">
+															{% set s = 0 %}
+															{% for d in data %}
+																{% set s = s + d.getTotalReglement() %}
+															{% endfor %}
+															{{ s }}
+															{% set liste_paiement = liste_paiement|merge([s]) %}
+														</span>
+													</div>
+													<div>
+														{% set total_reste = 0 %}
+														{% for d in data %}
+															{% set total = d.getMontantTotal() %}
+															{% set avance = d.getTotalReglement() %}
+															{% set reste = total - avance %}
+															{% set total_reste = total_reste + reste %}
+														{% endfor %}
+														{% set liste_reste = liste_reste|merge([total_reste]) %}
+														<span class="montant value total_reste">{{ total_reste }}</span>
+													</div>
+													<div>
+													{% set total_montant = 0 %}
+														{% for d in data %}
+															{% set total_montant = total_montant + d.getMontantTotal() %}
+														{% endfor %}
+														{% set liste_total_montant = liste_total_montant|merge([total_montant]) %}
+														<span class="montant value total_montant">{{ total_montant }}</span>
+													</div>
+													<div>
+														<span></span>
+													</div>
+													<div>
+														<span></span>
+													</div>
+												</div>
 										</div>
 									{% endif %}
 								{% endfor %}
+								<div class="t_footer_row sous_tab_body">
+									<div>
+										<span>Total</span>
+									</div>
+									<div>
+										<span></span>
+									</div>
+									<div>
+										<span></span>
+									</div>
+									<div>
+										<span></span>
+									</div>
+									<div>
+										<span class="montant value" id="total_paiement">
+											{% set total_p = 0 %}
+											{% for t in liste_paiement %}
+												{% set total_p = total_p + t %}
+											{% endfor %}
+											{{ total_p }}
+										</span>
+									</div>
+									<div>
+										<span class="montant value" id="total_reste">										
+												{% set total_p = 0 %}
+												{% for t in liste_reste %}
+													{% set total_p = total_p + t %}
+												{% endfor %}
+												{{ total_p }}
+										</span>
+									</div>
+									<div>
+										<span class="montant value" id="total_montant">
+												{% set total_p = 0 %}
+												{% for t in liste_total_montant %}
+													{% set total_p = total_p + t %}
+												{% endfor %}
+												{{ total_p }}
+										</span>
+									</div>
+									<div>
+										<span></span>
+									</div>
+									<div>
+										<span></span>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -198,26 +310,107 @@
 			$('.logo_active').removeClass('logo_active');
 			$('#li_tropical').addClass('logo_active');
 			$('#li_tropical a div img').css('width', '53px');
-
-			// les tris au liste de bouton 
-			/*$('.liste_btn a').on('click', function(ev){
-				ev.preventDefault();
-				var data = $(this).attr('data');
-				var value = document.querySelectorAll('.value');
-				for (var i = 0; i < value.length; i++) {
-					value[i].parentElement.parentElement.style.display ="flex"
+			var liste_type_transaction = [];
+			var liste_etat_production = [];
+			var liste_etat_paiement = [];
+			function arrayRemove(arr, value) { 
+				for(var i=0; i< arr.length; i++){
+					if(arr[i] == value){
+						var num = i;
+						arr.splice(num,1);
+					}
 				}
-				for (var i = 0; i < value.length; i++) {
-					if(value[i].getAttribute("data") == data){
-						value[i].parentElement.parentElement.style.display ="flex"
+				return arr;
+			}
+			$('.liste_btn a').on('click', function(ev){
+				ev.preventDefault();
+				if($(this).hasClass('btn_gris')){
+					$(this).removeClass('btn_gris');
+					$(this).addClass('btn_dore');
+					var son_data = $(this).attr("data");
+					var son_parent = $(this).parent().attr("data");
+					if(son_parent == "type_transaction"){
+						if(!liste_type_transaction.includes(son_data)){
+							liste_type_transaction.push(son_data);
+						}
+					}
+					if(son_parent == "etat_production"){
+						if(!liste_etat_production.includes(son_data)){
+							liste_etat_production.push(son_data);
+						}
+					}
+					if(son_parent == "etat_paiement"){
+						if(!liste_etat_paiement.includes(son_data)){
+							liste_etat_paiement.push(son_data);
+						}
+					}
+				}else{
+					$(this).removeClass('btn_dore');
+					$(this).addClass('btn_gris');
+					var son_data = $(this).attr("data");
+					var son_parent = $(this).parent().attr("data");
+					if(son_parent == "type_transaction"){
+						if(liste_type_transaction.includes(son_data)){
+							arrayRemove(liste_type_transaction, son_data);
+						}
+					}
+					if(son_parent == "etat_production"){
+						if(liste_etat_production.includes(son_data)){
+							arrayRemove(liste_etat_production, son_data);
+						}
+					}
+					if(son_parent == "etat_paiement"){
+						if(liste_etat_paiement.includes(son_data)){
+							arrayRemove(liste_etat_paiement, son_data);
+						}
+					}
+				}	
+			})
+			$('.btn_black').on('click', function(ev){
+				ev.preventDefault();
+				// on concatenne par * les données dans chaque liste
+				var data_type_trans = "";
+				var data_etat_prod = "";
+				var data_etat_paie = "";
+
+				for(var i=0; i<liste_type_transaction.length; i++){
+					if(liste_type_transaction.length>0){
+						data_type_trans+="*";
+						data_type_trans+=liste_type_transaction[i];
 					}
 					else{
-						value[i].parentElement.parentElement.style.display ="none"
+						data_type_trans+=liste_type_transaction[i];
 					}
 				}
-				
 
-			})*/
+				for(var i=0; i<liste_etat_production.length; i++){
+					if(liste_etat_production.length>0){
+						data_etat_prod+="*";
+						data_etat_prod+=liste_etat_production[i];
+					}
+					else{
+						data_etat_prod+=liste_etat_production[i];
+					}
+				}
+
+				for(var i=0; i<liste_etat_paiement.length; i++){
+					if(liste_etat_paiement.length>0){
+						data_etat_paie+="*";
+						data_etat_paie+=liste_etat_paiement[i];
+					}
+					else{
+						data_etat_paie+=liste_etat_paiement[i];
+					}
+				}
+
+				$('#form_type_transaction').val(data_type_trans);
+				$('#form_etat_production').val(data_etat_prod);
+				$('#form_etat_paiement').val(data_etat_paie);
+				$("#hidden_date1").val($('#date1').val());
+				$("#hidden_date2").val($('#date2').val());
+				$('#form_for_tri').submit();
+			})
+			
 
 		})
 		

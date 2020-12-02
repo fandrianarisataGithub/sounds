@@ -1419,7 +1419,7 @@
   .div_btn_afficher {
       margin-right: 15px;
   }
-.btn_dore{
+.btn_dore, .btn_dore:focus, .btn_dore:visited:hover{
     background: #c79c67;
     color: #fff !important;
     border-color: #c79c67;
@@ -1428,11 +1428,19 @@
     align-items: center;
      font-size: 12px;
 }
-.btn_gris{
+.btn_gris, .btn_gris:focus{
     background: #d2d2d2;
     color: #fff !important;
     height: 30px;
     font-size: 12px;
+}
+.btn_black{
+    background: #323232 !important;
+    color: #fff !important;
+    height: 30px;
+    font-size: 12px;
+    border-color: transparent;
+    margin-top: 15px;
 }
 .btn_dore:hover, .btn_gris:hover{
     color: #c79c67 !important;
@@ -1509,6 +1517,28 @@
     justify-content: space-around;
     align-items: center;
     padding: 5px;
+}
+.t_footer_row{
+     width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 5px;
+}
+.t_footer_row div{
+    margin-left: -25px;
+    width: calc(100% / 9);
+    text-align: center;
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+.t_footer_row div span{
+    font-weight: bold;
+    color: #c79c67;
+}
+.table_body > div >div.t_body_row div{
+    width: calc(100% / 9);
+    text-align: center;
 }
 .table_body > div >div.t_body_row:first-child{
      justify-content: start;
