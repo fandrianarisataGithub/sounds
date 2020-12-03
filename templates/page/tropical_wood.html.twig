@@ -63,37 +63,168 @@
 				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 					<h4 class="titre_gris">Type de transaction: </h4>
 					<div class="liste_btn" data="type_transaction">
-						<a href="#" class="btn btn-default btn_gris" data="Client OF"><span>Officiel</span></a>
-						<a href="#" class="btn btn-default btn_gris" data="Client NO"><span>Non officiel</span></a>
-						<a href="#" class="btn btn-default btn_gris" data="VIP"><span>VIP</span></a>
-						<a href="#" class="btn btn-default btn_gris" data="Groupe"><span>Groupe</span></a>
+						<a href="#" class="btn btn-default btn_gris"
+							{% if type_transaction is defined %}
+								{% for tt in type_transaction %}
+									{% if tt == 'Client OF' %}
+										style="background-color : #d29e00 !important"
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
+						 data="Client OF"><span>Officiel</span></a>
+						<a href="#" class="btn btn-default btn_gris"
+						
+							{% if type_transaction is defined %}
+								{% for tt in type_transaction %}
+									{% if tt == 'Client NO' %}
+										style="background-color : #d29e00 !important"
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+						
+						 data="Client NO"><span>Non officiel</span></a>
+						<a href="#" class="btn btn-default btn_gris"
+						
+							{% if type_transaction is defined %}
+								{% for tt in type_transaction %}
+									{% if tt == 'VIP' %}
+										style="background-color : #d29e00 !important"
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+						
+						 data="VIP"><span>VIP</span></a>
+						<a href="#" class="btn btn-default btn_gris"
+						
+							{% if type_transaction is defined %}
+								{% for tt in type_transaction %}
+									{% if tt == 'Group' %}
+										style="background-color : #d29e00 !important"
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+						
+						 data="Groupe"><span>Groupe</span></a>
 					</div>
 				</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 					<h4 class="titre_gris">Etat de production: </h4>
 					<div class="liste_btn" data="etat_production">
-						<a href="#" class="btn btn-default btn_gris" data="A faire"><span>A faire</span></a>
-						<a href="#" class="btn btn-default btn_gris" data="En production"><span>En production</span></a>
-						<a href="#" class="btn btn-default btn_gris" data="En pause"><span>En pause</span></a>
-						<a href="#" class="btn btn-default btn_gris" data="Fini"><span>Fini</span></a>
+						<a href="#" class="btn btn-default btn_gris"
+
+							{% if etat_production is defined %}
+								{% for ep in etat_production %}
+									{% if ep == 'A faire' %}
+										style="background-color : #d29e00 !important"
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+						
+						 data="A faire"><span>A faire</span></a>
+						<a href="#" class="btn btn-default btn_gris"
+						
+							{% if etat_production is defined %}
+								{% for ep in etat_production %}
+									{% if ep == 'Production' %}
+										style="background-color : #d29e00 !important"
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+						
+						 data="Production"><span>En production</span></a>
+						<a href="#" class="btn btn-default btn_gris"
+						
+							{% if etat_production is defined %}
+								{% for ep in etat_production %}
+									{% if ep == 'Pose' %}
+										style="background-color : #d29e00 !important"
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+						
+						 data="Pose"><span>En pause</span></a>
+						<a href="#" class="btn btn-default btn_gris"
+						
+							{% if etat_production is defined %}
+								{% for ep in etat_production %}
+									{% if ep == 'Fini' %}
+										style="background-color : #d29e00 !important"
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+						
+						 data="Fini"><span>Fini</span></a>
 					</div>
 				</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 					<h4 class="titre_gris">Etat de paiement: </h4>
 					<div class="liste_btn" data="etat_paiement">
-						<a href="#" class="btn btn-default btn_gris" data="Aucun paiement"><span>Aucun paiement</span></a>
-						<a href="#" class="btn btn-default btn_gris" data="Paiement partiel"><span>Paiement partiel effectué</span></a>
-						<a href="#" class="btn btn-default btn_gris" data="Paiement total"><span>Paiement total effectué</span></a>
+						<a href="#" class="btn btn-default btn_gris"
+						
+							{% if etat_paiement is defined %}
+								{% for ep in etat_paiement %}
+									{% if ep == 'Aucun paiement' %}
+										style="background-color : #d29e00 !important"
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+						
+						 data="Aucun paiement"><span>Aucun paiement</span></a>
+						<a href="#" class="btn btn-default btn_gris"
+						
+							{% if etat_paiement is defined %}
+								{% for ep in etat_paiement %}
+									{% if ep == 'Paiement partiel' %}
+										style="background-color : #d29e00 !important"
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+						
+						 data="Paiement partiel"><span>Paiement partiel effectué</span></a>
+						<a href="#" class="btn btn-default btn_gris"
+
+							{% if etat_paiement is defined %}
+								{% for ep in etat_paiement %}
+									{% if ep == 'Paiement total' %}
+										style="background-color : #d29e00 !important"
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+						
+						 data="Paiement total"><span>Paiement total effectué</span></a>
 					</div>
 				</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 					<div>
 						<form action="{{ path('tropical_wood') }}" method="post" name="form_for_tri" id="form_for_tri">
-							<input type="hidden" id="hidden_date1" name="date1">
-							<input type="hidden" id="hidden_date2" name="date2">
-							<input type="hidden" name="type_transaction" id="form_type_transaction">
-							<input type="hidden" name="etat_production" id="form_etat_production">
-							<input type="hidden" name="etat_paiement" id="form_etat_paiement">
+							<input type="hidden" id="hidden_date1" name="date1" {% if date1 is defined %}
+								value = {{date1}}
+							{% endif %}>
+							<input type="hidden" id="hidden_date2" name="date2" {% if date2 is defined %}
+								value = {{date2}}
+							{% endif %}>
+							<input type="hidden" name="type_transaction"
+
+								{% if type_transaction_text is defined %}
+									value ="{{type_transaction_text}}"
+								{% endif %}
+
+							 id="form_type_transaction">
+							<input type="hidden" name="etat_production"
+
+								{% if etat_production_text is defined %}
+									value ="{{etat_production_text}}"
+								{% endif %}
+							
+							 id="form_etat_production">
+							<input type="hidden" name="etat_paiement"
+
+								{% if etat_paiement_text is defined %}
+									value ="{{etat_paiement_text}}"
+								{% endif %}
+
+							 id="form_etat_paiement">
 							<button type="submit" class="btn btn-default btn_black">Filtrer</button>
 						</form>
 					</div>
@@ -150,12 +281,12 @@
 							{% set liste_paiement = [] %}
 							{% set liste_reste = [] %}
 							{% set liste_total_montant = [] %}
-								{% for data in datas %}
+								{% for key,data in datas %}
 									{% if data|length > 0 %}
 										<div>
 											<div class="t_body_row">
 												<div class="td_long" colspan="9">
-													<span>{{ data[0].getEntreprise() | raw }}</span>
+													<span>{{ key | raw }}</span>
 												</div>
 											</div>
 											{% for item in data %}

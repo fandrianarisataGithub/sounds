@@ -46,39 +46,719 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
     /**
      * @return DataTropicalWood[] Returns an array of DataTropicalWood objects
      */
-    public function filtrer(\Datetime $date1, \DateTime $date2, array $type_transaction, array $etat_production, array $etat_paiement)
-    {
-        $t = count($etat_paiement);
+    public function filtrer($date1, $date2, array $type_transaction, array $etat_production, array $etat_paiement)
+    {   
        
-        if($t == 1){
-            // tsisy zany
-            return $this->createQueryBuilder('d')
-            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
-            ->setParameter('date1', $date1)
-            ->setParameter('date2', $date2)
-            ->orWhere('d.type_transaction IN(:tab1)')
-            ->setParameter('tab1', $type_transaction)
-            ->orWhere('d.etat_production IN(:tab2)')
-            ->setParameter('tab2', $etat_production)
-            ->getQuery()
-            ->getResult();
+        if($date1 != "" && $date2 != ""){
+            $t = count($etat_paiement);
+
+            if ($t == 1) {
+                // tsisy zany
+                if(count($type_transaction)>1){
+                    if(count($etat_production)>1){
+                        return $this->createQueryBuilder('d')
+                        ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                        ->setParameter('date1', $date1)
+                        ->setParameter('date2', $date2)
+                        ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                        ->setParameter('tab2', $etat_production)
+                        ->setParameter('tab1', $type_transaction)
+                        ->getQuery()
+                        ->getResult();
+                    }
+                    else{
+                        return $this->createQueryBuilder('d')
+                        ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                        ->setParameter('date1', $date1)
+                        ->setParameter('date2', $date2)
+                        ->andWhere('d.type_transaction IN(:tab1)')
+                        ->setParameter('tab1', $type_transaction)
+                        ->getQuery()
+                        ->getResult();
+                    }
+                }
+                else{
+                    if (count($etat_production) > 1) {
+                        return $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.etat_production IN(:tab2)')
+                            ->setParameter('tab2', $etat_production)
+                            ->getQuery()
+                            ->getResult();
+                    } else {
+                        return $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->getQuery()
+                            ->getResult();
+                    }
+                }
+            } else if ($t == 2) {
+                // on enlève le premier element
+                if (in_array("Aucun paiement", $etat_paiement)) {
+                    if(count($etat_production)>1){
+                        if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                            ->setParameter('tab2', $etat_production)
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.total_reglement = 0')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                        else{
+                            return $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.etat_production IN(:tab1)')
+                            ->setParameter('tab1', $etat_production)
+                            ->andWhere('d.total_reglement = 0')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                    }
+                    else{
+                        if (count($type_transaction) > 1) {
+                            return $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.type_transaction IN(:tab1)')
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.total_reglement = 0')
+                                ->getQuery()
+                                ->getResult();
+                        } else {
+                            return $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.total_reglement = 0')
+                                ->getQuery()
+                                ->getResult();
+                        }
+                    }
+                } 
+                
+                else if (in_array("Paiement partiel", $etat_paiement)) {
+                    if(count($etat_production)>1){
+                        if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                            ->setParameter('tab2', $etat_production)
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.montant_total > d.total_reglement')
+                            ->andHaving('d.total_reglement > 0')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                        else{
+                            return $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.etat_production IN(:tab2)')
+                                ->setParameter('tab2', $etat_production)
+                                ->andWhere('d.montant_total > d.total_reglement')
+                                ->andHaving('d.total_reglement > 0')
+                                ->getQuery()
+                                ->getResult();
+                        }
+                    }
+                    else{
+                        if (count($type_transaction) > 1) {
+                            return $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.type_transaction IN(:tab1)')
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.montant_total > d.total_reglement')
+                                ->andHaving('d.total_reglement > 0')
+                                ->getQuery()
+                                ->getResult();
+                        } else {
+                            return $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.montant_total > d.total_reglement')
+                                ->andHaving('d.total_reglement > 0')
+                                ->getQuery()
+                                ->getResult();
+                        }
+                    }
+                } else if (in_array("Paiement total", $etat_paiement)) {
+                   if(count($etat_production)>1){
+                       if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                                ->setParameter('tab2', $etat_production)
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.montant_total = d.total_reglement')
+                                ->getQuery()
+                                ->getResult();
+                       }
+                       else{
+                            return $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.etat_production IN(:tab2)')
+                                ->setParameter('tab2', $etat_production)
+                                ->andWhere('d.montant_total = d.total_reglement')
+                                ->getQuery()
+                                ->getResult();
+                       }
+                   }
+                   else{
+                       if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.type_transaction IN(:tab1)')
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.montant_total = d.total_reglement')
+                                ->getQuery()
+                                ->getResult();
+                       }
+                       else{
+                            return $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.montant_total = d.total_reglement')
+                                ->getQuery()
+                                ->getResult();
+                       }
+                   }
+                }
+            } else if ($t == 3) {
+                if (in_array("Aucun paiement", $etat_paiement) && in_array("Paiement partiel", $etat_paiement)) {
+                   if(count($etat_production)>1){
+                       if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                                ->setParameter('tab2', $etat_production)
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
+                                ->getQuery()
+                                ->getResult();
+                       }
+                       else{
+                            return $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.etat_production IN(:tab2)')
+                                ->setParameter('tab2', $etat_production)
+                                ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
+                                ->getQuery()
+                                ->getResult();
+                       }
+                   }
+                   else{
+                       if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.type_transaction IN(:tab1)')
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
+                                ->getQuery()
+                                ->getResult();
+                       }
+                       else{
+                            return $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
+                                ->getQuery()
+                                ->getResult();
+                       }
+                   }
+                } else if (in_array("Aucun paiement", $etat_paiement) && in_array("Paiement total", $etat_paiement)) {
+                    if(count($etat_production)>1){
+                        if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                            ->setParameter('tab2', $etat_production)
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                        else{
+                            return $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.etat_production IN(:tab2)')
+                            ->setParameter('tab2', $etat_production)
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                    }
+                    else{
+                        if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.type_transaction IN(:tab1)')
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                        else{
+                            return $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                    }
+                } else if (in_array("Paiement partiel", $etat_paiement) && in_array("Paiement total", $etat_paiement)) {
+                    if(count($etat_production)>1){
+                        if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                            ->setParameter('tab2', $etat_production)
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.montant_total >= d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                        else{
+                            return $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.etat_production IN(:tab2)')
+                            ->setParameter('tab2', $etat_production)
+                            ->andWhere('d.montant_total >= d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                    }
+                    else{
+                        if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.type_transaction IN(:tab1)')
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.montant_total >= d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                        else{
+                            return $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.montant_total >= d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                    }
+                }
+            } else if ($t == 4) {
+                if(count($etat_production)>1){
+                    if(count($type_transaction)>1){
+                        return $this->createQueryBuilder('d')
+                        ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                        ->setParameter('date1', $date1)
+                        ->setParameter('date2', $date2)
+                        ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                        ->setParameter('tab2', $etat_production)
+                        ->setParameter('tab1', $type_transaction)
+                        ->andWhere('d.montant_total >= 0')
+                        ->getQuery()
+                        ->getResult();
+                    }
+                    else{
+                        return $this->createQueryBuilder('d')
+                        ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                        ->setParameter('date1', $date1)
+                        ->setParameter('date2', $date2)
+                        ->andWhere('d.etat_production IN(:tab2)')
+                        ->setParameter('tab2', $etat_production)
+                        ->andWhere('d.montant_total >= 0')
+                        ->getQuery()
+                        ->getResult();
+                    }
+                }
+                else{
+                    if(count($type_transaction)>1){
+                        return $this->createQueryBuilder('d')
+                        ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                        ->setParameter('date1', $date1)
+                        ->setParameter('date2', $date2)
+                        ->andWhere('d.type_transaction IN(:tab1)')
+                        ->setParameter('tab1', $type_transaction)
+                        ->andWhere('d.montant_total >= 0')
+                        ->getQuery()
+                        ->getResult();
+                    }
+                    else{
+                        return $this->createQueryBuilder('d')
+                        ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                        ->setParameter('date1', $date1)
+                        ->setParameter('date2', $date2)
+                        ->andWhere('d.montant_total >= 0')
+                        ->getQuery()
+                        ->getResult();
+                    }
+                }
+            }
         }
-        else if($t>1){
-            // on enlève le premier element
-            
+        else{
+            $t = count($etat_paiement);
+            if ($t == 1) {
+                if(count($etat_production)>1){
+                    if(count($type_transaction)>1){
+                        return $this->createQueryBuilder('d')
+                        ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                        ->setParameter('tab2', $etat_production)
+                        ->setParameter('tab1', $type_transaction)
+                        ->getQuery()
+                        ->getResult();
+                    }
+                    else{
+                        
+                        return $this->createQueryBuilder('d')
+                        ->andWhere('d.etat_production IN(:tab2)')
+                        ->setParameter('tab2', $etat_production)
+                        ->getQuery()
+                        ->getResult();
+                    }
+                }
+                else{
+                    if(count($type_transaction)>1){
+                        return $this->createQueryBuilder('d')
+                        ->andWhere('d.type_transaction IN(:tab1)')
+                        
+                        ->setParameter('tab1', $type_transaction)
+                        ->getQuery()
+                        ->getResult();
+                    }
+                    else{
+                        return $this->createQueryBuilder('d')
+                        ->getQuery()
+                        ->getResult();
+                    }
+                }
+            } else if ($t == 2) {
+                // on enlève le premier element
+                if (in_array("Aucun paiement", $etat_paiement)) {
+                   if(count($etat_production)>1){
+                       if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                                ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                                ->setParameter('tab2', $etat_production)
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.total_reglement = 0')
+                                ->getQuery()
+                                ->getResult();
+                       }
+                       else{
+                            return $this->createQueryBuilder('d')
+                                ->andWhere('d.etat_production IN(:tab2)')
+                                ->setParameter('tab2', $etat_production)
+                                
+                                ->andWhere('d.total_reglement = 0')
+                                ->getQuery()
+                                ->getResult();
+                       }
+                   }
+                   else{
+                       if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                                ->andWhere('d.type_transaction IN(:tab1)')
+                                
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.total_reglement = 0')
+                                ->getQuery()
+                                ->getResult();
+                       }
+                       else{
+                            return $this->createQueryBuilder('d')
+                                ->andWhere('d.total_reglement = 0')
+                                ->getQuery()
+                                ->getResult();
+                       }
+                   }
+                } else if (in_array("Paiement partiel", $etat_paiement)) {
+                    if(count($etat_production)>1){
+                        if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                            ->setParameter('tab2', $etat_production)
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.montant_total > d.total_reglement')
+                            ->andHaving('d.total_reglement > 0')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                        else{
+                            return $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2)')
+                            ->setParameter('tab2', $etat_production)
+                        
+                            ->andWhere('d.montant_total > d.total_reglement')
+                            ->andHaving('d.total_reglement > 0')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                    }
+                    else{
+                        if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                            ->andWhere('d.type_transaction IN(:tab1)')
+                            
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.montant_total > d.total_reglement')
+                            ->andHaving('d.total_reglement > 0')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                        else{
+                            return $this->createQueryBuilder('d')
+                            ->andWhere('d.montant_total > d.total_reglement')
+                            ->andHaving('d.total_reglement > 0')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                    }
+                } else if (in_array("Paiement total", $etat_paiement)) {
+                    if(count($etat_production)>1){
+                        if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                            ->setParameter('tab2', $etat_production)
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.montant_total = d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                        else{
+                            return $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2)')
+                            ->setParameter('tab2', $etat_production)
+                            
+                            ->andWhere('d.montant_total = d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                    }
+                    else{
+                        if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                            ->andWhere('.type_transaction IN(:tab1)')
+                            
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.montant_total = d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                        else{
+                            return $this->createQueryBuilder('d')
+                            
+                            ->andWhere('d.montant_total = d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                    }
+                }
+            } else if ($t == 3) {
+                if (in_array("Aucun paiement", $etat_paiement) && in_array("Paiement partiel", $etat_paiement)) {
+                    if(count($etat_production)>1){
+                        if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                            ->setParameter('tab2', $etat_production)
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                        else{
+                            return $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2)')
+                            ->setParameter('tab2', $etat_production)
+                            
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                    }
+                    else{
+                        if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                            ->andWhere('d.type_transaction IN(:tab1)')
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                        else{
+                            return $this->createQueryBuilder('d')
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                    }
+                } else if (in_array("Aucun paiement", $etat_paiement) && in_array("Paiement total", $etat_paiement)) {
+                    if(count($etat_production)>1){
+                        if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                            ->setParameter('tab2', $etat_production)
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                        else{
+                            return $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2)')
+                            ->setParameter('tab2', $etat_production)
+                            
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                    }
+                    else{
+                        if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                            ->andWhere('d.type_transaction IN(:tab1)')
+                            
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                        else{
+                            return $this->createQueryBuilder('d')
+                           
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
+                            ->getQuery()
+                            ->getResult();
+                        }
+                    }
+                } else if (in_array("Paiement partiel", $etat_paiement) && in_array("Paiement total", $etat_paiement)) {
+                   if(count($etat_production)>1){
+                       if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                                ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                                ->setParameter('tab2', $etat_production)
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.montant_total >= d.total_reglement')
+                                ->getQuery()
+                                ->getResult();
+                       }
+                       else{
+                            return $this->createQueryBuilder('d')
+                                ->andWhere('d.etat_production IN(:tab2)')
+                                ->setParameter('tab2', $etat_production)
+                                
+                                ->andWhere('d.montant_total >= d.total_reglement')
+                                ->getQuery()
+                                ->getResult();
+                       }
+                   }
+                   else{
+                       if(count($type_transaction)>1){
+                            return $this->createQueryBuilder('d')
+                                ->andWhere('d.type_transaction IN(:tab1)')
+                                
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.montant_total >= d.total_reglement')
+                                ->getQuery()
+                                ->getResult();
+                       }
+                       else{
+                            return $this->createQueryBuilder('d')
+                                
+                                ->andWhere('d.montant_total >= d.total_reglement')
+                                ->getQuery()
+                                ->getResult();
+                       }
+                   }
+                }
+            } else if ($t == 4) {
+               if(count($etat_production)>1){
+                   if(count($type_transaction)>1){
+                        return $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                            ->setParameter('tab2', $etat_production)
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.montant_total >= 0')
+                            ->getQuery()
+                            ->getResult();
+                   }else{
+                        return $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2)')
+                            ->setParameter('tab2', $etat_production)
+                            
+                            ->andWhere('d.montant_total >= 0')
+                            ->getQuery()
+                            ->getResult();
+                   }
+               }
+               else{
+                   if(count($type_transaction)>1){
+                        return $this->createQueryBuilder('d')
+                            ->andWhere('d.type_transaction IN(:tab1)')
+                           
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.montant_total >= 0')
+                            ->getQuery()
+                            ->getResult();
+                   }
+                   else{
+                        return $this->createQueryBuilder('d')
+                           
+                            ->andWhere('d.montant_total >= 0')
+                            ->getQuery()
+                            ->getResult();
+                   }
+               }
+            }
         }
-        return $this->createQueryBuilder('d')
-            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
-            ->setParameter('date1', $date1)
-            ->setParameter('date2', $date2)
-            ->orWhere('d.type_transaction IN(:tab1)')
-            ->setParameter('tab1', $type_transaction)
-            ->orWhere('d.etat_production IN(:tab2)')
-            ->setParameter('tab2', $etat_production)
-            ->orWhere('d.paiement IN(:tab3)')
-            ->setParameter('tab3', $etat_paiement)
-            ->getQuery()
-            ->getResult();
+       
     }
 
 

@@ -2112,72 +2112,47 @@ class PageController extends AbstractController
         }
         $datas = $repoTrop->findAll();
         // on liste selon le nom de l'entreprise
-        $noms = [];
-        $les_datas = [];
-        foreach ($datas as $data) {
-            $entreprise = $data->getEntreprise();
-            if (!in_array($entreprise, $noms)) {
-                array_push($noms, $entreprise);
-                // on select tous les datas de même nom
-                $ens = $repoTrop->findBy(["entreprise" => $entreprise]);
-                array_push($les_datas, $ens);
-            }
+        foreach ($datas as $key => $value) {
+            $newarray[$value->getEntreprise()][$key] = $value;
         }
+        
         if ($request->request->count()) {
-            //dd($request->request);
-            $date1 = date_create($request->request->get('date1'));
-            $date2 = date_create($request->request->get('date2'));
+            
             $type_transaction = $request->request->get('type_transaction');
             $type_transaction = explode("*", $type_transaction);
             $etat_production = $request->request->get('etat_production');
             $etat_production = explode("*", $etat_production);
             $etat_paiement = $request->request->get('etat_paiement');
             $etat_paiement = explode("*", $etat_paiement);
-            $les_datas = [];
-            $table = [];
             
-            if($date1 !="" && $date2 !=""){
-                // on select les obj dans cette interval
-                $all = $repoTrop->findAll();
-                foreach ($all as $item) {
-                    $date = $item->getDateConfirmation();
-                    if (($date >= $date1) && ($date <= $date2)) {
-                        if(!in_array($item, $table)){
-                            array_push($table, $item);
-                        }
-                    }
-                }
-                $em = $this->getDoctrine()->getManager();
-                $sql = "SELECT * FROM data_tropical_wood";
-                $sql .= " WHERE (date_confirmation BETWEEN " .$request->request->get('date1'). " AND ". $request->request->get('date2') .") " ;
-                if(count($type_transaction) > 1){
-                    for($i=1; $i< count($type_transaction); $i++){
-                        $sql .= " AND type_transaction = '" . $type_transaction[$i]."'";
-                    }
-                }
-                if (count($etat_production) > 1) {
-                    for ($i = 1; $i < count($etat_production); $i++) {
-                        $sql .= " AND etat_production = '" . $etat_production[$i] ."'";
-                    }
-                }
-                if (count($etat_paiement) > 1) {
-                    for ($i = 1; $i < count($etat_paiement); $i++) {
-                        $sql .= " AND etat_paiement = '" . $etat_paiement[$i]."'";
-                    }
-                }
-                $x = $repoTrop->filtrer($date1, $date2, $type_transaction, $etat_production, $etat_paiement);
-                
+            $x = $repoTrop->filtrer($request->request->get('date1'), $request->request->get('date2'), $type_transaction, $etat_production, $etat_paiement);
+            
+            foreach ($x as $key => $value) {
+                $les_datas[$value->getEntreprise()][$key] = $value;
             }
-            else{
-                // on filtre juste par les val des tableaux
-            }
+            //dd($les_datas);
+            return $this->render('page/tropical_wood.html.twig', [
+                "hotel"                     => $data_session['pseudo_hotel'],
+                "current_page"              => $data_session['current_page'],
+                "form_add"                  => $form_add->createView(),
+                'datas'                     => $les_datas,
+                'tri'                       => false,
+                'date1'                     => $request->request->get('date1'),
+                'date2'                     => $request->request->get('date2'),
+                'type_transaction'          => $type_transaction,
+                'type_transaction_text'     => $request->request->get('type_transaction'),
+                'etat_production'           => $etat_production,
+                'etat_production_text'      => $request->request->get('etat_production'),
+                'etat_paiement'             => $etat_paiement,
+                'etat_paiement_text'      => $request->request->get('etat_paiement'),
+            ]);
 
         }   
         return $this->render('page/tropical_wood.html.twig',[
             "hotel" => $data_session['pseudo_hotel'],
             "current_page" => $data_session['current_page'],
             "form_add"      => $form_add->createView(),
-            'datas'       => $les_datas,
+            'datas'       => $newarray,
             'tri' => false,
         ]);
     }
