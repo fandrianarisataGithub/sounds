@@ -166,7 +166,12 @@ class TropController extends AbstractController
             // recherche de type_tr
             if($entreprise_contact !="vide"){
                $liste = $repoTrop->searchEntrepriseContact($entreprise_contact);
-                array_push($les_datas, $liste);
+                $les_datas = [];
+                if ($liste != null) {
+                    foreach ($liste as $key => $value) {
+                        $les_datas[$value->getEntreprise()][$key] = $value;
+                    }
+                }
                 return $this->render('page/tropical_wood.html.twig', [
                     "hotel"             => $data_session['pseudo_hotel'],
                     "current_page"      => $data_session['current_page'],
@@ -177,7 +182,12 @@ class TropController extends AbstractController
             } 
             else if($type_transaction != "vide") {
                 $liste = $repoTrop->searchTypeTransaction($type_transaction);
-                array_push($les_datas, $liste);
+                $les_datas = [];
+                if ($liste != null) {
+                    foreach ($liste as $key => $value) {
+                        $les_datas[$value->getEntreprise()][$key] = $value;
+                    }
+                }
                 return $this->render('page/tropical_wood.html.twig', [
                     "hotel"             => $data_session['pseudo_hotel'],
                     "current_page"      => $data_session['current_page'],

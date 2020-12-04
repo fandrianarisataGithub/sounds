@@ -585,7 +585,7 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                     else{
                         if(count($type_transaction)>1){
                             return $this->createQueryBuilder('d')
-                            ->andWhere('.type_transaction IN(:tab1)')
+                            ->andWhere('d.type_transaction IN(:tab1)')
                             
                             ->setParameter('tab1', $type_transaction)
                             ->andWhere('d.montant_total = d.total_reglement')

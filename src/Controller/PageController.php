@@ -2124,11 +2124,12 @@ class PageController extends AbstractController
             $etat_production = explode("*", $etat_production);
             $etat_paiement = $request->request->get('etat_paiement');
             $etat_paiement = explode("*", $etat_paiement);
-            
             $x = $repoTrop->filtrer($request->request->get('date1'), $request->request->get('date2'), $type_transaction, $etat_production, $etat_paiement);
-            
-            foreach ($x as $key => $value) {
-                $les_datas[$value->getEntreprise()][$key] = $value;
+            $les_datas = [];
+            if($x != null){
+                foreach ($x as $key => $value) {
+                    $les_datas[$value->getEntreprise()][$key] = $value;
+                }
             }
             //dd($les_datas);
             return $this->render('page/tropical_wood.html.twig', [

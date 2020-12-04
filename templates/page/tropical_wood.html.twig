@@ -63,46 +63,54 @@
 				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 					<h4 class="titre_gris">Type de transaction: </h4>
 					<div class="liste_btn" data="type_transaction">
-						<a href="#" class="btn btn-default btn_gris"
+						<a href="#"
 							{% if type_transaction is defined %}
-								{% for tt in type_transaction %}
-									{% if tt == 'Client OF' %}
-										style="background-color : #d29e00 !important"
-									{% endif %}
-								{% endfor %}
+								{% if "Client OF" in type_transaction %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
 							{% endif %}
 
 						 data="Client OF"><span>Officiel</span></a>
-						<a href="#" class="btn btn-default btn_gris"
+						<a href="#"
 						
 							{% if type_transaction is defined %}
-								{% for tt in type_transaction %}
-									{% if tt == 'Client NO' %}
-										style="background-color : #d29e00 !important"
-									{% endif %}
-								{% endfor %}
+								{% if "Client NO" in type_transaction %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
 							{% endif %}
 						
 						 data="Client NO"><span>Non officiel</span></a>
-						<a href="#" class="btn btn-default btn_gris"
+						<a href="#"
 						
 							{% if type_transaction is defined %}
-								{% for tt in type_transaction %}
-									{% if tt == 'VIP' %}
-										style="background-color : #d29e00 !important"
-									{% endif %}
-								{% endfor %}
+								{% if "VIP" in type_transaction %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
 							{% endif %}
 						
 						 data="VIP"><span>VIP</span></a>
-						<a href="#" class="btn btn-default btn_gris"
+						<a href="#"
 						
 							{% if type_transaction is defined %}
-								{% for tt in type_transaction %}
-									{% if tt == 'Group' %}
-										style="background-color : #d29e00 !important"
-									{% endif %}
-								{% endfor %}
+								{% if "Groupe" in type_transaction %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
 							{% endif %}
 						
 						 data="Groupe"><span>Groupe</span></a>
@@ -111,47 +119,55 @@
 				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 					<h4 class="titre_gris">Etat de production: </h4>
 					<div class="liste_btn" data="etat_production">
-						<a href="#" class="btn btn-default btn_gris"
+						<a href="#"
 
 							{% if etat_production is defined %}
-								{% for ep in etat_production %}
-									{% if ep == 'A faire' %}
-										style="background-color : #d29e00 !important"
-									{% endif %}
-								{% endfor %}
+								{% if "A faire" in etat_production %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
 							{% endif %}
 						
 						 data="A faire"><span>A faire</span></a>
-						<a href="#" class="btn btn-default btn_gris"
+						<a href="#"
 						
 							{% if etat_production is defined %}
-								{% for ep in etat_production %}
-									{% if ep == 'Production' %}
-										style="background-color : #d29e00 !important"
-									{% endif %}
-								{% endfor %}
+								{% if "Production" in etat_production %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
 							{% endif %}
 						
 						 data="Production"><span>En production</span></a>
-						<a href="#" class="btn btn-default btn_gris"
+						<a href="#"
 						
 							{% if etat_production is defined %}
-								{% for ep in etat_production %}
-									{% if ep == 'Pose' %}
-										style="background-color : #d29e00 !important"
-									{% endif %}
-								{% endfor %}
+								{% if "Pose" in etat_production %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
 							{% endif %}
 						
 						 data="Pose"><span>En pause</span></a>
-						<a href="#" class="btn btn-default btn_gris"
+						<a href="#"
 						
 							{% if etat_production is defined %}
-								{% for ep in etat_production %}
-									{% if ep == 'Fini' %}
-										style="background-color : #d29e00 !important"
-									{% endif %}
-								{% endfor %}
+								{% if "Fini" in etat_production %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
 							{% endif %}
 						
 						 data="Fini"><span>Fini</span></a>
@@ -160,36 +176,42 @@
 				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 					<h4 class="titre_gris">Etat de paiement: </h4>
 					<div class="liste_btn" data="etat_paiement">
-						<a href="#" class="btn btn-default btn_gris"
+						<a href="#"
 						
 							{% if etat_paiement is defined %}
-								{% for ep in etat_paiement %}
-									{% if ep == 'Aucun paiement' %}
-										style="background-color : #d29e00 !important"
-									{% endif %}
-								{% endfor %}
+								{% if "Aucun paiement" in etat_paiement %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
 							{% endif %}
 						
 						 data="Aucun paiement"><span>Aucun paiement</span></a>
-						<a href="#" class="btn btn-default btn_gris"
+						<a href="#"
 						
 							{% if etat_paiement is defined %}
-								{% for ep in etat_paiement %}
-									{% if ep == 'Paiement partiel' %}
-										style="background-color : #d29e00 !important"
-									{% endif %}
-								{% endfor %}
+								{% if "Paiement partiel" in etat_paiement %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
 							{% endif %}
 						
 						 data="Paiement partiel"><span>Paiement partiel effectué</span></a>
-						<a href="#" class="btn btn-default btn_gris"
+						<a href="#"
 
 							{% if etat_paiement is defined %}
-								{% for ep in etat_paiement %}
-									{% if ep == 'Paiement total' %}
-										style="background-color : #d29e00 !important"
-									{% endif %}
-								{% endfor %}
+								{% if "Paiement total" in etat_paiement %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
 							{% endif %}
 						
 						 data="Paiement total"><span>Paiement total effectué</span></a>
@@ -208,6 +230,8 @@
 
 								{% if type_transaction_text is defined %}
 									value ="{{type_transaction_text}}"
+								{% else %}
+									value=""
 								{% endif %}
 
 							 id="form_type_transaction">
@@ -215,6 +239,8 @@
 
 								{% if etat_production_text is defined %}
 									value ="{{etat_production_text}}"
+								{% else %}
+									value=""
 								{% endif %}
 							
 							 id="form_etat_production">
@@ -222,6 +248,8 @@
 
 								{% if etat_paiement_text is defined %}
 									value ="{{etat_paiement_text}}"
+								{% else %}
+									value=""
 								{% endif %}
 
 							 id="form_etat_paiement">
@@ -441,9 +469,18 @@
 			$('.logo_active').removeClass('logo_active');
 			$('#li_tropical').addClass('logo_active');
 			$('#li_tropical a div img').css('width', '53px');
-			var liste_type_transaction = [];
-			var liste_etat_production = [];
-			var liste_etat_paiement = [];
+			var tab1 = $('#form_type_transaction').val();
+			tab1 = tab1.split('*');
+			tab1.shift();
+			var tab2 = $('#form_etat_production').val();
+			tab2 = tab2.split('*');
+			tab2.shift();
+			var tab3 = $('#form_etat_paiement').val();
+			tab3 = tab3.split('*');
+			tab3.shift();
+			var liste_type_transaction = tab1;
+			var liste_etat_production = tab2;
+			var liste_etat_paiement = tab3;
 			function arrayRemove(arr, value) { 
 				for(var i=0; i< arr.length; i++){
 					if(arr[i] == value){
@@ -453,6 +490,16 @@
 				}
 				return arr;
 			}
+			function check_item(arr, item){
+				for(var i=0; i< arr.length; i++){
+					if(arr[i] == item){
+						return true;
+					}
+					else{
+						return false;
+					}
+				}
+			}
 			$('.liste_btn a').on('click', function(ev){
 				ev.preventDefault();
 				if($(this).hasClass('btn_gris')){
@@ -461,17 +508,17 @@
 					var son_data = $(this).attr("data");
 					var son_parent = $(this).parent().attr("data");
 					if(son_parent == "type_transaction"){
-						if(!liste_type_transaction.includes(son_data)){
+						if(!check_item(liste_type_transaction, son_data)){
 							liste_type_transaction.push(son_data);
 						}
 					}
 					if(son_parent == "etat_production"){
-						if(!liste_etat_production.includes(son_data)){
+						if(!check_item(liste_etat_production,son_data)){
 							liste_etat_production.push(son_data);
 						}
 					}
 					if(son_parent == "etat_paiement"){
-						if(!liste_etat_paiement.includes(son_data)){
+						if(!check_item(liste_etat_paiement,son_data)){
 							liste_etat_paiement.push(son_data);
 						}
 					}
