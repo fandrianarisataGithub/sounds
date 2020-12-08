@@ -194,7 +194,7 @@ class DataTropicalWood
         return $this->date_confirmation;
     }
 
-    public function setDateConfirmation(?\DateTimeInterface $date_confirmation): self
+    public function setDateConfirmation($date_confirmation): self
     {
         $this->date_confirmation = $date_confirmation;
 

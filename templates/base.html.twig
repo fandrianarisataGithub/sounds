@@ -154,7 +154,8 @@
 								<a href="{{ path('setting', {'pseudo_hotel' : hotel}) }}" >Settings</a>
 							</div>
 						</div>
-						<ul class="categories">
+						{% if tropical_wood is not defined %}
+						<ul class="categories" >
 							<li {% if id is defined and id is not null and id == "li__compte_rendu"  %}
 								id = "{{ id }}"
 							{% endif %}>
@@ -321,6 +322,7 @@
 							</li>
 
 						</ul>
+						{% endif %}
 					</div>
 				</aside>
 				

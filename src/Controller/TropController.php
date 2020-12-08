@@ -107,6 +107,7 @@ class TropController extends AbstractController
             "form_add"          => $form_add->createView(),
             'datas'             => $les_datas,
             'tri'               => true,
+            'tropical_wood'             => true,
         ]);
     }
 
@@ -140,6 +141,7 @@ class TropController extends AbstractController
                     'tri'               => true,
                     'date1'             => $request->request->get('date1'),
                     'date2'             => $request->request->get('date2'),
+                    'tropical_wood'             => true,
                 ]);
             }
             else{
@@ -161,39 +163,95 @@ class TropController extends AbstractController
         $table = [];
        
         if ($request->request->count() > 0) {
-            $type_transaction = $request->request->get('type_transaction');
+           
+            $detail = $request->request->get('detail');
             $entreprise_contact = $request->request->get('entreprise_contact');           
             // recherche de type_tr
             if($entreprise_contact !="vide"){
-               $liste = $repoTrop->searchEntrepriseContact($entreprise_contact);
                 $les_datas = [];
-                if ($liste != null) {
-                    foreach ($liste as $key => $value) {
-                        $les_datas[$value->getEntreprise()][$key] = $value;
+                if (strpos($entreprise_contact, "/") !== false) {
+                    $tab = explode("/", $entreprise_contact);
+                    $liste = [];
+                    for($i=0; $i<count($tab); $i++){
+                        array_push($liste, $repoTrop->searchEntrepriseContact($tab[$i]));
+                    }
+                    // akambana anaty tab iray ny elem an'ny liste
+                    $ligne = [];
+                   
+                    for($j=0; $j<count($liste); $j++){
+                        for ($i = 0; $i < count($liste[$j]); $i++) {
+                            array_push($ligne, $liste[$j][$i]);
+                        }
+                        
+                    }
+                    
+                    if ($ligne != null) {
+                        foreach ($ligne as $key => $value) {
+                            $les_datas[$value->getEntreprise()][$key] = $value;
+                        }
                     }
                 }
+                else if(strpos($entreprise_contact, "/") == false){
+                    $liste = $repoTrop->searchEntrepriseContact($entreprise_contact);
+                    
+                    if ($liste != null) {
+                        foreach ($liste as $key => $value) {
+                            $les_datas[$value->getEntreprise()][$key] = $value;
+                        }
+                    }
+                }
+               
                 return $this->render('page/tropical_wood.html.twig', [
                     "hotel"             => $data_session['pseudo_hotel'],
                     "current_page"      => $data_session['current_page'],
                     "form_add"          => $form_add->createView(),
                     'datas'             => $les_datas,
                     'tri'               => true,
+                    'searchE'            => $entreprise_contact,
+                    'tropical_wood'             => true,
                 ]);
             } 
-            else if($type_transaction != "vide") {
-                $liste = $repoTrop->searchTypeTransaction($type_transaction);
+            else if($detail != "vide") {
                 $les_datas = [];
-                if ($liste != null) {
-                    foreach ($liste as $key => $value) {
-                        $les_datas[$value->getEntreprise()][$key] = $value;
+                if (strpos($detail, "/") !== false) {
+                    $tab = explode("/", $detail);
+                    $liste = [];
+                    for ($i = 0; $i < count($tab); $i++) {
+                        array_push($liste, $repoTrop->searchDetail($tab[$i]));
+                    }
+                    // akambana anaty tab iray ny elem an'ny liste
+                    $ligne = [];
+
+                    for ($j = 0; $j < count($liste); $j++) {
+                        for ($i = 0; $i < count($liste[$j]); $i++) {
+                            array_push($ligne, $liste[$j][$i]);
+                        }
+                    }
+
+                    if ($ligne != null) {
+                        foreach ($ligne as $key => $value) {
+                            $les_datas[$value->getEntreprise()][$key] = $value;
+                        }
+                    }
+                } else if (strpos($entreprise_contact, "/") == false) {
+                    
+                    $liste = $repoTrop->searchDetail($detail);
+
+                    if ($liste != null) {
+                        foreach ($liste as $key => $value) {
+                            $les_datas[$value->getEntreprise()][$key] = $value;
+                        }
                     }
                 }
+
                 return $this->render('page/tropical_wood.html.twig', [
                     "hotel"             => $data_session['pseudo_hotel'],
                     "current_page"      => $data_session['current_page'],
                     "form_add"          => $form_add->createView(),
                     'datas'             => $les_datas,
                     'tri'               => true,
+                    'searchD'            => $detail,
+                    'tropical_wood'             => true,
                 ]);
             }
         }

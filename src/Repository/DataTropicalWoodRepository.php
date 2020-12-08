@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\DataTropicalWood;
+use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -24,20 +25,19 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
     public function searchEntrepriseContact(string $value)
     {
         return $this->createQueryBuilder('d')
-            ->andWhere('d.entreprise LIKE :val OR d.contact LIKE :val')
+            ->andWhere('d.entreprise LIKE :val')
             ->setParameter('val', '%' . $value . '%')
             ->getQuery()
             ->getResult();
-
     }
 
     /**
      * @return DataTropicalWood[] Returns an array of DataTropicalWood objects
      */
-    public function searchTypeTransaction(string $value)
+    public function searchDetail(string $value)
     {
         return $this->createQueryBuilder('d')
-            ->andWhere('d.type_transaction LIKE :val')
+            ->andWhere('d.detail LIKE :val')
             ->setParameter('val', '%' . $value . '%')
             ->getQuery()
             ->getResult();

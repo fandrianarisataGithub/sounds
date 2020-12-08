@@ -2088,7 +2088,10 @@ class PageController extends AbstractController
                 $montant_total = $services->no_space(str_replace(",", " ", $d_aff[$i][5]));
                 $montant_paye =  $services->no_space(str_replace(",", " ",$d_aff[$i][7])); // 6 le avance
                 $montant_avance = $services->no_space(str_replace(",", " ",$d_aff[$i][6]));
-                $date_confirmation = date_create($services->parseMyDate($d_aff[$i][8]));               
+                $date_confirmation = null;
+                if ($services->parseMyDate($d_aff[$i][8]) != null) {
+                    $date_confirmation = date_create($services->parseMyDate($d_aff[$i][8]));
+                }         
                 // préparation de l'objet
                 $data_tw->setTypeTransaction($type_transaction);
                 $data_tw->setIdPro($idPro);
@@ -2100,8 +2103,7 @@ class PageController extends AbstractController
                 $data_tw->setTotalReglement($montant_avance);
                 $data_tw->setDateConfirmation($date_confirmation);
                 $manager->persist($data_tw);
-                // dd($data_tw);
-                //eviter les doublant au niveau de num fact
+                
             }
             foreach($repoTrop->findAll() as $t){
                 $manager->remove($t);   
@@ -2115,7 +2117,6 @@ class PageController extends AbstractController
         foreach ($datas as $key => $value) {
             $newarray[$value->getEntreprise()][$key] = $value;
         }
-        
         if ($request->request->count()) {
             
             $type_transaction = $request->request->get('type_transaction');
@@ -2145,16 +2146,17 @@ class PageController extends AbstractController
                 'etat_production'           => $etat_production,
                 'etat_production_text'      => $request->request->get('etat_production'),
                 'etat_paiement'             => $etat_paiement,
-                'etat_paiement_text'      => $request->request->get('etat_paiement'),
+                'etat_paiement_text'        => $request->request->get('etat_paiement'),
+                'tropical_wood'             => true,
             ]);
-
         }   
         return $this->render('page/tropical_wood.html.twig',[
-            "hotel" => $data_session['pseudo_hotel'],
-            "current_page" => $data_session['current_page'],
-            "form_add"      => $form_add->createView(),
-            'datas'       => $newarray,
-            'tri' => false,
+            "hotel"             => $data_session['pseudo_hotel'],
+            "current_page"      => $data_session['current_page'],
+            "form_add"          => $form_add->createView(),
+            'datas'             => $newarray,
+            'tri'               => false,
+            'tropical_wood'     => true,
         ]);
     }
     /**

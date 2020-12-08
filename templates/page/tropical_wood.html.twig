@@ -9,7 +9,7 @@
 
 {% block body %}
 
-	<section id="contents" class="container-fluid">
+	<section id="contents" class="content_tropical container-fluid">
 		<!-- entete content -->
 		{% include "nav2.html.twig" %}
 		<!-- / entete content -->
@@ -261,13 +261,28 @@
 					<div class="liste_form_search">
 						<form action="{{ path('trop_search') }}" method="post">
 							<button type="submit"><span class="fa fa-search"></span></button>
-							<input type="text" name="entreprise_contact" class="form-control" placeholder="Entreprises/Contacts">
-							<input type="hidden" name="type_transaction" class="form-control" placeholder="Type de transaction" value="vide">
+							<input type="text" name="entreprise_contact" class="form-control" placeholder="Entreprises/Contacts"
+								{% if searchE is defined %}
+									value ="{{searchE}}"
+								{% else %}
+									value = ""
+								{% endif %}
+							
+							>
+							<input type="hidden" name="detail" class="form-control" placeholder="Detail" value="vide">
 						</form>
 						<form action="{{ path('trop_search') }}" method="post">
 							<button type="submit"><span class="fa fa-search"></span></button>
-							<input type="text" name="type_transaction" class="form-control" placeholder="Type de transaction">
-							<input type="hidden" name="entreprise_contact" class="form-control" placeholder="Entreprises/Contacts"  value="vide">
+							<input type="text" name="detail" class="form-control" placeholder="Details"
+
+								{% if searchD is defined %}
+									value ="{{searchD}}"
+								{% else %}
+									value = ""
+								{% endif %}
+							
+							>
+							<input type="hidden" name="entreprise_contact" class="form-control" placeholder="Entreprises/Contacts" value="vide">
 						</form>
 					</div>
 				</div>
@@ -346,14 +361,18 @@
 														<span class="montant">{{ item.getMontantTotal() }}</span>
 													</div>
 													<div>
-														<span>{{ item.getDateconfirmation() | date('d-m-Y') }}</span>
+														<span>
+															{% if  item.getDateconfirmation() != null %}
+																{{ item.getDateconfirmation() | date('d-m-Y') }}
+															{% endif %}
+														</span>
 													</div>
 													<div>
 														<span>{{ item.getDevis() }}</span>
 													</div>
 												</div>
 											{% endfor %}
-												<div class="t_body_row sous_tab_body">
+												<div class="t_body_row sous_tab_body sous_total_content">
 													<div>
 														<span>Sous-total</span> 
 													</div>
@@ -405,7 +424,7 @@
 										</div>
 									{% endif %}
 								{% endfor %}
-								<div class="t_footer_row sous_tab_body">
+								<div class="t_footer_row sous_tab_body tota_content">
 									<div>
 										<span>Total</span>
 									</div>
