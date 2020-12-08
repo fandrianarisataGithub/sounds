@@ -51,7 +51,6 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
        
         if($date1 != "" && $date2 != ""){
             $t = count($etat_paiement);
-
             if ($t == 1) {
                 // tsisy zany
                 if(count($type_transaction)>1){
@@ -678,14 +677,14 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                             ->getResult();
                         }
                     }
-                } else if (in_array("Paiement partiel", $etat_paiement) && in_array("Paiement total", $etat_paiement)) {
+                } else if (in_array("Paiement partiel", $etat_paiement) && in_array("Paiement total", $etat_paiement)) { 
                    if(count($etat_production)>1){
                        if(count($type_transaction)>1){
                             return $this->createQueryBuilder('d')
                                 ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
                                 ->setParameter('tab2', $etat_production)
                                 ->setParameter('tab1', $type_transaction)
-                                ->andWhere('d.montant_total >= d.total_reglement')
+                                ->andWhere('d.total_reglement <> 0 ')
                                 ->getQuery()
                                 ->getResult();
                        }
@@ -694,7 +693,7 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                                 ->andWhere('d.etat_production IN(:tab2)')
                                 ->setParameter('tab2', $etat_production)
                                 
-                                ->andWhere('d.montant_total >= d.total_reglement')
+                                ->andWhere('d.total_reglement <> 0')
                                 ->getQuery()
                                 ->getResult();
                        }
@@ -705,14 +704,14 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                                 ->andWhere('d.type_transaction IN(:tab1)')
                                 
                                 ->setParameter('tab1', $type_transaction)
-                                ->andWhere('d.montant_total >= d.total_reglement')
+                                ->andWhere('d.total_reglement <> 0')
                                 ->getQuery()
                                 ->getResult();
                        }
                        else{
                             return $this->createQueryBuilder('d')
                                 
-                                ->andWhere('d.montant_total >= d.total_reglement')
+                                ->andWhere('d.total_reglement <> 0')
                                 ->getQuery()
                                 ->getResult();
                        }
