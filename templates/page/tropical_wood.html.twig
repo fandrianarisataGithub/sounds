@@ -25,7 +25,11 @@
 				{% if tri == false %}
 					<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 						<div class="div__form_upload_excel import_trop">
-							<h3>Importer un fichier au format (.xls, csv, xlsx)</h3>
+							{% if error is not defined %}
+								<h3>Importer un fichier au format (.xls, csv, xlsx)</h3>
+							{% else %}
+								<h3 class="bg-danger" style="padding:5px;color:#000 !important;font-size:small;">Il y a une erreur de date à la ligne {{ error + 2 }} du fichier importer</h3>
+							{% endif %}
 							{% if message is defined %}
 								<div class="message_import bg-danger">
 									<p>

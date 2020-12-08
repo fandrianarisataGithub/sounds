@@ -2091,6 +2091,16 @@ class PageController extends AbstractController
                 $date_confirmation = null;
                 if ($services->parseMyDate($d_aff[$i][8]) != null) {
                     $date_confirmation = date_create($services->parseMyDate($d_aff[$i][8]));
+                    if($date_confirmation == false){
+                        return $this->render('page/tropical_wood.html.twig', [
+                            "hotel"             => $data_session['pseudo_hotel'],
+                            "current_page"      => $data_session['current_page'],
+                            "form_add"          => $form_add->createView(),
+                            'error'             => $i,
+                            'tri'               => false,
+                            'tropical_wood'     => true,
+                        ]);
+                    }
                 }         
                 // préparation de l'objet
                 $data_tw->setTypeTransaction($type_transaction);
