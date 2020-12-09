@@ -2077,20 +2077,20 @@ class PageController extends AbstractController
             for ($i = 1; $i < count($data); $i++) {
                 array_push($d_aff, $data[$i]);
             }
-            // dd($d_aff);
+            //dd($d_aff);
             for($i = 0; $i < count($d_aff); $i++){
                 $data_tw = new DataTropicalWood();
                 $idPro = $d_aff[$i][0];
-                $entreprise = $d_aff[$i][3];
+                $entreprise = $d_aff[$i][2];
                 $type_transaction = $d_aff[$i][1];
-                $detail = $d_aff[$i][4];
-                $etat_production = $d_aff[$i][2];
-                $montant_total = $services->no_space(str_replace(",", " ", $d_aff[$i][5]));
-                $montant_paye =  $services->no_space(str_replace(",", " ",$d_aff[$i][7])); // 6 le avance
-                $montant_avance = $services->no_space(str_replace(",", " ",$d_aff[$i][6]));
+                $detail = $d_aff[$i][3];
+                $etat_production = $d_aff[$i][5];
+                $montant_total = $services->no_space(str_replace(",", " ", $d_aff[$i][10]));
+                $montant_paye =  $services->no_space(str_replace(",", " ",$d_aff[$i][7])); 
+                $montant_avance = $services->no_space(str_replace(",", " ",$d_aff[$i][9]));
                 $date_confirmation = null;
-                if ($services->parseMyDate($d_aff[$i][8]) != null) {
-                    $date_confirmation = date_create($services->parseMyDate($d_aff[$i][8]));
+                if ($services->parseMyDate($d_aff[$i][4]) != null) {
+                    $date_confirmation = date_create($services->parseMyDate($d_aff[$i][4]));
                     if($date_confirmation == false){
                         return $this->render('page/tropical_wood.html.twig', [
                             "hotel"             => $data_session['pseudo_hotel'],
@@ -2099,9 +2099,10 @@ class PageController extends AbstractController
                             'error'             => $i,
                             'tri'               => false,
                             'tropical_wood'     => true,
+                            'datas'             => null,
                         ]);
                     }
-                }         
+                }      
                 // préparation de l'objet
                 $data_tw->setTypeTransaction($type_transaction);
                 $data_tw->setIdPro($idPro);
@@ -2112,8 +2113,7 @@ class PageController extends AbstractController
                 $data_tw->setMontantPaye($montant_paye);
                 $data_tw->setTotalReglement($montant_avance);
                 $data_tw->setDateConfirmation($date_confirmation);
-                $manager->persist($data_tw);
-                
+                $manager->persist($data_tw); 
             }
             foreach($repoTrop->findAll() as $t){
                 $manager->remove($t);   
@@ -2128,7 +2128,6 @@ class PageController extends AbstractController
             $newarray[$value->getEntreprise()][$key] = $value;
         }
         if ($request->request->count()) {
-            
             $type_transaction = $request->request->get('type_transaction');
             $type_transaction = explode("*", $type_transaction);
             $etat_production = $request->request->get('etat_production');

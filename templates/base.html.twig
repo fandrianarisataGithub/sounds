@@ -143,15 +143,25 @@
 							{% endif %}
 							<div class="info">
 								<h3>
-									<a href="{{ path('setting',{'pseudo_hotel' : hotel}) }}" >{% if app.user %}
-										<span>{{ app.user.nom }}</span>
-										<span>{{ app.user.prenom }}</span>
-										{# <span> {{ hotel }}/{{ current_page }} </span> #}
-									{% endif %}</a>
+									{% if tropical_wood is not defined %}
+										<a href="{{ path('setting',{'pseudo_hotel' : hotel}) }}" >{% if app.user %}
+											<span>{{ app.user.nom }}</span>
+											<span>{{ app.user.prenom }}</span>
+										{% endif %}</a>
+									{% else %}
+										<a href="#" >{% if app.user %}
+											<span>{{ app.user.nom }}</span>
+											<span>{{ app.user.prenom }}</span>
+										{% endif %}</a>
+									{% endif %}
 								</h3>
 							</div>
 							<div id="reglage">
-								<a href="{{ path('setting', {'pseudo_hotel' : hotel}) }}" >Settings</a>
+								{% if tropical_wood is not defined %}
+									<a href="{{ path('setting', {'pseudo_hotel' : hotel}) }}" >Settings</a>
+								{% else %}
+									<a href="#" >Settings</a>
+								{% endif %}
 							</div>
 						</div>
 						{% if tropical_wood is not defined %}
