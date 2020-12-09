@@ -2086,7 +2086,7 @@ class PageController extends AbstractController
                 $detail = $d_aff[$i][3];
                 $etat_production = $d_aff[$i][5];
                 $montant_total = $services->no_space(str_replace(",", " ", $d_aff[$i][10]));
-                $montant_paye =  $services->no_space(str_replace(",", " ",$d_aff[$i][7])); 
+                $montant_paye =  $services->no_space(str_replace(",", " ",$d_aff[$i][7])); // reste
                 $montant_avance = $services->no_space(str_replace(",", " ",$d_aff[$i][9]));
                 $date_confirmation = null;
                 if ($services->parseMyDate($d_aff[$i][4]) != null) {

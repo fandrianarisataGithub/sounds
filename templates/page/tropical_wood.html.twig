@@ -161,7 +161,7 @@
 								class="btn btn-default btn_gris"
 							{% endif %}
 						
-						 data="Pose"><span>En pause</span></a>
+						 data="Pose"><span>En pose</span></a>
 						<a href="#"
 						
 							{% if etat_production is defined %}
@@ -175,6 +175,32 @@
 							{% endif %}
 						
 						 data="Fini"><span>Fini</span></a>
+						 <a href="#"
+						
+							{% if etat_production is defined %}
+								{% if "A facturé" in etat_production %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
+							{% endif %}
+						
+						 data="A facturé"><span>Fini - à Facturé</span></a>
+						 <a href="#"
+						
+							{% if etat_production is defined %}
+								{% if "Facturé" in etat_production %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
+							{% endif %}
+						
+						 data="Facturé"><span>Fini - Facturé</span></a>
 					</div>
 				</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
@@ -263,19 +289,83 @@
 				</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 					<div class="liste_form_search">
-						<form action="{{ path('trop_search') }}" method="post">
-							<button type="submit"><span class="fa fa-search"></span></button>
-							<input type="text" name="entreprise_contact" class="form-control" placeholder="Entreprises/Contacts"
-								{% if searchE is defined %}
-									value ="{{searchE}}"
-								{% else %}
-									value = ""
-								{% endif %}
-							
-							>
-							<input type="hidden" name="detail" class="form-control" placeholder="Detail" value="vide">
-						</form>
-						<form action="{{ path('trop_search') }}" method="post">
+						<div class="block_form_search">
+							<form action="{{ path('trop_search') }}" method="post">
+								<button type="submit"><span class="fa fa-search"></span></button>
+								<div class="block_deroulement">
+									<input type="text" name="entreprise_contact" class="form-control" placeholder="Entreprises/Contacts"
+										{% if searchE is defined %}
+											value ="{{searchE}}"
+										{% else %}
+											value = ""
+										{% endif %}
+									>
+									<div class="liste_result_search">
+										<ul>
+											<li>
+												<a href="#"><span>Text 1</span></a>
+											</li>
+											<li>
+												<a href="#"><span>Text 1</span></a>
+											</li>
+											<li>
+												<a href="#"><span>Text 1</span></a>
+											</li>
+											<li>
+												<a href="#"><span>Text 1</span></a>
+											</li>
+											<li>
+												<a href="#"><span>Text 1</span></a>
+											</li>
+											<li>
+												<a href="#"><span>Text 1</span></a>
+											</li>
+											<li>
+												<a href="#"><span>Text 1</span></a>
+											</li>
+											<li>
+												<a href="#"><span>Text 1</span></a>
+											</li>
+											<li>
+												<a href="#"><span>Text 1</span></a>
+											</li>
+											<li>
+												<a href="#"><span>Text 1</span></a>
+											</li>
+											<li>
+												<a href="#"><span>Text 1</span></a>
+											</li>
+											<li>
+												<a href="#"><span>Text 1</span></a>
+											</li>
+										</ul>
+									</div>
+								</div>
+								<input type="hidden" name="detail" class="form-control" placeholder="Detail" value="vide">
+								<button type="submit" class="btn btn_ok btn-sm"><span>OK</span></button>
+							</form>
+							<div class="liste_choice_search">
+								<ul>
+									<li>
+										<i class="fa fa-times"></i>
+										<a href="#"><span>Text 1</span></a>
+									</li>
+									<li>
+										<i class="fa fa-times"></i>
+										<a href="#"><span>Text 1</span></a>
+									</li>
+									<li>
+										<i class="fa fa-times"></i>
+										<a href="#"><span>Text 1</span></a>
+									</li>
+									<li>
+										<i class="fa fa-times"></i>
+										<a href="#"><span>Text 1</span></a>
+									</li>
+								</ul>
+							</div>
+						</div>
+						{# <form action="{{ path('trop_search') }}" method="post">
 							<button type="submit"><span class="fa fa-search"></span></button>
 							<input type="text" name="detail" class="form-control" placeholder="Details"
 
@@ -287,7 +377,7 @@
 							
 							>
 							<input type="hidden" name="entreprise_contact" class="form-control" placeholder="Entreprises/Contacts" value="vide">
-						</form>
+						</form> #}
 					</div>
 				</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
@@ -612,7 +702,6 @@
 				$('#form_for_tri').submit();
 			})
 			
-
 		})
 		
 	</script>

@@ -1478,12 +1478,20 @@
   
   .liste_form_search form input {
       height: 30px;
+      width: 200px;
       border: none;
       background: transparent;
       box-shadow: none;
       border-bottom: 2px solid #c79c67;
       border-radius: 0px;
   }
+.liste_form_search button.btn_ok{
+    background: #323232;
+    margin-left: 5px;
+}
+.btn_ok span{
+    color: #fff !important;
+}
   
   .liste_form_search form input:focus {
       border-color: transparent;
@@ -1493,7 +1501,30 @@
   .liste_form_search form button span {
       color: #c79c67;
   }
-  
+.liste_result_search{
+    box-shadow: 0px 1px 3px #ccc;
+    padding: 5px;
+    height: 200px;
+    overflow-y: scroll;
+    overflow-x: hidden !important;
+    position: absolute;
+    width: 200px;
+    z-index: 2;
+    background: #ffff;
+}
+
+.liste_result_search ul li{
+    border-bottom: 1px solid rgba(200,200,200, 0.5);
+}
+.liste_result_search a{
+    color: rgba(0,0,0,0.8);
+    display: block;
+    padding: 3px;
+}
+.liste_result_search span{
+    font-size: 12px;
+    font-weight: bold;
+}
   .tableau_tropical {
       margin-bottom: 25px;
   }
@@ -1603,7 +1634,7 @@
   }
   
   .sous_total_content span {
-      font-weight: 600;
+      font-weight: bolder;
   }
   
   .sous_titre a span:not(.fa) {
