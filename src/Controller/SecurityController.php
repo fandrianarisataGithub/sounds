@@ -7,10 +7,12 @@ use App\Entity\User;
 use App\Entity\Client;
 use App\Entity\DonneeDuJour;
 use App\Form\DonneeDuJourType;
+use Symfony\Component\Mime\Email;
 use App\Repository\UserRepository;
 use App\Repository\ClientRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Date;
@@ -53,28 +55,30 @@ class SecurityController extends AbstractController
     /**
      * @Route("/forgot_passord", name = "forgot_password")
      */
-    public function forgotPassword(Request $request, UserPasswordEncoderInterface $passEnc, UserRepository $repoUser, EntityManagerInterface $manager, \Swift_Mailer $mailer)
+    public function forgotPassword(Request $request, UserPasswordEncoderInterface $passEnc, UserRepository $repoUser, EntityManagerInterface $manager, MailerInterface $mailerInterface)
     {
         if ($request->request->count() > 0) {
             $adresse = $request->request->get('email');
             $user = $repoUser->findOneByEmail($adresse);
            if($user){
                 $pass = "password" . rand(0, 100);
+                $message = "Votre nouveau mot de passe est:<b>". $pass ."</b>";
                 $hash = $passEnc->encodePassword($user, $pass);
                 $user->setPassword($hash);
                 $manager->flush();
                 // Ici nous enverrons l'e-mail
-                $message = (new \Swift_Message('Nouveau contact'))
-                    ->setFrom("enac.fenitriniaina@gmail.com")
-                    ->setTo($adresse)
-                    ->setBody(
-                        $this->renderView(
-                            'emails/mail.html.twig',
-                            ['pass' => $pass]
-                        ),
-                        'text/html'
-                    );
-                $mailer->send($message);
+                $email = (new Email())
+                ->from('contact@dashboardsounds.com')
+                ->to($adresse)
+                    //->cc('cc@example.com')
+                    //->bcc('bcc@example.com')
+                    //->replyTo('fabien@example.com')
+                    //->priority(Email::PRIORITY_HIGH)
+                    ->subject("Mis à jour de votre accès au compte dashboardsounds.com")
+                    //->text('Sending emails is fun again!')
+                    ->html('<p>' . $message . '</p>');
+
+                $mailerInterface->send($email);
                 return $this->render('security/forgot_password.html.twig', [
                     'mp' => "Un message vient d'être envoyer à votre adresse email, <br>Veuiller consulter votre boite de messagerie", 
                 ]);
