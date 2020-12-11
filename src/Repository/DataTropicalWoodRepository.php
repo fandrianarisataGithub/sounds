@@ -46,6 +46,22 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
     /**
      * @return DataTropicalWood[] Returns an array of DataTropicalWood objects
      */
+    public function findAllGroupedByEntreprise()
+    {
+        return $this->createQueryBuilder('d')
+            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+            ->groupBy('d.entreprise')
+            ->orderBy('sous_total_montant_total', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+    
+
+    /**
+     * @return DataTropicalWood[] Returns an array of DataTropicalWood objects
+     */
     public function filtrer($date1, $date2, array $type_transaction, array $etat_production, array $etat_paiement)
     {   
        

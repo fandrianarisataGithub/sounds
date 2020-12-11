@@ -2057,6 +2057,8 @@ class PageController extends AbstractController
      */
     public function tropical_wood(SessionInterface $session, Request $request, Services $services, EntityManagerInterface $manager, DataTropicalWoodRepository $repoTrop)
     {
+        // $test = $repoTrop->findAllGroupedByEntreprise();
+        // dd($test);
         $data_session = $session->get('hotel');
         $form_add = $this->createForm(FournisseurFileType::class);
         $form_add->handleRequest($request);

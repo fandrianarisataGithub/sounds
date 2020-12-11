@@ -1469,10 +1469,14 @@
       margin-left: 15px;
   }
   
-  .liste_form_search form button {
+  .liste_form_search form button,
+    .liste_form_search form a{
       width: 40px;
       height: 30px;
       border: none;
+        display: flex;
+        justify-content: center !important;
+        align-items:center;
       background: transparent;
   }
   
@@ -1497,8 +1501,8 @@
       border-color: transparent;
       box-shadow: 0px 1px 3px #c79c67;
   }
-  
-  .liste_form_search form button span {
+
+  .liste_form_search form a span {
       color: #c79c67;
   }
 .liste_result_search{
@@ -1511,8 +1515,62 @@
     width: 200px;
     z-index: 2;
     background: #ffff;
+    display: none;
+    opacity: 1 !important;
 }
-
+.liste_result_search ul li a{
+    display: block;
+    width: 100%;
+    height: auto !important;
+}
+.block_form_search{
+    
+}
+.liste_choice_search{
+   display: inline-flex;
+   transition: all 1s ease-in-out;
+}
+.liste_choice_search ul{
+    display: inline-flex !important;
+    flex-flow: nowrap;
+    margin-top: 15px;
+}
+.liste_choice_search ul li{
+    background: #fff;
+    width: 150px;
+    height: 80px;
+    margin-left: 15px;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0px 1px 3px #d2d2d2;
+}
+.liste_choice_search ul li i.fa{
+    float: right;
+    margin-top: -15px;
+    background: #d2d2d2;
+    display: flex;
+    color: #4b4c4d;
+    width: 20px;
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    margin-right: -10px;
+    transition: all 0.5s ease-in-out;
+}
+.liste_choice_search ul li i.fa:hover{
+    cursor: pointer;
+    background: #4b4c4d;
+    color: #fff;
+}
+.liste_choice_search ul li p{
+    font-size: 13px;
+    color: #4b4c4d;
+    display: flex;
+    justify-content: center;
+    align-items: center !important;
+    height: 100%;
+}
 .liste_result_search ul li{
     border-bottom: 1px solid rgba(200,200,200, 0.5);
 }
@@ -1520,6 +1578,10 @@
     color: rgba(0,0,0,0.8);
     display: block;
     padding: 3px;
+}
+.liste_result_search a:hover{
+    background: #e3e4e6;
+    text-decoration: none;
 }
 .liste_result_search span{
     font-size: 12px;

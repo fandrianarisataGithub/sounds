@@ -7,6 +7,7 @@ use App\Form\FournisseurFileType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\DataTropicalWoodRepository;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -107,7 +108,7 @@ class TropController extends AbstractController
             "form_add"          => $form_add->createView(),
             'datas'             => $les_datas,
             'tri'               => true,
-            'tropical_wood'             => true,
+            'tropical_wood'     => true,
         ]);
     }
 
@@ -168,9 +169,11 @@ class TropController extends AbstractController
             $entreprise_contact = $request->request->get('entreprise_contact');           
             // recherche de type_tr
             if($entreprise_contact !="vide"){
+                //dd($entreprise_contact);
                 $les_datas = [];
-                if (strpos($entreprise_contact, "/") !== false) {
-                    $tab = explode("/", $entreprise_contact);
+                $tab = [];
+                if (strpos($entreprise_contact, "*") !== false) {
+                    $tab = explode("*", $entreprise_contact);
                     $liste = [];
                     for($i=0; $i<count($tab); $i++){
                         array_push($liste, $repoTrop->searchEntrepriseContact($tab[$i]));
@@ -181,8 +184,7 @@ class TropController extends AbstractController
                     for($j=0; $j<count($liste); $j++){
                         for ($i = 0; $i < count($liste[$j]); $i++) {
                             array_push($ligne, $liste[$j][$i]);
-                        }
-                        
+                        } 
                     }
                     
                     if ($ligne != null) {
@@ -191,7 +193,7 @@ class TropController extends AbstractController
                         }
                     }
                 }
-                else if(strpos($entreprise_contact, "/") == false){
+                else if(strpos($entreprise_contact, "*") == false){
                     $liste = $repoTrop->searchEntrepriseContact($entreprise_contact);
                     
                     if ($liste != null) {
@@ -200,7 +202,6 @@ class TropController extends AbstractController
                         }
                     }
                 }
-               
                 return $this->render('page/tropical_wood.html.twig', [
                     "hotel"             => $data_session['pseudo_hotel'],
                     "current_page"      => $data_session['current_page'],
@@ -208,6 +209,7 @@ class TropController extends AbstractController
                     'datas'             => $les_datas,
                     'tri'               => true,
                     'searchE'            => $entreprise_contact,
+                    'liste_choices'     => $tab,
                     'tropical_wood'             => true,
                 ]);
             } 
@@ -255,6 +257,39 @@ class TropController extends AbstractController
                 ]);
             }
         }
+    }
+    /**
+     * @Route("/profile/search_ajax_ec", name = "search_ajax_ec")
+     */
+    public function search_ajax_ec(Request $request, DataTropicalWoodRepository $repoTrop)
+    {
+        $response = new Response();
+        if($request->isXmlHttpRequest()){
+            $mot = $request->get('mot');
+            $em = $this->getDoctrine()->getManager();
+
+            $RAW_QUERY = "SELECT DISTINCT  entreprise FROM data_tropical_wood where data_tropical_wood.entreprise LIKE '".$mot."%' LIMIT 10;";
+
+            $statement = $em->getConnection()->prepare($RAW_QUERY);
+            $statement->execute();
+
+            $result = $statement->fetchAll();
+            
+            $data = json_encode($result);
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+            return $response;
+        }
+        $mot = "Min";
+        $em = $this->getDoctrine()->getManager();
+
+        $RAW_QUERY = "SELECT DISTINCT  entreprise FROM data_tropical_wood where data_tropical_wood.entreprise LIKE '" . $mot . "%' LIMIT 10 ;";
+
+        $statement = $em->getConnection()->prepare($RAW_QUERY);
+        $statement->execute();
+
+        $result = $statement->fetchAll();
+        dd($result);
     }
     
 

@@ -291,90 +291,42 @@
 					<div class="liste_form_search">
 						<div class="block_form_search">
 							<form action="{{ path('trop_search') }}" method="post">
-								<button type="submit"><span class="fa fa-search"></span></button>
+								<a href="#"><span class="fa fa-search"></span></a>
 								<div class="block_deroulement">
-									<input type="text" name="entreprise_contact" class="form-control" placeholder="Entreprises/Contacts"
-										{% if searchE is defined %}
-											value ="{{searchE}}"
-										{% else %}
-											value = ""
-										{% endif %}
-									>
+									<input type="text" id="entreprise_contact" class="form-control" placeholder="Entreprises/Contacts" autocomplete="off">
 									<div class="liste_result_search">
 										<ul>
-											<li>
-												<a href="#"><span>Text 1</span></a>
-											</li>
-											<li>
-												<a href="#"><span>Text 1</span></a>
-											</li>
-											<li>
-												<a href="#"><span>Text 1</span></a>
-											</li>
-											<li>
-												<a href="#"><span>Text 1</span></a>
-											</li>
-											<li>
-												<a href="#"><span>Text 1</span></a>
-											</li>
-											<li>
-												<a href="#"><span>Text 1</span></a>
-											</li>
-											<li>
-												<a href="#"><span>Text 1</span></a>
-											</li>
-											<li>
-												<a href="#"><span>Text 1</span></a>
-											</li>
-											<li>
-												<a href="#"><span>Text 1</span></a>
-											</li>
-											<li>
-												<a href="#"><span>Text 1</span></a>
-											</li>
-											<li>
-												<a href="#"><span>Text 1</span></a>
-											</li>
-											<li>
-												<a href="#"><span>Text 1</span></a>
-											</li>
+											
 										</ul>
 									</div>
 								</div>
+								<input type="hidden" id="input__entreprise" value="" name="entreprise_contact">
 								<input type="hidden" name="detail" class="form-control" placeholder="Detail" value="vide">
 								<button type="submit" class="btn btn_ok btn-sm"><span>OK</span></button>
 							</form>
 							<div class="liste_choice_search">
 								<ul>
-									<li>
-										<i class="fa fa-times"></i>
-										<a href="#"><span>Text 1</span></a>
-									</li>
-									<li>
-										<i class="fa fa-times"></i>
-										<a href="#"><span>Text 1</span></a>
-									</li>
-									<li>
-										<i class="fa fa-times"></i>
-										<a href="#"><span>Text 1</span></a>
-									</li>
-									<li>
-										<i class="fa fa-times"></i>
-										<a href="#"><span>Text 1</span></a>
-									</li>
+									{% if liste_choices is defined %}
+										{% for t in liste_choices %}
+											{% if t != "null" %}
+												<li>
+													<i class="fa fa-times"></i>
+													<p>{{ t }}</p>
+												</li>
+											{% endif %}
+										{% endfor %}
+									{% endif %}
 								</ul>
 							</div>
 						</div>
 						{# <form action="{{ path('trop_search') }}" method="post">
 							<button type="submit"><span class="fa fa-search"></span></button>
 							<input type="text" name="detail" class="form-control" placeholder="Details"
-
 								{% if searchD is defined %}
 									value ="{{searchD}}"
 								{% else %}
 									value = ""
 								{% endif %}
-							
 							>
 							<input type="hidden" name="entreprise_contact" class="form-control" placeholder="Entreprises/Contacts" value="vide">
 						</form> #}
@@ -579,6 +531,117 @@
 	<script src="{{ asset('js/cleave.min.js') }}"></script>
 	<script>
 		$(document).ready(function(){
+			// not allow submit form when pressing enter
+
+			$('.liste_form_search form').on('keyup keypress', function(e) {
+			var keyCode = e.keyCode || e.which;
+			if (keyCode === 13) { 
+				e.preventDefault();
+				return false;
+			}
+			});
+
+			// recherche stylé entreprise
+			$('#entreprise_contact').on({
+				keyup: function(){
+					var entre = $(this).val();
+					if(entre != ""){
+						$(".liste_result_search ul").html("");
+						$.ajax({
+							url : "{{ path('search_ajax_ec') }}", // search ajax entreprise contact
+							tyhpe : "POST",
+							data : {
+								'mot' : $(this).val()
+							},
+							success : function(response){
+								//console.log(response);
+								// on affiche .liste_result_search
+								var li = "";
+								for (let i = 0; i < response.length; i++) {
+									var mot = response[i].entreprise;
+									li += '<li><a href="#"><span>'+ mot +'</span></a></li>';
+								}
+								
+								$(".liste_result_search ul").append(li);
+								$('.liste_result_search').fadeIn("fast");
+							},
+							error : function(){
+								alert('erreur au niveau de ajax search')
+							}
+						})
+					}
+					else{
+						$('.liste_result_search').fadeOut("fast");
+					}
+				},
+				blur : function(){
+					$('.liste_result_search').fadeOut("fast");
+				}
+			})
+			var liste = [];
+			$.each($(".liste_choice_search ul li p"), function (indexInArray, valueOfElement) { 
+				 liste.push(valueOfElement.innerHTML);
+			});
+			// ajout
+			$(document).on('click','.liste_result_search ul li a', function(ev){
+				ev.preventDefault();
+				$(this).parent().parent().parent().fadeOut("fast");
+				$('.liste_choice_search').css('display', 'inline-flex');
+				var text = $(this).children('span').text();
+				liste = push_liste(liste,text);
+				afficher_liste(liste);
+			})
+
+			function afficher_liste(array){
+				var text = "";
+				for(var i=0; i<array.length; i++){
+					text += `<li>
+									<i class="fa fa-times"></i>
+									<p>` + array[i] + `</p>
+								</li>`;
+				}
+				$('.liste_choice_search ul').html(text);
+			}
+
+			// suppression 
+
+			$(document).on("click", ".liste_choice_search ul li i", function(){
+				var text = $(this).siblings('p').text();
+				remove_item(liste, text);
+				afficher_liste(liste);
+			})
+
+
+			function push_liste(arr, text){
+				if(text != ""){
+					arr.push(text);
+					var input = $('#input__entreprise').val();
+					var prim="null";
+					for(var i = 0; i< arr.length; i++){
+						prim += "*";
+						prim += arr[i];
+					}
+					$('#input__entreprise').val(prim)
+				}
+				return arr;
+			}
+
+			function remove_item(arr, text){
+				const index = arr.indexOf(text);
+				if (index > -1) {
+					arr.splice(index, 1);
+					var input = $('#input__entreprise').val();
+					var prim="null";
+					for(var i = 0; i< arr.length; i++){
+						prim += "*";
+						prim += arr[i];
+					}
+					$('#input__entreprise').val(prim)
+				}
+				return arr;
+			}
+
+
 			$('.logo_active').removeClass('logo_active');
 			$('#li_tropical').addClass('logo_active');
 			$('#li_tropical a div img').css('width', '53px');
