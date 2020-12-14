@@ -98,4 +98,12 @@ class Services
             //dd($x);
             return doubleval($x);
         }
+        public function tab_annee() :array
+        {
+            $today = new \Datetime();
+            $annee = intVal($today->format('Y'));
+            $prec = $annee--;
+            $tab_annee = [$annee, $prec];
+            return $tab_annee;
+        }
     } 

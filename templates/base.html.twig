@@ -269,8 +269,6 @@
 									<span>Client</span>
 								</a>
 							</li>
-
-
 							<li {% if id is defined and id is not null and id == "fiche_hotel" %}
 								id = "{{ id }}"
 							{% endif %}>
@@ -289,6 +287,40 @@
 									<span>Fiche hôtel</span>
 								</a>
 							</li>
+							<li {% if id is defined and id is not null and id == "li__stock"  %}
+								id = "{{ id }}"
+							{% endif %}>
+								<a href="{{ path('stock', {'pseudo_hotel' : hotel}) }}">
+									<small class="fa fa-archive" {% if id is defined and id is not null and id == "li__stock"  %}
+											style="color:#d29e00 !important"
+										{% endif %}></small>
+									<span
+										{% if id is defined and id is not null and id == "li__stock"  %}
+											style="color:#d29e00 !important"
+										{% endif %}
+									>Stock</span>
+								</a>
+							</li>
+							<li {% if id is defined and id is not null and id == "li__cost" %} id="{{ id }}" {% endif %}>
+								<a href="{{ path('cost', {'pseudo_hotel' : hotel}) }}">
+									<small class="fa fa-money" {% if id is defined and id is not null and id == "li__cost"  %}
+											style="color:#d29e00 !important"
+										{% endif %}></small>
+									<span {% if id is defined and id is not null and id == "li__cost" %}
+											style="color:#d29e00 !important"
+										{% endif %}>Cost</span>
+								</a>
+							</li>
+							<li {% if id is defined and id is not null and id == "li__sqn" %} id="{{ id }}" {% endif %}>
+								<a href="{{ path('sqn', {'pseudo_hotel' : hotel}) }}">
+									<small class="fa fa-fax" {% if id is defined and id is not null and id == "li__sqn" %}
+										style="color:#d29e00 !important"
+									{% endif %}></small>
+									<span class="sqn" {% if id is defined and id is not null and id == "li__sqn" %}
+										style="color:#d29e00 !important"
+									{% endif %}>Service-Quality-Notation</span>
+								</a>
+							</li>
 							<li {% if id is defined and id is not null and id == "li__donnee_du_jour"  %}
 								id = "{{ id }}"
 							{% endif %}>
@@ -304,6 +336,23 @@
 
 									</i>
 									<span>Donnée du jour</span>
+								</a>
+							</li>
+							<li {% if id is defined and id is not null and id == "li__donnee_mensuelle"  %}
+								id = "{{ id }}"
+							{% endif %}>
+								<a href="{{ path('donnee_mensuelle', {'pseudo_hotel' : hotel}) }}">
+									<i aria-hidden="true" id="edit">
+									{% if id is defined and id is not null and id == "li__donnee_mensuelle"  %}
+										<img src="{{ asset('images/donnee_du_jour_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+									{% else %}
+										<img src="{{ asset('images/donnee_du_jour.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+									{% endif %}
+
+										<img src="{{ asset('images/donnee_du_jour_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
+
+									</i>
+									<span>Donnée mensuelle</span>
 								</a>
 							</li>
 							<li id="li_historique">

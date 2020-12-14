@@ -564,15 +564,15 @@
       margin-top: 4px;
       display: block;
       text-decoration: none;
-      font-size: 14px;
+      font-size: 12px;
   }
   
   #reglage {
       margin-top: -5px;
   }
   
-  #reglage a span {
-      font-size: 13px !important;
+  #reglage a  {
+      font-size: 12px !important;
   }
   
   .side-nav .heading .info>h3>a:hover {
@@ -724,7 +724,7 @@
       -webkit-transition: all 0.2s linear;
       -o-transition: all 0.2s linear;
       transition: all 0.2s linear;
-      height: 45px;
+      height: 35px;
       width: 100% !important;
       padding-left: 15px;
   }
@@ -739,7 +739,7 @@
       display: -ms-flexbox;
       display: flex;
       position: relative;
-      top: -5px !important;
+      top: -8px !important;
       width: 180px !important;
       justify-content: start !important;
       margin-left: 0px !important;
@@ -753,7 +753,13 @@
       right: 15px;
       white-space: nowrap;
   }
-  
+
+#aside2 ul li a small{
+    margin-right:35px;
+}
+#aside2 ul li:hover a small{
+    color: #d29e00 !important;
+}
   .fa-clock-o {
       position: relative;
       right: 15px;
@@ -767,13 +773,14 @@
   }
   
   #aside2 ul li a i img {
-      width: 25px;
-      height: 15px;
+      width: 18px;
+      height: 13px;
       margin-right: 0px;
   }
   
   #aside2 ul li a i#restaurant img {
-      width: 18px;
+      width: 15px;
+      height: 13px;
   }
   
   #aside2 ul li a i#fournisseur img {
@@ -781,8 +788,8 @@
   }
   
   #aside2 ul li a i#crj img {
-      height: 20px;
-      width: 20px;
+      height: 15px;
+      width: 15px;
   }
   
   #aside2 ul li a i#bank img {
@@ -791,17 +798,19 @@
   }
   
   #aside2 ul li a i#client img {
-      width: 15px;
+      width: 13px;
+      height: 13px;
   }
   
   #aside2 ul li a i#spa img {
-      width: 19px;
+      width: 15px;
+      height: 13px;
   }
   
   #aside2 ul li a i#edit img,
   #aside2 ul li a i#data_day img {
-      width: 19px;
-      height: 20px;
+      width: 15px;
+      height: 15px !important;
   }
   
   #aside2 ul li a i.fa {
@@ -817,7 +826,10 @@
       bottom: 4px;
       justify-content: start;
   }
-  
+#aside2 ul li a span{
+    position: relative;
+    top: 0px !important;
+}
   li#li_historique {
       height: auto !important;
       border: none;
@@ -832,7 +844,7 @@
   }
   
   li#li_historique>a span.fa {
-      font-size: 23px;
+      font-size: 18px;
       margin-left: 15px;
       color: rgba(255, 255, 255, 0.6) !important;
       position: relative;
@@ -848,13 +860,13 @@
       font-size: 13px;
       margin-left: 15px;
       position: relative;
-      top: 5px;
+      top: 0px !important;
   }
   
   li#li_historique>a span:last-child {
       font-size: 13px !important;
       position: relative;
-      top: 5px !important;
+      top: 3px !important;
   }
   
   li#li_historique>a:hover span:last-child {
@@ -916,9 +928,10 @@
       background: red;
       display: none;
   }
+
   /*style de sous-titre dans conntents*/
   /* style dropdoqn */
-  
+
   .dropdown_content {
       float: right;
       display: -webkit-box;
@@ -3810,7 +3823,10 @@
       padding-top: 5px;
       width: 150px;
   }
-  
+.btn-list button#btn_add_donnee_mensuel{
+    margin-left: 0 !important;
+}
+
   .btn-list>ul>li>a.btn.btn-warning {
       background: #d29e00;
       border-color: #d29e00;
@@ -3841,7 +3857,13 @@
   .td__actions a:last-child:hover span.fa-trash-o {
       color: #f0ad4e;
   }
-  
+ .data_mensuel form .form-group{
+    margin-left: 20px;
+}
+button#btn_add_donnee_mensuel{
+    position: relative;
+    right: 20px;
+}
   @media all and (max-width:1200px) {
       #data_days>form {
           width: 100%;
@@ -4150,3 +4172,14 @@
   }
   /* /fin style chart */
   /* /spa
+
+/* donnee mens */
+.block_month select{
+    width: 120px;
+    height: 30px;
+    border: 1px solid rgba(200,200,200);
+    border-radius: 5px;
+    color: #555555 !important;
+    font-size: 12px !important;
+    padding-left: 5px;
+}
