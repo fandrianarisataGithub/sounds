@@ -37,7 +37,9 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
     public function findAllGroupedAsc()
     {
         return $this->createQueryBuilder('d')
+            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
             ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
             ->groupBy('d.entreprise')
             ->orderBy('sous_total_montant_total', 'ASC')
             ->getQuery()

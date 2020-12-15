@@ -2138,13 +2138,12 @@ class PageController extends AbstractController
             $tab_temp["entreprise"] = $son_entreprise;
             $tab_temp["listes"] = $liste;
             $tab_temp["sous_total_montant_total"] = $d["sous_total_montant_total"];
+            $tab_temp["sous_total_total_reglement"] = $d["sous_total_total_reglement"];
+            $tab_temp["total_reste"] = $d["total_reste"];
             array_push($Liste, $tab_temp);
         }
-        dd($Liste);
-        // on liste selon le nom de l'entreprise
-        foreach ($datas as $key => $value) {
-            $newarray[$value->getEntreprise()][$key] = $value;
-        }
+        // dd($Liste);
+       
         if ($request->request->count()) {
             $type_transaction = $request->request->get('type_transaction');
             $type_transaction = explode("*", $type_transaction);
@@ -2177,11 +2176,11 @@ class PageController extends AbstractController
                 'tropical_wood'             => true,
             ]);
         }   
-        return $this->render('page/tropical_wood.html.twig',[
+        return $this->render('page/tropical_wood2.html.twig',[
             "hotel"             => $data_session['pseudo_hotel'],
             "current_page"      => $data_session['current_page'],
             "form_add"          => $form_add->createView(),
-            'datas'             => $newarray,
+            'datas'             => $Liste,
             'tri'               => false,
             'tropical_wood'     => true,
         ]);

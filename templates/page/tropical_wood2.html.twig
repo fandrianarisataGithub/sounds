@@ -1,0 +1,754 @@
+{% extends "base.html.twig" %}
+{% block title %}
+	Tropical wood
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
+{% endblock %}
+
+{% block body %}
+
+	<section id="contents" class="content_tropical container-fluid">
+		<!-- entete content -->
+		{% include "nav2.html.twig" %}
+		<!-- / entete content -->
+		<!-- contenue  -->
+			<div id="hrs_content"> <div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<section class="section_part" id="section_part_top">
+						<div class="sous_titre sous_titre_tw">
+							<h3>Tableau de bord - Clients</h3>
+						</div>
+					</section>
+				</div>
+				{% if tri == false %}
+					<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+						<div class="div__form_upload_excel import_trop">
+							{% if error is not defined %}
+								<h3>Importer un fichier au format (.xls, csv, xlsx)</h3>
+							{% else %}
+								<h3 class="bg-danger" style="padding:5px;color:#000 !important;font-size:small;">Il y a une erreur de date à la ligne {{ error + 2 }} du fichier importer</h3>
+							{% endif %}
+							{% if message is defined %}
+								<div class="message_import bg-danger">
+									<p>
+										{{ message | raw }}
+									</p>
+								</div>
+							{% endif %}
+							{{ form_start(form_add, {
+												'attr' : {
+													'id' : 'form_import_excel'
+												}
+											}) }}
+							{{ form_row(form_add.fichier) }}
+							<input type="submit" value="Importer" class="btn btn-default btn-sm">
+							{{ form_end(form_add) }}
+						</div>
+					</div>
+				{% endif %}
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+				<h4 class="titre_gris">Date de confirmation: </h4>
+					<form action="{{ path('tri.date_confirmation') }}" method="post">
+						<div class="form-group date_confirmation">
+							<span class="fa fa-calendar"></span>
+							<input type="date" name="date1" id="date1" class="date_conf-item" {% if date1 is defined %}
+								value = {{date1}}
+							{% endif %}>
+							<span class="date_conf-item"> - </span>
+							<input type="date" name="date2" id="date2" class="date_conf-item" {% if date2 is defined %}
+								value = {{date2}}
+							{% endif %}>
+							{# <button type = "submit" class="btn btn-primary btn-xs btn_filter filter_crj"><span>Filtrer</span></button> #}
+						</div>
+					</form>
+				</div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<h4 class="titre_gris">Type de transaction: </h4>
+					<div class="liste_btn" data="type_transaction">
+						<a href="#"
+							{% if type_transaction is defined %}
+								{% if "Client OF" in type_transaction %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
+							{% endif %}
+
+						 data="Client OF"><span>Officiel</span></a>
+						<a href="#"
+						
+							{% if type_transaction is defined %}
+								{% if "Client NO" in type_transaction %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
+							{% endif %}
+						
+						 data="Client NO"><span>Non officiel</span></a>
+						<a href="#"
+						
+							{% if type_transaction is defined %}
+								{% if "VIP" in type_transaction %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
+							{% endif %}
+						
+						 data="VIP"><span>VIP</span></a>
+						<a href="#"
+						
+							{% if type_transaction is defined %}
+								{% if "Groupe" in type_transaction %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
+							{% endif %}
+						
+						 data="Groupe"><span>Groupe</span></a>
+					</div>
+				</div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<h4 class="titre_gris">Etat de production: </h4>
+					<div class="liste_btn" data="etat_production">
+						<a href="#"
+
+							{% if etat_production is defined %}
+								{% if "A faire" in etat_production %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
+							{% endif %}
+						
+						 data="A faire"><span>A faire</span></a>
+						<a href="#"
+						
+							{% if etat_production is defined %}
+								{% if "Production" in etat_production %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
+							{% endif %}
+						
+						 data="Production"><span>En production</span></a>
+						<a href="#"
+						
+							{% if etat_production is defined %}
+								{% if "Pose" in etat_production %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
+							{% endif %}
+						
+						 data="Pose"><span>En pose</span></a>
+						<a href="#"
+						
+							{% if etat_production is defined %}
+								{% if "Fini" in etat_production %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
+							{% endif %}
+						
+						 data="Fini"><span>Fini</span></a>
+						 <a href="#"
+						
+							{% if etat_production is defined %}
+								{% if "A facturé" in etat_production %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
+							{% endif %}
+						
+						 data="A facturé"><span>Fini - à Facturé</span></a>
+						 <a href="#"
+						
+							{% if etat_production is defined %}
+								{% if "Facturé" in etat_production %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
+							{% endif %}
+						
+						 data="Facturé"><span>Fini - Facturé</span></a>
+					</div>
+				</div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<h4 class="titre_gris">Etat de paiement: </h4>
+					<div class="liste_btn" data="etat_paiement">
+						<a href="#"
+						
+							{% if etat_paiement is defined %}
+								{% if "Aucun paiement" in etat_paiement %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
+							{% endif %}
+						
+						 data="Aucun paiement"><span>Aucun paiement</span></a>
+						<a href="#"
+						
+							{% if etat_paiement is defined %}
+								{% if "Paiement partiel" in etat_paiement %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
+							{% endif %}
+						
+						 data="Paiement partiel"><span>Paiement partiel effectué</span></a>
+						<a href="#"
+
+							{% if etat_paiement is defined %}
+								{% if "Paiement total" in etat_paiement %}
+									class="btn btn-default btn_dore"
+								{% else %}
+									class="btn btn-default btn_gris"
+								{% endif %}
+							{% else %}
+								class="btn btn-default btn_gris"
+							{% endif %}
+						
+						 data="Paiement total"><span>Paiement total effectué</span></a>
+					</div>
+				</div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<div>
+						<form action="{{ path('tropical_wood') }}" method="post" name="form_for_tri" id="form_for_tri">
+							<input type="hidden" id="hidden_date1" name="date1" {% if date1 is defined %}
+								value = {{date1}}
+							{% endif %}>
+							<input type="hidden" id="hidden_date2" name="date2" {% if date2 is defined %}
+								value = {{date2}}
+							{% endif %}>
+							<input type="hidden" name="type_transaction"
+
+								{% if type_transaction_text is defined %}
+									value ="{{type_transaction_text}}"
+								{% else %}
+									value=""
+								{% endif %}
+
+							 id="form_type_transaction">
+							<input type="hidden" name="etat_production"
+
+								{% if etat_production_text is defined %}
+									value ="{{etat_production_text}}"
+								{% else %}
+									value=""
+								{% endif %}
+							
+							 id="form_etat_production">
+							<input type="hidden" name="etat_paiement"
+
+								{% if etat_paiement_text is defined %}
+									value ="{{etat_paiement_text}}"
+								{% else %}
+									value=""
+								{% endif %}
+
+							 id="form_etat_paiement">
+							<button type="submit" class="btn btn-default btn_black">Filtrer</button>
+						</form>
+					</div>
+				</div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<div class="liste_form_search">
+						<div class="block_form_search">
+							<form action="{{ path('trop_search') }}" method="post">
+								<a href="#"><span class="fa fa-search"></span></a>
+								<div class="block_deroulement">
+									<input type="text" id="entreprise_contact" class="form-control" placeholder="Entreprises/Contacts" autocomplete="off">
+									<div class="liste_result_search">
+										<ul>
+											
+										</ul>
+									</div>
+								</div>
+								<input type="hidden" id="input__entreprise" value="" name="entreprise_contact">
+								<input type="hidden" name="detail" class="form-control" placeholder="Detail" value="vide">
+								<button type="submit" class="btn btn_ok btn-sm"><span>OK</span></button>
+							</form>
+							<div class="liste_choice_search">
+								<ul>
+									{% if liste_choices is defined %}
+										{% for t in liste_choices %}
+											{% if t != "null" %}
+												<li>
+													<i class="fa fa-times"></i>
+													<p>{{ t }}</p>
+												</li>
+											{% endif %}
+										{% endfor %}
+									{% endif %}
+								</ul>
+							</div>
+						</div>
+						{# <form action="{{ path('trop_search') }}" method="post">
+							<button type="submit"><span class="fa fa-search"></span></button>
+							<input type="text" name="detail" class="form-control" placeholder="Details"
+								{% if searchD is defined %}
+									value ="{{searchD}}"
+								{% else %}
+									value = ""
+								{% endif %}
+							>
+							<input type="hidden" name="entreprise_contact" class="form-control" placeholder="Entreprises/Contacts" value="vide">
+						</form> #}
+					</div>
+				</div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<div class="tableau_tropical">
+						<div class="table_content">
+							<div class="table_header">
+								<div class="t_header_row">
+									<div>
+										<span>Entreprise <br>Contact</span>
+									</div>
+									<div>
+										<span>Détails</span>
+									</div>
+									<div>
+										<span>Type de transaction</span>
+									</div>
+									<div>
+										<span>Etat de production</span>
+									</div>
+									<div>
+										<span>Paiement</span>
+									</div>
+									<div>
+										<span>Reste à payé</span>
+									</div>
+									<div>
+										<span>Montant total</span>
+									</div>
+									<div>
+										<span>Date de confirmation</span>
+									</div>
+									<div>
+										<span>Devis</span>
+									</div>
+								</div>
+							</div>
+							<div class="table_body">
+							{% set liste_paiement = [] %}
+							{% set liste_reste = [] %}
+							{% set liste_total_montant = [] %}
+								{% for data in datas %}
+									{% if data|length > 0 %}
+										<div>
+											<div class="t_body_row">
+												<div class="td_long" colspan="9">
+													<span>{{ data.entreprise | raw }}</span>
+												</div>
+											</div>
+											{% for item in data.listes %}
+												<div class="t_body_row sous_tab_body">
+													<div>
+														<span>{{ item.getIdPro() | raw }}</span>
+													</div>
+													<div>
+														<span>{{ item.getDetail() | raw }}</span>
+													</div>
+													<div>
+														<span class="value" data="{{ item.getTypeTransaction() | trim }}">{{ item.getTypeTransaction() | raw }}</span>
+													</div>
+													<div>
+														<span class="value" data="{{ item.getEtatProduction() | trim }}">{{ item.getEtatProduction() | raw }}</span>
+													</div>
+													<div>
+														<span class="montant value" {% set m_a = item.getTotalReglement() | trim %} {% set m_t = item.getMontantTotal() | trim %} {% if m_a == 0 %} data="Aucun paiement" {% endif %} {% if m_t == m_a %} data="Paiement total" {% endif %} {% if m_t > m_a %} data="Paiement partiel" {% endif %}>{{ item.getTotalReglement() }}</span>
+													</div>
+													<div>
+														<span class="montant">
+															{% set total = item.getMontantTotal() %}
+															{% set avance = item.getTotalReglement() %}
+															{% set reste = total - avance %}
+															{{ reste }}
+														</span>
+													</div>
+													<div>
+														<span class="montant">{{ item.getMontantTotal() }}</span>
+													</div>
+													<div>
+														<span>
+															{% if  item.getDateconfirmation() != null %}
+																{{ item.getDateconfirmation() | date('d-m-Y') }}
+															{% endif %}
+														</span>
+													</div>
+													<div>
+														<span>{{ item.getDevis() }}</span>
+													</div>
+												</div>
+											{% endfor %}
+												<div class="t_body_row sous_tab_body sous_total_content">
+													<div>
+														<span>Sous-total</span> 
+													</div>
+													<div>
+														<span></span>
+													</div>
+													<div>
+														<span></span>
+													</div>
+													<div>
+														<span></span>
+													</div>
+													<div>
+														<span class="montant value total_paiement">
+															{{ data.sous_total_total_reglement }}
+														</span>
+													</div>
+													<div>
+														<span class="montant value total_reste">{{ data.total_reste }}</span>
+													</div>
+													<div>
+														<span class="montant value total_montant">{{ data.sous_total_montant_total }}</span>
+													</div>
+													<div>
+														<span></span>
+													</div>
+													<div>
+														<span></span>
+													</div>
+												</div>
+										</div>
+									{% endif %}
+								{% endfor %}
+								<div class="t_footer_row sous_tab_body tota_content">
+									<div>
+										<span>Total</span>
+									</div>
+									<div>
+										<span></span>
+									</div>
+									<div>
+										<span></span>
+									</div>
+									<div>
+										<span></span>
+									</div>
+									<div>
+										<span class="montant value" id="total_paiement">
+											{# {% set total_p = 0 %}
+											{% for t in liste_paiement %}
+												{% set total_p = total_p + t %}
+											{% endfor %}
+											{{ total_p }} #}
+										</span>
+									</div>
+									<div>
+										<span class="montant value" id="total_reste">										
+												{# {% set total_p = 0 %}
+												{% for t in liste_reste %}
+													{% set total_p = total_p + t %}
+												{% endfor %}
+												{{ total_p }} #}
+										</span>
+									</div>
+									<div>
+										<span class="montant value" id="total_montant">
+												{# {% set total_p = 0 %}
+												{% for t in liste_total_montant %}
+													{% set total_p = total_p + t %}
+												{% endfor %}
+												{{ total_p }} #}
+										</span>
+									</div>
+									<div>
+										<span></span>
+									</div>
+									<div>
+										<span></span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- / contenue  -->
+	</section>
+{% endblock %}
+
+{% block javascripts %}
+	<script src="{{ asset('js/cleave.min.js') }}"></script>
+	<script>
+		$(document).ready(function(){
+			// not allow submit form when pressing enter
+
+			$('.liste_form_search form').on('keyup keypress', function(e) {
+			var keyCode = e.keyCode || e.which;
+			if (keyCode === 13) { 
+				e.preventDefault();
+				return false;
+			}
+			});
+
+			// recherche stylé entreprise
+			$('#entreprise_contact').on({
+				keyup: function(){
+					var entre = $(this).val();
+					if(entre != ""){
+						$(".liste_result_search ul").html("");
+						$.ajax({
+							url : "{{ path('search_ajax_ec') }}", // search ajax entreprise contact
+							tyhpe : "POST",
+							data : {
+								'mot' : $(this).val()
+							},
+							success : function(response){
+								//console.log(response);
+								// on affiche .liste_result_search
+								var li = "";
+								for (let i = 0; i < response.length; i++) {
+									var mot = response[i].entreprise;
+									li += '<li><a href="#"><span>'+ mot +'</span></a></li>';
+								}
+								
+								$(".liste_result_search ul").append(li);
+								$('.liste_result_search').fadeIn("fast");
+							},
+							error : function(){
+								alert('erreur au niveau de ajax search')
+							}
+						})
+					}
+					else{
+						$('.liste_result_search').fadeOut("fast");
+					}
+				},
+				blur : function(){
+					$('.liste_result_search').fadeOut("fast");
+				}
+			})
+			var liste = [];
+			$.each($(".liste_choice_search ul li p"), function (indexInArray, valueOfElement) { 
+				 liste.push(valueOfElement.innerHTML);
+			});
+			// ajout
+			$(document).on('click','.liste_result_search ul li a', function(ev){
+				ev.preventDefault();
+				$(this).parent().parent().parent().fadeOut("fast");
+				$('.liste_choice_search').css('display', 'inline-flex');
+				var text = $(this).children('span').text();
+				liste = push_liste(liste,text);
+				afficher_liste(liste);
+			})
+
+			function afficher_liste(array){
+				var text = "";
+				for(var i=0; i<array.length; i++){
+					text += `<li>
+									<i class="fa fa-times"></i>
+									<p>` + array[i] + `</p>
+								</li>`;
+				}
+				$('.liste_choice_search ul').html(text);
+			}
+
+			// suppression 
+
+			$(document).on("click", ".liste_choice_search ul li i", function(){
+				var text = $(this).siblings('p').text();
+				remove_item(liste, text);
+				afficher_liste(liste);
+			})
+
+
+			function push_liste(arr, text){
+				if(text != ""){
+					arr.push(text);
+					var input = $('#input__entreprise').val();
+					var prim="null";
+					for(var i = 0; i< arr.length; i++){
+						prim += "*";
+						prim += arr[i];
+					}
+					$('#input__entreprise').val(prim)
+				}
+				return arr;
+			}
+
+			function remove_item(arr, text){
+				const index = arr.indexOf(text);
+				if (index > -1) {
+					arr.splice(index, 1);
+					var input = $('#input__entreprise').val();
+					var prim="null";
+					for(var i = 0; i< arr.length; i++){
+						prim += "*";
+						prim += arr[i];
+					}
+					$('#input__entreprise').val(prim)
+				}
+				return arr;
+			}
+
+
+			$('.logo_active').removeClass('logo_active');
+			$('#li_tropical').addClass('logo_active');
+			$('#li_tropical a div img').css('width', '53px');
+			var tab1 = $('#form_type_transaction').val();
+			tab1 = tab1.split('*');
+			tab1.shift();
+			var tab2 = $('#form_etat_production').val();
+			tab2 = tab2.split('*');
+			tab2.shift();
+			var tab3 = $('#form_etat_paiement').val();
+			tab3 = tab3.split('*');
+			tab3.shift();
+			var liste_type_transaction = tab1;
+			var liste_etat_production = tab2;
+			var liste_etat_paiement = tab3;
+			function arrayRemove(arr, value) { 
+				for(var i=0; i< arr.length; i++){
+					if(arr[i] == value){
+						var num = i;
+						arr.splice(num,1);
+					}
+				}
+				return arr;
+			}
+			function check_item(arr, item){
+				for(var i=0; i< arr.length; i++){
+					if(arr[i] == item){
+						return true;
+					}
+					else{
+						return false;
+					}
+				}
+			}
+			$('.liste_btn a').on('click', function(ev){
+				ev.preventDefault();
+				if($(this).hasClass('btn_gris')){
+					$(this).removeClass('btn_gris');
+					$(this).addClass('btn_dore');
+					var son_data = $(this).attr("data");
+					var son_parent = $(this).parent().attr("data");
+					if(son_parent == "type_transaction"){
+						if(!check_item(liste_type_transaction, son_data)){
+							liste_type_transaction.push(son_data);
+						}
+					}
+					if(son_parent == "etat_production"){
+						if(!check_item(liste_etat_production,son_data)){
+							liste_etat_production.push(son_data);
+						}
+					}
+					if(son_parent == "etat_paiement"){
+						if(!check_item(liste_etat_paiement,son_data)){
+							liste_etat_paiement.push(son_data);
+						}
+					}
+				}else{
+					$(this).removeClass('btn_dore');
+					$(this).addClass('btn_gris');
+					var son_data = $(this).attr("data");
+					var son_parent = $(this).parent().attr("data");
+					if(son_parent == "type_transaction"){
+						if(liste_type_transaction.includes(son_data)){
+							arrayRemove(liste_type_transaction, son_data);
+						}
+					}
+					if(son_parent == "etat_production"){
+						if(liste_etat_production.includes(son_data)){
+							arrayRemove(liste_etat_production, son_data);
+						}
+					}
+					if(son_parent == "etat_paiement"){
+						if(liste_etat_paiement.includes(son_data)){
+							arrayRemove(liste_etat_paiement, son_data);
+						}
+					}
+				}	
+			})
+			$('.btn_black').on('click', function(ev){
+				ev.preventDefault();
+				// on concatenne par * les données dans chaque liste
+				var data_type_trans = "";
+				var data_etat_prod = "";
+				var data_etat_paie = "";
+
+				for(var i=0; i<liste_type_transaction.length; i++){
+					if(liste_type_transaction.length>0){
+						data_type_trans+="*";
+						data_type_trans+=liste_type_transaction[i];
+					}
+					else{
+						data_type_trans+=liste_type_transaction[i];
+					}
+				}
+
+				for(var i=0; i<liste_etat_production.length; i++){
+					if(liste_etat_production.length>0){
+						data_etat_prod+="*";
+						data_etat_prod+=liste_etat_production[i];
+					}
+					else{
+						data_etat_prod+=liste_etat_production[i];
+					}
+				}
+
+				for(var i=0; i<liste_etat_paiement.length; i++){
+					if(liste_etat_paiement.length>0){
+						data_etat_paie+="*";
+						data_etat_paie+=liste_etat_paiement[i];
+					}
+					else{
+						data_etat_paie+=liste_etat_paiement[i];
+					}
+				}
+
+				$('#form_type_transaction').val(data_type_trans);
+				$('#form_etat_production').val(data_etat_prod);
+				$('#form_etat_paiement').val(data_etat_paie);
+				$("#hidden_date1").val($('#date1').val());
+				$("#hidden_date2").val($('#date2').val());
+				$('#form_for_tri').submit();
+			})
+			
+		})
+		
+	</script>
+{% endblock %}
+
