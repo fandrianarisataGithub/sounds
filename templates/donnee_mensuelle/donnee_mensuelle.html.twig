@@ -262,7 +262,7 @@
                         </div>
                         <div class="btn-list">
                             <ul>
-                                <li><button type="submit" id = "btn_add_donnee_mensuel" class="btn btn-warning"><span>Enregistrer</span></button></li>
+                                <li><button type="submit" id = "btn_add_donnee_mensuelle" class="btn btn-warning"><span>Enregistrer</span></button></li>
                             </ul>
                         </div>
                     </div>
@@ -329,18 +329,39 @@ new Cleave('.input_pourcent', {blocks: [4]});
 <script>
 
 	$(document).ready(function () {
-        
-});
-</script>
-
-<script>
-
-        // ajout de client 
-
-        $(document).ready(function(){
-  
+        var pseudo_hotel = '{{ hotel }}';
+        //$('form[name=donnee_mensuelle]').submit();
+        $('#btn_add_donnee_mensuelle').on("click", function(ev){
+            ev.preventDefault();
+                var m = $('#donnee_mensuelle_mois').val();
+                var a = $('#donnee_mensuelle_annee').val();
+                var mois = m+"-"+a;
+                // alert(mois);
+                $.ajax({
+                    url : "/profile/tester_mois_dm/" + pseudo_hotel,
+                    type : "POST",
+                    data : {
+                        'mois' : mois,
+                    },
+                    success : function(response){
+                        if(response == "non vide"){
+                            var choice = confirm("Ce mois admet déja un enregistrement.\nVoulez-vous emporter ce changement?");
+                            if(choice == true){
+                               $('form[name=donnee_mensuelle]').submit();
+                            }
+                        }
+                        else{
+                            $('form[name=donnee_mensuelle]').submit();
+                        }
+                    },
+                    error : function(){
+                        alert('erreur de ajax tester_mois_dm');
+                    }
+                })
         })
+    });
 </script>
+
 
 
 {% endblock %}

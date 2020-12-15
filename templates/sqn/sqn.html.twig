@@ -1,0 +1,405 @@
+{% extends "base.html.twig" %}
+{% block title %}
+	Service quality - Notation
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
+{% endblock %}
+{% block body %}
+	<section
+		id="contents" class="container-fluid">
+		<!-- entete content -->
+		{% include "nav2.html.twig" %}
+
+		<!-- / entete content -->
+
+		<!-- contenue nouveau client -->
+		<div id="hrs_content">
+			<div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<section class="section_part" id="section_part_top">
+						<div class="sous_titre">
+							<h3>Service quality - Notation
+							</h3>
+						</div>
+					</section>
+				</div>
+				<div
+					class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+
+					<!-- debut chart 1 -->
+					<section class="section_part tab_content margin_tab">
+						<div class="chart_title">
+							<div class="chart_title-part" id="div__3">
+								
+							</div>
+							<form action="" class="tri">
+								<select name="" class="annee" id="annee_res_couvert">
+									{% for a in tab_annee %}
+										<option value="{{ a }}">{{ a }}</option>
+									{% endfor %}
+								</select>
+							</form>
+						</div>
+						<section>
+
+                            <div id = "element_canvas_sqn">
+                                <div>
+                                    <canvas id="canvas_sqn"></canvas>
+                                </div>
+                                <div id="chart-legends_sqn"></div>
+
+                            </div>
+                        </section>
+
+
+					</section>
+					<!-- fin chart1  -->
+
+				</div>
+
+
+			</div>
+		</div>
+		<!-- / contenue nouveau client -->
+        <i id = "bottom"></i>
+	</section>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+                    
+                    // debut chart  1
+
+
+                    function draw_chart1(my_data_pd, my_data_d, my_data_di, my_labels, my_max, my_stepSize) {
+
+                        var ctx2 = document.getElementById('canvas_sqn').getContext("2d");
+
+
+                        // var gradientstroke = ctx.createLinearGradient(700, 0, 0, 0);
+                        // gradientstroke.addColorStop(0, '#00d8c0');
+                        // gradientstroke.addColorStop(1, '#ff6a72');
+
+                        var gradientfill_1 = ctx2.createLinearGradient(0, 0, 0, 320);
+                        gradientfill_1.addColorStop(0, '#d29e00');
+                        gradientfill_1.addColorStop(1, 'transparent');
+
+                        var gradientfill_2 = ctx2.createLinearGradient(0, 0, 0, 320);
+                        gradientfill_2.addColorStop(0, '#55d8ff');
+                        gradientfill_2.addColorStop(1, 'transparent');
+
+                        var gradientfill_3 = ctx2.createLinearGradient(0, 0, 0, 350);
+                        gradientfill_3.addColorStop(0, '#3bc40a');
+                        gradientfill_3.addColorStop(1, 'transparent');
+
+
+                        var gradientfill_4 = ctx2.createLinearGradient(0, 0, 0, 350);
+                        gradientfill_4.addColorStop(0, '#6e6e6e');
+                        gradientfill_4.addColorStop(1, 'transparent');
+
+                        var config2 = {
+                            type: 'line',
+                            data: {
+                                datasets: [
+                                {
+                                    label: "Interne",
+                                    fill: true,
+                                    backgroundColor: gradientfill_1,
+                                    borderColor: "#d29e00",
+
+                                    /* insertion des données sur l'axe (oy) */
+
+                                    data: my_data_pd,
+
+                                    /* / insertion des données sur l'axe (oy) */
+
+                                        pointStyle: 'circle',
+                                        pointBackgroundColor: "transparent",
+                                        pointBorderWidth: '2',
+                                        radius: '5',
+                                        hoverRadius: '5',
+                                        borderWidth: 2
+
+                                    }, 
+                                    {
+                                        label: "Booking",
+                                        fill: true,
+                                        backgroundColor: gradientfill_2,
+                                        borderColor: "#55d8ff",
+
+                                        /* insertion des données sur l'axe (oy) */
+
+                                        data: my_data_d,
+
+                                        /* /insertion des données sur l'axe (oy) */
+
+                                            pointStyle: 'circle',
+                                            pointBackgroundColor: "transparent",
+                                            pointBorderWidth: '2',
+                                            radius: '5',
+                                            hoverRadius: '5',
+                                            borderWidth: 2
+                                        }, 
+                                        {
+                                            label: "Tripadvisor",
+                                            fill: true,
+                                            backgroundColor: gradientfill_3,
+                                            borderColor: "#3bc40a",
+
+                                            /* insertion des données sur l'axe (oy) */
+
+                                            data: my_data_di,
+
+                                            /* insertion des données sur l'axe (oy) */
+
+                                                pointStyle: 'circle',
+                                                pointBackgroundColor: "transparent",
+                                                pointBorderWidth: '2',
+                                                radius: '5',
+                                                hoverRadius: '5',
+                                                borderWidth: 2
+                                            }
+                                        ]
+                                    },
+                                    options: {
+                                        legend: {
+                                            display: false,
+                                            align: 'start',
+                                            position: 'bottom'
+
+                                        },
+
+                                        legendCallback: function (chart) {
+                                            var text = [];
+                                            text.push('<ul class="my_liste_legend ul_2">');
+                                            for (var i = 0; i < chart.data.datasets.length; i++) {
+                                                console.log(chart.data.datasets[i]); // see what's inside the obj.
+                                                text.push('<li>');
+                                                text.push('<span data_leg = "' + i + '" style="background-color:' + chart.data.datasets[i].borderColor + '">' + '</span><b data_leg = "' + i + '">' + chart.data.datasets[i].label + '</b>');
+                                                text.push('</li>');
+                                            }
+                                            text.push('</ul>');
+                                            return text.join("");
+                                        },
+                                        responsive: true,
+                                            title: {
+                                                display: true,
+                                                text: ''
+                                            },
+                                        tooltips: {
+                                            mode: 'index',
+                                            intersect: false
+                                        },
+                                        hover: {
+                                            mode: 'nearest',
+                                            intersect: true
+                                        },
+
+                                        scales: {
+
+                                            xAxes: [
+                                            {
+                                                type: 'category',
+                                                /* insertion des données sur l'axe (ox) */
+                                                labels: my_labels,
+
+                                                /* / insertion des données sur l'axe (ox) */
+
+                                                gridLines: {
+                                                    drawOnChartArea: true,
+                                                    drawTicks: false,
+                                                    color: "#f0f2f4"
+                                                },
+
+                                                ticks: {
+                                                    padding: 20 // pour le marge % axe x
+                                                }
+                                            }
+                                        ],
+                                        yAxes: [
+                                        {
+                                            gridLines: {
+                                                drawOnChartArea: true,
+                                                drawTicks: false,
+                                                color: "#dddfe1"
+                                            },
+                                            ticks: {
+                                                padding: 20, // pour le marge % axe y
+                                                min: 0,
+                                                max: my_max,
+                                                stepSize : my_stepSize,
+                                                callback: function (value) {
+                                                    return value + ""
+                                                }
+                                            },
+                                            display: true,
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: ''
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+
+                    };
+                    // si on veut ajouter un marge bottom des legendes
+                    // Chart.Legend.prototype.afterFit = function() {
+                    //     this.height = this.height + 150;
+
+                    // };
+                    var myChart1 = new Chart(ctx2, config2);
+                    // pour dire qu'on va utiliser notre propre légende html fenitra
+                    document.getElementById('chart-legends_sqn').innerHTML = myChart1.generateLegend();
+
+                    // legende 1
+
+                    var ev_click = false;
+                    var tab_temp = [];
+                    for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) { // myChart1.data.datasets[0].data[i]= -10;
+                        tab_temp[i] = myChart1.data.datasets[0].data[i];
+                    }
+                    $("#chart-legends_sqn").on('click', "li span[data_leg=0]", function () {
+
+                        if (ev_click == false) {
+                                $(".ul_2 li span[data_leg=0]").addClass("legende_click");
+                                for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) {
+                                    myChart1.data.datasets[0].data[i] = -10;
+                                }
+                                myChart1.update();
+                                ev_click = ! ev_click;
+                            // alert(ev_click) ;
+                        } else {
+                            $(".ul_2 li span[data_leg=0]").removeClass("legende_click");
+                            for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) {
+                                myChart1.data.datasets[0].data[i] = tab_temp[i];
+                            }
+                            myChart1.update();
+                            ev_click = ! ev_click;
+                            // alert(ev_click) ;
+                        }
+                    });
+
+                    // fin legende 1
+
+                    // legende 2
+
+                    var ev_click2 = false;
+                    var tab_temp2 = [];
+                    for (var i = 0; i < myChart1.data.datasets[1].data.length; i++) { // myChart1.data.datasets[0].data[i]= -10;
+                        tab_temp2[i] = myChart1.data.datasets[1].data[i];
+                    }
+                    $("#chart-legends_sqn").on('click', "li span[data_leg=1]", function () {
+
+                        if (ev_click2 == false) {
+                            $(".ul_2 li span[data_leg=1]").addClass("legende_click");
+                            for (var i = 0; i < myChart1.data.datasets[1].data.length; i++) {
+                                myChart1.data.datasets[1].data[i] = -10;
+                            }
+                            myChart1.update();
+                            ev_click2 = ! ev_click2;
+                            // alert(ev_click2) ;
+                        } else {
+                        $(".ul_2 li span[data_leg=1]").removeClass("legende_click");
+                            for (var i = 0; i < myChart1.data.datasets[1].data.length; i++) {
+                                myChart1.data.datasets[1].data[i] = tab_temp2[i];
+                            }
+                            myChart1.update();
+                            ev_click2 = ! ev_click2;
+                            // alert(ev_click2) ;
+                        }
+                    });
+
+                    // fin legende 2
+
+                    // legende 3
+
+                    var ev_click3 = false;
+                    var tab_temp3 = [];
+                    for (var i = 0; i < myChart1.data.datasets[2].data.length; i++) { // myChart1.data.datasets[0].data[i]= -10;
+                        tab_temp3[i] = myChart1.data.datasets[2].data[i];
+                    }
+                    $("#chart-legends_sqn").on('click', "li span[data_leg=2]", function () {
+
+                        if (ev_click3 == false) {
+                            $(".ul_2 li span[data_leg=2]").addClass("legende_click");
+                            for (var i = 0; i < myChart1.data.datasets[2].data.length; i++) {
+                                myChart1.data.datasets[2].data[i] = -10;
+                            }
+                            myChart1.update();
+                            ev_click3 = ! ev_click3;
+                            // alert(ev_click3) ;
+                        } else {
+                        $(".ul_2 li span[data_leg=2]").removeClass("legende_click");
+                            for (var i = 0; i < myChart1.data.datasets[2].data.length; i++) {
+                                myChart1.data.datasets[2].data[i] = tab_temp3[i];
+                            }
+                            myChart1.update();
+                            ev_click3 = ! ev_click3;
+                            // alert(ev_click3) ;
+                        }
+                    });
+
+                    // fin legende 3
+
+                    return myChart1;
+                }
+
+                    // responsive pour les chart
+
+                    function add_resp_heb(myChart1) {
+
+                        myChart1.options.scales.yAxes[0].ticks.fontSize = 7;
+                        myChart1.options.scales.yAxes[0].ticks.padding = 10;
+                        myChart1.options.scales.yAxes[0].ticks.stepSize = 20;
+                        myChart1.options.scales.xAxes[0].ticks.stepSize = 0;
+                        myChart1.options.scales.xAxes[0].ticks.fontSize = 8;
+                       
+                        myChart1.options.scales.yAxes[0].ticks.fontSize = 7;
+                        myChart1.options.scales.xAxes[0].ticks.fontSize = 7;
+                        for (var i = myChart1.data.datasets.length - 1; i >= 0; i--) {
+                            myChart1.data.datasets[i].radius = '3';
+                        }
+                        myChart1.update();
+
+                    }
+
+                    var my_data_interne = [
+                        {% for t in tab_interne %}
+                            {{ t }},
+                        {% endfor %}
+                    ];
+                    var my_data_booking = [
+                        {% for t in tab_booking %}
+                            {{ t }},
+                        {% endfor %}
+                    ];
+
+                    var my_data_tripadvisor = [
+                        {% for t in tab_tripadvisor %}
+                            {{ t }},
+                        {% endfor %}
+                    ];
+
+
+
+					var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+
+                
+                    var w = $(window).width();
+                    if (w <= 768) {
+                        
+                        var myChart1 = draw_chart1(my_data_interne, my_data_booking, my_damy_data_tripadvisor, my_labels, 10, 1);
+                        add_resp_heb(myChart1);
+                    } else {
+                        var myChart1 = draw_chart1(my_data_interne, my_data_booking, my_data_tripadvisor, my_labels, 10, 1);
+                    }          
+        })
+	</script>
+
+
+{% endblock %}

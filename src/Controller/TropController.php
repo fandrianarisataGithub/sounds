@@ -208,9 +208,9 @@ class TropController extends AbstractController
                     "form_add"          => $form_add->createView(),
                     'datas'             => $les_datas,
                     'tri'               => true,
-                    'searchE'            => $entreprise_contact,
+                    'searchE'           => $entreprise_contact,
                     'liste_choices'     => $tab,
-                    'tropical_wood'             => true,
+                    'tropical_wood'     => true,
                 ]);
             } 
             else if($detail != "vide") {
@@ -261,12 +261,11 @@ class TropController extends AbstractController
     /**
      * @Route("/profile/search_ajax_ec", name = "search_ajax_ec")
      */
-    public function search_ajax_ec(Request $request, DataTropicalWoodRepository $repoTrop)
+    public function search_ajax_ec(Request $request, DataTropicalWoodRepository $repoTrop, EntityManagerInterface $em)
     {
         $response = new Response();
         if($request->isXmlHttpRequest()){
             $mot = $request->get('mot');
-            $em = $this->getDoctrine()->getManager();
 
             $RAW_QUERY = "SELECT DISTINCT  entreprise FROM data_tropical_wood where data_tropical_wood.entreprise LIKE '".$mot."%' LIMIT 10;";
 
@@ -280,16 +279,6 @@ class TropController extends AbstractController
             $response->setContent($data);
             return $response;
         }
-        $mot = "Min";
-        $em = $this->getDoctrine()->getManager();
-
-        $RAW_QUERY = "SELECT DISTINCT  entreprise FROM data_tropical_wood where data_tropical_wood.entreprise LIKE '" . $mot . "%' LIMIT 10 ;";
-
-        $statement = $em->getConnection()->prepare($RAW_QUERY);
-        $statement->execute();
-
-        $result = $statement->fetchAll();
-        dd($result);
     }
     
 

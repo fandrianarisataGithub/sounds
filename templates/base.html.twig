@@ -318,7 +318,7 @@
 									{% endif %}></small>
 									<span class="sqn" {% if id is defined and id is not null and id == "li__sqn" %}
 										style="color:#d29e00 !important"
-									{% endif %}>Service-Quality-Notation</span>
+									{% endif %}>Service quality - Notation</span>
 								</a>
 							</li>
 							<li {% if id is defined and id is not null and id == "li__donnee_du_jour"  %}
@@ -381,6 +381,17 @@
 							</li>
 
 						</ul>
+						{% else %}
+							<ul class="categories">
+								<li>
+									<a href="{{ path('tropical_wood') }}">
+										<i aria-hidden="true" id="client">
+											<img src="{{ asset('images/client.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+										</i>
+										<span>Tableau de bord client</span>
+									</a>
+								</li>
+							</ul>
 						{% endif %}
 					</div>
 				</aside>

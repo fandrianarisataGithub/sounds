@@ -1910,115 +1910,6 @@ class PageController extends AbstractController
     }
 
     /**
-     * @Route("/profile/{pseudo_hotel}/donnee_mensuelle", name="donnee_mensuelle")
-     */
-    public function donnee_mensuelle(Request $request, $pseudo_hotel, EntityManagerInterface $manager, SessionInterface $session, HotelRepository $reposHotel)
-    {
-        $today = new \DateTime();
-        $donnee_mensuelle = new DonneeMensuelle();
-        $form = $this->createForm(DonneeMensuelleType::class, $donnee_mensuelle);
-        $data_session = $session->get('hotel');
-        $data_session['current_page'] = "donnee_mensuelle";
-        $data_session['pseudo_hotel'] = $pseudo_hotel;
-        $user = $data_session['user'];
-        $pos = $this->services->tester_droit($pseudo_hotel, $user, $reposHotel);
-        $form->handleRequest($request);
-        if ($pos == "impossible") {
-            return $this->render('/page/error.html.twig');
-        } else {
-            // traitemenet des données
-            if($form->isSubmitted() && $form->isValid()){
-                //dd($request->request);
-                $donnee_mensuelle = $form->getData();
-                // dd($donnee_mensuelle);
-                $mois = $request->request->get('donnee_mensuelle_mois');
-                $annee = $request->request->get('donnee_mensuelle_annee');
-                $s = $mois . "-" . $annee;
-                $donnee_mensuelle->setMois($s);
-                //dd($donnee_mensuelle);
-                $manager->persist($donnee_mensuelle);
-                $manager->flush();
-                
-            }
-            return $this->render('page/donnee_mensuelle.html.twig', [
-                "id"            => "li__donnee_mensuelle",
-                "hotel"         => $data_session['pseudo_hotel'],
-                "current_page"  => $data_session['current_page'],
-                "today"         => 2,
-                'form'          => $form->createView(),
-            ]);
-        }
-    }
-
-    /**
-     * @Route("/profile/{pseudo_hotel}/stock", name="stock")
-     */
-    public function stock(Services $services, Request $request, $pseudo_hotel, EntityManagerInterface $manager, SessionInterface $session, HotelRepository $reposHotel)
-    {
-
-        $data_session = $session->get('hotel');
-        $data_session['current_page'] = "stock";
-        $data_session['pseudo_hotel'] = $pseudo_hotel;
-        $user = $data_session['user'];
-        $pos = $services->tester_droit($pseudo_hotel, $user, $reposHotel);
-        if ($pos == "impossible") {
-            return $this->render('/page/error.html.twig');
-        } else {
-            return $this->render('page/stock.html.twig', [
-                "id"                => "li__stock",
-                "hotel"             => $data_session['pseudo_hotel'],
-                "current_page"      => $data_session['current_page'],
-                'tab_annee'         => $services->tab_annee(),
-            ]);
-        }
-    }
-
-    /**
-     * @Route("/profile/{pseudo_hotel}/cost", name="cost")
-     */
-    public function cost(Services $services, Request $request, $pseudo_hotel, EntityManagerInterface $manager, SessionInterface $session, HotelRepository $reposHotel)
-    {
-
-        $data_session = $session->get('hotel');
-        $data_session['current_page'] = "cost";
-        $data_session['pseudo_hotel'] = $pseudo_hotel;
-        $user = $data_session['user'];
-        $pos = $services->tester_droit($pseudo_hotel, $user, $reposHotel);
-        if ($pos == "impossible") {
-            return $this->render('/page/error.html.twig');
-        } else {
-            return $this->render('page/cost.html.twig', [
-                "id"                => "li__cost",
-                "hotel"             => $data_session['pseudo_hotel'],
-                "current_page"      => $data_session['current_page'],
-                'tab_annee'         => $services->tab_annee(),
-            ]);
-        }
-    }
-
-    /**
-     * @Route("/profile/{pseudo_hotel}/sqn", name="sqn")
-     */
-    public function sqn(Services $services, Request $request, $pseudo_hotel, EntityManagerInterface $manager, SessionInterface $session, HotelRepository $reposHotel)
-    {
-        $data_session = $session->get('hotel');
-        $data_session['current_page'] = "sqn";
-        $data_session['pseudo_hotel'] = $pseudo_hotel;
-        $user = $data_session['user'];
-        $pos = $services->tester_droit($pseudo_hotel, $user, $reposHotel);
-        if ($pos == "impossible") {
-            return $this->render('/page/error.html.twig');
-        } else {
-            return $this->render('page/sqn.html.twig', [
-                "id" => "li__sqn",
-                "hotel" => $data_session['pseudo_hotel'],
-                "current_page" => $data_session['current_page'],
-                'tab_annee' => $services->tab_annee(),
-            ]);
-        }
-    }
-
-    /**
      * @Route("/profile/{pseudo_hotel}/h_hebergement", name="h_hebergement")
      */
     public function h_hebergement(Request $request, SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel)
@@ -2236,6 +2127,20 @@ class PageController extends AbstractController
            // on liste tous les data    
         }
         $datas = $repoTrop->findAll();
+        $datasAsc = $repoTrop->findAllGroupedAsc();
+        $Liste = [];
+        //dd($datasAsc);
+        foreach($datasAsc as $d){
+            $tab_temp = [];
+            $son_entreprise = $d[0]->getEntreprise();
+            $liste = $repoTrop->findBy(["entreprise" => $son_entreprise]);
+            
+            $tab_temp["entreprise"] = $son_entreprise;
+            $tab_temp["listes"] = $liste;
+            $tab_temp["sous_total_montant_total"] = $d["sous_total_montant_total"];
+            array_push($Liste, $tab_temp);
+        }
+        dd($Liste);
         // on liste selon le nom de l'entreprise
         foreach ($datas as $key => $value) {
             $newarray[$value->getEntreprise()][$key] = $value;

@@ -92,6 +92,11 @@ class DonneeMensuelle
      */
     private $mois;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Hotel::class, inversedBy="donneeMensuelles")
+     */
+    private $hotel;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -273,6 +278,18 @@ class DonneeMensuelle
     public function setMois(string $mois): self
     {
         $this->mois = $mois;
+
+        return $this;
+    }
+
+    public function getHotel(): ?Hotel
+    {
+        return $this->hotel;
+    }
+
+    public function setHotel(?Hotel $hotel): self
+    {
+        $this->hotel = $hotel;
 
         return $this;
     }

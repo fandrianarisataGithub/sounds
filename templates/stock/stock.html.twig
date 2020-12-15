@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 {% block title %}
-	SERVICE - QUALITE - NOTATION
+	Stock
 {% endblock %}
 
 {% block stylesheets %}
@@ -19,7 +19,7 @@
 			<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 				<section class="section_part" id="section_part_top">
 					<div class="sous_titre">
-						<h3>Service - Qualité - Notation
+						<h3>Stock
 						</h3>
 					</div>
 				</section>
@@ -30,9 +30,10 @@
 				<section class="section_part tab_content margin_tab">
 					<div class="chart_title">
 						<div class="chart_title-part" id="div__1">
+                            {% set x = 'now'|date('Y') %}
 						</div>
 						<form action="" class="tri">
-							<select name="" class="annee" id = "annee_sqn">
+							<select name="" class="annee" id = "annee_stock">
 								{% for a in tab_annee %}
 									<option value="{{ a }}">{{ a }}</option>
 								{% endfor %}
@@ -40,9 +41,9 @@
 						</form>
 					</div>
                     <section>
-                        <div id="element_canvas_sqn">
+                        <div id="element_canvas_stock">
                             <div>
-                                <canvas id="canvas_sqn"></canvas>
+                                <canvas id="canvas_stock"></canvas>
                             </div>
                             {# <div id="chart-legends_cas"></div> #}
                         </div>
@@ -65,9 +66,10 @@
     <script>
          $(document).ready(function () {
            function create_ctx1() {
-                var ctx1 = document.getElementById('canvas_sqn').getContext("2d");
+                var ctx1 = document.getElementById('canvas_stock').getContext("2d");
                 return ctx1;
            }
+
 
                     function create_config1(my_data, my_labels, my_max, my_stepSize){
                         var ctx1 = create_ctx1();
@@ -247,13 +249,17 @@
 
                 // draw chart
 
-                var my_data_sqn = [12,25,42,12,30,34,35,31,30,32,33,,25];
+                var my_data_stock = [
+                    {% for s in tab_stock %}
+                        {{ s }},
+                    {% endfor %}
+                ];
 
                 var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Sept","Oct","Nov","Dec"];
 
                 
 
-                var myChart1 = create_chart1(create_ctx1(), create_config1(my_data_sqn, my_labels, 100, 20));
+                var myChart1 = create_chart1(create_ctx1(), create_config1(my_data_stock, my_labels, 100, 20));
 
 
                 // triage chart heb_ca

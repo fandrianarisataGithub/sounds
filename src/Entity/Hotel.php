@@ -59,6 +59,11 @@ class Hotel
      */
     private $clientUploads;
 
+    /**
+     * @ORM\OneToMany(targetEntity=DonneeMensuelle::class, mappedBy="hotel")
+     */
+    private $donneeMensuelles;
+
     public function __construct()
     {
         $this->clients = new ArrayCollection();
@@ -66,6 +71,7 @@ class Hotel
         $this->user = new ArrayCollection();
         $this->fournisseurs = new ArrayCollection();
         $this->clientUploads = new ArrayCollection();
+        $this->donneeMensuelles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -248,6 +254,36 @@ class Hotel
         if ($this->clientUploads->contains($clientUpload)) {
             $this->clientUploads->removeElement($clientUpload);
             $clientUpload->removeHotel($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|DonneeMensuelle[]
+     */
+    public function getDonneeMensuelles(): Collection
+    {
+        return $this->donneeMensuelles;
+    }
+
+    public function addDonneeMensuelle(DonneeMensuelle $donneeMensuelle): self
+    {
+        if (!$this->donneeMensuelles->contains($donneeMensuelle)) {
+            $this->donneeMensuelles[] = $donneeMensuelle;
+            $donneeMensuelle->setHotel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDonneeMensuelle(DonneeMensuelle $donneeMensuelle): self
+    {
+        if ($this->donneeMensuelles->removeElement($donneeMensuelle)) {
+            // set the owning side to null (unless already changed)
+            if ($donneeMensuelle->getHotel() === $this) {
+                $donneeMensuelle->setHotel(null);
+            }
         }
 
         return $this;
