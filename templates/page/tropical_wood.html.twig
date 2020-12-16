@@ -284,6 +284,7 @@
 
 							 id="form_etat_paiement">
 							<button type="submit" class="btn btn-default btn_black">Filtrer</button>
+							<a href="#" id="reinitialisation"  class="btn btn-default btn_black">Reinitialisation</a>
 						</form>
 					</div>
 				</div>
@@ -302,7 +303,7 @@
 								</div>
 								<input type="hidden" id="input__entreprise" value="" name="entreprise_contact">
 								<input type="hidden" name="detail" class="form-control" placeholder="Detail" value="vide">
-								<button type="submit" class="btn btn_ok btn-sm"><span>OK</span></button>
+								<button type="submit" id="button_ok" class="btn btn_ok btn-sm"><span>OK</span></button>
 							</form>
 							<div class="liste_choice_search">
 								<ul>
@@ -338,7 +339,8 @@
 							<div class="table_header">
 								<div class="t_header_row">
 									<div>
-										<span>Entreprise <br>Contact</span>
+										<span>Entreprise
+											<br>Contact</span>
 									</div>
 									<div>
 										<span>Détails</span>
@@ -351,12 +353,36 @@
 									</div>
 									<div>
 										<span>Paiement</span>
+										<span class="span_tri">
+											<a href="#" class="a_tri" data-type ="total_reglement" data-data = "ASC">
+												<small class="fa fa-sort-asc" style="color:#ffff;"></small>
+											</a>
+											<a href="#" class="a_tri" data-type ="total_reglement" data-data = "DESC">
+												<small class="fa fa-sort-desc" style="color:#ffff;"></small>
+											</a>
+										</span>
 									</div>
 									<div>
 										<span>Reste à payé</span>
+										<span class="span_tri">
+											<a href="#" class="a_tri" data-type ="reste" data-data = "ASC">
+												<small class="fa fa-sort-asc" style="color:#ffff;"></small>
+											</a>
+											<a href="#" class="a_tri" data-type ="reste" data-data = "DESC">
+												<small class="fa fa-sort-desc" style="color:#ffff;"></small>
+											</a>
+										</span>
 									</div>
 									<div>
 										<span>Montant total</span>
+										<span class="span_tri">
+											<a href="#" class="a_tri" data-type ="montant_total" data-data = "ASC">
+												<small class="fa fa-sort-asc" style="color:#ffff;"></small>
+											</a>
+											<a href="#" class="a_tri" data-type ="montant_total" data-data = "DESC">
+												<small class="fa fa-sort-desc" style="color:#ffff;"></small>
+											</a>
+										</span>
 									</div>
 									<div>
 										<span>Date de confirmation</span>
@@ -367,156 +393,7 @@
 								</div>
 							</div>
 							<div class="table_body">
-							{% set liste_paiement = [] %}
-							{% set liste_reste = [] %}
-							{% set liste_total_montant = [] %}
-								{% for key,data in datas %}
-									{% if data|length > 0 %}
-										<div>
-											<div class="t_body_row">
-												<div class="td_long" colspan="9">
-													<span>{{ key | raw }}</span>
-												</div>
-											</div>
-											{% for item in data %}
-												<div class="t_body_row sous_tab_body">
-													<div>
-														<span>{{ item.getIdPro() | raw }}</span>
-													</div>
-													<div>
-														<span>{{ item.getDetail() | raw }}</span>
-													</div>
-													<div>
-														<span class="value" data="{{ item.getTypeTransaction() | trim }}">{{ item.getTypeTransaction() | raw }}</span>
-													</div>
-													<div>
-														<span class="value" data="{{ item.getEtatProduction() | trim }}">{{ item.getEtatProduction() | raw }}</span>
-													</div>
-													<div>
-														<span class="montant value" {% set m_a = item.getTotalReglement() | trim %} {% set m_t = item.getMontantTotal() | trim %} {% if m_a == 0 %} data="Aucun paiement" {% endif %} {% if m_t == m_a %} data="Paiement total" {% endif %} {% if m_t > m_a %} data="Paiement partiel" {% endif %}>{{ item.getTotalReglement() }}</span>
-													</div>
-													<div>
-														<span class="montant">
-															{% set total = item.getMontantTotal() %}
-															{% set avance = item.getTotalReglement() %}
-															{% set reste = total - avance %}
-															{{ reste }}
-														</span>
-													</div>
-													<div>
-														<span class="montant">{{ item.getMontantTotal() }}</span>
-													</div>
-													<div>
-														<span>
-															{% if  item.getDateconfirmation() != null %}
-																{{ item.getDateconfirmation() | date('d-m-Y') }}
-															{% endif %}
-														</span>
-													</div>
-													<div>
-														<span>{{ item.getDevis() }}</span>
-													</div>
-												</div>
-											{% endfor %}
-												<div class="t_body_row sous_tab_body sous_total_content">
-													<div>
-														<span>Sous-total</span> 
-													</div>
-													<div>
-														<span></span>
-													</div>
-													<div>
-														<span></span>
-													</div>
-													<div>
-														<span></span>
-													</div>
-													<div>
-														<span class="montant value total_paiement">
-															{% set s = 0 %}
-															{% for d in data %}
-																{% set s = s + d.getTotalReglement() %}
-															{% endfor %}
-															{{ s }}
-															{% set liste_paiement = liste_paiement|merge([s]) %}
-														</span>
-													</div>
-													<div>
-														{% set total_reste = 0 %}
-														{% for d in data %}
-															{% set total = d.getMontantTotal() %}
-															{% set avance = d.getTotalReglement() %}
-															{% set reste = total - avance %}
-															{% set total_reste = total_reste + reste %}
-														{% endfor %}
-														{% set liste_reste = liste_reste|merge([total_reste]) %}
-														<span class="montant value total_reste">{{ total_reste }}</span>
-													</div>
-													<div>
-													{% set total_montant = 0 %}
-														{% for d in data %}
-															{% set total_montant = total_montant + d.getMontantTotal() %}
-														{% endfor %}
-														{% set liste_total_montant = liste_total_montant|merge([total_montant]) %}
-														<span class="montant value total_montant">{{ total_montant }}</span>
-													</div>
-													<div>
-														<span></span>
-													</div>
-													<div>
-														<span></span>
-													</div>
-												</div>
-										</div>
-									{% endif %}
-								{% endfor %}
-								<div class="t_footer_row sous_tab_body tota_content">
-									<div>
-										<span>Total</span>
-									</div>
-									<div>
-										<span></span>
-									</div>
-									<div>
-										<span></span>
-									</div>
-									<div>
-										<span></span>
-									</div>
-									<div>
-										<span class="montant value" id="total_paiement">
-											{% set total_p = 0 %}
-											{% for t in liste_paiement %}
-												{% set total_p = total_p + t %}
-											{% endfor %}
-											{{ total_p }}
-										</span>
-									</div>
-									<div>
-										<span class="montant value" id="total_reste">										
-												{% set total_p = 0 %}
-												{% for t in liste_reste %}
-													{% set total_p = total_p + t %}
-												{% endfor %}
-												{{ total_p }}
-										</span>
-									</div>
-									<div>
-										<span class="montant value" id="total_montant">
-												{% set total_p = 0 %}
-												{% for t in liste_total_montant %}
-													{% set total_p = total_p + t %}
-												{% endfor %}
-												{{ total_p }}
-										</span>
-									</div>
-									<div>
-										<span></span>
-									</div>
-									<div>
-										<span></span>
-									</div>
-								</div>
+										
 							</div>
 						</div>
 					</div>
@@ -531,6 +408,9 @@
 	<script src="{{ asset('js/cleave.min.js') }}"></script>
 	<script>
 		$(document).ready(function(){
+
+			
+
 			// not allow submit form when pressing enter
 
 			$('.liste_form_search form').on('keyup keypress', function(e) {
@@ -640,7 +520,6 @@
 				}
 				return arr;
 			}
-
 
 			$('.logo_active').removeClass('logo_active');
 			$('#li_tropical').addClass('logo_active');
@@ -757,15 +636,175 @@
 					}
 				}
 
-				$('#form_type_transaction').val(data_type_trans);
-				$('#form_etat_production').val(data_etat_prod);
-				$('#form_etat_paiement').val(data_etat_paie);
-				$("#hidden_date1").val($('#date1').val());
-				$("#hidden_date2").val($('#date2').val());
-				$('#form_for_tri').submit();
+				$.ajax({
+					url : "/profile/tri_ajax_btn_black/tropical",
+					type : "POST",
+					data : {
+						'type_transaction' : data_type_trans,
+						'etat_production'  : data_etat_prod,
+						'etat_paiement'	   : data_etat_paie
+						},
+					success : function(response){
+						$('.table_body').html("");
+						$('.table_body').html(response).promise().done(function(){
+							var montant = document.querySelectorAll(".montant");
+							var t = montant.length;
+							var test = new Intl.NumberFormat();
+							if (t > 0) {
+								for (var i = 0; i < t; i++) {
+									var val = test.format(montant[i].innerHTML);
+									montant[i].innerHTML = val;
+								}
+							}
+						});
+					},
+					error : function(){
+						alert('erreur ajax ri_ajax_btn_black/tropical')
+					}
+				})
 			})
+
+			$('#reinitialisation').on('click', function(ev){
+				ev.preventDefault();
+				// on concatenne par * les données dans chaque liste
+				var data_type_trans = "";
+				var data_etat_prod = "";
+				var data_etat_paie = "";
+				
+				$.ajax({
+					url : "/profile/tri_ajax_btn_black/tropical",
+					type : "POST",
+					data : {
+						'type_transaction' : data_type_trans,
+						'etat_production'  : data_etat_prod,
+						'etat_paiement'	   : data_etat_paie
+						},
+					success : function(response){
+						$('.table_body').html("");
+						$('.table_body').html(response).promise().done(function(){
+							var montant = document.querySelectorAll(".montant");
+							var t = montant.length;
+							var test = new Intl.NumberFormat();
+							if (t > 0) {
+								for (var i = 0; i < t; i++) {
+									var val = test.format(montant[i].innerHTML);
+									montant[i].innerHTML = val;
+								}
+							}
+						});
+					},
+					error : function(){
+						alert('erreur ajax ri_ajax_btn_black/tropical')
+					}
+				})
+			})
+
+			function lister_datas(){
+				var data_type_trans = "";
+				var data_etat_prod = "";
+				var data_etat_paie = "";
+
+				for(var i=0; i<liste_type_transaction.length; i++){
+					if(liste_type_transaction.length>0){
+						data_type_trans+="*";
+						data_type_trans+=liste_type_transaction[i];
+					}
+					else{
+						data_type_trans+=liste_type_transaction[i];
+					}
+				}
+
+				for(var i=0; i<liste_etat_production.length; i++){
+					if(liste_etat_production.length>0){
+						data_etat_prod+="*";
+						data_etat_prod+=liste_etat_production[i];
+					}
+					else{
+						data_etat_prod+=liste_etat_production[i];
+					}
+				}
+
+				for(var i=0; i<liste_etat_paiement.length; i++){
+					if(liste_etat_paiement.length>0){
+						data_etat_paie+="*";
+						data_etat_paie+=liste_etat_paiement[i];
+					}
+					else{
+						data_etat_paie+=liste_etat_paiement[i];
+					}
+				}
+
+				$.ajax({
+					url : "/profile/tri_ajax_btn_black/tropical",
+					type : "POST",
+					data : {
+						'type_transaction' : data_type_trans,
+						'etat_production'  : data_etat_prod,
+						'etat_paiement'	   : data_etat_paie
+						},
+					success : function(response){
+						$('.table_body').html("");
+						$('.table_body').html(response).promise().done(function(){
+							var montant = document.querySelectorAll(".montant");
+							var t = montant.length;
+							var test = new Intl.NumberFormat();
+							if (t > 0) {
+								for (var i = 0; i < t; i++) {
+									var val = test.format(montant[i].innerHTML);
+									montant[i].innerHTML = val;
+								}
+							}
+						});
+					},
+					error : function(){
+						alert('erreur ajax ri_ajax_btn_black/tropical')
+					}
+				})
+
+			}
+
+			$('#button_ok').on('click', function(ev){
+				ev.preventDefault();
+				var input__entreprise_ajax = $('#input__entreprise').val();
+				$.ajax({
+					url : "/profile/search_ajax_btn_ok/tropical",
+					type : "POST",
+					data : {
+							'input__entreprise_ajax' : input__entreprise_ajax,
+						},
+					success : function(response){
+						$('.table_body').html("");
+						$('.table_body').html(response).promise().done(function(){
+							var montant = document.querySelectorAll(".montant");
+							var t = montant.length;
+							var test = new Intl.NumberFormat();
+							if (t > 0) {
+								for (var i = 0; i < t; i++) {
+									var val = test.format(montant[i].innerHTML);
+									montant[i].innerHTML = val;
+								}
+							}
+						});
+					},
+					error : function(){
+						alert('erreur ajax ri_ajax_btn_black/tropical')
+					}
+				})
+			})
+
+			// a_tri
+			$('.a_tri').on('click', function(ev){
+				ev.preventDefault();
+				var son_data_type = $(this).attr('data-type');
+				var son_data_data = $(this).attr('data-data');
+				//alert(son_data_type);
+			})
+
+			lister_datas();
 			
 		})
+		
+
 		
 	</script>
 {% endblock %}

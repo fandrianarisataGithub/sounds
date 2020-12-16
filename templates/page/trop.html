@@ -1,0 +1,143 @@
+<div>
+											<div class="t_body_row">
+												<div class="td_long" colspan="9">
+													<span>{{ key | raw }}</span>
+												</div>
+											</div>
+											
+												<div class="t_body_row sous_tab_body">
+													<div>
+														<span>{{ item.getIdPro() | raw }}</span>
+													</div>
+													<div>
+														<span>{{ item.getDetail() | raw }}</span>
+													</div>
+													<div>
+														<span class="value" data="{{ item.getTypeTransaction() | trim }}">{{ item.getTypeTransaction() | raw }}</span>
+													</div>
+													<div>
+														<span class="value" data="{{ item.getEtatProduction() | trim }}">{{ item.getEtatProduction() | raw }}</span>
+													</div>
+													<div>
+														<span class="montant value" {% set m_a = item.getTotalReglement() | trim %} {% set m_t = item.getMontantTotal() | trim %} {% if m_a == 0 %} data="Aucun paiement" {% endif %} {% if m_t == m_a %} data="Paiement total" {% endif %} {% if m_t > m_a %} data="Paiement partiel" {% endif %}>{{ item.getTotalReglement() }}</span>
+													</div>
+													<div>
+														<span class="montant">
+															{% set total = item.getMontantTotal() %}
+															{% set avance = item.getTotalReglement() %}
+															{% set reste = total - avance %}
+															{{ reste }}
+														</span>
+													</div>
+													<div>
+														<span class="montant">{{ item.getMontantTotal() }}</span>
+													</div>
+													<div>
+														<span>
+															{% if  item.getDateconfirmation() != null %}
+																{{ item.getDateconfirmation() | date('d-m-Y') }}
+															{% endif %}
+														</span>
+													</div>
+													<div>
+														<span>{{ item.getDevis() }}</span>
+													</div>
+												</div>
+											
+												<div class="t_body_row sous_tab_body sous_total_content">
+													<div>
+														<span>Sous-total</span> 
+													</div>
+													<div>
+														<span></span>
+													</div>
+													<div>
+														<span></span>
+													</div>
+													<div>
+														<span></span>
+													</div>
+													<div>
+														<span class="montant value total_paiement">
+															{% set s = 0 %}
+															{% for d in data %}
+																{% set s = s + d.getTotalReglement() %}
+															{% endfor %}
+															{{ s }}
+															{% set liste_paiement = liste_paiement|merge([s]) %}
+														</span>
+													</div>
+													<div>
+														{% set total_reste = 0 %}
+														{% for d in data %}
+															{% set total = d.getMontantTotal() %}
+															{% set avance = d.getTotalReglement() %}
+															{% set reste = total - avance %}
+															{% set total_reste = total_reste + reste %}
+														{% endfor %}
+														{% set liste_reste = liste_reste|merge([total_reste]) %}
+														<span class="montant value total_reste">{{ total_reste }}</span>
+													</div>
+													<div>
+													{% set total_montant = 0 %}
+														{% for d in data %}
+															{% set total_montant = total_montant + d.getMontantTotal() %}
+														{% endfor %}
+														{% set liste_total_montant = liste_total_montant|merge([total_montant]) %}
+														<span class="montant value total_montant">{{ total_montant }}</span>
+													</div>
+													<div>
+														<span></span>
+													</div>
+													<div>
+														<span></span>
+													</div>
+												</div>
+										</div>
+										<div class="t_footer_row sous_tab_body tota_content">
+											<div>
+												<span>Total</span>
+											</div>
+											<div>
+												<span></span>
+											</div>
+											<div>
+												<span></span>
+											</div>
+											<div>
+												<span></span>
+											</div>
+											<div>
+												<span class="montant value" id="total_paiement">
+													{% set total_p = 0 %}
+													{% for t in liste_paiement %}
+														{% set total_p = total_p + t %}
+													{% endfor %}
+													{{ total_p }}
+												</span>
+											</div>
+											<div>
+												<span class="montant value" id="total_reste">										
+														{% set total_p = 0 %}
+														{% for t in liste_reste %}
+															{% set total_p = total_p + t %}
+														{% endfor %}
+														{{ total_p }}
+												</span>
+											</div>
+											<div>
+												<span class="montant value" id="total_montant">
+														{% set total_p = 0 %}
+														{% for t in liste_total_montant %}
+															{% set total_p = total_p + t %}
+														{% endfor %}
+														{{ total_p }}
+												</span>
+											</div>
+											<div>
+												<span></span>
+											</div>
+											<div>
+												<span></span>
+											</div>
+										</div>

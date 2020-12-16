@@ -22,13 +22,38 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
      /**
      * @return DataTropicalWood[] Returns an array of DataTropicalWood objects
      */
-    public function searchEntrepriseContact(string $value)
-    {
-        return $this->createQueryBuilder('d')
+    public function searchEntrepriseContact(array $liste)
+    {   $Liste = [];
+        for($i = 1 ; $i< count($liste); $i++){
+            $liste_item = [];
+            $liste1 = $this->createQueryBuilder('d')
             ->andWhere('d.entreprise LIKE :val')
-            ->setParameter('val', '%' . $value . '%')
+            ->setParameter('val', '%' . $liste[$i] . '%')
             ->getQuery()
             ->getResult();
+            
+            $liste2 = $this->createQueryBuilder('d')
+            ->andWhere('d.entreprise LIKE :val')
+            ->setParameter('val', '%' . $liste[$i] . '%')
+            ->addSelect('d.entreprise')
+            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+            ->groupBy('d.entreprise')
+            ->getQuery()
+            ->getResult();
+            $liste_item["entreprise"] = $liste2[0]["entreprise"];
+            $liste_item["listes"] = $liste1;
+            $liste_item["sous_total_montant_total"] = $liste2[0]["sous_total_montant_total"];
+            $liste_item["sous_total_total_reglement"] = $liste2[0]["sous_total_total_reglement"];
+            $liste_item["total_reste"] = $liste2[0]["total_reste"];
+            
+            array_push($Liste, $liste_item);
+            
+        }
+       
+        return $Liste;
+       
     }
 
     /**
@@ -77,7 +102,16 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
     /**
      * @return DataTropicalWood[] Returns an array of DataTropicalWood objects
      */
-    public function filtrer($date1, $date2, array $type_transaction, array $etat_production, array $etat_paiement)
+    public function filtrer(  
+            $date1, 
+            $date2, 
+            array $type_transaction, 
+            array $etat_production, 
+            array $etat_paiement,
+            $typeReglement,
+            $typeReste,
+            $typeMontant
+        )
     {   
        
         if($date1 != "" && $date2 != ""){
@@ -86,18 +120,85 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                 // tsisy zany
                 if(count($type_transaction)>1){
                     if(count($etat_production)>1){
-                        return $this->createQueryBuilder('d')
-                        ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
-                        ->setParameter('date1', $date1)
-                        ->setParameter('date2', $date2)
-                        ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
-                        ->setParameter('tab2', $etat_production)
-                        ->setParameter('tab1', $type_transaction)
-                        ->getQuery()
-                        ->getResult();
+                        $liste1 =  $this->createQueryBuilder('d')
+                                    ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                    ->setParameter('date1', $date1)
+                                    ->setParameter('date2', $date2)
+                                    ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                                    ->setParameter('tab2', $etat_production)
+                                    ->setParameter('tab1', $type_transaction)
+                                    ->getQuery()
+                                    ->getResult();
+
+                        $liste2 =  $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                                ->setParameter('tab2', $etat_production)
+                                ->setParameter('tab1', $type_transaction)
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                                if ($typeReglement != null) {
+                                    if ($typeReglement == "ASC") {
+                                        $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                        ->getQuery()
+                                            ->getResult();
+                                    } else {
+                                        $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                        ->getQuery()
+                                            ->getResult();
+                                    }
+                                }
+                                if ($typeReste != null) {
+                                    if ($typeReste == "ASC") {
+                                        $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                            ->getQuery()
+                                            ->getResult();
+                                    } else {
+                                        $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                            ->getQuery()
+                                            ->getResult();
+                                    }
+                                }
+                                if ($typeMontant != null) {
+                                    if ($typeMontant == "ASC") {
+                                        $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                        ->getQuery()
+                                            ->getResult();
+                                    } else {
+                                        $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                        ->getQuery()
+                                            ->getResult();
+                                    }
+                                }
+
+                                $Liste = [];
+                                foreach ($liste2  as $l2) {
+                                    $liste_item = [];
+                                    $ligne_entreprise = [];
+                                    $son_entreprise = $l2[0]->getEntreprise();
+                                    foreach ($liste1 as $l1) {
+                                        $entreprise_l1 = $l1->getEntreprise();
+                                        if ($entreprise_l1 == $son_entreprise) {
+                                            array_push($ligne_entreprise, $l1);
+                                        }
+                                    }
+                                    $liste_item["entreprise"] = $son_entreprise;
+                                    $liste_item["listes"] = $ligne_entreprise;
+                                    $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                    $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                    $liste_item["total_reste"] = $l2["total_reste"];
+
+                                    array_push($Liste, $liste_item);
+                                }
+                                return $Liste;
                     }
                     else{
-                        return $this->createQueryBuilder('d')
+                        $liste1 = $this->createQueryBuilder('d')
                         ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                         ->setParameter('date1', $date1)
                         ->setParameter('date2', $date2)
@@ -105,11 +206,77 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                         ->setParameter('tab1', $type_transaction)
                         ->getQuery()
                         ->getResult();
+                        
+                        $liste2 = $this->createQueryBuilder('d')
+                        ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                        ->setParameter('date1', $date1)
+                        ->setParameter('date2', $date2)
+                        ->andWhere('d.type_transaction IN(:tab1)')
+                        ->setParameter('tab1', $type_transaction)
+
+                        ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                        ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                        ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                        ->groupBy('d.entreprise');
+                        if ($typeReglement != null) {
+                            if ($typeReglement == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeReste != null) {
+                            if ($typeReste == "ASC") {
+                                $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                    ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                    ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeMontant != null) {
+                            if ($typeMontant == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+
+                        $Liste = [];
+                        foreach ($liste2  as $l2) {
+                            $liste_item = [];
+                            $ligne_entreprise = [];
+                            $son_entreprise = $l2[0]->getEntreprise();
+                            foreach ($liste1 as $l1) {
+                                $entreprise_l1 = $l1->getEntreprise();
+                                if ($entreprise_l1 == $son_entreprise) {
+                                    array_push($ligne_entreprise, $l1);
+                                }
+                            }
+                            $liste_item["entreprise"] = $son_entreprise;
+                            $liste_item["listes"] = $ligne_entreprise;
+                            $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                            $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                            $liste_item["total_reste"] = $l2["total_reste"];
+
+                            array_push($Liste, $liste_item);
+                        }
+                        return $Liste;
                     }
                 }
                 else{
                     if (count($etat_production) > 1) {
-                        return $this->createQueryBuilder('d')
+                        $liste1 = $this->createQueryBuilder('d')
                             ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                             ->setParameter('date1', $date1)
                             ->setParameter('date2', $date2)
@@ -117,13 +284,143 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                             ->setParameter('tab2', $etat_production)
                             ->getQuery()
                             ->getResult();
+
+                        $liste2 = $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.etat_production IN(:tab2)')
+                            ->setParameter('tab2', $etat_production)
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                        if ($typeReglement != null) {
+                            if ($typeReglement == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeReste != null) {
+                            if ($typeReste == "ASC") {
+                                $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                    ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                    ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeMontant != null) {
+                            if ($typeMontant == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+
+                        $Liste = [];
+                        foreach ($liste2  as $l2) {
+                            $liste_item = [];
+                            $ligne_entreprise = [];
+                            $son_entreprise = $l2[0]->getEntreprise();
+                            foreach ($liste1 as $l1) {
+                                $entreprise_l1 = $l1->getEntreprise();
+                                if ($entreprise_l1 == $son_entreprise) {
+                                    array_push($ligne_entreprise, $l1);
+                                }
+                            }
+                            $liste_item["entreprise"] = $son_entreprise;
+                            $liste_item["listes"] = $ligne_entreprise;
+                            $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                            $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                            $liste_item["total_reste"] = $l2["total_reste"];
+
+                            array_push($Liste, $liste_item);
+                        }
+                        return $Liste;
                     } else {
-                        return $this->createQueryBuilder('d')
+                        $liste1 = $this->createQueryBuilder('d')
                             ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                             ->setParameter('date1', $date1)
                             ->setParameter('date2', $date2)
                             ->getQuery()
                             ->getResult();
+                        
+                        $liste2 = $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                        if ($typeReglement != null) {
+                            if ($typeReglement == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeReste != null) {
+                            if ($typeReste == "ASC") {
+                                $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                    ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                    ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeMontant != null) {
+                            if ($typeMontant == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+
+                        $Liste = [];
+                        foreach ($liste2  as $l2) {
+                            $liste_item = [];
+                            $ligne_entreprise = [];
+                            $son_entreprise = $l2[0]->getEntreprise();
+                            foreach ($liste1 as $l1) {
+                                $entreprise_l1 = $l1->getEntreprise();
+                                if ($entreprise_l1 == $son_entreprise) {
+                                    array_push($ligne_entreprise, $l1);
+                                }
+                            }
+                            $liste_item["entreprise"] = $son_entreprise;
+                            $liste_item["listes"] = $ligne_entreprise;
+                            $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                            $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                            $liste_item["total_reste"] = $l2["total_reste"];
+
+                            array_push($Liste, $liste_item);
+                        }
+                        return $Liste;
                     }
                 }
             } else if ($t == 2) {
@@ -131,7 +428,7 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                 if (in_array("Aucun paiement", $etat_paiement)) {
                     if(count($etat_production)>1){
                         if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                             ->setParameter('date1', $date1)
                             ->setParameter('date2', $date2)
@@ -141,9 +438,77 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                             ->andWhere('d.total_reglement = 0')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                            ->setParameter('tab2', $etat_production)
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.total_reglement = 0')
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                         else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                             ->setParameter('date1', $date1)
                             ->setParameter('date2', $date2)
@@ -152,11 +517,78 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                             ->andWhere('d.total_reglement = 0')
                             ->getQuery()
                             ->getResult();
+                            
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.etat_production IN(:tab1)')
+                            ->setParameter('tab1', $etat_production)
+                            ->andWhere('d.total_reglement = 0')
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                     }
                     else{
                         if (count($type_transaction) > 1) {
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                                 ->setParameter('date1', $date1)
                                 ->setParameter('date2', $date2)
@@ -165,14 +597,147 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                                 ->andWhere('d.total_reglement = 0')
                                 ->getQuery()
                                 ->getResult();
+                            
+                                $liste2 = $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.type_transaction IN(:tab1)')
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.total_reglement = 0')
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
+
                         } else {
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                                 ->setParameter('date1', $date1)
                                 ->setParameter('date2', $date2)
                                 ->andWhere('d.total_reglement = 0')
                                 ->getQuery()
                                 ->getResult();
+                            
+                            $liste2 = $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.total_reglement = 0')
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                     }
                 } 
@@ -180,7 +745,7 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                 else if (in_array("Paiement partiel", $etat_paiement)) {
                     if(count($etat_production)>1){
                         if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                             ->setParameter('date1', $date1)
                             ->setParameter('date2', $date2)
@@ -191,9 +756,78 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                             ->andHaving('d.total_reglement > 0')
                             ->getQuery()
                             ->getResult();
+
+                        $liste2 = $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                            ->setParameter('tab2', $etat_production)
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.montant_total > d.total_reglement')
+                            ->andHaving('d.total_reglement > 0')
+                            
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                         else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                                 ->setParameter('date1', $date1)
                                 ->setParameter('date2', $date2)
@@ -203,11 +837,79 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                                 ->andHaving('d.total_reglement > 0')
                                 ->getQuery()
                                 ->getResult();
+                            
+                            $liste2 = $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.etat_production IN(:tab2)')
+                                ->setParameter('tab2', $etat_production)
+                                ->andWhere('d.montant_total > d.total_reglement')
+                                ->andHaving('d.total_reglement > 0')
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                     }
                     else{
                         if (count($type_transaction) > 1) {
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                                 ->setParameter('date1', $date1)
                                 ->setParameter('date2', $date2)
@@ -217,8 +919,77 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                                 ->andHaving('d.total_reglement > 0')
                                 ->getQuery()
                                 ->getResult();
+                            
+                            $liste2 =  $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.type_transaction IN(:tab1)')
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.montant_total > d.total_reglement')
+                                ->andHaving('d.total_reglement > 0')
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
+                            
                         } else {
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                                 ->setParameter('date1', $date1)
                                 ->setParameter('date2', $date2)
@@ -226,12 +997,77 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                                 ->andHaving('d.total_reglement > 0')
                                 ->getQuery()
                                 ->getResult();
+                            
+                            $liste2 = $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.montant_total > d.total_reglement')
+                                ->andHaving('d.total_reglement > 0')
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                     }
                 } else if (in_array("Paiement total", $etat_paiement)) {
                    if(count($etat_production)>1){
                        if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                                 ->setParameter('date1', $date1)
                                 ->setParameter('date2', $date2)
@@ -241,9 +1077,77 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                                 ->andWhere('d.montant_total = d.total_reglement')
                                 ->getQuery()
                                 ->getResult();
+                            
+                            $liste2 = $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                                ->setParameter('tab2', $etat_production)
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.montant_total = d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                        }
                        else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                                 ->setParameter('date1', $date1)
                                 ->setParameter('date2', $date2)
@@ -252,11 +1156,78 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                                 ->andWhere('d.montant_total = d.total_reglement')
                                 ->getQuery()
                                 ->getResult();
+                            
+                            $liste2 = $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.etat_production IN(:tab2)')
+                                ->setParameter('tab2', $etat_production)
+                                ->andWhere('d.montant_total = d.total_reglement')
+                                
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                        }
                    }
                    else{
                        if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                                 ->setParameter('date1', $date1)
                                 ->setParameter('date2', $date2)
@@ -265,15 +1236,147 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                                 ->andWhere('d.montant_total = d.total_reglement')
                                 ->getQuery()
                                 ->getResult();
+                            
+                            $liste2 = $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.type_transaction IN(:tab1)')
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.montant_total = d.total_reglement')
+                                
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                        }
                        else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                                 ->setParameter('date1', $date1)
                                 ->setParameter('date2', $date2)
                                 ->andWhere('d.montant_total = d.total_reglement')
                                 ->getQuery()
                                 ->getResult();
+                            
+                            $liste2 = $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.montant_total = d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                        }
                    }
                 }
@@ -281,7 +1384,7 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                 if (in_array("Aucun paiement", $etat_paiement) && in_array("Paiement partiel", $etat_paiement)) {
                    if(count($etat_production)>1){
                        if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                                 ->setParameter('date1', $date1)
                                 ->setParameter('date2', $date2)
@@ -291,9 +1394,77 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                                 ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
                                 ->getQuery()
                                 ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                                ->setParameter('tab2', $etat_production)
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                        }
                        else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                                 ->setParameter('date1', $date1)
                                 ->setParameter('date2', $date2)
@@ -302,11 +1473,78 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                                 ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
                                 ->getQuery()
                                 ->getResult();
+                            
+                            $liste2 = $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.etat_production IN(:tab2)')
+                                ->setParameter('tab2', $etat_production)
+                                ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
+                                
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                        }
                    }
                    else{
                        if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                                 ->setParameter('date1', $date1)
                                 ->setParameter('date2', $date2)
@@ -315,21 +1553,153 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                                 ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
                                 ->getQuery()
                                 ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.type_transaction IN(:tab1)')
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
+                                
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                        }
                        else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                                 ->setParameter('date1', $date1)
                                 ->setParameter('date2', $date2)
                                 ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
                                 ->getQuery()
                                 ->getResult();
+
+                            $liste2 =  $this->createQueryBuilder('d')
+                                ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                                ->setParameter('date1', $date1)
+                                ->setParameter('date2', $date2)
+                                ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                        }
                    }
                 } else if (in_array("Aucun paiement", $etat_paiement) && in_array("Paiement total", $etat_paiement)) {
                     if(count($etat_production)>1){
                         if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                             ->setParameter('date1', $date1)
                             ->setParameter('date2', $date2)
@@ -339,9 +1709,77 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                             ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                            ->setParameter('tab2', $etat_production)
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
+                            
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                         else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                             ->setParameter('date1', $date1)
                             ->setParameter('date2', $date2)
@@ -350,11 +1788,78 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                             ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.etat_production IN(:tab2)')
+                            ->setParameter('tab2', $etat_production)
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
+                            
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                     }
                     else{
                         if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                             ->setParameter('date1', $date1)
                             ->setParameter('date2', $date2)
@@ -363,21 +1868,153 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                             ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.type_transaction IN(:tab1)')
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
+                            
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                         else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                             ->setParameter('date1', $date1)
                             ->setParameter('date2', $date2)
                             ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                     }
                 } else if (in_array("Paiement partiel", $etat_paiement) && in_array("Paiement total", $etat_paiement)) {
                     if(count($etat_production)>1){
                         if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                             ->setParameter('date1', $date1)
                             ->setParameter('date2', $date2)
@@ -387,9 +2024,77 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                             ->andWhere('d.montant_total >= d.total_reglement')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 =  $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                            ->setParameter('tab2', $etat_production)
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.montant_total >= d.total_reglement')
+                            
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                         else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                             ->setParameter('date1', $date1)
                             ->setParameter('date2', $date2)
@@ -398,11 +2103,78 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                             ->andWhere('d.montant_total >= d.total_reglement')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.etat_production IN(:tab2)')
+                            ->setParameter('tab2', $etat_production)
+                            ->andWhere('d.montant_total >= d.total_reglement')
+                            
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                     }
                     else{
                         if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                             ->setParameter('date1', $date1)
                             ->setParameter('date2', $date2)
@@ -411,22 +2183,154 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                             ->andWhere('d.montant_total >= d.total_reglement')
                             ->getQuery()
                             ->getResult();
+                            
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.type_transaction IN(:tab1)')
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.montant_total >= d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                         else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                             ->setParameter('date1', $date1)
                             ->setParameter('date2', $date2)
                             ->andWhere('d.montant_total >= d.total_reglement')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                            ->setParameter('date1', $date1)
+                            ->setParameter('date2', $date2)
+                            ->andWhere('d.montant_total >= d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                     }
                 }
             } else if ($t == 4) {
                 if(count($etat_production)>1){
                     if(count($type_transaction)>1){
-                        return $this->createQueryBuilder('d')
+                        $liste1 = $this->createQueryBuilder('d')
                         ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                         ->setParameter('date1', $date1)
                         ->setParameter('date2', $date2)
@@ -436,9 +2340,77 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                         ->andWhere('d.montant_total >= 0')
                         ->getQuery()
                         ->getResult();
+
+                        $liste2 = $this->createQueryBuilder('d')
+                        ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                        ->setParameter('date1', $date1)
+                        ->setParameter('date2', $date2)
+                        ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                        ->setParameter('tab2', $etat_production)
+                        ->setParameter('tab1', $type_transaction)
+                        ->andWhere('d.montant_total >= 0')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                        if ($typeReglement != null) {
+                            if ($typeReglement == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeReste != null) {
+                            if ($typeReste == "ASC") {
+                                $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                    ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                    ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeMontant != null) {
+                            if ($typeMontant == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+
+                        $Liste = [];
+                        foreach ($liste2  as $l2) {
+                            $liste_item = [];
+                            $ligne_entreprise = [];
+                            $son_entreprise = $l2[0]->getEntreprise();
+                            foreach ($liste1 as $l1) {
+                                $entreprise_l1 = $l1->getEntreprise();
+                                if ($entreprise_l1 == $son_entreprise) {
+                                    array_push($ligne_entreprise, $l1);
+                                }
+                            }
+                            $liste_item["entreprise"] = $son_entreprise;
+                            $liste_item["listes"] = $ligne_entreprise;
+                            $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                            $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                            $liste_item["total_reste"] = $l2["total_reste"];
+
+                            array_push($Liste, $liste_item);
+                        }
+                        return $Liste;
                     }
                     else{
-                        return $this->createQueryBuilder('d')
+                        $liste1 = $this->createQueryBuilder('d')
                         ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                         ->setParameter('date1', $date1)
                         ->setParameter('date2', $date2)
@@ -447,11 +2419,78 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                         ->andWhere('d.montant_total >= 0')
                         ->getQuery()
                         ->getResult();
+
+                        $liste2 = $this->createQueryBuilder('d')
+                        ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                        ->setParameter('date1', $date1)
+                        ->setParameter('date2', $date2)
+                        ->andWhere('d.etat_production IN(:tab2)')
+                        ->setParameter('tab2', $etat_production)
+                        ->andWhere('d.montant_total >= 0')
+                        
+                        ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                        if ($typeReglement != null) {
+                            if ($typeReglement == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeReste != null) {
+                            if ($typeReste == "ASC") {
+                                $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                    ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                    ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeMontant != null) {
+                            if ($typeMontant == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+
+                        $Liste = [];
+                        foreach ($liste2  as $l2) {
+                            $liste_item = [];
+                            $ligne_entreprise = [];
+                            $son_entreprise = $l2[0]->getEntreprise();
+                            foreach ($liste1 as $l1) {
+                                $entreprise_l1 = $l1->getEntreprise();
+                                if ($entreprise_l1 == $son_entreprise) {
+                                    array_push($ligne_entreprise, $l1);
+                                }
+                            }
+                            $liste_item["entreprise"] = $son_entreprise;
+                            $liste_item["listes"] = $ligne_entreprise;
+                            $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                            $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                            $liste_item["total_reste"] = $l2["total_reste"];
+
+                            array_push($Liste, $liste_item);
+                        }
+                        return $Liste;
                     }
                 }
                 else{
                     if(count($type_transaction)>1){
-                        return $this->createQueryBuilder('d')
+                        $liste1 = $this->createQueryBuilder('d')
                         ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                         ->setParameter('date1', $date1)
                         ->setParameter('date2', $date2)
@@ -460,15 +2499,147 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                         ->andWhere('d.montant_total >= 0')
                         ->getQuery()
                         ->getResult();
+
+                        $liste2 = $this->createQueryBuilder('d')
+                        ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                        ->setParameter('date1', $date1)
+                        ->setParameter('date2', $date2)
+                        ->andWhere('d.type_transaction IN(:tab1)')
+                        ->setParameter('tab1', $type_transaction)
+                        ->andWhere('d.montant_total >= 0')
+                        
+                        ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                        if ($typeReglement != null) {
+                            if ($typeReglement == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeReste != null) {
+                            if ($typeReste == "ASC") {
+                                $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                    ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                    ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeMontant != null) {
+                            if ($typeMontant == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+
+                        $Liste = [];
+                        foreach ($liste2  as $l2) {
+                            $liste_item = [];
+                            $ligne_entreprise = [];
+                            $son_entreprise = $l2[0]->getEntreprise();
+                            foreach ($liste1 as $l1) {
+                                $entreprise_l1 = $l1->getEntreprise();
+                                if ($entreprise_l1 == $son_entreprise) {
+                                    array_push($ligne_entreprise, $l1);
+                                }
+                            }
+                            $liste_item["entreprise"] = $son_entreprise;
+                            $liste_item["listes"] = $ligne_entreprise;
+                            $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                            $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                            $liste_item["total_reste"] = $l2["total_reste"];
+
+                            array_push($Liste, $liste_item);
+                        }
+                        return $Liste;
                     }
                     else{
-                        return $this->createQueryBuilder('d')
+                        $liste1 = $this->createQueryBuilder('d')
                         ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
                         ->setParameter('date1', $date1)
                         ->setParameter('date2', $date2)
                         ->andWhere('d.montant_total >= 0')
                         ->getQuery()
                         ->getResult();
+
+                        $liste2 = $this->createQueryBuilder('d')
+                        ->Where('d.date_confirmation BETWEEN :date1 AND :date2')
+                        ->setParameter('date1', $date1)
+                        ->setParameter('date2', $date2)
+                        ->andWhere('d.montant_total >= 0')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                        if ($typeReglement != null) {
+                            if ($typeReglement == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeReste != null) {
+                            if ($typeReste == "ASC") {
+                                $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                    ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                    ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeMontant != null) {
+                            if ($typeMontant == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+
+                        $Liste = [];
+                        foreach ($liste2  as $l2) {
+                            $liste_item = [];
+                            $ligne_entreprise = [];
+                            $son_entreprise = $l2[0]->getEntreprise();
+                            foreach ($liste1 as $l1) {
+                                $entreprise_l1 = $l1->getEntreprise();
+                                if ($entreprise_l1 == $son_entreprise) {
+                                    array_push($ligne_entreprise, $l1);
+                                }
+                            }
+                            $liste_item["entreprise"] = $son_entreprise;
+                            $liste_item["listes"] = $ligne_entreprise;
+                            $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                            $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                            $liste_item["total_reste"] = $l2["total_reste"];
+
+                            array_push($Liste, $liste_item);
+                        }
+                        return $Liste;
                     }
                 }
             }
@@ -478,35 +2649,287 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
             if ($t == 1) {
                 if(count($etat_production)>1){
                     if(count($type_transaction)>1){
-                        return $this->createQueryBuilder('d')
+                        $liste1 =  $this->createQueryBuilder('d')
                         ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
                         ->setParameter('tab2', $etat_production)
                         ->setParameter('tab1', $type_transaction)
                         ->getQuery()
                         ->getResult();
+                        //dd($liste1);
+                        
+                        $liste2 = $this->createQueryBuilder('d')
+                        ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                        ->setParameter('tab2', $etat_production)
+                        ->setParameter('tab1', $type_transaction)
+                        
+                        ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                        ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                        ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                        ->groupBy('d.entreprise');
+                        if($typeReglement != null){
+                           if($typeReglement == "ASC"){
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                    ->getResult();
+                           }else{
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                           }
+                        }
+                        if ($typeReste != null) {
+                           if($typeReste == "ASC"){
+                                $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                    ->getQuery()
+                                    ->getResult();
+                           }else{
+                                $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                    ->getQuery()
+                                    ->getResult();
+                           }
+                        }
+                        if ($typeMontant != null) {
+                           if($typeMontant == "ASC"){
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                    ->getResult();
+                           }else{
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                    ->getResult();
+                           }
+                        }
+                       
+                        $Liste = [];
+                        foreach($liste2  as $l2){
+                            $liste_item = [];
+                            $ligne_entreprise = [];
+                            $son_entreprise = $l2[0]->getEntreprise();
+                            foreach($liste1 as $l1){
+                                $entreprise_l1 = $l1->getEntreprise();
+                                if($entreprise_l1 == $son_entreprise){
+                                    array_push($ligne_entreprise, $l1);
+                                }
+                            }
+                            $liste_item["entreprise"] = $son_entreprise;
+                            $liste_item["listes"] = $ligne_entreprise;
+                            $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                            $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                            $liste_item["total_reste"] = $l2["total_reste"];
+
+                            array_push($Liste, $liste_item);
+                        }
+                       return $Liste;
                     }
                     else{
                         
-                        return $this->createQueryBuilder('d')
+                        $liste1 = $this->createQueryBuilder('d')
                         ->andWhere('d.etat_production IN(:tab2)')
                         ->setParameter('tab2', $etat_production)
                         ->getQuery()
                         ->getResult();
+
+                        $liste2 = $this->createQueryBuilder('d')
+                        ->andWhere('d.etat_production IN(:tab2)')
+                        ->setParameter('tab2', $etat_production)
+
+                        ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                        ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                        ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                        ->groupBy('d.entreprise');
+                        if ($typeReglement != null) {
+                            if ($typeReglement == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                ->getQuery()
+                                ->getResult();
+                            }
+                        }
+                        if ($typeReste != null) {
+                            if ($typeReste == "ASC") {
+                                $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeMontant != null) {
+                            if ($typeMontant == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+
+                        $Liste = [];
+                        foreach ($liste2  as $l2) {
+                            $liste_item = [];
+                            $ligne_entreprise = [];
+                            $son_entreprise = $l2[0]->getEntreprise();
+                            foreach ($liste1 as $l1) {
+                                $entreprise_l1 = $l1->getEntreprise();
+                                if ($entreprise_l1 == $son_entreprise
+                                ) {
+                                    array_push($ligne_entreprise, $l1);
+                                }
+                            }
+                            $liste_item["entreprise"] = $son_entreprise;
+                            $liste_item["listes"] = $ligne_entreprise;
+                            $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                            $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                            $liste_item["total_reste"] = $l2["total_reste"];
+
+                            array_push($Liste, $liste_item);
+                        }
+                        return $Liste;
                     }
                 }
                 else{
                     if(count($type_transaction)>1){
-                        return $this->createQueryBuilder('d')
+                        $liste1 =  $this->createQueryBuilder('d')
                         ->andWhere('d.type_transaction IN(:tab1)')
-                        
                         ->setParameter('tab1', $type_transaction)
                         ->getQuery()
                         ->getResult();
+
+                        $liste2 = $this->createQueryBuilder('d')
+                        ->andWhere('d.type_transaction IN(:tab1)')
+                        ->setParameter('tab1', $type_transaction)
+
+                        ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                        ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                        ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                        ->groupBy('d.entreprise');
+                        if ($typeReglement != null) {
+                            if ($typeReglement == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeReste != null) {
+                            if ($typeReste == "ASC") {
+                                $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                    ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                    ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeMontant != null) {
+                            if ($typeMontant == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+
+                        $Liste = [];
+                        foreach ($liste2  as $l2) {
+                            $liste_item = [];
+                            $ligne_entreprise = [];
+                            $son_entreprise = $l2[0]->getEntreprise();
+                            foreach ($liste1 as $l1) {
+                                $entreprise_l1 = $l1->getEntreprise();
+                                if ($entreprise_l1 == $son_entreprise) {
+                                    array_push($ligne_entreprise, $l1);
+                                }
+                            }
+                            $liste_item["entreprise"] = $son_entreprise;
+                            $liste_item["listes"] = $ligne_entreprise;
+                            $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                            $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                            $liste_item["total_reste"] = $l2["total_reste"];
+
+                            array_push($Liste, $liste_item);
+                        }
+                        return $Liste;
                     }
                     else{
-                        return $this->createQueryBuilder('d')
+                        $liste1 = $this->createQueryBuilder('d')
                         ->getQuery()
                         ->getResult();
+
+                        $liste2 = $this->createQueryBuilder('d')
+                        
+                        ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                        ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                        ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                        ->groupBy('d.entreprise');
+                        if ($typeReglement != null) {
+                            if ($typeReglement == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeReste != null) {
+                            if ($typeReste == "ASC") {
+                                $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                    ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                    ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeMontant != null) {
+                            if ($typeMontant == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+
+                        $Liste = [];
+                        foreach ($liste2  as $l2) {
+                            $liste_item = [];
+                            $ligne_entreprise = [];
+                            $son_entreprise = $l2[0]->getEntreprise();
+                            foreach ($liste1 as $l1) {
+                                $entreprise_l1 = $l1->getEntreprise();
+                                if ($entreprise_l1 == $son_entreprise) {
+                                    array_push($ligne_entreprise, $l1);
+                                }
+                            }
+                            $liste_item["entreprise"] = $son_entreprise;
+                            $liste_item["listes"] = $ligne_entreprise;
+                            $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                            $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                            $liste_item["total_reste"] = $l2["total_reste"];
+
+                            array_push($Liste, $liste_item);
+                        }
+                        return $Liste;
                     }
                 }
             } else if ($t == 2) {
@@ -514,45 +2937,299 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                 if (in_array("Aucun paiement", $etat_paiement)) {
                    if(count($etat_production)>1){
                        if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
                                 ->setParameter('tab2', $etat_production)
                                 ->setParameter('tab1', $type_transaction)
                                 ->andWhere('d.total_reglement = 0')
                                 ->getQuery()
                                 ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                                ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                                ->setParameter('tab2', $etat_production)
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.total_reglement = 0')
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                        }
                        else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->andWhere('d.etat_production IN(:tab2)')
                                 ->setParameter('tab2', $etat_production)
-                                
                                 ->andWhere('d.total_reglement = 0')
                                 ->getQuery()
                                 ->getResult();
+                            
+                                $liste2 = $this->createQueryBuilder('d')
+                                ->andWhere('d.etat_production IN(:tab2)')
+                                ->setParameter('tab2', $etat_production)
+                                ->andWhere('d.total_reglement = 0')
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                        }
                    }
                    else{
                        if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->andWhere('d.type_transaction IN(:tab1)')
-                                
                                 ->setParameter('tab1', $type_transaction)
                                 ->andWhere('d.total_reglement = 0')
                                 ->getQuery()
                                 ->getResult();
-                       }
+                            
+                            $liste2 = $this->createQueryBuilder('d')
+                                ->andWhere('d.type_transaction IN(:tab1)')
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.total_reglement = 0')
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
+
+                            }
                        else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->andWhere('d.total_reglement = 0')
                                 ->getQuery()
                                 ->getResult();
+                            
+                            $liste2 = $this->createQueryBuilder('d')
+                                ->andWhere('d.total_reglement = 0')
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                        }
                    }
                 } else if (in_array("Paiement partiel", $etat_paiement)) {
                     if(count($etat_production)>1){
                         if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
                             ->setParameter('tab2', $etat_production)
                             ->setParameter('tab1', $type_transaction)
@@ -560,69 +3237,584 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                             ->andHaving('d.total_reglement > 0')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                            ->setParameter('tab2', $etat_production)
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.montant_total > d.total_reglement')
+                            ->andHaving('d.total_reglement > 0')
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                         else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.etat_production IN(:tab2)')
                             ->setParameter('tab2', $etat_production)
                             ->andWhere('d.montant_total > d.total_reglement')
                             ->andHaving('d.total_reglement > 0')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2)')
+                            ->setParameter('tab2', $etat_production)
+                            ->andWhere('d.montant_total > d.total_reglement')
+                            ->andHaving('d.total_reglement > 0')
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                     }
                     else{
                         if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.type_transaction IN(:tab1)')
                             ->setParameter('tab1', $type_transaction)
                             ->andWhere('d.montant_total > d.total_reglement')
                             ->andHaving('d.total_reglement > 0')
                             ->getQuery() 
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.type_transaction IN(:tab1)')
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.montant_total > d.total_reglement')
+                            ->andHaving('d.total_reglement > 0')
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                         else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.montant_total > d.total_reglement')
                             ->andHaving('d.total_reglement > 0')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.montant_total > d.total_reglement')
+                            ->andHaving('d.total_reglement > 0')
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                     }
                 } else if (in_array("Paiement total", $etat_paiement)) {
                     if(count($etat_production)>1){
                         if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
                             ->setParameter('tab2', $etat_production)
                             ->setParameter('tab1', $type_transaction)
                             ->andWhere('d.montant_total = d.total_reglement')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                            ->setParameter('tab2', $etat_production)
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.montant_total = d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                         else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.etat_production IN(:tab2)')
                             ->setParameter('tab2', $etat_production)
                             ->andWhere('d.montant_total = d.total_reglement')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2)')
+                            ->setParameter('tab2', $etat_production)
+                            ->andWhere('d.montant_total = d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                     }
                     else{
                         if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.type_transaction IN(:tab1)')
                             ->setParameter('tab1', $type_transaction)
                             ->andWhere('d.montant_total = d.total_reglement')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.type_transaction IN(:tab1)')
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.montant_total = d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                         else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.montant_total = d.total_reglement')
                             ->getQuery()
                             ->getResult();
+                            
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.montant_total = d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
+
                         }
                     }
                 }
@@ -630,145 +3822,1164 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                 if (in_array("Aucun paiement", $etat_paiement) && in_array("Paiement partiel", $etat_paiement)) {
                     if(count($etat_production)>1){
                         if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
                             ->setParameter('tab2', $etat_production)
                             ->setParameter('tab1', $type_transaction)
                             ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                            ->setParameter('tab2', $etat_production)
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                         else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.etat_production IN(:tab2)')
                             ->setParameter('tab2', $etat_production)
                             ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2)')
+                            ->setParameter('tab2', $etat_production)
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                     }
                     else{
                         if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.type_transaction IN(:tab1)')
                             ->setParameter('tab1', $type_transaction)
                             ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.type_transaction IN(:tab1)')
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                         else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 =  $this->createQueryBuilder('d')
                             ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total > d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                     }
                 } else if (in_array("Aucun paiement", $etat_paiement) && in_array("Paiement total", $etat_paiement)) {
                     if(count($etat_production)>1){
                         if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
                             ->setParameter('tab2', $etat_production)
                             ->setParameter('tab1', $type_transaction)
                             ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                            ->setParameter('tab2', $etat_production)
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                         else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.etat_production IN(:tab2)')
                             ->setParameter('tab2', $etat_production)
                             ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2)')
+                            ->setParameter('tab2', $etat_production)
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                     }
                     else{
                         if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.type_transaction IN(:tab1)')
                             ->setParameter('tab1', $type_transaction)
                             ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.type_transaction IN(:tab1)')
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                         else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
                             ->getQuery()
                             ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.total_reglement = 0 OR d.montant_total = d.total_reglement')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                         }
                     }
                 } else if (in_array("Paiement partiel", $etat_paiement) && in_array("Paiement total", $etat_paiement)) { 
                    if(count($etat_production)>1){
                        if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
                                 ->setParameter('tab2', $etat_production)
                                 ->setParameter('tab1', $type_transaction)
                                 ->andWhere('d.total_reglement <> 0 ')
                                 ->getQuery()
                                 ->getResult();
+                            
+                                $liste2 = $this->createQueryBuilder('d')
+                                ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                                ->setParameter('tab2', $etat_production)
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.total_reglement <> 0 ')
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                        }
                        else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->andWhere('d.etat_production IN(:tab2)')
                                 ->setParameter('tab2', $etat_production)
                                 ->andWhere('d.total_reglement <> 0')
                                 ->getQuery()
                                 ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                                ->andWhere('d.etat_production IN(:tab2)')
+                                ->setParameter('tab2', $etat_production)
+                                ->andWhere('d.total_reglement <> 0')
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                        }
                    }
                    else{
                        if(count($type_transaction)>1){
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->andWhere('d.type_transaction IN(:tab1)')
                                 ->setParameter('tab1', $type_transaction)
                                 ->andWhere('d.total_reglement <> 0')
                                 ->getQuery()
                                 ->getResult();
+
+                            $liste2 = $this->createQueryBuilder('d')
+                                ->andWhere('d.type_transaction IN(:tab1)')
+                                ->setParameter('tab1', $type_transaction)
+                                ->andWhere('d.total_reglement <> 0')
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                        }
                        else{
-                            return $this->createQueryBuilder('d')
+                            $liste1 = $this->createQueryBuilder('d')
                                 ->andWhere('d.total_reglement <> 0')
                                 ->getQuery()
                                 ->getResult();
+                            
+                            $liste2 = $this->createQueryBuilder('d')
+                                ->andWhere('d.total_reglement <> 0')
+
+                                ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                                ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                                ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                                ->groupBy('d.entreprise');
+                            if ($typeReglement != null) {
+                                if ($typeReglement == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeReste != null) {
+                                if ($typeReste == "ASC") {
+                                    $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                        ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                        ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+                            if ($typeMontant != null) {
+                                if ($typeMontant == "ASC") {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                    ->getQuery()
+                                        ->getResult();
+                                } else {
+                                    $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                    ->getQuery()
+                                        ->getResult();
+                                }
+                            }
+
+                            $Liste = [];
+                            foreach ($liste2  as $l2) {
+                                $liste_item = [];
+                                $ligne_entreprise = [];
+                                $son_entreprise = $l2[0]->getEntreprise();
+                                foreach ($liste1 as $l1) {
+                                    $entreprise_l1 = $l1->getEntreprise();
+                                    if ($entreprise_l1 == $son_entreprise) {
+                                        array_push($ligne_entreprise, $l1);
+                                    }
+                                }
+                                $liste_item["entreprise"] = $son_entreprise;
+                                $liste_item["listes"] = $ligne_entreprise;
+                                $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                                $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                                $liste_item["total_reste"] = $l2["total_reste"];
+
+                                array_push($Liste, $liste_item);
+                            }
+                            return $Liste;
                        }
                    }
                 }
             } else if ($t == 4) {
                if(count($etat_production)>1){
                    if(count($type_transaction)>1){
-                        return $this->createQueryBuilder('d')
+                        $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
                             ->setParameter('tab2', $etat_production)
                             ->setParameter('tab1', $type_transaction)
                             ->andWhere('d.montant_total >= 0')
                             ->getQuery()
                             ->getResult();
+                        
+                        $liste2 =  $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2) AND d.type_transaction IN(:tab1)')
+                            ->setParameter('tab2', $etat_production)
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.montant_total >= 0')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                        if ($typeReglement != null) {
+                            if ($typeReglement == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeReste != null) {
+                            if ($typeReste == "ASC") {
+                                $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                    ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                    ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeMontant != null) {
+                            if ($typeMontant == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+
+                        $Liste = [];
+                        foreach ($liste2  as $l2) {
+                            $liste_item = [];
+                            $ligne_entreprise = [];
+                            $son_entreprise = $l2[0]->getEntreprise();
+                            foreach ($liste1 as $l1) {
+                                $entreprise_l1 = $l1->getEntreprise();
+                                if ($entreprise_l1 == $son_entreprise) {
+                                    array_push($ligne_entreprise, $l1);
+                                }
+                            }
+                            $liste_item["entreprise"] = $son_entreprise;
+                            $liste_item["listes"] = $ligne_entreprise;
+                            $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                            $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                            $liste_item["total_reste"] = $l2["total_reste"];
+
+                            array_push($Liste, $liste_item);
+                        }
+                        return $Liste;
                    }else{
-                        return $this->createQueryBuilder('d')
+                        $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.etat_production IN(:tab2)')
                             ->setParameter('tab2', $etat_production)
                             ->andWhere('d.montant_total >= 0')
                             ->getQuery()
                             ->getResult();
+
+                        $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.etat_production IN(:tab2)')
+                            ->setParameter('tab2', $etat_production)
+                            ->andWhere('d.montant_total >= 0')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                        if ($typeReglement != null) {
+                            if ($typeReglement == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeReste != null) {
+                            if ($typeReste == "ASC") {
+                                $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                    ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                    ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeMontant != null) {
+                            if ($typeMontant == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+
+                        $Liste = [];
+                        foreach ($liste2  as $l2) {
+                            $liste_item = [];
+                            $ligne_entreprise = [];
+                            $son_entreprise = $l2[0]->getEntreprise();
+                            foreach ($liste1 as $l1) {
+                                $entreprise_l1 = $l1->getEntreprise();
+                                if ($entreprise_l1 == $son_entreprise) {
+                                    array_push($ligne_entreprise, $l1);
+                                }
+                            }
+                            $liste_item["entreprise"] = $son_entreprise;
+                            $liste_item["listes"] = $ligne_entreprise;
+                            $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                            $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                            $liste_item["total_reste"] = $l2["total_reste"];
+
+                            array_push($Liste, $liste_item);
+                        }
+                        return $Liste;
                    }
                }
                else{
                    if(count($type_transaction)>1){
-                        return $this->createQueryBuilder('d')
+                        $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.type_transaction IN(:tab1)')
                             ->setParameter('tab1', $type_transaction)
                             ->andWhere('d.montant_total >= 0')
                             ->getQuery()
                             ->getResult();
+                        
+                            $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.type_transaction IN(:tab1)')
+                            ->setParameter('tab1', $type_transaction)
+                            ->andWhere('d.montant_total >= 0')
+
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                        if ($typeReglement != null) {
+                            if ($typeReglement == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeReste != null) {
+                            if ($typeReste == "ASC") {
+                                $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                    ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                    ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeMontant != null) {
+                            if ($typeMontant == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+
+                        $Liste = [];
+                        foreach ($liste2  as $l2) {
+                            $liste_item = [];
+                            $ligne_entreprise = [];
+                            $son_entreprise = $l2[0]->getEntreprise();
+                            foreach ($liste1 as $l1) {
+                                $entreprise_l1 = $l1->getEntreprise();
+                                if ($entreprise_l1 == $son_entreprise) {
+                                    array_push($ligne_entreprise, $l1);
+                                }
+                            }
+                            $liste_item["entreprise"] = $son_entreprise;
+                            $liste_item["listes"] = $ligne_entreprise;
+                            $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                            $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                            $liste_item["total_reste"] = $l2["total_reste"];
+
+                            array_push($Liste, $liste_item);
+                        }
+                        return $Liste;
                    }
                    else{
-                        return $this->createQueryBuilder('d')
+                        $liste1 = $this->createQueryBuilder('d')
                             ->andWhere('d.montant_total >= 0')
                             ->getQuery()
                             ->getResult();
+                        
+                        $liste2 = $this->createQueryBuilder('d')
+                            ->andWhere('d.montant_total >= 0')
+                            ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
+                            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+                            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+                            ->groupBy('d.entreprise');
+                        if ($typeReglement != null) {
+                            if ($typeReglement == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_total_reglement', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeReste != null) {
+                            if ($typeReste == "ASC") {
+                                $liste2 = $liste2->orderBy('total_reste', 'ASC')
+                                    ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('total_reste', 'DESC')
+                                    ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+                        if ($typeMontant != null) {
+                            if ($typeMontant == "ASC") {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'ASC')
+                                ->getQuery()
+                                    ->getResult();
+                            } else {
+                                $liste2 = $liste2->orderBy('sous_total_montant_total', 'DESC')
+                                ->getQuery()
+                                    ->getResult();
+                            }
+                        }
+
+                        $Liste = [];
+                        foreach ($liste2  as $l2) {
+                            $liste_item = [];
+                            $ligne_entreprise = [];
+                            $son_entreprise = $l2[0]->getEntreprise();
+                            foreach ($liste1 as $l1) {
+                                $entreprise_l1 = $l1->getEntreprise();
+                                if ($entreprise_l1 == $son_entreprise) {
+                                    array_push($ligne_entreprise, $l1);
+                                }
+                            }
+                            $liste_item["entreprise"] = $son_entreprise;
+                            $liste_item["listes"] = $ligne_entreprise;
+                            $liste_item["sous_total_montant_total"] = $l2["sous_total_montant_total"];
+                            $liste_item["sous_total_total_reglement"] = $l2["sous_total_total_reglement"];
+                            $liste_item["total_reste"] = $l2["total_reste"];
+
+                            array_push($Liste, $liste_item);
+                        }
+                        return $Liste;
                    }
                }
             }

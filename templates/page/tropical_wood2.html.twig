@@ -351,12 +351,24 @@
 									</div>
 									<div>
 										<span>Paiement</span>
+										<span class="span_tri">
+											<a href="#"><small class="fa fa-sort-asc" style="color:#ffff;"></small></a>
+											<a href="#"><small class="fa fa-sort-desc" style="color:#ffff;"></small></a>
+										</span>
 									</div>
 									<div>
 										<span>Reste à payé</span>
+										<span class="span_tri">
+											<a href="#"><small class="fa fa-sort-asc" style="color:#ffff;"></small></a>
+											<a href="#"><small class="fa fa-sort-desc" style="color:#ffff;"></small></a>
+										</span>
 									</div>
 									<div>
 										<span>Montant total</span>
+										<span class="span_tri">
+											<a href="#"><small class="fa fa-sort-asc" style="color:#ffff;"></small></a>
+											<a href="#"><small class="fa fa-sort-desc" style="color:#ffff;"></small></a>
+										</span>
 									</div>
 									<div>
 										<span>Date de confirmation</span>
@@ -367,10 +379,13 @@
 								</div>
 							</div>
 							<div class="table_body">
-							{% set liste_paiement = [] %}
-							{% set liste_reste = [] %}
-							{% set liste_total_montant = [] %}
+							{% set total_reste = 0 %}
+							{% set total_reglement = 0 %}
+							{% set total_montant = 0 %}
 								{% for data in datas %}
+									{% set total_reste = total_reste + data.total_reste %}
+									{% set total_reglement = total_reglement + data.sous_total_total_reglement %}
+									{% set total_montant = total_montant + data.sous_total_montant_total %}
 									{% if data|length > 0 %}
 										<div>
 											<div class="t_body_row">
@@ -467,29 +482,17 @@
 									</div>
 									<div>
 										<span class="montant value" id="total_paiement">
-											{# {% set total_p = 0 %}
-											{% for t in liste_paiement %}
-												{% set total_p = total_p + t %}
-											{% endfor %}
-											{{ total_p }} #}
+											{{ total_reglement }}
 										</span>
 									</div>
 									<div>
 										<span class="montant value" id="total_reste">										
-												{# {% set total_p = 0 %}
-												{% for t in liste_reste %}
-													{% set total_p = total_p + t %}
-												{% endfor %}
-												{{ total_p }} #}
+												{{ total_reste }}
 										</span>
 									</div>
 									<div>
 										<span class="montant value" id="total_montant">
-												{# {% set total_p = 0 %}
-												{% for t in liste_total_montant %}
-													{% set total_p = total_p + t %}
-												{% endfor %}
-												{{ total_p }} #}
+												{{ total_montant }}
 										</span>
 									</div>
 									<div>

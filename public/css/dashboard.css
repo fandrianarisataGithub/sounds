@@ -1462,7 +1462,9 @@
       border-color: transparent;
       margin-top: 15px;
   }
-  
+.btn_black:hover{
+    border: none;
+}
   .btn_dore:hover,
   .btn_gris:hover {
       color: #c79c67 !important;
@@ -4182,4 +4184,25 @@ button#btn_add_donnee_mensuel{
     color: #555555 !important;
     font-size: 12px !important;
     padding-left: 5px;
+}
+.span_tri a{
+   display: inline-flex;
+    justify-content: end;
+}
+.span_tri a:hover{
+    text-decoration: none;
+}
+.span_tri a:first-child{
+   position: relative;
+    left: 10px;
+    bottom: 5px;
+}
+.span_tri a:last-child{
+    position: relative;
+    top: 5px;
+}
+.span_tri a{
+}
+.span_tri a small.fa{
+  
 }
