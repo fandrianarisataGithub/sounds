@@ -291,7 +291,7 @@
 				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 					<div class="liste_form_search">
 						<div class="block_form_search">
-							<form action="{{ path('trop_search') }}" method="post">
+							<form>
 								<a href="#"><span class="fa fa-search"></span></a>
 								<div class="block_deroulement">
 									<input type="text" id="entreprise_contact" class="form-control" placeholder="Entreprises/Contacts" autocomplete="off">
@@ -790,11 +790,18 @@
 			$('#button_ok').on('click', function(ev){
 				ev.preventDefault();
 				var input__entreprise_ajax = $('#input__entreprise').val();
+				load_by_button_ok(input__entreprise_ajax, "DESC", null, null);
+			})
+
+			function load_by_button_ok(input__entreprise_ajax, tri_reglement, tri_reste, tri_montant){
 				$.ajax({
 					url : "/profile/search_ajax_btn_ok/tropical",
 					type : "POST",
 					data : {
-							'input__entreprise_ajax' : input__entreprise_ajax,
+							'input__entreprise_ajax' 	: input__entreprise_ajax,
+							'tri_reglement' 			: tri_reglement,
+							'tri_reste'					: tri_reste,
+							'tri_montant'				: tri_montant,
 						},
 					beforeSend : function(){
 						$('.table_body').html(`
@@ -818,18 +825,19 @@
 							}
 						});
 					},
+					
 					error : function(){
 						alert('erreur ajax ri_ajax_btn_black/tropical')
 					}
 				})
-			})
+			}
 
 			// a_tri
 			$('.a_tri').on('click', function(ev){
 				ev.preventDefault();
 				var son_data_type = $(this).attr('data-type');
 				var son_data_data = $(this).attr('data-data');
-				//alert(son_data_type);
+				//alert(son_data_type + "/" + son_data_data);
 			})
 
 			lister_datas();

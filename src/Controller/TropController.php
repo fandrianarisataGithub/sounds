@@ -336,10 +336,14 @@ class TropController extends AbstractController
         if ($request->isXmlHttpRequest()) {
 
             $input__entreprise_ajax = $request->get('input__entreprise_ajax');
+            $tri_reglement = $request->get('tri_reglement');
+            $tri_reste = $request->get('tri_reste');
+            $tri_montant = $request->get('tri_montant');
+            $text = $tri_reglement ."/".$tri_reste."/".$tri_montant;
            
             $input__entreprise_ajax = explode("*", $input__entreprise_ajax);
 
-            $Liste = $repoTrop->searchEntrepriseContact($input__entreprise_ajax);
+            $Liste = $repoTrop->searchEntrepriseContact($input__entreprise_ajax, $tri_reglement, $tri_reste, $tri_montant);
 
             $stringP = '';
             $Total_Reglement = 0;
@@ -483,16 +487,22 @@ class TropController extends AbstractController
                                 <span></span>
                             </div>
                         </div>
-                    
                     ';
-
-
-
-
             $data = json_encode($stringP);
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent($data);
         }
+
+        $input__entreprise_ajax = "*Ministère de l'éducation*Mosquée Majunga*Mohamad Mouna*SICAM SA";
+        $tri_reglement = "";
+        $tri_reste = "";
+        $tri_montant = "DESC";
+        $text = $tri_reglement . "/" . $tri_reste . "/" . $tri_montant;
+
+        $input__entreprise_ajax = explode("*", $input__entreprise_ajax);
+
+        $Liste = $repoTrop->searchEntrepriseContact($input__entreprise_ajax, $tri_reglement, $tri_reste, $tri_montant);
+        dd($Liste);
         return $response;
     }
 
@@ -536,97 +546,6 @@ class TropController extends AbstractController
        
     }
 
-    /**
-     * @Route("/admin/trop_search", name="trop_search")
-     */
-    public function trop_search(SessionInterface $session, Request $request, Services $services, EntityManagerInterface $manager, DataTropicalWoodRepository $repoTrop)
-    {
-        $data_session = $session->get('hotel');
-        $form_add = $this->createForm(FournisseurFileType::class);
-        $form_add->handleRequest($request);
-        $les_datas = [];
-        $table = [];
-       
-        if ($request->request->count() > 0) {
-           
-            $detail = $request->request->get('detail');
-            $entreprise_contact = $request->request->get('entreprise_contact');           
-            // recherche de type_tr
-            if($entreprise_contact !="vide"){
-                //dd($entreprise_contact);
-                $les_datas = [];
-                $tab = [];
-                if (strpos($entreprise_contact, "*") !== false) {
-                    $tab = explode("*", trim($entreprise_contact));
-                    
-                    $Liste = $repoTrop->searchEntrepriseContact($tab);
-                    dd($Liste);
-                }
-                else if(strpos($entreprise_contact, "*") == false){
-                    $liste = $repoTrop->searchEntrepriseContact($entreprise_contact);
-                   
-                    if ($liste != null) {
-                        foreach ($liste as $key => $value) {
-                            $les_datas[$value->getEntreprise()][$key] = $value;
-                        }
-                    }
-                }
-                return $this->render('page/tropical_wood.html.twig', [
-                    "hotel"             => $data_session['pseudo_hotel'],
-                    "current_page"      => $data_session['current_page'],
-                    "form_add"          => $form_add->createView(),
-                    'datas'             => $les_datas,
-                    'tri'               => true,
-                    'searchE'           => $entreprise_contact,
-                    'liste_choices'     => $tab,
-                    'tropical_wood'     => true,
-                ]);
-            } 
-            else if($detail != "vide") {
-                $les_datas = [];
-                if (strpos($detail, "/") !== false) {
-                    $tab = explode("/", $detail);
-                    $liste = [];
-                    for ($i = 0; $i < count($tab); $i++) {
-                        array_push($liste, $repoTrop->searchDetail($tab[$i]));
-                    }
-                    // akambana anaty tab iray ny elem an'ny liste
-                    $ligne = [];
-
-                    for ($j = 0; $j < count($liste); $j++) {
-                        for ($i = 0; $i < count($liste[$j]); $i++) {
-                            array_push($ligne, $liste[$j][$i]);
-                        }
-                    }
-
-                    if ($ligne != null) {
-                        foreach ($ligne as $key => $value) {
-                            $les_datas[$value->getEntreprise()][$key] = $value;
-                        }
-                    }
-                } else if (strpos($entreprise_contact, "/") == false) {
-                    
-                    $liste = $repoTrop->searchDetail($detail);
-
-                    if ($liste != null) {
-                        foreach ($liste as $key => $value) {
-                            $les_datas[$value->getEntreprise()][$key] = $value;
-                        }
-                    }
-                }
-
-                return $this->render('page/tropical_wood.html.twig', [
-                    "hotel"             => $data_session['pseudo_hotel'],
-                    "current_page"      => $data_session['current_page'],
-                    "form_add"          => $form_add->createView(),
-                    'datas'             => $les_datas,
-                    'tri'               => true,
-                    'searchD'            => $detail,
-                    'tropical_wood'             => true,
-                ]);
-            }
-        }
-    }
     /**
      * @Route("/profile/search_ajax_ec", name = "search_ajax_ec")
      */

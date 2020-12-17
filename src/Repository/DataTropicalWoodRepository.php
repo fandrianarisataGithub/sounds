@@ -22,7 +22,7 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
      /**
      * @return DataTropicalWood[] Returns an array of DataTropicalWood objects
      */
-    public function searchEntrepriseContact(array $liste)
+    public function searchEntrepriseContact(array $liste, $tri_reglement, $tri_reste, $tri_montant)
     {   $Liste = [];
         for($i = 1 ; $i< count($liste); $i++){
             $liste_item = [];
@@ -37,11 +37,25 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
             ->setParameter('val', '%' . $liste[$i] . '%')
             ->addSelect('d.entreprise')
             ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
-            ->addSelect('SUM(d.montant_total)as sous_total_montant_total')
+            ->addSelect('SUM(d.montant_total) as sous_total_montant_total')
             ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
+            ->orderBy('total_reste', 'DESC')
             ->groupBy('d.entreprise')
             ->getQuery()
             ->getResult();
+            // if($tri_reglement){
+            //    $liste2->orderBy('sous_total_total_reglement', $tri_reglement);
+            // }
+            // if($tri_reste){
+            //     $liste2->orderBy('total_reste', $tri_reste);
+            // }
+            // if($tri_montant){
+            //     $liste2->orderBy('sous_total_montant_total', $tri_montant);
+            // }
+            
+            // $liste2 = $liste2->getQuery()
+            //         ->getResult();
+                    
             $liste_item["entreprise"] = $liste2[0]["entreprise"];
             $liste_item["listes"] = $liste1;
             $liste_item["sous_total_montant_total"] = $liste2[0]["sous_total_montant_total"];
@@ -51,7 +65,6 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
             array_push($Liste, $liste_item);
             
         }
-       
         return $Liste;
        
     }
