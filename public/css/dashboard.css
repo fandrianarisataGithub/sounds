@@ -1712,6 +1712,7 @@
   
   .sous_total_content span {
       font-weight: bolder;
+      font-size: 13px !important;
   }
   
   .sous_titre a span:not(.fa) {

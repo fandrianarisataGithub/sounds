@@ -644,6 +644,14 @@
 						'etat_production'  : data_etat_prod,
 						'etat_paiement'	   : data_etat_paie
 						},
+					beforeSend : function(){
+						$('.table_body').html(`
+						<div style="display:flex; justify-content:center; align-items:center;">
+						   <p style="text-align:center;"> Chargement ....</p>
+						</div>
+						
+						`);
+					},
 					success : function(response){
 						$('.table_body').html("");
 						$('.table_body').html(response).promise().done(function(){
@@ -679,6 +687,14 @@
 						'etat_production'  : data_etat_prod,
 						'etat_paiement'	   : data_etat_paie
 						},
+					beforeSend : function(){
+						$('.table_body').html(`
+						<div style="display:flex; justify-content:center; align-items:center;">
+						   <p style="text-align:center;"> Chargement ....</p>
+						</div>
+						
+						`);
+					},
 					success : function(response){
 						$('.table_body').html("");
 						$('.table_body').html(response).promise().done(function(){
@@ -742,6 +758,14 @@
 						'etat_production'  : data_etat_prod,
 						'etat_paiement'	   : data_etat_paie
 						},
+					beforeSend : function(){
+						$('.table_body').html(`
+						<div style="display:flex; justify-content:center; align-items:center;">
+						   <p style="text-align:center;"> Chargement ....</p>
+						</div>
+						
+						`);
+					},
 					success : function(response){
 						$('.table_body').html("");
 						$('.table_body').html(response).promise().done(function(){
@@ -772,6 +796,14 @@
 					data : {
 							'input__entreprise_ajax' : input__entreprise_ajax,
 						},
+					beforeSend : function(){
+						$('.table_body').html(`
+						<div style="display:flex; justify-content:center; align-items:center;">
+						   <p style="text-align:center;"> Chargement ....</p>
+						</div>
+						
+						`);
+					},
 					success : function(response){
 						$('.table_body').html("");
 						$('.table_body').html(response).promise().done(function(){
