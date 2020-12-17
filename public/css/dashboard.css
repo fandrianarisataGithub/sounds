@@ -631,11 +631,16 @@
       display: -webkit-box;
       display: -ms-flexbox;
       display: flex;
+      overflow: hidden;
+ 
   }
   
   #aside1 {
       background: #5f5f5f;
       width: 100px;
+      height: auto;
+      position: fixed;
+      height: 100%;
   }
   
   #contents.container-fluid {
@@ -645,8 +650,14 @@
   #aside2 {
       background: #323232;
       width: 215px;
+      height: auto !important;
       vertical-align: top;
       z-index: auto !important;
+      position: fixed;
+      left: 100px;
+      height: 100% !important;
+      overflow-y: scroll;
+      
   }
   
   #aside1 ul {
@@ -719,6 +730,7 @@
   img.nav_icone_hover {
       display: none;
   }
+   
   
   #aside2>ul>li {
       -webkit-transition: all 0.2s linear;
