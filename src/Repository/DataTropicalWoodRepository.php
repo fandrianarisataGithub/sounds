@@ -24,43 +24,62 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
      */
     public function searchEntrepriseContact(array $liste, $tri_reglement, $tri_reste, $tri_montant)
     {   $Liste = [];
-        for($i = 1 ; $i< count($liste); $i++){
-            $liste_item = [];
-            $liste1 = $this->createQueryBuilder('d')
-            ->andWhere('d.entreprise LIKE :val')
-            ->setParameter('val', '%' . $liste[$i] . '%')
-            ->getQuery()
-            ->getResult();
-            
-            $liste2 = $this->createQueryBuilder('d')
-            ->andWhere('d.entreprise LIKE :val')
-            ->setParameter('val', '%' . $liste[$i] . '%')
-            ->addSelect('d.entreprise')
+        // on tri les $liste selon les critère d'abord
+
+        $liste1 = $this->createQueryBuilder('d');
+        for ($i = 1; $i < count($liste); $i++) {
+            $liste1 = $liste1->orWhere('d.entreprise =:val'.$i)
+                            ->setParameter('val'.$i, $liste[$i]);
+        }
+
+           
+            $liste1 = $liste1->getQuery()
+                    ->getResult();
+
+        $liste2 = $this->createQueryBuilder('d');
+        for ($i = 1; $i < count($liste); $i++) {
+            $liste2 = $liste2->orWhere('d.entreprise =:val' . $i)
+                ->setParameter('val' . $i, $liste[$i]);
+        }
+
+
+        $liste2 = $liste2
             ->addSelect('SUM(d.total_reglement) as sous_total_total_reglement')
             ->addSelect('SUM(d.montant_total) as sous_total_montant_total')
-            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste')
-            ->orderBy('total_reste', 'DESC')
-            ->groupBy('d.entreprise')
+            ->addSelect('SUM(d.montant_total - d.total_reglement) as total_reste');
+        
+            if($tri_reglement){
+                $liste2 = $liste2->orderBy('sous_total_total_reglement', $tri_reglement);
+            }
+             if($tri_reste){
+                $liste2 = $liste2->orderBy('total_reste', $tri_reste);
+            }
+             if($tri_montant){
+                $liste2 = $liste2->orderBy('sous_total_montant_total', $tri_montant);
+            }
+            
+            $liste2 = $liste2->groupBy('d.entreprise')
             ->getQuery()
             ->getResult();
-            // if($tri_reglement){
-            //    $liste2->orderBy('sous_total_total_reglement', $tri_reglement);
-            // }
-            // if($tri_reste){
-            //     $liste2->orderBy('total_reste', $tri_reste);
-            // }
-            // if($tri_montant){
-            //     $liste2->orderBy('sous_total_montant_total', $tri_montant);
-            // }
+        
+        //dd($liste2);
+        
+        for($i = 0 ; $i< count($liste2); $i++){
+            $liste_item = [];
+            $tab_temp = [];
+            $entreprise = $liste2[$i][0]->getEntreprise();   
+            $liste_item["entreprise"] = $entreprise;
+            foreach($liste1 as $item){
+                $en = $item->getEntreprise();
+                if($en == $entreprise){
+                    array_push($tab_temp, $item);
+                }
+            }
             
-            // $liste2 = $liste2->getQuery()
-            //         ->getResult();
-                    
-            $liste_item["entreprise"] = $liste2[0]["entreprise"];
-            $liste_item["listes"] = $liste1;
-            $liste_item["sous_total_montant_total"] = $liste2[0]["sous_total_montant_total"];
-            $liste_item["sous_total_total_reglement"] = $liste2[0]["sous_total_total_reglement"];
-            $liste_item["total_reste"] = $liste2[0]["total_reste"];
+            $liste_item["listes"] = $tab_temp;
+            $liste_item["sous_total_montant_total"] = $liste2[$i]["sous_total_montant_total"];
+            $liste_item["sous_total_total_reglement"] = $liste2[$i]["sous_total_total_reglement"];
+            $liste_item["total_reste"] = $liste2[$i]["total_reste"];
             
             array_push($Liste, $liste_item);
             

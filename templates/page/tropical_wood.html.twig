@@ -355,10 +355,10 @@
 										<span>Paiement</span>
 										<span class="span_tri">
 											<a href="#" class="a_tri" data-type ="total_reglement" data-data = "ASC">
-												<small class="fa fa-sort-asc" style="color:#ffff;"></small>
+												<small class="fa fa-sort-asc"></small>
 											</a>
 											<a href="#" class="a_tri" data-type ="total_reglement" data-data = "DESC">
-												<small class="fa fa-sort-desc" style="color:#ffff;"></small>
+												<small class="fa fa-sort-desc"></small>
 											</a>
 										</span>
 									</div>
@@ -366,10 +366,10 @@
 										<span>Reste à payé</span>
 										<span class="span_tri">
 											<a href="#" class="a_tri" data-type ="reste" data-data = "ASC">
-												<small class="fa fa-sort-asc" style="color:#ffff;"></small>
+												<small class="fa fa-sort-asc"></small>
 											</a>
 											<a href="#" class="a_tri" data-type ="reste" data-data = "DESC">
-												<small class="fa fa-sort-desc" style="color:#ffff;"></small>
+												<small class="fa fa-sort-desc"></small>
 											</a>
 										</span>
 									</div>
@@ -377,10 +377,10 @@
 										<span>Montant total</span>
 										<span class="span_tri">
 											<a href="#" class="a_tri" data-type ="montant_total" data-data = "ASC">
-												<small class="fa fa-sort-asc" style="color:#ffff;"></small>
+												<small class="fa fa-sort-asc"></small>
 											</a>
 											<a href="#" class="a_tri" data-type ="montant_total" data-data = "DESC">
-												<small class="fa fa-sort-desc" style="color:#ffff;"></small>
+												<small class="fa fa-sort-desc"></small>
 											</a>
 										</span>
 									</div>
@@ -408,8 +408,6 @@
 	<script src="{{ asset('js/cleave.min.js') }}"></script>
 	<script>
 		$(document).ready(function(){
-
-			
 
 			// not allow submit form when pressing enter
 
@@ -601,6 +599,11 @@
 			})
 			$('.btn_black').on('click', function(ev){
 				ev.preventDefault();
+				load_by_btn_black(null, null, "ASC");
+			})
+
+			function load_by_btn_black(typeReglement, typeReste, typeMontant){
+				$('#input__entreprise').val(""); // on vide cet input pour eviter les conflit avec le button ok du recherche
 				// on concatenne par * les données dans chaque liste
 				var data_type_trans = "";
 				var data_etat_prod = "";
@@ -640,9 +643,12 @@
 					url : "/profile/tri_ajax_btn_black/tropical",
 					type : "POST",
 					data : {
-						'type_transaction' : data_type_trans,
-						'etat_production'  : data_etat_prod,
-						'etat_paiement'	   : data_etat_paie
+						'type_transaction' 	: data_type_trans,
+						'etat_production'  	: data_etat_prod,
+						'etat_paiement'	   	: data_etat_paie,
+						'typeReglement'		: typeReglement,
+						'typeReste'			: typeReste,
+						'typeMontant'		: typeMontant,
 						},
 					beforeSend : function(){
 						$('.table_body').html(`
@@ -670,10 +676,11 @@
 						alert('erreur ajax ri_ajax_btn_black/tropical')
 					}
 				})
-			})
+			}
 
 			$('#reinitialisation').on('click', function(ev){
 				ev.preventDefault();
+				$('#input__entreprise').val("");
 				// on concatenne par * les données dans chaque liste
 				var data_type_trans = "";
 				var data_etat_prod = "";
@@ -789,11 +796,50 @@
 
 			$('#button_ok').on('click', function(ev){
 				ev.preventDefault();
-				var input__entreprise_ajax = $('#input__entreprise').val();
-				load_by_button_ok(input__entreprise_ajax, "DESC", null, null);
+				load_by_button_ok(null, null, "ASC"); // load_by_button_ok est la fonction pour activer les tri du tab lie avec submit button_ok
 			})
 
-			function load_by_button_ok(input__entreprise_ajax, tri_reglement, tri_reste, tri_montant){
+			$('.a_tri').on('click', function(ev){
+				ev.preventDefault();
+				$.each($('.a_tri small'), function (indexInArray, valueOfElement) { 
+					 if($(this).hasClass('black')){
+						 $(this).removeClass('black');
+					 }
+				});
+				$(this).children("small").addClass('black');
+				var input__entreprise_ajax = $('#input__entreprise').val();
+				var son_data_type = $(this).attr('data-type');
+				var son_data_data = $(this).attr('data-data');
+				if(input__entreprise_ajax != ""){
+
+					if(son_data_type == "total_reglement"){
+						load_by_button_ok(son_data_data, null, null);
+					}
+					if(son_data_type == "reste"){
+						load_by_button_ok(null, son_data_data, null);
+					}
+					if(son_data_type == "montant_total"){
+						load_by_button_ok(null, null, son_data_data);
+					}
+				}
+				else{
+					if(son_data_type == "total_reglement"){
+						load_by_btn_black(son_data_data, null, null);
+					}
+					if(son_data_type == "reste"){
+						load_by_btn_black(null, son_data_data, null);
+					}
+					if(son_data_type == "montant_total"){
+						load_by_btn_black(null, null, son_data_data);
+					}
+				}
+				
+			})
+
+
+
+			function load_by_button_ok(tri_reglement, tri_reste, tri_montant){
+				var input__entreprise_ajax = $('#input__entreprise').val();
 				$.ajax({
 					url : "/profile/search_ajax_btn_ok/tropical",
 					type : "POST",
@@ -833,14 +879,9 @@
 			}
 
 			// a_tri
-			$('.a_tri').on('click', function(ev){
-				ev.preventDefault();
-				var son_data_type = $(this).attr('data-type');
-				var son_data_data = $(this).attr('data-data');
-				//alert(son_data_type + "/" + son_data_data);
-			})
-
+			
 			lister_datas();
+			
 			
 		})
 		

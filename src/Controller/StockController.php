@@ -56,4 +56,37 @@ class StockController extends AbstractController
             ]);
         }
     }
+    /**
+     * @Route("/profile/filtre/graph/stock/{pseudo_hotel}", name = "stock_filtre")
+     */
+    public function stock_filtre(Services $services, Request $request, $pseudo_hotel, EntityManagerInterface $manager, HotelRepository $reposHotel)
+    {
+        $response = new Response();
+        if($request->isXmlHttpRequest()){
+            $annee = $request->get('data');
+            $repoDM = $this->getDoctrine()->getRepository(DonneeMensuelle::class);
+            $hotel = $reposHotel->findOneByPseudo($pseudo_hotel);
+            $all_dm = $repoDM->findBy(['hotel' => $hotel]);
+            //dd($all_dm);
+            $tab = [];
+            if (count($all_dm) > 0) {
+                foreach ($all_dm as $item) {
+                    $stock = $services->no_space($item->getStock());
+                    $son_mois = $item->getMois();
+                    $tab_explode = explode("-", $son_mois);
+                    $son_annee = $tab_explode[1];
+                    if ($son_annee == $annee) {
+                        $son_numero_mois = intVal($tab_explode[0]) - 1;
+                        $tab[$son_numero_mois] = $stock / 1000000;
+                    }
+                }
+            }
+        
+            ksort($tab);
+            $data = json_encode($tab);
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+            return $response;
+        }
+    }
 }

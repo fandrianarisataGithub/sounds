@@ -155,22 +155,30 @@ class TropController extends AbstractController
         $response = new Response();
         if($request->isXmlHttpRequest()){
 
+            $typeReglement = $request->get('typeReglement');
+            $typeReste = $request->get('typeReste');
+            $typeMontant = $request->get('typeMontant');
+            
             $type_transaction = $request->get('type_transaction');
             $type_transaction = explode("*", $type_transaction);
             $etat_production = $request->get('etat_production');
             $etat_production = explode("*", $etat_production);
             $etat_paiement = $request->get('etat_paiement');
             $etat_paiement = explode("*", $etat_paiement);
+            if ($typeReglement == null && $typeReste == null && $typeMontant == null) {
+                $typeMontant = "ASC";
+            }
             $Liste = $repoTrop->filtrer(
                 $request->request->get('date1'),
                 $request->request->get('date2'),
                 $type_transaction,
                 $etat_production,
                 $etat_paiement,
-                null,
-                null,
-                "DESC"
+                $typeReglement,
+                $typeReste,
+                $typeMontant
             );
+            
 
             $stringP = '';
             $Total_Reglement = 0;
@@ -339,7 +347,6 @@ class TropController extends AbstractController
             $tri_reglement = $request->get('tri_reglement');
             $tri_reste = $request->get('tri_reste');
             $tri_montant = $request->get('tri_montant');
-            $text = $tri_reglement ."/".$tri_reste."/".$tri_montant;
            
             $input__entreprise_ajax = explode("*", $input__entreprise_ajax);
 
@@ -491,19 +498,20 @@ class TropController extends AbstractController
             $data = json_encode($stringP);
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent($data);
+            return $response;
         }
 
-        $input__entreprise_ajax = "*Ministère de l'éducation*Mosquée Majunga*Mohamad Mouna*SICAM SA";
-        $tri_reglement = "";
-        $tri_reste = "";
-        $tri_montant = "DESC";
-        $text = $tri_reglement . "/" . $tri_reste . "/" . $tri_montant;
+        // $input__entreprise_ajax = "*Ministère de l'éducation*Mosquée Majunga*Mohamad Mouna*SICAM SA";
+        // $tri_reglement = "";
+        // $tri_reste = "";
+        // $tri_montant = "ASC";
+       
 
-        $input__entreprise_ajax = explode("*", $input__entreprise_ajax);
+        // $input__entreprise_ajax = explode("*", $input__entreprise_ajax);
 
-        $Liste = $repoTrop->searchEntrepriseContact($input__entreprise_ajax, $tri_reglement, $tri_reste, $tri_montant);
-        dd($Liste);
-        return $response;
+        // $Liste = $repoTrop->searchEntrepriseContact($input__entreprise_ajax, $tri_reglement, $tri_reste, $tri_montant);
+        // dd($Liste);
+        //return $response;
     }
 
     /**

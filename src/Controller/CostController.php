@@ -109,4 +109,66 @@ class CostController extends AbstractController
             ]);
         }
     }
+    /**
+     * @Route("/profile/filtre/graph/cost_montant/{pseudo_hotel}", name="filtre_cost_montant")
+     */
+    public function cost_montant(Services $services, Request $request, $pseudo_hotel, EntityManagerInterface $manager, HotelRepository $reposHotel)
+    {
+        $response = new Response();
+        if($request->isXmlHttpRequest()){
+
+            $annee = $request->get('data');
+
+            $tab_resto_value = [];
+            $tab_elec_value = [];
+            $tab_eau_value = [];
+            $tab_gasoil_value = [];
+            $tab_salaire_value = [];
+
+            $repoDM = $this->getDoctrine()->getRepository(DonneeMensuelle::class);
+            $hotel = $reposHotel->findOneByPseudo($pseudo_hotel);
+            $all_dm = $repoDM->findBy(['hotel' => $hotel]);
+            $Liste = [];
+            $test = 0;
+            if (count($all_dm) > 0) {
+                $test++;
+                foreach ($all_dm as $item) {
+                    $resto = $services->no_space($item->getCostRestaurantValue());
+                    $elec = $services->no_space($item->getCostElectriciteValue());
+                    $eau = $services->no_space($item->getCostEauValue());
+                    $gasoil = $services->no_space($item->getCostGasoilValue());
+                    $salaire = $services->no_space($item->getSalaireBruteValue());
+
+                    $son_mois = $item->getMois();
+                    $tab_explode = explode("-", $son_mois);
+                    $son_annee = $tab_explode[1];
+                    if ($son_annee == $annee) {
+                        $son_numero_mois                = intVal($tab_explode[0]) - 1;
+                        $tab_resto_value[$son_numero_mois]    = $resto / 1000000;
+                        $tab_elec_value[$son_numero_mois]     = $elec / 1000000;
+                        $tab_eau_value[$son_numero_mois]      = $eau / 1000000;
+                        $tab_gasoil_value[$son_numero_mois]   = $gasoil / 1000000;
+                        $tab_salaire_value[$son_numero_mois]  = $salaire / 1000000;
+
+                    }
+                }
+            }
+            
+            ksort($tab_resto_value);
+            ksort($tab_elec_value);
+            ksort($tab_eau_value);
+            ksort($tab_gasoil_value);
+            ksort($tab_salaire_value);
+            
+            $Liste["tab_resto_value"] = $tab_resto_value;
+            $Liste["tab_elec_value"] = $tab_elec_value;
+            $Liste["tab_eau_value"] = $tab_eau_value;
+            $Liste["tab_gasoil_value"] = $tab_gasoil_value;
+            $Liste["tab_salaire_value"] = $tab_salaire_value;
+            $data = json_encode($Liste);
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+            return $response;
+        }
+    }
 }

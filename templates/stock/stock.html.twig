@@ -65,12 +65,11 @@
     
     <script>
          $(document).ready(function () {
+             var pseudo_hotel = '{{ hotel }}';
            function create_ctx1() {
                 var ctx1 = document.getElementById('canvas_stock').getContext("2d");
                 return ctx1;
            }
-
-
                     function create_config1(my_data, my_labels, my_max, my_stepSize){
                         var ctx1 = create_ctx1();
 
@@ -262,121 +261,34 @@
                 var myChart1 = create_chart1(create_ctx1(), create_config1(my_data_stock, my_labels, 100, 20));
 
 
-                // triage chart heb_ca
-					$('#mois_spa_ca').on('change', function(){
-						$("#element_canvas_cas").empty();
-						var mois = $('#mois_spa_ca').val();
-						var annee = $('#annee_spa_ca').val();
-						var data = {'data' : mois+"-"+annee};
+					$('#annee_stock').on('change', function(){
+						$("#element_canvas_stock").empty();
+						var annee = $('#annee_stock').val();
+						var data = {'data' : annee};
 						$.ajax({
-							url : "/profile/filtre/graph/spa_ca/"+pseudo_hotel,
+							url : "/profile/filtre/graph/stock/"+pseudo_hotel,
 							type : "POST",
 							data : data,
 							success : function(response){
-								if(response){
-									//console.log(response);
-									if(mois != 'tous_les_mois'){
-
-										var my_data = response;
-										//console.log(my_data);
-										var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
-
-										var w = $(window).width();
-										if (w <= 768) {
-                                            // $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-                                            $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-											 var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
-											myChart1.update();
-											//add_resp_heb(myChart1, myChart2);
-										} else {
-											 $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-											var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
-											myChart1.update();
-											//add_resp_heb(myChart1, myChart2);
-										}
-									}
-									else{
-										var my_data = response;
-										//console.log(my_data);
-										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
-										var w = $(window).width();
-										if (w <= 768) {
-                                            // $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-                                            $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-											 var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
-											myChart1.update();
-											//add_resp_heb(myChart1, myChart2);
-										} else {
-											 $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-											var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
-											myChart1.update();
-											//add_resp_heb(myChart1, myChart2);
-										}
-									}
-								}
+								var my_data = response;
+                               // console.log(my_data);
+                                var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+                                var w = $(window).width();
+                                if (w <= 768) {
+                                    // $("#element_canvas_stock").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
+                                    $("#element_canvas_stock").html('<div><canvas id="canvas_stock"></canvas></div><div id="chart-legends_stock"></div>');
+                                        var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
+                                    myChart1.update();
+                                    //add_resp_heb(myChart1, myChart2);
+                                } else {
+                                        $("#element_canvas_stock").html('<div><canvas id="canvas_stock"></canvas></div><div id="chart-legends_stock"></div>');
+                                    var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
+                                    myChart1.update();
+                                    //add_resp_heb(myChart1, myChart2);
+                                }
 							}, 
 							error : function(error){
-								alert('erreur server au niveau de triage chart heb_to '+pseudo_hotel)
-							}
-						})
-					})
-
-					$('#annee_spa_ca').on('change', function(){
-						$("#element_canvas_cas").empty();
-						var mois = $('#mois_spa_ca').val();
-						var annee = $('#annee_spa_ca').val();
-						var data = {'data' : mois+"-"+annee};
-						//alert(data.data);
-						$.ajax({
-							url : "/profile/filtre/graph/spa_ca/"+pseudo_hotel,
-							type : "POST",
-							data : data,
-							success : function(response){
-								
-								if(response){
-									//console.log(response);
-									if(mois != 'tous_les_mois'){
-
-										var my_data = response;
-										//console.log(my_data);
-										var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
-
-										var w = $(window).width();
-										if (w <= 768) {
-                                            // $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-                                            $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-											 var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
-											myChart1.update();
-											//add_resp_heb(myChart1, myChart2);
-										} else {
-											 $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-											var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
-											myChart1.update();
-											//add_resp_heb(myChart1, myChart2);
-										}
-									}
-									else{
-										var my_data = response;
-										//console.log(my_data);
-										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
-										var w = $(window).width();
-										if (w <= 768) {
-                                            // $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-                                            $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-											 var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
-											myChart1.update();
-											//add_resp_heb(myChart1, myChart2);
-										} else {
-											 $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-											var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
-											myChart1.update();
-											//add_resp_heb(myChart1, myChart2);
-										}
-									}
-								}
-							}, 
-							error : function(error){
-								alert('erreur server au niveau de triage chart spa_ca '+pseudo_hotel)
+								alert('erreur server au niveau de triage stock '+pseudo_hotel)
 							}
 						})
 					})
