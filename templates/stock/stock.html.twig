@@ -35,7 +35,8 @@
 						<form action="" class="tri">
 							<select name="" class="annee" id = "annee_stock">
 								{% for a in tab_annee %}
-									<option value="{{ a }}">{{ a }}</option>
+									<option value="{{ a }}"
+                                    >{{ a }}</option>
 								{% endfor %}
 							</select>
 						</form>
@@ -253,12 +254,34 @@
                         {{ s }},
                     {% endfor %}
                 ];
+                 var souche = {
+                                    '0' : 0,
+                                    '1' : 0,
+                                    '2' : 0,
+                                    '3' : 0,
+                                    '4' : 0,
+                                    '5' : 0,
+                                    '6' : 0,
+                                    '7' : 0,
+                                    '8' : 0,
+                                    '9' : 0,
+                                    '10' : 0,
+                                    '11' : 0
+                                }
+                                for (var item in my_data_stock) {
+                                    souche[item] = my_data_stock[item];
+                                }
+                                //console.log(souche);
+                                var souche2  = [];
+                                for (var item in souche) {
+                                   souche2.push(souche[item]);
+                                }
 
                 var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Sept","Oct","Nov","Dec"];
 
                 
 
-                var myChart1 = create_chart1(create_ctx1(), create_config1(my_data_stock, my_labels, 100, 20));
+                var myChart1 = create_chart1(create_ctx1(), create_config1(souche2, my_labels, 100, 20));
 
 
 					$('#annee_stock').on('change', function(){
@@ -271,18 +294,41 @@
 							data : data,
 							success : function(response){
 								var my_data = response;
-                               // console.log(my_data);
+                                
+                                //console.log(response);
+                                var souche = {
+                                    '0' : 0,
+                                    '1' : 0,
+                                    '2' : 0,
+                                    '3' : 0,
+                                    '4' : 0,
+                                    '5' : 0,
+                                    '6' : 0,
+                                    '7' : 0,
+                                    '8' : 0,
+                                    '9' : 0,
+                                    '10' : 0,
+                                    '11' : 0
+                                }
+                                for (var item in my_data) {
+                                    souche[item] = my_data[item];
+                                }
+                                //console.log(souche);
+                                var souche2  = [];
+                                for (var item in souche) {
+                                   souche2.push(souche[item]);
+                                }
                                 var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
                                 var w = $(window).width();
                                 if (w <= 768) {
                                     // $("#element_canvas_stock").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
                                     $("#element_canvas_stock").html('<div><canvas id="canvas_stock"></canvas></div><div id="chart-legends_stock"></div>');
-                                        var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
+                                        var myChart1 = create_chart1(create_ctx1(), create_config1(souche2, my_labels, 100, 20));
                                     myChart1.update();
                                     //add_resp_heb(myChart1, myChart2);
                                 } else {
                                         $("#element_canvas_stock").html('<div><canvas id="canvas_stock"></canvas></div><div id="chart-legends_stock"></div>');
-                                    var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
+                                    var myChart1 = create_chart1(create_ctx1(), create_config1(souche2, my_labels, 100, 20));
                                     myChart1.update();
                                     //add_resp_heb(myChart1, myChart2);
                                 }

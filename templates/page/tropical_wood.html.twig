@@ -882,6 +882,32 @@
 			
 			lister_datas();
 			
+			// animation au drop down pour les detail des data
+
+			$(document).on('click', '.btn_drop_data', function(ev){
+				ev.preventDefault();
+				$(".div_for_droping").hide();
+				$('.btn_drop_data span').removeClass('fa-angle-down');
+				$('.btn_drop_data span').addClass('fa-angle-up');
+				// on drop ses details
+				if($(this).children('span').hasClass('fa-angle-up')){
+					if($(this).attr('clicked') == 'false'){
+						
+						$(this).children('span').removeClass('fa-angle-up');
+						$(this).children('span').addClass('fa-angle-down');
+						$(this).parent().siblings(".div_for_droping").slideDown();
+						$(this).attr('clicked', 'true');
+					}
+					else{
+						
+						$(this).children('span').removeClass('fa-angle-down');
+						$(this).children('span').addClass('fa-angle-up');
+						$(this).parent().siblings(".div_for_droping").slideUp();
+						$(this).attr('clicked', 'false');
+					}
+				}
+			})
+			
 			
 		})
 		

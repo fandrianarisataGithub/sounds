@@ -18,13 +18,18 @@ class SqnController extends AbstractController
      */
     public function sqn(Services $services, Request $request, $pseudo_hotel, EntityManagerInterface $manager, SessionInterface $session, HotelRepository $reposHotel)
     {
+        $allAnnee = $this->tab_annee($pseudo_hotel);
+        $taille_allAnnee = count($allAnnee);
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "sqn";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         $user = $data_session['user'];
         $pos = $services->tester_droit($pseudo_hotel, $user, $reposHotel);
         $today = new \DateTime();
-        $annee = $today->format('Y');
+        $annee = $today->format("Y");
+        if ($taille_allAnnee > 0) {
+            $annee = $allAnnee[$taille_allAnnee - 1];
+        }
         $tab_interne = [];
         $tab_booking = [];
         $tab_tripadvisor = [];
@@ -58,11 +63,34 @@ class SqnController extends AbstractController
                 "id"                    => "li__sqn",
                 "hotel"                 => $data_session['pseudo_hotel'],
                 "current_page"          => $data_session['current_page'],
-                'tab_annee'             => $services->tab_annee(),
+                'tab_annee'             =>  $allAnnee,
                 'tab_interne'           => $tab_interne,
                 'tab_booking'           => $tab_booking,
                 'tab_tripadvisor'       => $tab_tripadvisor,
             ]);
         }
+    }
+    /**
+     * @Route("/profile/annee_dm", name="tab_annee_dm")
+     * 
+     */
+    public function tab_annee($pseudo_hotel): array
+    {
+
+        $repoDm = $this->getDoctrine()->getRepository(DonneeMensuelle::class);
+        $allDm = $repoDm->findAll();
+        $allAnnee = [];
+        foreach ($allDm as $item) {
+            $son_pseudo_hotel = $item->getHotel()->getPseudo();
+            if ($pseudo_hotel == $son_pseudo_hotel) {
+                $t = explode("-", $item->getMois());
+                $son_annee = $t[1];
+                if (!in_array($son_annee, $allAnnee)) {
+                    array_push($allAnnee, $son_annee);
+                }
+            }
+        }
+        sort($allAnnee);
+        return $allAnnee;
     }
 }

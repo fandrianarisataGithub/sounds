@@ -3,7 +3,9 @@
     namespace App\Services;
 
 use App\Entity\User;
+use App\Entity\DonneeMensuelle;
 use App\Repository\HotelRepository;
+
 class Services
     {
         public function all_date_between2_dates(\DateTime $date1, \DateTime $date2)
@@ -106,4 +108,5 @@ class Services
             $tab_annee = [$annee, $prec];
             return $tab_annee;
         }
+        
     } 

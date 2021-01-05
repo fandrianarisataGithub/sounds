@@ -592,6 +592,53 @@
       cursor: pointer;
   }
   
+  div.liste_dj_dm {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 25px;
+      height: 70px !important;
+      align-items: center;
+      cursor: auto !important;
+  }
+  
+  div.liste_dj_dm div {
+      background: #5f5f5f;
+      width: 60px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+  
+  div.liste_dj_dm div a {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      border: 2px solid #fff;
+  }
+  
+  span.span_white {
+      font-size: 15px;
+      font-weight: bolder;
+      position: relative;
+      color: white;
+  }
+  
+  span.span_dore {
+      position: relative;
+      left: 2px;
+      color: #c89b11;
+      font-size: 12px;
+      font-weight: bold;
+  }
+  
+  div.liste_dj_dm div a:hover {
+      border: 2px solid #c89b11;
+      text-decoration: none;
+  }
+  
   .side-nav .categories>li>a {
       color: #AAA;
       text-decoration: none;
@@ -1717,6 +1764,33 @@
   .table_body>div>div.t_body_row div {
       width: calc(100% / 9);
       text-align: center;
+  }
+  
+  .btn_drop_data,
+  .btn_drop_data:hover,
+  .btn_drop_data:focus {
+      margin-left: 15px;
+      background: transparent;
+      border: none;
+  }
+  
+  .btn_drop_data span.fa {
+      color: #c79c67;
+      display: block;
+  }
+  
+  .btn_drop_data span.fa {
+      color: #c79c67;
+      display: block;
+      font-size: 15px;
+      transition: all 1s linear ease-in-out;
+  }
+  
+  .btn_drop_data:hover span.fa {
+      color: #c79c67;
+      display: block;
+      font-size: 17px;
+      font-weight: 600;
   }
   
   .table_body>div>.t_body_row:not(:first-child) {
@@ -3847,6 +3921,17 @@
       margin-left: 20px;
   }
   
+  #btn_add_donnee_mensuelle {
+      background: #c89b11;
+      border-color: #c89b11;
+      transform: all 1s linear easy-in-out;
+  }
+  
+  #btn_add_donnee_mensuelle:hover {
+      background: #8b612c;
+      border-color: #8b612c;
+  }
+  
   .btn-list>ul>li>a.btn {
       height: 30px;
       padding-top: 5px;
@@ -4240,6 +4325,19 @@
   
   .span_tri a small {
       color: #fff;
+  }
+  
+  .span_tri a {
+      text-decoration: none;
+  }
+  
+  .span_tri a:hover {
+      text-decoration: none;
+  }
+  
+  .span_tri a:visited {
+      border: none;
+      text-decoration: none;
   }
   
   small.black {

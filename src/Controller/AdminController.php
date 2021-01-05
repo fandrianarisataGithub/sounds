@@ -29,7 +29,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/insert_user_by_login", name="insert.by.login")
+     * @Route("/profile/insert_user_by_login", name="insert.by.login")
      */
     public function register(Request $request, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $passEnc)
     {
@@ -53,7 +53,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/register_user", name = "admin.register")
+     * @Route("/profile/register_user", name = "admin.register")
      */
     public function adminRegister(Request $request, EntityManagerInterface $manager, UserRepository $repo, UserPasswordEncoderInterface $passEnc, HotelRepository $reposHotel)
     {
@@ -126,11 +126,8 @@ class AdminController extends AbstractController
                        
 
                         $data = json_encode("ok"); // formater le résultat de la requête en json
-
                         $response->headers->set('Content-Type', 'application/json');
                         $response->setContent($data);
-                        /*$data = json_encode($tab);
-                        $erreur = $data;*/
 
                     }
                 
@@ -147,11 +144,10 @@ class AdminController extends AbstractController
 
         }
         
-        return $this->render('security/setting.html.twig');
     }
 
     /**
-     * @Route("/admin/print_all_users", name="print_all_users")
+     * @Route("/profile/print_all_users", name="print_all_users")
      */
     public function print_all_users(Request $request, UserRepository $repoUser, HotelRepository $repoHotel)
     {
@@ -244,7 +240,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/pick_up/{id}", name = "pick_up_user")
+     * @Route("/profile/pick_up/{id}", name = "pick_up_user")
      */
     public function pick_up_user($id, UserRepository $repoUser, Request $request)
     {

@@ -19,13 +19,19 @@ class CostController extends AbstractController
     public function cost(Services $services, Request $request, $pseudo_hotel, EntityManagerInterface $manager, SessionInterface $session, HotelRepository $reposHotel)
     {
 
+        $allAnnee = $this->tab_annee($pseudo_hotel);
+        $taille_allAnnee = count($allAnnee);
+        //dd($allAnnee);
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "cost";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         $user = $data_session['user'];
         $pos = $services->tester_droit($pseudo_hotel, $user, $reposHotel);
         $today = new \DateTime();
-        $annee = $today->format('Y');
+        $annee = $today->format("Y");
+        if($taille_allAnnee > 0){
+            $annee = $allAnnee[$taille_allAnnee - 1];
+        }
         $tab_resto_value = [];
         $tab_elec_value = [];
         $tab_eau_value = [];
@@ -94,13 +100,12 @@ class CostController extends AbstractController
                 "id"                => "li__cost",
                 "hotel"             => $data_session['pseudo_hotel'],
                 "current_page"      => $data_session['current_page'],
-                'tab_annee'         => $services->tab_annee(),
+                'tab_annee'         => $allAnnee,
                 'tab_resto_value'         => $tab_resto_value,
                 'tab_elec_value'          => $tab_elec_value,
                 'tab_eau_value'           => $tab_eau_value,
                 'tab_gasoil_value'        => $tab_gasoil_value,
                 'tab_salaire_value'       => $tab_salaire_value,
-
                 'tab_resto_p'         => $tab_resto_p,
                 'tab_elec_p'          => $tab_elec_p,
                 'tab_eau_p'           => $tab_eau_p,
@@ -109,6 +114,31 @@ class CostController extends AbstractController
             ]);
         }
     }
+
+    /**
+     * @Route("/profile/annee_dm", name="tab_annee_dm")
+     * 
+     */
+     public function tab_annee($pseudo_hotel):array{
+       
+        $repoDm = $this->getDoctrine()->getRepository(DonneeMensuelle::class);
+        $allDm = $repoDm->findAll();
+        $allAnnee = [];
+        foreach($allDm as $item){
+            $son_pseudo_hotel = $item->getHotel()->getPseudo();
+            if($pseudo_hotel == $son_pseudo_hotel){
+                $t = explode("-", $item->getMois());
+                $son_annee = $t[1];
+                if(!in_array($son_annee,$allAnnee)){
+                    array_push($allAnnee, $son_annee);
+                }
+            }
+        }
+        sort($allAnnee);
+        return $allAnnee;
+         
+    }
+    
     /**
      * @Route("/profile/filtre/graph/cost_montant/{pseudo_hotel}", name="filtre_cost_montant")
      */
@@ -143,13 +173,12 @@ class CostController extends AbstractController
                     $tab_explode = explode("-", $son_mois);
                     $son_annee = $tab_explode[1];
                     if ($son_annee == $annee) {
-                        $son_numero_mois                = intVal($tab_explode[0]) - 1;
+                        $son_numero_mois                      = intVal($tab_explode[0]) - 1;
                         $tab_resto_value[$son_numero_mois]    = $resto / 1000000;
                         $tab_elec_value[$son_numero_mois]     = $elec / 1000000;
                         $tab_eau_value[$son_numero_mois]      = $eau / 1000000;
                         $tab_gasoil_value[$son_numero_mois]   = $gasoil / 1000000;
                         $tab_salaire_value[$son_numero_mois]  = $salaire / 1000000;
-
                     }
                 }
             }

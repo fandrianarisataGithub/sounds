@@ -321,40 +321,6 @@
 									{% endif %}>Service quality - Notation</span>
 								</a>
 							</li>
-							<li {% if id is defined and id is not null and id == "li__donnee_du_jour"  %}
-								id = "{{ id }}"
-							{% endif %}>
-								<a href="{{ path('donnee_jour', {'pseudo_hotel' : hotel}) }}">
-									<i aria-hidden="true" id="edit">
-									{% if id is defined and id is not null and id == "li__donnee_du_jour"  %}
-										<img src="{{ asset('images/donnee_du_jour_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-									{% else %}
-										<img src="{{ asset('images/donnee_du_jour.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-									{% endif %}
-
-										<img src="{{ asset('images/donnee_du_jour_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
-
-									</i>
-									<span>Donnée du jour</span>
-								</a>
-							</li>
-							<li {% if id is defined and id is not null and id == "li__donnee_mensuelle"  %}
-								id = "{{ id }}"
-							{% endif %}>
-								<a href="{{ path('donnee_mensuelle', {'pseudo_hotel' : hotel}) }}">
-									<i aria-hidden="true" id="edit">
-									{% if id is defined and id is not null and id == "li__donnee_mensuelle"  %}
-										<img src="{{ asset('images/donnee_du_jour_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-									{% else %}
-										<img src="{{ asset('images/donnee_du_jour.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-									{% endif %}
-
-										<img src="{{ asset('images/donnee_du_jour_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
-
-									</i>
-									<span>Donnée mensuelle</span>
-								</a>
-							</li>
 							<li id="li_historique">
 								<a href="#">
 									<span class="fa fa-clock-o"></span>
@@ -379,6 +345,28 @@
 									</li>
 								</ul>
 							</li>
+							<div class="liste_dj_dm">
+								<div class="liste_dj_dm_item"
+								
+									{% if id is defined and id is not null and id == "li__donnee_du_jour"  %}
+										id = "{{ id }}"
+									{% endif %}
+								>
+									<a href="{{ path('donnee_jour', {'pseudo_hotel' : hotel}) }}">
+										<span class="span_white">D</span>
+										<span class="span_dore"> Jour</span>
+									</a>
+								</div>
+								<div class="liste_dj_dm_item" {% if id is defined and id is not null and id == "li__donnee_mensuelle"  %}
+										id = "{{ id }}"
+										{% endif %}
+								>
+									<a href="{{ path('donnee_mensuelle', {'pseudo_hotel' : hotel}) }}">
+										<span class="span_white">D</span>
+										<span class="span_dore"> Mois</span>
+									</a>
+								</div>
+							</div>
 
 						</ul>
 						{% else %}

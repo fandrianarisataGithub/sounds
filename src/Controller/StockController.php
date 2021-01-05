@@ -18,13 +18,18 @@ class StockController extends AbstractController
      */
     public function stock(Services $services, Request $request, $pseudo_hotel, EntityManagerInterface $manager, SessionInterface $session, HotelRepository $reposHotel)
     {
-
+        $allAnnee = $this->tab_annee($pseudo_hotel);
+        $taille_allAnnee = count($allAnnee);
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "stock";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         $user = $data_session['user'];
         $today = new \DateTime();
-        $annee = $today->format('Y');
+        $annee = $today->format("Y");
+        if ($taille_allAnnee > 0) {
+            $annee = $allAnnee[$taille_allAnnee - 1];
+        }
+       
         $tab = [];
         $pos = $services->tester_droit($pseudo_hotel, $user, $reposHotel);
         if ($pos == "impossible") {
@@ -47,12 +52,17 @@ class StockController extends AbstractController
                 }
             }
             ksort($tab);
+
+            //dd($tab);
+            
+            //rsort($allAnnee);
             return $this->render('stock/stock.html.twig', [
                 "id"                => "li__stock",
                 "hotel"             => $data_session['pseudo_hotel'],
                 "current_page"      => $data_session['current_page'],
-                'tab_annee'         => $services->tab_annee(),
+                'tab_annee'         =>  $allAnnee,
                 'tab_stock'         => $tab,
+                'current_year'      => $annee,
             ]);
         }
     }
@@ -67,7 +77,6 @@ class StockController extends AbstractController
             $repoDM = $this->getDoctrine()->getRepository(DonneeMensuelle::class);
             $hotel = $reposHotel->findOneByPseudo($pseudo_hotel);
             $all_dm = $repoDM->findBy(['hotel' => $hotel]);
-            //dd($all_dm);
             $tab = [];
             if (count($all_dm) > 0) {
                 foreach ($all_dm as $item) {
@@ -88,5 +97,28 @@ class StockController extends AbstractController
             $response->setContent($data);
             return $response;
         }
+    }
+    /**
+     * @Route("/profile/annee_dm", name="tab_annee_dm")
+     * 
+     */
+    public function tab_annee($pseudo_hotel): array
+    {
+
+        $repoDm = $this->getDoctrine()->getRepository(DonneeMensuelle::class);
+        $allDm = $repoDm->findAll();
+        $allAnnee = [];
+        foreach ($allDm as $item) {
+            $son_pseudo_hotel = $item->getHotel()->getPseudo();
+            if ($pseudo_hotel == $son_pseudo_hotel) {
+                $t = explode("-", $item->getMois());
+                $son_annee = $t[1];
+                if (!in_array($son_annee, $allAnnee)) {
+                    array_push($allAnnee, $son_annee);
+                }
+            }
+        }
+        sort($allAnnee);
+        return $allAnnee;
     }
 }

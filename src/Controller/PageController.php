@@ -53,29 +53,28 @@ class PageController extends AbstractController
         return $this->redirectToRoute("app_login");
     }
 
-   
+
     /**
-     * @Route("/profile/{pseudo_hotel}/setting", name="setting")
+     * @Route("/profile/setting/{pseudo_hotel}", name="setting")
      */
     public function setting(HotelRepository $repoHotel, UserRepository $repoUser, Request $request, EntityManagerInterface $manager, SessionInterface $session, $pseudo_hotel)
     {   
        
         $tab_user = $repoUser->findAll();
         $data_session = $session->get('hotel');
-        $data_session['pseudo_hote'] = $pseudo_hotel;
+        $data_session['pseudo_hotel'] = $pseudo_hotel;
         $data_session['current_page'] = "setting";
-
         $user = $data_session['user'];
         $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
+       
         if($pos == "impossible"){
             return $this->render('/page/error.html.twig');
         }
         else{
-            return $this->render('/page/setting.html.twig', [
+            return $this->render('/page/setting_en_prod.html.twig', [
                 "liste_user" => $tab_user,
                 "hotel" => $data_session['pseudo_hotel'],
                 "current_page" => $data_session['current_page']
-
             ]);
         }
     }

@@ -974,25 +974,20 @@
 								var my_data = response;
                                 //console.log(my_data);
                                 var my_data_resto_value = response.tab_resto_value;
-                                var my_data_elec_value = response.tab_elec_value
-
-                                var my_data_eau_value = response.​tab_eau_value
-
-                                var my_data_gasoil_value = response.tab_gasoil_value
-
-                                var my_data_salaire_value = response.tab_salaire_value
+                                var my_data_elec_value = response.tab_elec_value;
+                                var my_data_eau_value = response.tab_eau_value;
+                                var my_data_gasoil_value = response.tab_gasoil_value;
+                                var my_data_salaire_value = response.tab_salaire_value;
                                 var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
                                 var w = $(window).width();
                                 if (w <= 768) {
                                     $('#element_canvas_cost').html('<div><canvas id="canvas_cost"></canvas></div><div id="chart-legends_cost"></div>');
                                     var myChart1 = draw_chart1(my_data_resto_value, my_data_elec_value, my_data_eau_value, my_data_gasoil_value, my_data_salaire_value, my_labels, 100, 10);
                                     myChart1.update();
-                                    //add_resp_heb(myChart1, myChart1);
                                 } else {
                                     $('#element_canvas_cost').html('<div><canvas id="canvas_cost"></canvas></div><div id="chart-legends_cost"></div>');
                                     var myChart1 = draw_chart1(my_data_resto_value, my_data_elec_value, my_data_eau_value, my_data_gasoil_value, my_data_salaire_value, my_labels, 100, 10);
                                     myChart1.update();
-                                    //add_resp_heb(myChart1, myChart1);
                                 }
 							}, 
 							error : function(error){

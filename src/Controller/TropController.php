@@ -166,7 +166,7 @@ class TropController extends AbstractController
             $etat_paiement = $request->get('etat_paiement');
             $etat_paiement = explode("*", $etat_paiement);
             if ($typeReglement == null && $typeReste == null && $typeMontant == null) {
-                $typeMontant = "ASC";
+                $typeMontant = "DESC";
             }
             $Liste = $repoTrop->filtrer(
                 $request->request->get('date1'),
@@ -192,58 +192,62 @@ class TropController extends AbstractController
                         <div class="td_long" colspan="9">
                             <span>'. $data["entreprise"] . '</span>
                         </div>
-                    </div>';
-                    $string1 = '';
-                    $total_reste = 0;
-                    $total_reglement = 0;
-                    $total_montant = 0;
-                    foreach($data['listes'] as $item){
-                        $reste = $item->getMontantTotal() - $item->getTotalReglement();
-                        $total_reglement = $total_reglement + $item->getTotalReglement();
-                        $total_montant = $total_montant + $item->getMontantTotal();
-                        $total_reste += $reste;
-                        $date = "";
-                        if($item->getDateConfirmation() != null ){
-                            $date = $item->getDateConfirmation()->format("d-m-Y");
+                        <button clicked="false" class="btn_drop_data btn btn-warning btn-xs"><span class="fa fa-angle-up"></span></button>
+                    </div>
+                    ';
+                        $string1 = '';
+                        $total_reste = 0;
+                        $total_reglement = 0;
+                        $total_montant = 0;
+                        foreach($data['listes'] as $item){
+                            $reste = $item->getMontantTotal() - $item->getTotalReglement();
+                            $total_reglement = $total_reglement + $item->getTotalReglement();
+                            $total_montant = $total_montant + $item->getMontantTotal();
+                            $total_reste += $reste;
+                            $date = "";
+                            if($item->getDateConfirmation() != null ){
+                                $date = $item->getDateConfirmation()->format("d-m-Y");
+                            }
+                            $string1 .= '
+                                <div class="t_body_row sous_tab_body div_for_droping"
+                                    style="display:none !important;"
+                                > 
+                                    <div>
+                                        <span>'. $item->getIdPro() . '</span>
+                                    </div>
+                                    <div>
+                                        <span>'. $item->getDetail() .'</span>
+                                    </div>
+                                    <div>
+                                        <span class="value">'. $item->getTypeTransaction() .'</span>
+                                    </div>
+                                    <div>
+                                        <span class="value">'.$item->getEtatProduction(). '</span>
+                                    </div>
+                                    <div>
+                                        <span class="montant value">' . $item->getTotalReglement() . '</span>
+                                    </div>
+                                    <div>
+                                        <span class="montant">
+                                            '. $reste .'
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span class="montant">'. $item->getMontantTotal() .'</span>
+                                    </div>
+                                    <div>
+                                        <span>
+                                        '. $date .'
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span>'. $item->getDevis() .'</span>
+                                    </div>
+                                </div>
+                            ';
                         }
-                        $string1 .= '
-    
-                            <div class="t_body_row sous_tab_body">
-                                <div>
-                                    <span>'. $item->getIdPro() . '</span>
-                                </div>
-                                <div>
-                                    <span>'. $item->getDetail() .'</span>
-                                </div>
-                                <div>
-                                    <span class="value">'. $item->getTypeTransaction() .'</span>
-                                </div>
-                                <div>
-                                    <span class="value">'.$item->getEtatProduction(). '</span>
-                                </div>
-                                <div>
-                                    <span class="montant value">' . $item->getTotalReglement() . '</span>
-                                </div>
-                                <div>
-                                    <span class="montant">
-                                        '. $reste .'
-                                    </span>
-                                </div>
-                                <div>
-                                    <span class="montant">'. $item->getMontantTotal() .'</span>
-                                </div>
-                                <div>
-                                    <span>
-                                       '. $date .'
-                                    </span>
-                                </div>
-                                <div>
-                                    <span>'. $item->getDevis() .'</span>
-                                </div>
-                            </div>
-                        ';
-                    }
-                    $stringP .= $string1 ;
+                    
+                        $stringP .= $string1 ;
                     
                     $stringP .= '
                                 <div class="t_body_row sous_tab_body sous_total_content">
@@ -364,6 +368,7 @@ class TropController extends AbstractController
                         <div class="td_long" colspan="9">
                             <span>' . $data["entreprise"] . '</span>
                         </div>
+                        <button clicked="false" class="btn_drop_data btn btn-warning btn-xs"><span class="fa fa-angle-up"></span></button>
                     </div>';
                 $string1 = '';
                 $total_reste = 0;
@@ -380,7 +385,8 @@ class TropController extends AbstractController
                     }
                     $string1 .= '
     
-                            <div class="t_body_row sous_tab_body">
+                            <div class="t_body_row sous_tab_body div_for_droping"
+                                    style="display:none !important;">
                                 <div>
                                     <span>' . $item->getIdPro() . '</span>
                                 </div>

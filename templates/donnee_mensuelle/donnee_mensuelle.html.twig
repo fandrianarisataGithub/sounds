@@ -35,7 +35,6 @@
                                     <option value="12">DECEMBRE</option>
                                 </select>
                                 <select name="donnee_mensuelle_annee" id="donnee_mensuelle_annee">
-                                    <option value="2020">2020</option>
                                 </select>
                             </div>
                         </div>
@@ -330,6 +329,15 @@ new Cleave('.input_pourcent', {blocks: [4]});
 
 	$(document).ready(function () {
         var pseudo_hotel = '{{ hotel }}';
+
+        // liste annee idonnee mensuelle
+        var date = new Date();
+        var annee = date.getFullYear();
+        var annee_prec = annee - 1;
+        var option = [annee_prec, annee];
+        var string = '<option>' + annee_prec + '</option><option selected="selected">' + annee + '</option>';
+        $('#donnee_mensuelle_annee').append(string);
+
         //$('form[name=donnee_mensuelle]').submit();
         $('#btn_add_donnee_mensuelle').on("click", function(ev){
             ev.preventDefault();
@@ -359,6 +367,9 @@ new Cleave('.input_pourcent', {blocks: [4]});
                     }
                 })
         })
+
+        
+        
     });
 </script>
 
