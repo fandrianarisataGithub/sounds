@@ -34,7 +34,7 @@
 				<form action="" id="form-owner" enctype="multipart/form-data">
 					<div class="form-group pdp_profil">
 						<section id = "profile">
-							<div class="pdp_image" style="background-image : url({{ asset(app.user.image) }});">
+							<div class="pdp_image">
 								<input type="file" name="fichier" id="fichier">
 								<span class="icone_upload fa fa-plus"></span>
 							</div>
@@ -304,7 +304,7 @@
 				}
 			
 				$.ajax({
-					url : "/profile/insert_user_by_login",
+					url : "/profile/register_user",
 					type : "POST",
 					data : data,
 					beforeSend : function(){

@@ -493,11 +493,12 @@
       display: none;
       align-items: center !important;
       padding-left: 5px;
+      background: rgba(235, 71, 16, 0.5);
   }
   
   #infos_edit p {
       font-size: 12px;
-      color: red;
+      color: #fff;
       position: relative;
       top: 3px;
   }

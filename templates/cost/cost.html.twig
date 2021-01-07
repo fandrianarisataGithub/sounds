@@ -890,17 +890,22 @@
                             {{ t }},
                         {% endfor %}
                     ];
+                    my_data_resto_value = merge_data(my_data_resto_value);
+
                     var my_data_elec_value = [
                         {% for t in tab_elec_value %}
                             {{ t }},
                         {% endfor %}
                     ];
+                    my_data_elec_value = merge_data(my_data_elec_value);
 
                     var my_data_eau_value = [
                         {% for t in tab_eau_value %}
                             {{ t }},
                         {% endfor %}
                     ];
+                    
+                    my_data_elec_value = merge_data(my_data_elec_value);
 
                     var my_data_gasoil_value = [
                         {% for t in tab_gasoil_value %}
@@ -908,22 +913,31 @@
                         {% endfor %}
                     ];
 
+                    my_data_gasoil_value = merge_data(my_data_gasoil_value);
+
                     var my_data_salaire_value = [
                         {% for t in tab_salaire_value %}
                             {{ t }},
                         {% endfor %}
                     ]
 
+                    my_data_salaire_value = merge_data(my_data_salaire_value);
+
                     var my_data_resto_p = [
                         {% for t in tab_resto_p %}
                             {{ t }},
                         {% endfor %}
                     ];
+
+                    my_data_resto_p = merge_data(my_data_resto_p);
+
                     var my_data_elec_p = [
                         {% for t in tab_elec_p %}
                             {{ t }},
                         {% endfor %}
                     ];
+
+                    my_data_elec_p = merge_data(my_data_elec_p);
 
                     var my_data_eau_p = [
                         {% for t in tab_eau_p %}
@@ -931,11 +945,15 @@
                         {% endfor %}
                     ];
 
+                    my_data_eau_p = merge_data(my_data_eau_p);
+
                     var my_data_gasoil_p = [
                         {% for t in tab_gasoil_p %}
                             {{ t }},
                         {% endfor %}
                     ];
+
+                    my_data_gasoil_p = merge_data(my_data_gasoil_p);
 
                     var my_data_salaire_p = [
                         {% for t in tab_salaire_p %}
@@ -943,8 +961,38 @@
                         {% endfor %}
                     ]
 
+                    my_data_salaire_p = merge_data(my_data_salaire_p);
+
+                    // function pour les combinaisons des donnée à afficher dans le graphe
+                    function merge_data(tab){
+                         var souche = {
+                                    '0' : 0,
+                                    '1' : 0,
+                                    '2' : 0,
+                                    '3' : 0,
+                                    '4' : 0,
+                                    '5' : 0,
+                                    '6' : 0,
+                                    '7' : 0,
+                                    '8' : 0,
+                                    '9' : 0,
+                                    '10' : 0,
+                                    '11' : 0
+                                }
+                                for (var item in tab) {
+                                    souche[item] = tab[item];
+                                }
+                                //console.log(souche);
+                                var souche2  = [];
+                                for (var item in souche) {
+                                   souche2.push(souche[item]);
+                                }
+                                return souche2;
+                    }
 
 					var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+
+
 
                 
                     var w = $(window).width();
@@ -974,10 +1022,15 @@
 								var my_data = response;
                                 //console.log(my_data);
                                 var my_data_resto_value = response.tab_resto_value;
+                                my_data_resto_value = merge_data(my_data_resto_value);
                                 var my_data_elec_value = response.tab_elec_value;
+                                my_data_elec_value = merge_data(my_data_elec_value);
                                 var my_data_eau_value = response.tab_eau_value;
+                                my_data_eau_value = merge_data(my_data_eau_value);
                                 var my_data_gasoil_value = response.tab_gasoil_value;
+                                my_data_gasoil_value = merge_data(my_data_gasoil_value);
                                 var my_data_salaire_value = response.tab_salaire_value;
+                                my_data_salaire_value = merge_data(my_data_salaire_value);
                                 var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
                                 var w = $(window).width();
                                 if (w <= 768) {
@@ -988,6 +1041,49 @@
                                     $('#element_canvas_cost').html('<div><canvas id="canvas_cost"></canvas></div><div id="chart-legends_cost"></div>');
                                     var myChart1 = draw_chart1(my_data_resto_value, my_data_elec_value, my_data_eau_value, my_data_gasoil_value, my_data_salaire_value, my_labels, 100, 10);
                                     myChart1.update();
+                                }
+							}, 
+							error : function(error){
+								alert('erreur server au niveau de triage chart cost montant annee'+pseudo_hotel)
+							}
+						})
+                    })
+
+                    // tri graph pourcentage
+
+                    $('#annee_cost_pourcent').on('change', function(){
+						 $('#element_canvas_cost_pourcent').empty();
+					
+						var annee = $('#annee_cost_pourcent').val();
+						var data = {'data' : annee};
+						//alert(data.data);
+						$.ajax({
+							url : "/profile/filtre/graph/cost_pourcent/"+pseudo_hotel,
+							type : "POST",
+							data : data,
+							success : function(response){
+								var my_data = response;
+                                //console.log(my_data);
+                                var my_data_resto_p = response.tab_resto_p;
+                                my_data_resto_p = merge_data(my_data_resto_p);
+                                var my_data_elec_p = response.tab_elec_p;
+                                my_data_elec_p = merge_data(my_data_elec_p);
+                                var my_data_eau_p = response.tab_eau_p;
+                                my_data_eau_p = merge_data(my_data_eau_p);
+                                var my_data_gasoil_p = response.tab_gasoil_p;
+                                my_data_gasoil_p = merge_data(my_data_gasoil_p);
+                                var my_data_salaire_p = response.tab_salaire_p;
+                                my_data_salaire_p = merge_data(my_data_salaire_p);
+                                var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+                                var w = $(window).width();
+                                if (w <= 768) {
+                                    $('#element_canvas_cost_pourcent').html('<div><canvas id="canvas_cost_pourcent"></canvas></div><div id="chart-legends_cost_pourcent"></div>');
+                                    var myChart2 = draw_chart2(my_data_resto_p, my_data_elec_p, my_data_eau_p, my_data_gasoil_p, my_data_salaire_p, my_labels, 100, 10);
+                                    myChart2.update();
+                                } else {
+                                    $('#element_canvas_cost_pourcent').html('<div><canvas id="canvas_cost_pourcent"></canvas></div><div id="chart-legends_cost_pourcent"></div>');
+                                    var myChart2 = draw_chart2(my_data_resto_p, my_data_elec_p, my_data_eau_p, my_data_gasoil_p, my_data_salaire_p, my_labels, 100, 10);
+                                    myChart2.update();
                                 }
 							}, 
 							error : function(error){

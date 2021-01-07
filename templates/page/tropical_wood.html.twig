@@ -387,9 +387,6 @@
 									<div>
 										<span>Date de confirmation</span>
 									</div>
-									<div>
-										<span>Devis</span>
-									</div>
 								</div>
 							</div>
 							<div class="table_body">
@@ -599,7 +596,7 @@
 			})
 			$('.btn_black').on('click', function(ev){
 				ev.preventDefault();
-				load_by_btn_black(null, null, "ASC");
+				load_by_btn_black(null, null, "DESC");
 			})
 
 			function load_by_btn_black(typeReglement, typeReste, typeMontant){
@@ -796,7 +793,7 @@
 
 			$('#button_ok').on('click', function(ev){
 				ev.preventDefault();
-				load_by_button_ok(null, null, "ASC"); // load_by_button_ok est la fonction pour activer les tri du tab lie avec submit button_ok
+				load_by_button_ok(null, null, "DESC"); // load_by_button_ok est la fonction pour activer les tri du tab lie avec submit button_ok
 			})
 
 			$('.a_tri').on('click', function(ev){

@@ -70,20 +70,35 @@ class TropController extends AbstractController
                     }
                 }
                 // préparation de l'objet
-                $data_tw->setTypeTransaction($type_transaction);
-                $data_tw->setIdPro($idPro);
-                $data_tw->setEntreprise($entreprise);
-                $data_tw->setDetail($detail);
-                $data_tw->setEtatProduction($etat_production);
-                $data_tw->setMontantTotal($montant_total);
-                $data_tw->setMontantPaye($montant_paye);
-                $data_tw->setTotalReglement($montant_avance);
-                $data_tw->setDateConfirmation($date_confirmation);
-                $manager->persist($data_tw);
+                // on teste l'unicité de idPro
+                $dataTrop = $repoTrop->findBy(['id_pro' => $idPro]);
+                if($dataTrop){
+                    $data_tw->setTypeTransaction($type_transaction);
+                    $data_tw->setEntreprise($entreprise);
+                    $data_tw->setDetail($detail);
+                    $data_tw->setEtatProduction($etat_production);
+                    $data_tw->setMontantTotal($montant_total);
+                    $data_tw->setMontantPaye($montant_paye);
+                    $data_tw->setTotalReglement($montant_avance);
+                    $data_tw->setDateConfirmation($date_confirmation);
+                    $manager->persist($data_tw);
+                }else{
+                    $data_tw->setIdPro($idPro);
+                    $data_tw->setTypeTransaction($type_transaction);
+                    $data_tw->setEntreprise($entreprise);
+                    $data_tw->setDetail($detail);
+                    $data_tw->setEtatProduction($etat_production);
+                    $data_tw->setMontantTotal($montant_total);
+                    $data_tw->setMontantPaye($montant_paye);
+                    $data_tw->setTotalReglement($montant_avance);
+                    $data_tw->setDateConfirmation($date_confirmation);
+                    $manager->persist($data_tw);
+                }
+                
             }
-            foreach ($repoTrop->findAll() as $t) {
-                $manager->remove($t);
-            }
+            // foreach ($repoTrop->findAll() as $t) {
+            //     $manager->remove($t);
+            // }
             $manager->flush();
 
             // on liste tous les data    
@@ -157,7 +172,7 @@ class TropController extends AbstractController
 
             $typeReglement = $request->get('typeReglement');
             $typeReste = $request->get('typeReste');
-            $typeMontant = $request->get('typeMontant');
+            $typeMontant = $request->get('typeMontant'); 
             
             $type_transaction = $request->get('type_transaction');
             $type_transaction = explode("*", $type_transaction);
@@ -240,9 +255,6 @@ class TropController extends AbstractController
                                         '. $date .'
                                         </span>
                                     </div>
-                                    <div>
-                                        <span>'. $item->getDevis() .'</span>
-                                    </div>
                                 </div>
                             ';
                         }
@@ -274,9 +286,6 @@ class TropController extends AbstractController
                                     <div>
                                    
                                         <span class="montant value total_montant">'. $total_montant .'</span>
-                                    </div>
-                                    <div>
-                                        <span></span>
                                     </div>
                                     <div>
                                         <span></span>
@@ -322,9 +331,6 @@ class TropController extends AbstractController
                             <div>
                                 <span></span>
                             </div>
-                            <div>
-                                <span></span>
-                            </div>
                         </div>
                     
                     ';
@@ -346,7 +352,7 @@ class TropController extends AbstractController
     {
         $response = new Response();
         if ($request->isXmlHttpRequest()) {
-
+            
             $input__entreprise_ajax = $request->get('input__entreprise_ajax');
             $tri_reglement = $request->get('tri_reglement');
             $tri_reste = $request->get('tri_reste');
@@ -415,9 +421,6 @@ class TropController extends AbstractController
                                        ' . $date . '
                                     </span>
                                 </div>
-                                <div>
-                                    <span>' . $item->getDevis() . '</span>
-                                </div>
                             </div>
                         ';
                 }
@@ -448,9 +451,6 @@ class TropController extends AbstractController
                                     <div>
                                    
                                         <span class="montant value total_montant">' . $total_montant . '</span>
-                                    </div>
-                                    <div>
-                                        <span></span>
                                     </div>
                                     <div>
                                         <span></span>
@@ -496,9 +496,6 @@ class TropController extends AbstractController
                             <div>
                                 <span></span>
                             </div>
-                            <div>
-                                <span></span>
-                            </div>
                         </div>
                     ';
             $data = json_encode($stringP);
@@ -506,18 +503,6 @@ class TropController extends AbstractController
             $response->setContent($data);
             return $response;
         }
-
-        // $input__entreprise_ajax = "*Ministère de l'éducation*Mosquée Majunga*Mohamad Mouna*SICAM SA";
-        // $tri_reglement = "";
-        // $tri_reste = "";
-        // $tri_montant = "ASC";
-       
-
-        // $input__entreprise_ajax = explode("*", $input__entreprise_ajax);
-
-        // $Liste = $repoTrop->searchEntrepriseContact($input__entreprise_ajax, $tri_reglement, $tri_reste, $tri_montant);
-        // dd($Liste);
-        //return $response;
     }
 
     /**
@@ -569,7 +554,7 @@ class TropController extends AbstractController
         if($request->isXmlHttpRequest()){
             $mot = $request->get('mot');
 
-            $RAW_QUERY = "SELECT DISTINCT  entreprise FROM data_tropical_wood where data_tropical_wood.entreprise LIKE '".$mot."%' LIMIT 10;";
+            $RAW_QUERY = "SELECT DISTINCT  entreprise FROM data_tropical_wood WHERE data_tropical_wood.entreprise LIKE '%".$mot."%' LIMIT 10;";
 
             $statement = $em->getConnection()->prepare($RAW_QUERY);
             $statement->execute();

@@ -70,6 +70,59 @@ class SqnController extends AbstractController
             ]);
         }
     }
+
+    /**
+     * @Route("/profile/filtre/graph/sqn/{pseudo_hotel}", name="filtre_sqn")
+     */
+    public function filtre_sqn(Services $services, Request $request, $pseudo_hotel, EntityManagerInterface $manager, HotelRepository $reposHotel)
+    {
+        $response = new Response();
+        if ($request->isXmlHttpRequest()) {
+
+            $annee = $request->get('data');
+
+            $sqn_interne = [];
+            $sqn_booking = [];
+            $sqn_tripadvisor  = [];
+
+            $repoDM = $this->getDoctrine()->getRepository(DonneeMensuelle::class);
+            $hotel = $reposHotel->findOneByPseudo($pseudo_hotel);
+            $all_dm = $repoDM->findBy(['hotel' => $hotel]);
+            $Liste = [];
+            $test = 0;
+            if (count($all_dm) > 0) {
+                $test++;
+                foreach ($all_dm as $item) {
+                    $interne = $item->getSqnInterne();
+                    $booking = $item->getSqnBooking();
+                    $tripadvisor = $item->getSqnTripadvisor();
+                    $son_mois = $item->getMois();
+                    $tab_explode = explode("-", $son_mois);
+                    $son_annee = $tab_explode[1];
+                    if ($son_annee == $annee) {
+                        $son_numero_mois                      = intVal($tab_explode[0]) - 1;
+                        $sqn_interne[$son_numero_mois]    = $interne;
+                        $sqn_booking[$son_numero_mois]     = $booking;
+                        $sqn_tripadvisor[$son_numero_mois]      = $tripadvisor;
+                    }
+                }
+            }
+
+            ksort($sqn_interne);
+            ksort($sqn_booking);
+            ksort($sqn_tripadvisor);
+
+            $Liste["sqn_interne"] = $sqn_interne;
+            $Liste["sqn_booking"] = $sqn_booking;
+            $Liste["sqn_tripadvisor"] = $sqn_tripadvisor;
+           
+            $data = json_encode($Liste);
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+            return $response;
+        }
+    }
+
     /**
      * @Route("/profile/annee_dm", name="tab_annee_dm")
      * 

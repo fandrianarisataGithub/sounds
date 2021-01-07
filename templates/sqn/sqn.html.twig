@@ -35,7 +35,7 @@
 								
 							</div>
 							<form action="" class="tri">
-								<select name="" class="annee" id="annee_res_couvert">
+								<select name="" class="annee" id="annee_sqn">
 									{% for a in tab_annee %}
 										<option value="{{ a }}">{{ a }}</option>
 									{% endfor %}
@@ -56,10 +56,7 @@
 
 					</section>
 					<!-- fin chart1  -->
-
 				</div>
-
-
 			</div>
 		</div>
 		<!-- / contenue nouveau client -->
@@ -73,7 +70,7 @@
         $(document).ready(function () {
                     
                     // debut chart  1
-
+                    var pseudo_hotel = '{{ hotel }}';
 
                     function draw_chart1(my_data_pd, my_data_d, my_data_di, my_labels, my_max, my_stepSize) {
 
@@ -368,16 +365,48 @@
 
                     }
 
+                    // function pour les combinaisons des donnée à afficher dans le graphe
+                    function merge_data(tab){
+                         var souche = {
+                                    '0' : 0,
+                                    '1' : 0,
+                                    '2' : 0,
+                                    '3' : 0,
+                                    '4' : 0,
+                                    '5' : 0,
+                                    '6' : 0,
+                                    '7' : 0,
+                                    '8' : 0,
+                                    '9' : 0,
+                                    '10' : 0,
+                                    '11' : 0
+                                }
+                                for (var item in tab) {
+                                    souche[item] = tab[item];
+                                }
+                                //console.log(souche);
+                                var souche2  = [];
+                                for (var item in souche) {
+                                   souche2.push(souche[item]);
+                                }
+                                return souche2;
+                    }
+
                     var my_data_interne = [
                         {% for t in tab_interne %}
                             {{ t }},
                         {% endfor %}
                     ];
+
+                    my_data_interne = merge_data(my_data_interne);
+
                     var my_data_booking = [
                         {% for t in tab_booking %}
                             {{ t }},
                         {% endfor %}
                     ];
+
+                    my_data_booking = merge_data(my_data_booking);
 
                     var my_data_tripadvisor = [
                         {% for t in tab_tripadvisor %}
@@ -385,7 +414,7 @@
                         {% endfor %}
                     ];
 
-
+                    my_data_tripadvisor = merge_data(my_data_tripadvisor);
 
 					var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 
@@ -397,7 +426,46 @@
                         add_resp_heb(myChart1);
                     } else {
                         var myChart1 = draw_chart1(my_data_interne, my_data_booking, my_data_tripadvisor, my_labels, 10, 1);
-                    }          
+                    } 
+                $('#annee_sqn').on('change', function(){
+						 $('#element_canvas_sqn').empty();
+					
+						var annee = $('#annee_sqn').val();
+						var data = {'data' : annee};
+						//alert(data.data);
+						$.ajax({
+							url : "/profile/filtre/graph/sqn/"+pseudo_hotel,
+							type : "POST",
+							data : data,
+							success : function(response){
+								var my_data = response;
+                                //console.log(my_data);
+                                var my_data_sqn_interne = response.sqn_interne;
+                                my_data_sqn_interne = merge_data(my_data_sqn_interne);
+
+                                var my_data_sqn_booking = response.sqn_booking;
+                                my_data_sqn_booking = merge_data(my_data_sqn_booking);
+
+                                var my_data_sqn_tripadvisor = response.sqn_tripadvisor;
+                                my_data_sqn_tripadvisor = merge_data(my_data_sqn_tripadvisor);
+                                
+                                var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+                                var w = $(window).width();
+                                if (w <= 768) {
+                                    $('#element_canvas_sqn').html('<div><canvas id="canvas_sqn"></canvas></div><div id="chart-legends_sqn"></div>');
+                                    var myChart1 = draw_chart1(my_data_sqn_interne, my_data_sqn_booking, my_data_sqn_tripadvisor, my_labels, 10, 1);
+                                    myChart1.update();
+                                } else {
+                                    $('#element_canvas_sqn').html('<div><canvas id="canvas_sqn"></canvas></div><div id="chart-legends_sqn"></div>');
+                                    var myChart1 = draw_chart1(my_data_sqn_interne, my_data_sqn_booking, my_data_sqn_tripadvisor, my_labels, 10, 1);
+                                    myChart1.update();
+                                }
+							}, 
+							error : function(error){
+								alert('erreur server au niveau de triage chart cost montant annee'+pseudo_hotel)
+							}
+						})
+                    })         
         })
 	</script>
 

@@ -71,7 +71,7 @@ class PageController extends AbstractController
             return $this->render('/page/error.html.twig');
         }
         else{
-            return $this->render('/page/setting_en_prod.html.twig', [
+            return $this->render('/page/setting.html.twig', [
                 "liste_user" => $tab_user,
                 "hotel" => $data_session['pseudo_hotel'],
                 "current_page" => $data_session['current_page']
