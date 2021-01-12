@@ -23,9 +23,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class SecurityController extends AbstractController
 {
-
-   
-
     /**
      * @Route("/login", name="app_login")
      */
@@ -39,8 +36,12 @@ class SecurityController extends AbstractController
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
-
-        return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+       
+        return $this->render('security/login.html.twig', [
+            'last_username'         => $lastUsername, 
+            'error'                 => $error,
+            ]
+        );
     }
 
     /**
@@ -70,13 +71,13 @@ class SecurityController extends AbstractController
                 $email = (new Email())
                 ->from('contact@dashboardsounds.com')
                 ->to($adresse)
-                    //->cc('cc@example.com')
-                    //->bcc('bcc@example.com')
-                    //->replyTo('fabien@example.com')
-                    //->priority(Email::PRIORITY_HIGH)
-                    ->subject("Mis à jour de votre accès au compte dashboardsounds.com")
-                    //->text('Sending emails is fun again!')
-                    ->html('<p>' . $message . '</p>');
+                //->cc('cc@example.com')
+                //->bcc('bcc@example.com')
+                //->replyTo('fabien@example.com')
+                //->priority(Email::PRIORITY_HIGH)
+                ->subject("Mis à jour de votre accès au compte dashboardsounds.com")
+                //->text('Sending emails is fun again!')
+                ->html('<p>' . $message . '</p>');
 
                 $mailerInterface->send($email);
                 return $this->render('security/forgot_password.html.twig', [
@@ -87,14 +88,58 @@ class SecurityController extends AbstractController
                 return $this->render('security/forgot_password.html.twig', [
                     'mp' => "Cet adresse n'existe pas en tant qu'adresse d'utilisateur",
                 ]); 
-           }           
+           }          
         }
         return $this->render('security/forgot_password.html.twig');
     }
+    /**
+     * @Route("/test_auth_tw", name="test_auth_tw")
+     */
+    public function test_auth_tw(Request $request, UserRepository $repoUser, UserPasswordEncoderInterface $passwordEncoder)
+    {
+        $response = new Response();
+        if($request->isXmlHttpRequest()){
+            $mail = $request->get('mail');
+            // on cherche le mail dans la base de donnée qui correspond à tw
+            $user = $repoUser->findOneByEmail($mail);
+            $data = json_encode("non");
+            if($user != null){
+                $son_hotel = $user->gethotel();
+                if ($son_hotel == "tous" || $son_hotel == "Tropical wood") {
+                    $data = json_encode("oui");
+                }
+            }
+           
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+            return $response;
+           
+        }
+    }
 
-   
+    /**
+     * @Route("/test_auth_s", name="test_auth_s")
+     */
+    public function test_auth_s(Request $request, UserRepository $repoUser, UserPasswordEncoderInterface $passwordEncoder)
+    {
+        $response = new Response();
+        if ($request->isXmlHttpRequest()) {
+            $mail = $request->get('mail');
+            // on cherche le mail dans la base de donnée qui correspond à tw
+            $user = $repoUser->findOneByEmail($mail);
+            $data = json_encode("non");
+            if ($user != null) {
+                $son_hotel = $user->gethotel();
+                $array_hotel = ["Royal Beach", "Calypso", "Baobab Tree", "Vanila Hote", "tous"];
+                if (in_array($son_hotel, $array_hotel)) {
+                    $data = json_encode("oui");
+                }
+            }
 
-    
-    
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+            return $response;
+        }
+    }
         
 }

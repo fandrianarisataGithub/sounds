@@ -63,6 +63,10 @@ class PageController extends AbstractController
         $tab_user = $repoUser->findAll();
         $data_session = $session->get('hotel');
         $data_session['pseudo_hotel'] = $pseudo_hotel;
+        $tropical_wood = null;
+        if($data_session['pseudo_hotel'] == "tropical_wood"){
+            $tropical_wood = true;
+        }
         $data_session['current_page'] = "setting";
         $user = $data_session['user'];
         $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
@@ -72,9 +76,10 @@ class PageController extends AbstractController
         }
         else{
             return $this->render('/page/setting.html.twig', [
-                "liste_user" => $tab_user,
-                "hotel" => $data_session['pseudo_hotel'],
-                "current_page" => $data_session['current_page']
+                "liste_user"        => $tab_user,
+                "hotel"             => $data_session['pseudo_hotel'],
+                "current_page"      => $data_session['current_page'],
+                "tropical_wood"     => $tropical_wood,
             ]);
         }
     }
@@ -139,7 +144,8 @@ class PageController extends AbstractController
                         "hotel" => $data_session['pseudo_hotel'],
                         "current_page" => $data_session['current_page'],
                         "tab_annee" => $tab_sans_doublant,
-                        "annee_courante" => $request->request->get('annee')
+                        "annee_courante" => $request->request->get('annee'),
+                        "tropical_wood"     => false,
                     ]);
                 }
             }
@@ -160,14 +166,15 @@ class PageController extends AbstractController
                     return $this->render('/page/error.html.twig');
                 } else {
                     return $this->render('page/crj.html.twig', [
-                        "pagination" => $pagination,
-                        "id" => "li__compte_rendu",
-                        "date1" => $date1->format('Y-m-d'),
-                        "date2" => $date2->format('Y-m-d'),
-                        "hotel" => $data_session['pseudo_hotel'],
-                        "current_page" => $data_session['current_page'],
-                        "tab_annee" => $tab_sans_doublant,
-                        "annee_courante" => $request->request->get('annee')
+                        "pagination"            => $pagination,
+                        "id"                    => "li__compte_rendu",
+                        "date1"                 => $date1->format('Y-m-d'),
+                        "date2"                 => $date2->format('Y-m-d'),
+                        "hotel"                 => $data_session['pseudo_hotel'],
+                        "current_page"          => $data_session['current_page'],
+                        "tab_annee"             => $tab_sans_doublant,
+                        "annee_courante"        => $request->request->get('annee'),
+                        'tropical_wood'         => false,
                     ]);
                 }
             }
@@ -192,11 +199,12 @@ class PageController extends AbstractController
                 return $this->render('/page/error.html.twig');
             } else {
                 return $this->render('page/crj.html.twig', [
-                    "pagination" => $pagination,
-                    "id" => "li__compte_rendu",
-                    "hotel" => $data_session['pseudo_hotel'],
-                    "current_page" => $data_session['current_page'],
-                    "tab_annee" => $tab_sans_doublant,
+                    "pagination"            => $pagination,
+                    "id"                    => "li__compte_rendu",
+                    "hotel"                 => $data_session['pseudo_hotel'],
+                    "current_page"          => $data_session['current_page'],
+                    "tab_annee"             => $tab_sans_doublant,
+                    'tropical_wood'         => false,
                 ]);
             }
         }
@@ -572,6 +580,7 @@ class PageController extends AbstractController
                 'items' => $tab_aff,
                 'date1' => $date1->format('Y-m-d'),
                 'date2' => $date2->format('Y-m-d'),
+                "tropical_wood"     => false,
             ]);
            
         }
@@ -592,6 +601,7 @@ class PageController extends AbstractController
                 "tab_labels" => $tab_labels,
                 "type_affichage" => "annee",
                 'items' => $tab_aff,
+                "tropical_wood"     => false,
             ]);
        }
     }
@@ -1010,6 +1020,7 @@ class PageController extends AbstractController
                 "tab_res_d" => $tab_res_d,
                 "tab_res_di" => $tab_res_di,
                 'tab_res_total' => $tab_total,
+                "tropical_wood"     => false,
             ]);
        }
     }
@@ -1326,6 +1337,7 @@ class PageController extends AbstractController
                 'tab_spa_cu' => $tab_spa_cu,
                 'tab_spa_ca' => $tab_spa_ca,
                 'tab_spa_na' => $tab_spa_na,
+                "tropical_wood"     => false,
             ]);
         }
     }
@@ -1482,6 +1494,7 @@ class PageController extends AbstractController
                         "form_add"      => $form_add->createView(),
                         'date1' => $request->request->get('date1'),
                         'date2' => $request->request->get('date2'),
+                        "tropical_wood"     => false,
                         "message" => "le format de date à la ligne " . ($error_fichier + 1) . " du fichier n'est pas valide <br> Seuls les formats comme 01/05/20 et 01/05/2020 sont acceptés",
                     ]);
                 }
@@ -1496,6 +1509,7 @@ class PageController extends AbstractController
                     "form_add"      => $form_add->createView(),
                     'date1' => $request->request->get('date1'),
                     'date2' => $request->request->get('date2'),
+                    "tropical_wood"     => false,
                     "message" => "Le nom de feuille 'FOURNISSEURS' n'existe pas dans ce fichier",
                 ]);
             }
@@ -1509,6 +1523,7 @@ class PageController extends AbstractController
                 "form_add"      => $form_add->createView(),
                 'date1' => $request->request->get('date1'),
                 'date2' => $request->request->get('date2'),
+                "tropical_wood"     => false,
             ]);
             
         }
@@ -1523,6 +1538,7 @@ class PageController extends AbstractController
                     "form_add"      => $form_add->createView(),
                     'date1' => $request->request->get('date1'),
                     'date2' => $request->request->get('date2'),
+                    "tropical_wood"     => false,
                 ]);
             } else if (($request->request->get('date1') == "") && ($request->request->get('date2') == "")) {
                 //dd('tsisy e');
@@ -1534,6 +1550,7 @@ class PageController extends AbstractController
                     "form_add"      => $form_add->createView(),
                     'date1' => $request->request->get('date1'),
                     'date2' => $request->request->get('date2'),
+                    "tropical_wood"     => false,
                 ]);
             }
         }
@@ -1600,6 +1617,7 @@ class PageController extends AbstractController
             'tab_fours_recap_p_ret' => $tab_fours_recap_p_ret,
             'today' => $today,
             'tab_echeance' => $tab_echeance,
+            "tropical_wood"     => false,
         ]);
     }
     
@@ -1683,6 +1701,7 @@ class PageController extends AbstractController
                                 "form_add"      => $form_add->createView(),
                                 'date1' => $request->request->get('date1'),
                                 'date2' => $request->request->get('date2'),
+                                "tropical_wood"     => false,
                                 "message" => "le format de date à la ligne " . ($error_fichier + 1) . " du fichier n'est pas valide <br> Seuls les formats comme 01/05/20 et 01/05/2020 sont acceptés",
                             ]);
                         }
@@ -1701,6 +1720,7 @@ class PageController extends AbstractController
                                 "current_page"  => $data_session['current_page'],
                                 "form_add"      => $form_add->createView(),
                                 'date1' => $request->request->get('date1'),
+                                "tropical_wood"     => false,
                                 'date2' => $request->request->get('date2'),
                                 "message" => "le format de date à la ligne " . ($error_fichier + 1) . " du fichier n'est pas valide <br> Seuls les formats comme 01/05/20 et 01/05/2020 sont acceptés",
                             ]);
@@ -1754,6 +1774,7 @@ class PageController extends AbstractController
                         "form_add"      => $form_add->createView(),
                         'date1' => $request->request->get('date1'),
                         'date2' => $request->request->get('date2'),
+                        "tropical_wood"     => false,
                         "message" => "le format de date à la ligne " . ($error_fichier + 1) . " du fichier n'est pas valide <br> Seuls les formats comme 01/05/20 et 01/05/2020 sont acceptés",
                     ]);
                 }
@@ -1770,6 +1791,7 @@ class PageController extends AbstractController
                     "form_add"      => $form_add->createView(),
                     'date1' => $request->request->get('date1'),
                     'date2' => $request->request->get('date2'),
+                    "tropical_wood"     => false,
                     "message" => "Le nom de feuille 'DEBITEURS' n'existe pas dans ce fichier",
                 ]);
             }
@@ -1781,6 +1803,7 @@ class PageController extends AbstractController
                 "current_page"  => $data_session['current_page'],
                 "form_add"      => $form_add->createView(),
                 'date1' => $request->request->get('date1'),
+                "tropical_wood"     => false,
                 'date2' => $request->request->get('date2'),
             ]);   
         }
@@ -1792,6 +1815,7 @@ class PageController extends AbstractController
                     "current_page"  => $data_session['current_page'],
                     "form_add"      => $form_add->createView(),
                     'date1' => $request->request->get('date1'),
+                    "tropical_wood"     => false,
                     'date2' => $request->request->get('date2'),
                 ]);
             } else if (($request->request->get('date1') == "") && ($request->request->get('date2') == "")) {
@@ -1803,6 +1827,7 @@ class PageController extends AbstractController
                     "form_add"      => $form_add->createView(),
                     'date1' => $request->request->get('date1'),
                     'date2' => $request->request->get('date2'),
+                    "tropical_wood"     => false,
                 ]);
             }
         }
@@ -1813,6 +1838,7 @@ class PageController extends AbstractController
             "form_add"      => $form_add->createView(),
             'date1' => $request->request->get('date1'),
             'date2' => $request->request->get('date2'),
+            "tropical_wood"     => false,
         ]);
     }
 
@@ -1858,6 +1884,7 @@ class PageController extends AbstractController
                 "id" => "fiche_hotel",
                 "fiche" => $x,
                 "total" => $t,
+                "tropical_wood"     => false,
                 "hotel" => $data_session['pseudo_hotel'],
                 "current_page" => $data_session['current_page']
             ]);
@@ -1900,6 +1927,7 @@ class PageController extends AbstractController
        else{
             return $this->render('page/donnee_jour.html.twig', [
                 "id" => "li__donnee_du_jour",
+                "tropical_wood"     => false,
                 "form" => $form->createView(),
                 "hotel" => $data_session['pseudo_hotel'],
                 "current_page" => $data_session['current_page'],
@@ -1932,6 +1960,7 @@ class PageController extends AbstractController
        else{
             return $this->render('page/h_hebergement.html.twig', [
                 "hotel" => $data_session['pseudo_hotel'],
+                "tropical_wood"     => false,
                 "current_page" => $data_session['current_page'],
                 "value_date1" => $value_date1,
                 "value_date2" => $value_date2,
@@ -1963,6 +1992,7 @@ class PageController extends AbstractController
        else{
             return $this->render('page/h_restaurant.html.twig', [
                 "hotel" => $data_session['pseudo_hotel'],
+                "tropical_wood"     => false,
                 "current_page" => $data_session['current_page'],
                 "value_date1" => $value_date1,
                 "value_date2" => $value_date2,
@@ -1994,6 +2024,7 @@ class PageController extends AbstractController
        else{
             return $this->render('page/h_spa.html.twig', [
                 "hotel" => $data_session['pseudo_hotel'],
+                "tropical_wood"     => false,
                 "current_page" => $data_session['current_page'],
                 "value_date1" => $value_date1,
                 "value_date2" => $value_date2,
@@ -2014,7 +2045,9 @@ class PageController extends AbstractController
         $data_session['pseudo_hotel'] = "royal_beach";
         $data_session['current_page'] = $current_page;
 
-        return $this->redirectToRoute($data_session['current_page'], ['pseudo_hotel' => $data_session['pseudo_hotel']]);
+        return $this->redirectToRoute($data_session['current_page'], [
+            'pseudo_hotel'      => $data_session['pseudo_hotel']
+        ]);
     }
 
     /**
@@ -2026,7 +2059,9 @@ class PageController extends AbstractController
         $data_session['pseudo_hotel'] = "calypso";
         $data_session['current_page'] = $current_page;
 
-        return $this->redirectToRoute($data_session['current_page'], ['pseudo_hotel' => $data_session['pseudo_hotel']]);
+        return $this->redirectToRoute($data_session['current_page'], [
+            'pseudo_hotel' => $data_session['pseudo_hotel']
+            ]);
     }
 
     /**
@@ -2038,7 +2073,9 @@ class PageController extends AbstractController
         $data_session['pseudo_hotel'] = "baobab_tree";
         $data_session['current_page'] = $current_page;
 
-        return $this->redirectToRoute($data_session['current_page'], ['pseudo_hotel' => $data_session['pseudo_hotel']]);
+        return $this->redirectToRoute($data_session['current_page'], [
+            'pseudo_hotel' => $data_session['pseudo_hotel']
+            ]);
     }
 
     /**
@@ -2050,7 +2087,9 @@ class PageController extends AbstractController
         $data_session['pseudo_hotel'] = "vanila_hotel";
         $data_session['current_page'] = $current_page;
 
-        return $this->redirectToRoute($data_session['current_page'], ['pseudo_hotel' => $data_session['pseudo_hotel']]);
+        return $this->redirectToRoute($data_session['current_page'], [
+            'pseudo_hotel' => $data_session['pseudo_hotel']
+            ]);
     }
 
     

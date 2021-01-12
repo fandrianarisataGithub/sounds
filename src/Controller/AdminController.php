@@ -109,6 +109,11 @@ class AdminController extends AbstractController
                             $user->setRoles(array('ROLE_USER'));
                             $hotels = $reposHotel->findOneByNom($hotel);
                             $user->addHotel($hotels);
+                        } 
+                        else if ($role == "tropical_wood") {
+                            $user->setRoles(array('ROLE_TROPICAL_WOOD'));
+                            $hotels = $reposHotel->findOneByNom($hotel);
+                            $user->addHotel($hotels);
                         }
 
                         $user->setHotel($hotel);
@@ -158,14 +163,20 @@ class AdminController extends AbstractController
             $users = $repoUser->findAll();
             $html = "";
             foreach($users as $elm){
-                // son rôle
-                // son rôle
+               
                 $son_role = $elm->getRoles();
-                $cr = count($elm->getRoles());
-                $son_role = 'Administrateur';
-                $son_nom_hotel = '';
-                if ($cr == 1) {
-                    $son_role = 'Editeur';
+               $son_nom_hotel = $elm->getHotel();
+                if ($son_nom_hotel !="tous") {
+                    if($son_nom_hotel != "Tropical wood"){
+                        $son_role = 'Editeur';
+                        $son_nom_hotel = $elm->getHotel();
+                    }
+                    else{
+                        $son_role = 'Admin <br>Tropical wood';
+                        $son_nom_hotel = "";
+                    }
+                }else{
+                $son_role = 'Super Admin';
                     $son_nom_hotel = $elm->getHotel();
                 }
 
@@ -196,44 +207,6 @@ class AdminController extends AbstractController
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent($data);
             return $response;
-        }
-        else{
-            // users
-            $users = $repoUser->findAll();
-            $html = "";
-            foreach ($users as $elm) {
-                // son rôle
-                $son_role = $elm->getRoles();
-                $cr = count($elm->getRoles());
-                $son_role = 'Administrateur';
-                $son_nom_hotel = '';
-                if($cr == 1 ){
-                    $son_role = 'Editeur';
-                    $son_nom_hotel = $elm->getHotel() ;
-                }
-                $html .= '
-                    <li>
-							<span class="nom_pers">
-								' . $elm->getNom() . '
-								<br>
-								' . $elm->getPrenom() . '
-							</span>
-							<span class="role_pers">
-								' . $son_role . '</br>'.$son_nom_hotel. '
-
-							</span>
-							<div>
-								<a href="#" data-id = "' . $elm->getId() . '" data-toggle="modal" data-target="#modal_form_modif_admin" class = "edit_user">
-									<span class="fa fa-edit"></span>
-								</a>
-								<a href="#" data-id = "' . $elm->getId() . '" data-toggle="modal" data-target="#modal_form_confirme_pers" class="delete_user">
-									<span class="fa fa-trash-o"></span>
-								</a>
-							</div>
-						</li>
-                ';
-            }
-            dd($html);
         }
             
                 
@@ -327,6 +300,18 @@ class AdminController extends AbstractController
                         <option value="Calypso">Calypso</option>
                         <option value="Baobab Tree">Baobab Tree</option>
                         <option selected = "selected" value="Vanila Hotel">Vanila Hotel</option>
+                    </select>
+                ';
+            }
+            if ($son_hotel == "Tropical wood") {
+                $select_hotel .= '
+                    <select name="" id="modal_choix_hotel" class="form-control">
+                        <option  value="tous">Tous / Hôtel</option>
+                        <option value="Royal Beach">Royal Beach</option>
+                        <option value="Calypso">Calypso</option>
+                        <option value="Baobab Tree">Baobab Tree</option>
+                        <option selected = "selected" value="Vanila Hotel">Vanila Hotel</option>
+                        <option value="Tropical wood">Tropical wood</option>
                     </select>
                 ';
             }

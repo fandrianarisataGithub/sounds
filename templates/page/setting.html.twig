@@ -89,7 +89,7 @@
 			{% if is_granted('ROLE_ADMIN') %}
 				style =" display:block; "
 			{% else %}
-				style = "display : none;"
+				style =" display:none; "
 			{% endif %}
 		
 		>
@@ -104,16 +104,18 @@
 							<option value="administrateur">Administrateur</option>
 							{# <option selected = "selected" value="editeur">Editeur</option> #}
 							<option value="editeur">Editeur</option>
+							<option value="tropical_wood">Admin Tropical Wood</option>
 						</select>
 					</div>
 					<div class="form-group nom_hotel">
-						<label for="choix_hotel">Nom de l'hotel</label>
+						<label for="choix_hotel">Nom de l'hôtel / Entreprise</label>
 						<select name="" id="choix_hotel" class="form-control">
-							<option value="tous">Tous</option>
+							<option value="tous">Tous/Hotels</option>
 							<option value="Royal Beach">Royal Beach</option>
 							<option value="Calypso">Calypso</option>
 							<option value="Baobab Tree">Baobab Tree</option>
 							<option value="Vanila Hotel">Vanila Hotel</option>
+							<option value="Tropical wood">Tropical wood</option>
 						</select>
 					</div>
 

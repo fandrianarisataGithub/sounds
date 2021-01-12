@@ -409,11 +409,11 @@
 			// not allow submit form when pressing enter
 
 			$('.liste_form_search form').on('keyup keypress', function(e) {
-			var keyCode = e.keyCode || e.which;
-			if (keyCode === 13) { 
-				e.preventDefault();
-				return false;
-			}
+				var keyCode = e.keyCode || e.which;
+				if (keyCode === 13) { 
+					e.preventDefault();
+					return false;
+				}
 			});
 
 			// recherche stylé entreprise
@@ -637,7 +637,7 @@
 				}
 
 				$.ajax({
-					url : "/profile/tri_ajax_btn_black/tropical",
+					url : "/tropical_wood/tri_ajax_btn_black/tropical",
 					type : "POST",
 					data : {
 						'type_transaction' 	: data_type_trans,
@@ -755,7 +755,7 @@
 				}
 
 				$.ajax({
-					url : "/profile/tri_ajax_btn_black/tropical",
+					url : "/tropical_wood/tri_ajax_btn_black/tropical",
 					type : "POST",
 					data : {
 						'type_transaction' : data_type_trans,
@@ -838,7 +838,7 @@
 			function load_by_button_ok(tri_reglement, tri_reste, tri_montant){
 				var input__entreprise_ajax = $('#input__entreprise').val();
 				$.ajax({
-					url : "/profile/search_ajax_btn_ok/tropical",
+					url : "/tropical_wood/search_ajax_btn_ok/tropical",
 					type : "POST",
 					data : {
 							'input__entreprise_ajax' 	: input__entreprise_ajax,

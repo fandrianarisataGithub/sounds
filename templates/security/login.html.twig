@@ -7,77 +7,168 @@
 
 
 {% block body %}
-	
-
-	<section class="wrapper">
-		<div class="container-fluid">
-			<div class="col-lg-6 col-md-6 col-sm-6" style="background-image: url({{ asset('images/login.png') }});">
-
-
-				<div class="fond_gauche"></div>
-			</div>
-			<div class="col-lg-6 col-md-6 col-sm-6">
-				<div class="row">
-					<div class="grand_titre_si">
-						<div class="bg_titre">
-							<span>SOUND'S</span>
-						</div>
-						<div class="sm_titre">
-							<span>HOTELS GROUP</span>
-						</div>
+		<section class="wrapper" id="home_dashboard">
+			 <div class="container-fluid" style="background-image:url({{ asset('images/fond_accueil_prelogin.jpg') }})">
+			 	<div class="header">
+					<h3>DASHBOARD</h3>
+				</div>
+				<div class="ligne"></div>
+			 	<div class="button_liste">
+					<div class="background-button" id="div_shadow_tropical_wood">
+						<a href="#" class="link_logo">
+							<div class="img_content" data-log="authentification_tw">
+								<img src="{{ asset('images/bouton_tropical_wood.png') }}" class="img-responsive" alt="">
+							</div>
+						</a>
+					</div>
+					<div class="background-button" id="div_shadow_sounds">
+						<a href="#" class="link_logo">
+							<div class="img_content" data-log="authentification_s">
+								<img src="{{ asset('images/bouton_sounds.png') }}" class="img-responsive" alt="">
+							</div>
+						</a>
 					</div>
 				</div>
-				<div class="row">
-					<div class="div_parag">
-						<p>Veuillez vous connecter à votre compte.</p>
-					</div>
+			 </div>
+		</section>
+
+		<section class="wrapper" id="authentification_s" style="display:none">
+			<div class="container-fluid">
+				<div class="col-lg-6 col-md-6 col-sm-6" style="background-image: url({{ asset('images/login.png') }});">
+
+					<div class="fond_gauche"></div>
 				</div>
-				<div class="row">
-					<div class="form">
-						<form method="post">
-							<div class="form-group">
-								<span class="span__label"></span>
-								<input type="email" name="email" data-placeholder="Adresse mail" class="form-control" id="inputEmail" value="{{ last_username }}" placeholder="Adresse mail">
-
-
+				<div class="col-lg-6 col-md-6 col-sm-6">
+					<div class="row">
+						<div class="grand_titre_si">
+							<div class="bg_titre">
+								<span>SOUND'S</span>
 							</div>
-							<div class="form-group">
-								<span class="span__label"></span><input type="password" class="form-control" name="password" data-placeholder="Password" id="inputPassword" placeholder="Password">
-
+							<div class="sm_titre">
+								<span>HOTELS GROUP</span>
 							</div>
-							<div class="form-group div__check">
-								<input type="checkbox" id="remember_me" name="_remember_me" value="remember">
+						</div>
+					</div>
+					<div class="row">
+						<div class="div_parag">
+							<p>Veuillez vous connecter ici.</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form">
+							<form method="post" id="form_sounds">
+								<div class="form-group">
+									<span class="span__label"></span>
+									<input type="email" name="email" data-placeholder="Adresse mail" id="mail_s" class="form-control" value="{{ last_username }}" placeholder="Adresse mail">
 
-								<label for="remember_me">Se souvenir de moi</label>
-								<a href="{{ path('forgot_password') }}" id="link_forgot_pass">
-									<span>Mot de passe oublié</span>
-								</a>
-							</div>
-							{% if error %}
-								<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-							{% endif %}
-							<input
-							type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-							{#
-								Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-								See https://symfony.com/doc/current/security/remember_me.html
 
-								<div class="checkbox mb-3">
-									<label>
-										<input type="checkbox" name="_remember_me"> Remember me
-									</label>
 								</div>
-							#}
+								<div class="form-group">
+									<span class="span__label"></span><input type="password" id="password_s" class="form-control" name="password" data-placeholder="Password" placeholder="Password">
 
-							<div class="form-group last_iput">
-								<input type="submit" value="Login" id="btn_login" class="btn btn-md" name="">
-							</div>
-						</form>
+								</div>
+								<div class="form-group div__check">
+									<input type="checkbox" id="remember_me_s" name="_remember_me" value="remember">
+									
+									<label for="remember_me_s">Se souvenir de moi</label>
+									<a href="{{ path('forgot_password') }}" class="link_forgot_pass">
+										<span>Mot de passe oublié</span>
+									</a>
+								</div>
+								{% if error %}
+									<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+								{% endif %}
+								<input
+								type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+								{#
+									Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+									See https://symfony.com/doc/current/security/remember_me.htmlklk
+
+									<div class="checkbox mb-3">
+										<label>
+											<input type="checkbox" name="_remember_me"> Remember me
+										</label>
+									</div>
+								#}
+								<div id="info_log_sounds">
+									<p>lorem dfhlk qsdhgkl </p>
+								</div>
+								<div class="form-group last_iput">
+									<input type="submit" value="Login" id="btn_login_s" class="btn_login btn btn-md" name="">
+									<a href="{{ path('app_login') }}" class="btn btn-md btn_si" id="retour_sounds"><span class="fa fa-angle-double-left"></span>Retour</a>
+								</div>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	</section>
+		</section>
+
+		{# login tropical wood #}
+		<section class="wrapper" id="authentification_tw" style="display:none">
+			<div class="container-fluid">
+				<div class="col-lg-6 col-md-6 col-sm-6" style="background-image: url({{ asset('images/fond_login_tropical_wood.jpg') }});">
+
+					<div class="fond_gauche"></div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6">
+					<div class="row">
+						<div class="logo_login">
+							<img src="{{ asset('images/tropical.png') }}" alt="logo">
+						</div>
+					</div>
+					<div class="row">
+						<div class="div_parag">
+							<p>Veuillez vous connecter ici.</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form">
+							<form method="post" id="form_tw">
+								<div class="form-group">
+									<span class="span__label span__label_tw"></span>
+									<input type="email" name="email" data-placeholder="Adresse mail" id="mail_tw" class="form-control"  value="{{ last_username }}" placeholder="Adresse mail">
+								</div>
+								<div class="form-group">
+									<span class="span__label span__label_tw"></span>
+									<input type="password" class="form-control" id="password_tw" name="password" data-placeholder="Password" placeholder="Password">
+
+								</div>
+								<div class="form-group div__check">
+									<input type="checkbox" class="remember_me_tw" name="_remember_me" value="remember">
+									<label for="remember_me_tw">Se souvenir de moi</label>
+									<a href="{{ path('forgot_password') }}" class="link_forgot_pass">
+										<span>Mot de passe oublié</span>
+									</a>
+								</div>
+								{% if error %}
+									<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+								{% endif %}
+								<input
+								type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+								{#
+																	Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+																	See https://symfony.com/doc/current/security/remember_me.html
+								
+																	<div class="checkbox mb-3">
+																		<label>
+																			<input type="checkbox" name="_remember_me"> Remember me
+																		</label>
+																	</div>
+																#}
+								<div id="info_log_tw">
+									<p>lorem dfhlk qsdhgkl </p>
+								</div>
+								<div class="form-group last_iput">
+									<input type="submit" value="Login" id="btn_login_tw" class="btn_login btn btn-md login_tropical_wood" name="">
+									<a href="{{ path('app_login') }}" class="btn btn-md btn_si" id="retour_tw"><span class="fa fa-angle-double-left"></span>Retour</a>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 
 {% endblock %}
 {% block javascripts %}
@@ -99,7 +190,76 @@
                 $(this).parent().children(".span__label").text("");
                 $(this).css("border-color", "#e2e3e6");
                 }
-            })
+			})
+			
+			// annimation pour les choix de login 
+			$('.img_content').on('click', function(ev){
+				ev.preventDefault();
+				var data_log = $(this).attr('data-log');
+				//alert(data_log);
+				$('#home_dashboard').slideUp();
+				$('#' + data_log).slideDown();
+			})
+		// login tw
+
+			$("#btn_login_tw").on('click', function(ev){
+				ev.preventDefault();
+				var data = {
+					'mail' 		: $("#mail_tw").val(),
+					'password'	: $("#password_tw").val(),
+				}
+				$.ajax({
+					url 	: "/test_auth_tw",
+					type 	: "POST",
+					data 	: data,
+					success	: function(response){
+						if(response == "oui"){
+							$('#form_tw').submit();
+						}else{
+							$('#info_log_tw p').text("Adresse email introuvable");
+							$('#info_log_tw').fadeIn("slow");
+
+							setTimeout(() => {
+								$('#info_log_tw').fadeOut("slow");
+							}, 3000);
+						}
+					},
+					error	: function(){
+						alert('erreur au niveau de la route test_auth');
+					}
+				})
+			})
+
+			// login sounds
+
+			$("#btn_login_s").on('click', function(ev){
+				ev.preventDefault();
+				var data = {
+					'mail' 		: $("#mail_s").val(),
+					'password'	: $("#password_s").val(),
+				}
+				$.ajax({
+					url 	: "/test_auth_s",
+					type 	: "POST",
+					data 	: data,
+					success	: function(response){
+						if(response == "oui"){
+							$('#form_sounds').submit();
+						}else{
+							$('#info_log_sounds p').text("Adresse email introuvable");
+							$('#info_log_sounds').fadeIn("slow");
+
+							setTimeout(() => {
+								$('#info_log_sounds').fadeOut("slow");
+							}, 3000);
+						}
+					},
+					error	: function(){
+						alert('erreur au niveau de la route test_auth_s');
+					}
+				})
+			})
+
         })
 
 /* / animation des input  */

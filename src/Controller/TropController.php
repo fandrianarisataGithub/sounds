@@ -17,13 +17,14 @@ class TropController extends AbstractController
 {
 
     /**
-     * @Route("/profile/tropical_wood", name="tropical_wood")
+     * @Route("/tropical_wood/home_tropical_wood", name="tropical_wood")
      */
     public function tropical_wood(SessionInterface $session, Request $request, Services $services, EntityManagerInterface $manager, DataTropicalWoodRepository $repoTrop)
     {
         // $test = $repoTrop->findAllGroupedByEntreprise();
         // dd($test);
         $data_session = $session->get('hotel');
+        $data_session['pseudo_hotel'] = "tropical_wood";
         $form_add = $this->createForm(FournisseurFileType::class);
         $form_add->handleRequest($request);
         $text = "tsisy";
@@ -163,7 +164,7 @@ class TropController extends AbstractController
     }
 
     /**
-     * @Route("/profile/tri_ajax_btn_black/tropical", name = "tri_ajax_btn_black")
+     * @Route("/tropical_wood/tri_ajax_btn_black/tropical", name = "tri_ajax_btn_black")
      */
     public function tri_ajax_btn_black(Request $request, DataTropicalWoodRepository $repoTrop)
     {
@@ -346,7 +347,7 @@ class TropController extends AbstractController
     }
 
     /**
-     * @Route("/profile/search_ajax_btn_ok/tropical", name = "search_ajax_btn_ok")
+     * @Route("/tropical_wood/search_ajax_btn_ok/tropical", name = "search_ajax_btn_ok")
      */
     public function search_ajax_btn_ok(Request $request, DataTropicalWoodRepository $repoTrop)
     {
@@ -546,7 +547,7 @@ class TropController extends AbstractController
     }
 
     /**
-     * @Route("/profile/search_ajax_ec", name = "search_ajax_ec")
+     * @Route("/tropical_wood/search_ajax_ec", name = "search_ajax_ec")
      */
     public function search_ajax_ec(Request $request, DataTropicalWoodRepository $repoTrop, EntityManagerInterface $em)
     {

@@ -198,6 +198,10 @@ body {
     white-space: nowrap;
 }
 
+.span__label_tw {
+    color: #41210c !important;
+}
+
 @-webkit-keyframes spin {
     0% {
         -webkit-transform: rotate(0);
@@ -315,7 +319,7 @@ ul {
 }
 
 .wrapper .container-fluid .col-lg-6:last-child .row {
-    margin-top: 50px;
+    margin-top: 20px;
 }
 
 .grand_titre_si {
@@ -421,6 +425,37 @@ div.form .form-group input.form-control:focus {
     box-shadow: inset 0 1px 1px rgba(240, 240, 247, .075);
 }
 
+#info_log_sounds {
+    display: none;
+    background: #e3935e;
+    height: 30px;
+    border-left: 5px solid #c35c18;
+}
+
+#info_log_sounds p {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding-left: 5px;
+    color: #fff;
+}
+
+#info_log_tw {
+    display: none;
+    background: #e3935e;
+    height: 30px;
+    border-left: 5px solid #c35c18;
+}
+
+#info_log_tw p {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding-left: 5px;
+    color: #fff;
+    font-size: 12px;
+}
+
 
 /*style du input*/
 
@@ -478,7 +513,7 @@ input[type=checkbox]:checked:disabled+label:before {
 
 /*fin style input*/
 
-#link_forgot_pass {
+.link_forgot_pass {
     float: right;
     margin-top: 8px;
     color: #323232;
@@ -491,7 +526,7 @@ label {
     font-weight: 400;
 }
 
-input#btn_login {
+input.btn_login {
     width: 45%;
     background-color: #d29e00;
     color: #fff;
@@ -500,7 +535,13 @@ input#btn_login {
     border: 1px solid #d29e00;
 }
 
-a#btn_si {
+#btn_login_tw, #btn_login_tw:hover, #btn_login_tw:focus{
+    color: #fff !important;
+}
+#btn_login_s, #btn_login_s:hover, #btn_login_s:focus{
+    color: #fff !important;
+}
+a.btn_si {
     width: 45%;
     float: right;
     background-color: transparent;
@@ -510,6 +551,16 @@ a#btn_si {
     padding-top: 10px;
     border: 1px solid #d29e00;
     color: #d29e00;
+}
+
+a.btn_si span.fa {
+    margin-right: 5px;
+    transition: all 1s linear ease-in-out;
+}
+
+#retour_tw {
+    border-color: #41210c;
+    color: #41210c;
 }
 
 
@@ -604,4 +655,122 @@ a#btn_si {
     div.form {
         width: 80%;
     }
+}
+
+
+/* autre style de login*/
+
+#home_dashboard {
+    display: block;
+}
+
+.header {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    margin-top: 150px;
+    
+}
+
+.ligne {
+    height: 1px;
+    background: rgba(122, 120, 118, 0.2);
+    width: 150px;
+    margin: auto;
+    margin-top: 50px;
+}
+
+.header h3 {
+    margin: 0;
+    color: #777575;
+    font-weight: 200;
+    font-size: 35px;
+}
+
+.button_liste {
+    display: flex;
+    justify-content: space-around;
+    width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+}
+
+.button_liste a {
+    display: block;
+    text-decoration: none;
+    transition: all 1s linear ease-in-out;
+}
+
+.button_liste a:hover {
+    text-decoration: none;
+}
+
+div.img_content {
+    width: 200px;
+    height: 200px;
+    background: transparent !important;
+    overflow: hidden;
+}
+
+.img_content {
+    border-radius: 25px;
+    background-clip: padding-box;
+}
+
+#div_shadow_tropical_wood .img_content {
+    box-shadow: 0px 0px 15px #41210c;
+}
+
+#div_shadow_sounds .img_content {
+    box-shadow: 0px 0px 15px rgba(65, 35, 12, 0.5);
+}
+
+.img_content:hover {
+    transform: scale(1.01);
+    transition: transform 1s linear ease-in-out;
+}
+
+
+/* login tropical */
+
+.logo_login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
+.logo_login img {
+    width: 200px;
+}
+
+.login_tropical_wood {
+    background: #41210c !important;
+    border-color: transparent !important;
+}
+
+.login_tropical_wood:hover {
+    background: #4a270f !important;
+    transition: all 1s linear ease-in-out;
+}
+
+div.carre_rm {
+    display: inline-flex;
+    border: 1px solid rgba(85, 82, 80, 0.8);
+    width: 20px;
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2px;
+    position: absolute;
+}
+
+.label_remember_me {
+    margin-left: 15px;
+}
+
+.link_forgot_pass {
+    float: right;
+    color: black;
 }

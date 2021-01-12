@@ -107,8 +107,8 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
         $user_hotel = $user->getHotel();
         $l_hotel = $this->entityManager->getRepository(Hotel::class)->findOneBy(['nom' => $user_hotel]);
-        
-        if(!$l_hotel){
+       
+        if(!$l_hotel){ // pour le tous comme hotel
             
             $hotel_cible = 'royal_beach';
 
@@ -127,24 +127,47 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
             // on stock ça dans la variable de session 
 
             $session->set("hotel", $hotel);
-            return new RedirectResponse($this->urlGenerator->generate('hebergement', ['pseudo_hotel' => $hotel['pseudo_hotel']]));
+            return new RedirectResponse($this->urlGenerator->generate($hotel_cible, [
+                "current_page" => $hotel['current_page'],
+            ]));
         }
         else{
-            $hotel_cible = $l_hotel->getPseudo();
-            $session  = $request->getSession();
-            // le nom de l'hotel qui va s'ouvrir pour les admin seulement
-            $hotel = $session->get('hotel', []);
-            // initialisation de la variable session hotel
-            $hotel['pseudo_hotel'] = $hotel_cible;
-            $hotel['current_page'] = "crj";
-            $hotel['user'] = $user;
-            //dd($hotel['pseudo_hotel']);
-            // on stock ça dans la variable de session 
+            if($user_hotel != "Tropical wood"){
+                $hotel_cible = $l_hotel->getPseudo();
+                $session  = $request->getSession();
+                // le nom de l'hotel qui va s'ouvrir pour les admin seulement
+                $hotel = $session->get('hotel', []);
+                // initialisation de la variable session hotel
+                $hotel['pseudo_hotel'] = $hotel_cible;
+                $hotel['current_page'] = "crj";
+                $hotel['user'] = $user;
+                //dd($hotel['pseudo_hotel']);
+                // on stock ça dans la variable de session 
 
-            $session->set("hotel", $hotel);
+                $session->set("hotel", $hotel);
 
-            return new RedirectResponse($this->urlGenerator->generate('hebergement', ['pseudo_hotel' => $hotel['pseudo_hotel']]));
-       // throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
+                return new RedirectResponse($this->urlGenerator->generate($hotel_cible, [
+                    "current_page" => $hotel['current_page'],
+                ]));
+                // throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
+            }
+            else{
+                $hotel_cible = $l_hotel->getPseudo();
+                $session  = $request->getSession();
+                // le nom de l'hotel qui va s'ouvrir pour les admin seulement
+                $hotel = $session->get('hotel', []);
+                // initialisation de la variable session hotel
+                $hotel['pseudo_hotel'] = $hotel_cible;
+                $hotel['current_page'] = "tropical_wood";
+                $hotel['user'] = $user;
+                //dd($hotel['pseudo_hotel']);
+                // on stock ça dans la variable de session
+                
+                $session->set("hotel", $hotel);
+
+                return new RedirectResponse($this->urlGenerator->generate($hotel_cible));
+                // throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
+            }
         }
     }
 

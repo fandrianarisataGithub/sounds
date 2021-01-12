@@ -40,10 +40,12 @@ security:
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/tropical_wood, roles: ROLE_TROPICAL_WOOD }
     # La partie role_hierarchy contient la hiérarchie des rôles
     # Un éditeur sera également utilisateur
     # Un administrateur sera également éditeur et donc utilisateur
     role_hierarchy:
         ROLE_EDITOR: ROLE_USER
-        ROLE_ADMIN: ROLE_EDITOR
+        ROLE_ADMIN_TROPICAL_WOOD: ROLE_TROPICAL_WOOD
+        ROLE_ADMIN: [ROLE_EDITOR, ROLE_ADMIN_TROPICAL_WOOD]
 
