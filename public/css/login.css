@@ -526,7 +526,7 @@ label {
     font-weight: 400;
 }
 
-input.btn_login {
+.btn_login {
     width: 45%;
     background-color: #d29e00;
     color: #fff;

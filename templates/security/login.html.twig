@@ -94,7 +94,7 @@
 									<p>lorem dfhlk qsdhgkl </p>
 								</div>
 								<div class="form-group last_iput">
-									<input type="submit" value="Login" id="btn_login_s" class="btn_login btn btn-md" name="">
+									<button type="submit" id="btn_login_s" class="btn_login btn btn-md" name=""><span>Se connecter</span></button>
 									<a href="{{ path('app_login') }}" class="btn btn-md btn_si" id="retour_sounds"><span class="fa fa-angle-double-left"></span>Retour</a>
 								</div>
 							</form>
@@ -132,7 +132,6 @@
 								<div class="form-group">
 									<span class="span__label span__label_tw"></span>
 									<input type="password" class="form-control" id="password_tw" name="password" data-placeholder="Password" placeholder="Password">
-
 								</div>
 								<div class="form-group div__check">
 									<input type="checkbox" class="remember_me_tw" name="_remember_me" value="remember">
@@ -160,7 +159,7 @@
 									<p>lorem dfhlk qsdhgkl </p>
 								</div>
 								<div class="form-group last_iput">
-									<input type="submit" value="Login" id="btn_login_tw" class="btn_login btn btn-md login_tropical_wood" name="">
+									<button type="submit" id="btn_login_tw" class="btn_login btn btn-md login_tropical_wood" name=""><span>Se connecter</span></button>
 									<a href="{{ path('app_login') }}" class="btn btn-md btn_si" id="retour_tw"><span class="fa fa-angle-double-left"></span>Retour</a>
 								</div>
 							</form>
@@ -212,6 +211,9 @@
 					url 	: "/test_auth_tw",
 					type 	: "POST",
 					data 	: data,
+					beforeSend : function(){
+						$("#btn_login_tw span").text("Patienter...");
+					},
 					success	: function(response){
 						if(response == "oui"){
 							$('#form_tw').submit();
@@ -223,6 +225,9 @@
 								$('#info_log_tw').fadeOut("slow");
 							}, 3000);
 						}
+					},
+					complete : function(){
+						$("#btn_login_tw span").text("Se connecter");
 					},
 					error	: function(){
 						alert('erreur au niveau de la route test_auth');
@@ -242,6 +247,9 @@
 					url 	: "/test_auth_s",
 					type 	: "POST",
 					data 	: data,
+					beforeSend : function(){
+						$("#btn_login_s span").text("Patienter...");
+					},
 					success	: function(response){
 						if(response == "oui"){
 							$('#form_sounds').submit();
@@ -253,6 +261,9 @@
 								$('#info_log_sounds').fadeOut("slow");
 							}, 3000);
 						}
+					},
+					complete : function(){
+						$("#btn_login_s span").text("Se connecter");
 					},
 					error	: function(){
 						alert('erreur au niveau de la route test_auth_s');
