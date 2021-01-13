@@ -68,6 +68,7 @@ class DonneeMensuelleController extends AbstractController
                 "current_page"  => $data_session['current_page'],
                 "today"         => 2,
                 'form'          => $form->createView(),
+                'tropical_wood' => false,
             ]);
         }
     }

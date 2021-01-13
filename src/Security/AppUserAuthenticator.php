@@ -53,6 +53,7 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
             'email' => $request->request->get('email'),
             'password' => $request->request->get('password'),
             'csrf_token' => $request->request->get('_csrf_token'),
+            'groupe' => $request->request->get('groupe'),
         ];
         $request->getSession()->set(
             Security::LAST_USERNAME,
@@ -103,6 +104,7 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
 
         //dd($request); il y a l'a propos de user courant
         $email = $request->request->get('email');
+        $groupe = $request->request->get('groupe');
         //dd($email);
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
         $user_hotel = $user->getHotel();
@@ -123,6 +125,8 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
             $hotel['pseudo_hotel'] = $hotel_cible;
             $hotel['current_page'] = "crj";
             $hotel['user'] = $user;
+            // Ca ne changera pas tant l'utilisateur est connecté
+            $hotel['groupe'] = $groupe;
             //dd($hotel['pseudo_hotel']);
             // on stock ça dans la variable de session 
 
@@ -141,6 +145,7 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
                 $hotel['pseudo_hotel'] = $hotel_cible;
                 $hotel['current_page'] = "crj";
                 $hotel['user'] = $user;
+                $hotel['groupe'] = $groupe;
                 //dd($hotel['pseudo_hotel']);
                 // on stock ça dans la variable de session 
 
@@ -160,6 +165,7 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
                 $hotel['pseudo_hotel'] = $hotel_cible;
                 $hotel['current_page'] = "tropical_wood";
                 $hotel['user'] = $user;
+                $hotel['groupe'] = $groupe;
                 //dd($hotel['pseudo_hotel']);
                 // on stock ça dans la variable de session
                 

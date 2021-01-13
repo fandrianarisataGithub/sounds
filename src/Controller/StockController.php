@@ -63,6 +63,7 @@ class StockController extends AbstractController
                 'tab_annee'         =>  $allAnnee,
                 'tab_stock'         => $tab,
                 'current_year'      => $annee,
+                "tropical_wood"     => false,
             ]);
         }
     }

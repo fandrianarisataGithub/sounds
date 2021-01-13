@@ -111,6 +111,7 @@ class CostController extends AbstractController
                 'tab_eau_p'           => $tab_eau_p,
                 'tab_gasoil_p'        => $tab_gasoil_p,
                 'tab_salaire_p'       => $tab_salaire_p,
+                "tropical_wood"     => false,
             ]);
         }
     }

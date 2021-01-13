@@ -1,13 +1,28 @@
-{% extends 'base.html.twig' %}
-{% block title %}Log in!
-{% endblock %}
-{% block stylesheets %}
-	<link rel="stylesheet" href="{{asset('css/login.css')}}">
-{% endblock %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			Login
+		</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<meta name="author" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Lato:200,300,400,500,600,700,800,900,1000&display=swap" rel="stylesheet">
 
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link href="https://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+		<link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.4/css/responsive.bootstrap.min.css">
+		<link rel="stylesheet" href="{{ asset('css/login.css') }}">
+	</head>
 
-{% block body %}
-		<section class="wrapper" id="home_dashboard">
+	<body>
+	<section class="wrapper" id="home_dashboard">
 			 <div class="container-fluid" style="background-image:url({{ asset('images/fond_accueil_prelogin.jpg') }})">
 			 	<div class="header">
 					<h3>DASHBOARD</h3>
@@ -65,7 +80,7 @@
 								</div>
 								<div class="form-group">
 									<span class="span__label"></span><input type="password" id="password_s" class="form-control" name="password" data-placeholder="Password" placeholder="Password">
-
+									<input type="hidden" value="sounds" name="groupe">
 								</div>
 								<div class="form-group div__check">
 									<input type="checkbox" id="remember_me_s" name="_remember_me" value="remember">
@@ -132,6 +147,7 @@
 								<div class="form-group">
 									<span class="span__label span__label_tw"></span>
 									<input type="password" class="form-control" id="password_tw" name="password" data-placeholder="Password" placeholder="Password">
+									<input type="hidden" value="tropical_wood" name="groupe">
 								</div>
 								<div class="form-group div__check">
 									<input type="checkbox" class="remember_me_tw" name="_remember_me" value="remember">
@@ -168,114 +184,134 @@
 				</div>
 			</div>
 		</section>
+		<script src="{{asset('jquery/jquery.min.js')}}"></script>
 
-{% endblock %}
-{% block javascripts %}
-	
-	<script>
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+			<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+			<script>
+				/* pour l'annimation de loader */
 
-		/*animation des input  */
 
-        $(document).ready(function () {
-            $("input[placeholder]").on({
-                focus: function () {
-                $(this).parent().children(".span__label").text($(this).attr('placeholder'));
-                $(this).attr('placeholder', ' ');
-                $(this).css("border-color", "#d29e00");
-            },
-            blur: function () {
-                var t = $(this).attr('data-placeholder');
-                $(this).attr('placeholder', t);
-                $(this).parent().children(".span__label").text("");
-                $(this).css("border-color", "#e2e3e6");
-                }
-			})
-			
-			// annimation pour les choix de login 
-			$('.img_content').on('click', function(ev){
-				ev.preventDefault();
-				var data_log = $(this).attr('data-log');
-				//alert(data_log);
-				$('#home_dashboard').slideUp();
-				$('#' + data_log).slideDown();
-			})
-		// login tw
-
-			$("#btn_login_tw").on('click', function(ev){
-				ev.preventDefault();
-				var data = {
-					'mail' 		: $("#mail_tw").val(),
-					'password'	: $("#password_tw").val(),
-				}
-				$.ajax({
-					url 	: "/test_auth_tw",
-					type 	: "POST",
-					data 	: data,
-					beforeSend : function(){
-						$("#btn_login_tw span").text("Patienter...");
-					},
-					success	: function(response){
-						if(response == "oui"){
-							$('#form_tw').submit();
-						}else{
-							$('#info_log_tw p').text("Adresse email introuvable");
-							$('#info_log_tw').fadeIn("slow");
-
-							setTimeout(() => {
-								$('#info_log_tw').fadeOut("slow");
-							}, 3000);
-						}
-					},
-					complete : function(){
-						$("#btn_login_tw span").text("Se connecter");
-					},
-					error	: function(){
-						alert('erreur au niveau de la route test_auth');
-					}
-				})
+			$(document).ready(function () {
+				setTimeout(function () {
+				$('body').addClass('loaded');
+				}, 2000);
 			})
 
-			// login sounds
+			/* fin loader */
+			</script>
+			<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+			<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+			<script src="https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.min.js"></script>
+			<script src="https://cdn.datatables.net/responsive/2.2.4/js/dataTables.responsive.min.js"></script>
+			<script src="https://cdn.datatables.net/responsive/2.2.4/js/responsive.bootstrap.min.js"></script>
+			<script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+			<script src='{{ asset('js/currency.js') }}'></script>
+			<script src='{{ asset('js/dashboard.js') }}'></script>
+			<script>
 
-			$("#btn_login_s").on('click', function(ev){
-				ev.preventDefault();
-				var data = {
-					'mail' 		: $("#mail_s").val(),
-					'password'	: $("#password_s").val(),
-				}
-				$.ajax({
-					url 	: "/test_auth_s",
-					type 	: "POST",
-					data 	: data,
-					beforeSend : function(){
-						$("#btn_login_s span").text("Patienter...");
-					},
-					success	: function(response){
-						if(response == "oui"){
-							$('#form_sounds').submit();
-						}else{
-							$('#info_log_sounds p').text("Adresse email introuvable");
-							$('#info_log_sounds').fadeIn("slow");
+					/*animation des input  */
 
-							setTimeout(() => {
-								$('#info_log_sounds').fadeOut("slow");
-							}, 3000);
-						}
-					},
-					complete : function(){
-						$("#btn_login_s span").text("Se connecter");
-					},
-					error	: function(){
-						alert('erreur au niveau de la route test_auth_s');
-					}
-				})
-			})
+					$(document).ready(function () {
+						$("input[placeholder]").on({
+							focus: function () {
+							$(this).parent().children(".span__label").text($(this).attr('placeholder'));
+							$(this).attr('placeholder', ' ');
+							$(this).css("border-color", "#d29e00");
+						},
+						blur: function () {
+							var t = $(this).attr('data-placeholder');
+							$(this).attr('placeholder', t);
+							$(this).parent().children(".span__label").text("");
+							$(this).css("border-color", "#e2e3e6");
+							}
+						})
+						
+						// annimation pour les choix de login 
+						$('.img_content').on('click', function(ev){
+							ev.preventDefault();
+							var data_log = $(this).attr('data-log');
+							//alert(data_log);
+							$('#home_dashboard').slideUp();
+							$('#' + data_log).slideDown();
+						})
+					// login tw
 
-        })
+						$("#btn_login_tw").on('click', function(ev){
+							ev.preventDefault();
+							var data = {
+								'mail' 		: $("#mail_tw").val(),
+								'password'	: $("#password_tw").val(),
+							}
+							$.ajax({
+								url 	: "/test_auth_tw",
+								type 	: "POST",
+								data 	: data,
+								beforeSend : function(){
+									$("#btn_login_tw span").text("Patienter...");
+								},
+								success	: function(response){
+									if(response == "oui"){
+										$('#form_tw').submit();
+									}else{
+										$('#info_log_tw p').text("Adresse email introuvable");
+										$('#info_log_tw').fadeIn("slow");
 
-/* / animation des input  */
+										setTimeout(() => {
+											$('#info_log_tw').fadeOut("slow");
+										}, 3000);
+									}
+								},
+								complete : function(){
+									$("#btn_login_tw span").text("Se connecter");
+								},
+								error	: function(){
+									alert('erreur au niveau de la route test_auth');
+								}
+							})
+						})
 
-	</script>
+						// login sounds
 
-{% endblock %}
+						$("#btn_login_s").on('click', function(ev){
+							ev.preventDefault();
+							var data = {
+								'mail' 		: $("#mail_s").val(),
+								'password'	: $("#password_s").val(),
+							}
+							$.ajax({
+								url 	: "/test_auth_s",
+								type 	: "POST",
+								data 	: data,
+								beforeSend : function(){
+									$("#btn_login_s span").text("Patienter...");
+								},
+								success	: function(response){
+									if(response == "oui"){
+										$('#form_sounds').submit();
+									}else{
+										$('#info_log_sounds p').text("Adresse email introuvable");
+										$('#info_log_sounds').fadeIn("slow");
+
+										setTimeout(() => {
+											$('#info_log_sounds').fadeOut("slow");
+										}, 3000);
+									}
+								},
+								complete : function(){
+									$("#btn_login_s span").text("Se connecter");
+								},
+								error	: function(){
+									alert('erreur au niveau de la route test_auth_s');
+								}
+							})
+						})
+
+					})
+
+					/* / animation des input  */
+
+			</script>
+	</body>
+</html>
 

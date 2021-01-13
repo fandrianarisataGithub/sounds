@@ -32,13 +32,29 @@
 			</div>
 			{# <!-- fin preload --> #}
 
+			{# administration d'administration au niveau de la var de session #}
+
+			{% set session = app.session.get('hotel') %}
+			{% set groupe = session['groupe'] %}
+
 			{% if app.user %}
 				
 				<aside class="side-nav" id="show-side-navigation1">
 					<div id="aside1">
 						<ul>
-							{% if app.user.hotel != 'tous' %}
-								{% if hotel == 'royal_beach' %}
+							{# liste hotel sounds  #}
+							{% if groupe == "sounds" %}
+								{% if app.user.hotel != 'tous' %}
+									{% if hotel == 'royal_beach' %}
+										<li {% if hotel == "royal_beach" %} class="logo_active" {% endif %}>
+											<a href="{{ path('royal_beach', {'current_page' : current_page }) }}">
+												<div>
+													<img src="{{asset('images/hazo1.png')}}" alt="logo1">
+												</div>
+											</a>
+										</li>
+									{% endif %}
+								{% else %}
 									<li {% if hotel == "royal_beach" %} class="logo_active" {% endif %}>
 										<a href="{{ path('royal_beach', {'current_page' : current_page }) }}">
 											<div>
@@ -47,17 +63,17 @@
 										</a>
 									</li>
 								{% endif %}
-							{% else %}
-								<li {% if hotel == "royal_beach" %} class="logo_active" {% endif %}>
-									<a href="{{ path('royal_beach', {'current_page' : current_page }) }}">
-										<div>
-											<img src="{{asset('images/hazo1.png')}}" alt="logo1">
-										</div>
-									</a>
-								</li>
-							{% endif %}
-							{% if  app.user.hotel != 'tous' %}
-								{% if hotel == 'calypso' %}
+								{% if  app.user.hotel != 'tous' %}
+									{% if hotel == 'calypso' %}
+										<li {% if hotel == "calypso" %} class="logo_active" {% endif %}>
+											<a href="{{ path('calypso', {'current_page' : current_page }) }}">
+												<div>
+													<img src="{{ asset('images/hazo2.png') }}" alt="logo2">
+												</div>
+											</a>
+										</li>
+									{% endif %}
+								{% else %}
 									<li {% if hotel == "calypso" %} class="logo_active" {% endif %}>
 										<a href="{{ path('calypso', {'current_page' : current_page }) }}">
 											<div>
@@ -66,17 +82,18 @@
 										</a>
 									</li>
 								{% endif %}
-							{% else %}
-								<li {% if hotel == "calypso" %} class="logo_active" {% endif %}>
-									<a href="{{ path('calypso', {'current_page' : current_page }) }}">
-										<div>
-											<img src="{{ asset('images/hazo2.png') }}" alt="logo2">
-										</div>
-									</a>
-								</li>
-							{% endif %}
-							{% if  app.user.hotel != 'tous' %}
-								{% if hotel == 'baobab_tree' %}
+								{% if  app.user.hotel != 'tous' %}
+									{% if hotel == 'baobab_tree' %}
+										<li {% if hotel == "baobab_tree" %} class="logo_active" {% endif %}>
+											<a href="{{ path('baobab_tree', {'current_page' : current_page }) }}">
+												<div>
+													<img src="{{ asset('images/hazo3.png') }}" alt="logo3">
+												</div>
+											</a>
+										</li>
+
+									{% endif %}
+								{% else %}
 									<li {% if hotel == "baobab_tree" %} class="logo_active" {% endif %}>
 										<a href="{{ path('baobab_tree', {'current_page' : current_page }) }}">
 											<div>
@@ -86,18 +103,17 @@
 									</li>
 
 								{% endif %}
-							{% else %}
-								<li {% if hotel == "baobab_tree" %} class="logo_active" {% endif %}>
-									<a href="{{ path('baobab_tree', {'current_page' : current_page }) }}">
-										<div>
-											<img src="{{ asset('images/hazo3.png') }}" alt="logo3">
-										</div>
-									</a>
-								</li>
-
-							{% endif %}
-							{% if  app.user.hotel != 'tous' %}
-								{% if hotel == 'vanila_hotel' %}
+								{% if  app.user.hotel != 'tous' %}
+									{% if hotel == 'vanila_hotel' %}
+										<li {% if hotel == "vanila_hotel" %} class="logo_active" {% endif %}>
+											<a href="{{ path('vanila_hotel', {'current_page' : current_page }) }}">
+												<div>
+													<img src="{{ asset('images/hazo4.png') }}" alt="logo4">
+												</div>
+											</a>
+										</li>
+									{% endif %}
+								{% else %}
 									<li {% if hotel == "vanila_hotel" %} class="logo_active" {% endif %}>
 										<a href="{{ path('vanila_hotel', {'current_page' : current_page }) }}">
 											<div>
@@ -106,35 +122,21 @@
 										</a>
 									</li>
 								{% endif %}
-							{% else %}
-								<li {% if hotel == "vanila_hotel" %} class="logo_active" {% endif %}>
-									<a href="{{ path('vanila_hotel', {'current_page' : current_page }) }}">
-										<div>
-											<img src="{{ asset('images/hazo4.png') }}" alt="logo4">
-										</div>
-									</a>
-								</li>
+
 							{% endif %}
-							{% if  app.user.hotel != 'tous' %}
-								{% if hotel == 'tropical_wood' %}
-									<li id="li_tropical" {% if hotel == "tropical_wood" %} class="logo_active" {% endif %}>
-										<a href="{{ path('tropical_wood') }}">
-											<div>
-												<img src="{{ asset('images/tropical.png') }}" alt="tw">
-											</div>
-										</a>
-									</li>
-								{% endif %}
-							{% else %}
-								<li id="li_tropical" {% if hotel == "tropical_wood" %} class="logo_active" {% endif %}>
+
+							{# tropical wood #}
+							
+							{% if groupe == "tropical_wood" %}
+								<li id="li_tropical" class="logo_active">
 									<a href="{{ path('tropical_wood') }}">
 										<div>
 											<img src="{{ asset('images/tropical.png') }}" alt="tw">
 										</div>
 									</a>
 								</li>
-
 							{% endif %}
+							{# fin tropical wood #}
 							<li id="log_out">
 								<div>
 									<a href="{{ path('app_logout') }}">
@@ -153,252 +155,213 @@
 							{% endif %}
 							<div class="info">
 								<h3>
-									{% if  tropical_wood is defined and tropical_wood != true %}
-										<a href="{{ path('setting',{'pseudo_hotel' : hotel}) }}" >{% if app.user %}
+									<a href="{{ path('setting',{'pseudo_hotel' : hotel}) }}" >
+										{% if app.user %}
 											<span>{{ app.user.nom }}</span>
 											<span>{{ app.user.prenom }}</span>
-										{% endif %}</a>
-									{% else %}
-										<a href="{{ path('setting',{'pseudo_hotel' : hotel}) }}" >{% if app.user %}
-											<span>{{ app.user.nom }}</span>
-											<span>{{ app.user.prenom }}</span>
-										{% endif %}</a>
-									{% endif %}
+										{% endif %}
+									</a>
 								</h3>
 							</div>
 							<div id="reglage">
-								{% if tropical_wood is defined and tropical_wood != true %}
-									<a href="{{ path('setting', {'pseudo_hotel' : hotel}) }}" >Settings</a>
-								{% else %}
-									<a href="{{ path('setting', {'pseudo_hotel' : hotel}) }}" >Settings</a>
-								{% endif %}
+								<a href="{{ path('setting', {'pseudo_hotel' : hotel}) }}" >Settings</a>
 							</div>
 						</div>
-						{% if  tropical_wood is defined and tropical_wood != true %}
-							<ul class="categories" >
-								<li {% if id is defined and id is not null and id == "li__compte_rendu"  %}
-									id = "{{ id }}"
-								{% endif %}>
-									<a href="{{ path('crj', {'pseudo_hotel' : hotel}) }}">
-										<i aria-hidden="true" id="crj">
-										{% if id is defined and id is not null and id == "li__compte_rendu"  %}
-											<img src="{{ asset('images/crj_2.png') }}" alt="icone crj 1" class="img-responsive nav_icone" width="40">
-										{% else %}
-											<img src="{{ asset('images/crj.png') }}" alt="icone crj 1" class="img-responsive nav_icone" width="40">
-										{% endif %}
-											<img src="{{ asset('images/crj_2.png') }}" alt="icone crj 2" class="img-responsive nav_icone_hover" width="40">
-										</i>
-										<span>Compte rendu journalier</span>
-									</a>
-								</li>
-								<li {% if id is defined and id is not null and id == "li__hebergement" %}
-									id = "{{ id }}"
-								{% endif %}>
-									<a href="{{ path('hebergement', {'pseudo_hotel' : hotel}) }}">
-										<i
-											aria-hidden="true" id="bed">
-										{% if id is defined and id is not null and id == "li__hebergement"  %}
-											<img src="{{ asset('images/bed_2.png')}}" alt="icone bed 1" class="img-responsive nav_icone"  width="40">
-										{% else %}
-											<img src="{{ asset('images/bed.png')}}" alt="icone bed 1" class="img-responsive nav_icone"  width="40">
-										{% endif %}
-												
-												<img src="{{ asset('images/bed_2.png')}}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40" >
+						{# debut menu sounds #}
+							{% if groupe == "sounds" %}
+								<ul class="categories">
+									<li {% if id is defined and id is not null and id == "li__compte_rendu" %} id="{{ id }}" {% endif %}>
+										<a href="{{ path('crj', {'pseudo_hotel' : hotel}) }}">
+											<i aria-hidden="true" id="crj">
+												{% if id is defined and id is not null and id == "li__compte_rendu"  %}
+													<img src="{{ asset('images/crj_2.png') }}" alt="icone crj 1" class="img-responsive nav_icone" width="40">
+												{% else %}
+													<img src="{{ asset('images/crj.png') }}" alt="icone crj 1" class="img-responsive nav_icone" width="40">
+												{% endif %}
+												<img src="{{ asset('images/crj_2.png') }}" alt="icone crj 2" class="img-responsive nav_icone_hover" width="40">
+											</i>
+											<span>Compte rendu journalier</span>
+										</a>
+									</li>
+									<li {% if id is defined and id is not null and id == "li__hebergement" %} id="{{ id }}" {% endif %}>
+										<a href="{{ path('hebergement', {'pseudo_hotel' : hotel}) }}">
+											<i aria-hidden="true" id="bed">
+												{% if id is defined and id is not null and id == "li__hebergement"  %}
+													<img src="{{ asset('images/bed_2.png')}}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+												{% else %}
+													<img src="{{ asset('images/bed.png')}}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+												{% endif %}
 
-										</i>
-										<span>Hébergement</span>
-									</a>
-								</li>
-								<li {% if id is defined and id is not null and id == "li__restaurant"  %}
-									id = "{{ id }}"
-								{% endif %}>
-									<a href="{{ path('restaurant', {'pseudo_hotel' : hotel}) }}">
-										<i aria-hidden="true" id="restaurant">
-										{% if id is defined and id is not null and id == "li__restaurant"  %}
-											<img src="{{ asset('images/restaurant_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-										{% else %}
-											<img src="{{ asset('images/restaurant.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-										{% endif %}
-											
+												<img src="{{ asset('images/bed_2.png')}}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
 
-											<img src="{{ asset('images/restaurant_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
+											</i>
+											<span>Hébergement</span>
+										</a>
+									</li>
+									<li {% if id is defined and id is not null and id == "li__restaurant" %} id="{{ id }}" {% endif %}>
+										<a href="{{ path('restaurant', {'pseudo_hotel' : hotel}) }}">
+											<i aria-hidden="true" id="restaurant">
+												{% if id is defined and id is not null and id == "li__restaurant"  %}
+													<img src="{{ asset('images/restaurant_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+												{% else %}
+													<img src="{{ asset('images/restaurant.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+												{% endif %}
 
-										</i>
-										<span>
-											Restaurant</span>
-									</a>
-								</li>
-								<li {% if id is defined and id is not null and id == "li__spa"  %}
-									id = "{{ id }}"
-								{% endif %}>
-									<a href="{{ path('spa', {'pseudo_hotel' : hotel}) }}">
-										<i aria-hidden="true" id="spa">
-										{% if id is defined and id is not null and id == "li__spa"  %}
-											<img src="{{ asset('images/spa_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-										{% else %}
-											<img src="{{ asset('images/spa.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-										{% endif %}
-												
+
+												<img src="{{ asset('images/restaurant_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
+
+											</i>
+											<span>
+												Restaurant</span>
+										</a>
+									</li>
+									<li {% if id is defined and id is not null and id == "li__spa" %} id="{{ id }}" {% endif %}>
+										<a href="{{ path('spa', {'pseudo_hotel' : hotel}) }}">
+											<i aria-hidden="true" id="spa">
+												{% if id is defined and id is not null and id == "li__spa"  %}
+													<img src="{{ asset('images/spa_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+												{% else %}
+													<img src="{{ asset('images/spa.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+												{% endif %}
+
 
 												<img src="{{ asset('images/spa_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
 
-										</i>
-										<span>Spa</span>
-									</a>
-								</li>
-
-								<li  {% if id is defined and id is not null and id == "li__fournisseur"  %}
-									id = "{{ id }}"
-								{% endif %}>
-									<a href="{{ path('fournisseur', {'pseudo_hotel' : hotel}) }}">
-										<i aria-hidden="true" id="fournisseur">
-										{% if id is defined and id is not null and id == "li__fournisseur"  %}
-											<img src="{{ asset('images/fournisseur_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-										{% else %}
-											<img src="{{ asset('images/fournisseur.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-										{% endif %}
-
-											<img src="{{ asset('images/fournisseur_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
-										</i>
-										<span>Fournisseur</span>
-									</a>
-								</li>
-								<li  {% if id is defined and id is not null and id == "li__client_upload"  %}
-									id = "{{ id }}"
-								{% endif %}>
-									<a href="{{ path('client_upload', {'pseudo_hotel' : hotel}) }}">
-										<i aria-hidden="true" id="client">
-										{% if id is defined and id is not null and id == "li__client_upload"  %}
-											<img src="{{ asset('images/client_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-										{% else %}
-											<img src="{{ asset('images/client.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-										{% endif %}
-
-											<img src="{{ asset('images/client_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
-										</i>
-										<span>Client</span>
-									</a>
-								</li>
-								<li {% if id is defined and id is not null and id == "fiche_hotel" %}
-									id = "{{ id }}"
-								{% endif %}>
-									<a href="{{ path('fiche_hotel', {'pseudo_hotel' : hotel}) }}">
-										<i aria-hidden="true" id="edit">
-										{% if id is defined and id is not null and id == "fiche_hotel"  %}
-											<img src="{{ asset('images/edit_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-										{% else %}
-											<img src="{{ asset('images/edit.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-										{% endif %}
-											
-
-											<img src="{{ asset('images/edit_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
-
-										</i>
-										<span>Fiche hôtel</span>
-									</a>
-								</li>
-								<li {% if id is defined and id is not null and id == "li__stock"  %}
-									id = "{{ id }}"
-								{% endif %}>
-									<a href="{{ path('stock', {'pseudo_hotel' : hotel}) }}">
-										<small class="fa fa-archive" {% if id is defined and id is not null and id == "li__stock"  %}
-												style="color:#d29e00 !important"
-											{% endif %}></small>
-										<span
-											{% if id is defined and id is not null and id == "li__stock"  %}
-												style="color:#d29e00 !important"
-											{% endif %}
-										>Stock</span>
-									</a>
-								</li>
-								<li {% if id is defined and id is not null and id == "li__cost" %} id="{{ id }}" {% endif %}>
-									<a href="{{ path('cost', {'pseudo_hotel' : hotel}) }}">
-										<small class="fa fa-money" {% if id is defined and id is not null and id == "li__cost"  %}
-												style="color:#d29e00 !important"
-											{% endif %}></small>
-										<span {% if id is defined and id is not null and id == "li__cost" %}
-												style="color:#d29e00 !important"
-											{% endif %}>Cost</span>
-									</a>
-								</li>
-								<li {% if id is defined and id is not null and id == "li__sqn" %} id="{{ id }}" {% endif %}>
-									<a href="{{ path('sqn', {'pseudo_hotel' : hotel}) }}">
-										<small class="fa fa-fax" {% if id is defined and id is not null and id == "li__sqn" %}
-											style="color:#d29e00 !important"
-										{% endif %}></small>
-										<span class="sqn" {% if id is defined and id is not null and id == "li__sqn" %}
-											style="color:#d29e00 !important"
-										{% endif %}>Service quality - Notation</span>
-									</a>
-								</li>
-								<li id="li_historique">
-									<a href="#">
-										<span class="fa fa-clock-o"></span>
-										<span>Historiques</span>
-										<span class="fa fa-angle-down"></span>
-									</a>
-									<ul class="ul_historique">
-										<li>
-											<a href="{{ path('h_hebergement', {'pseudo_hotel' : hotel}) }}">
-												<span>Hébergement</span>
-											</a>
-										</li>
-										<li>
-											<a href="{{ path('h_restaurant', {'pseudo_hotel' : hotel}) }}">
-												<span>Restaurant</span>
-											</a>
-										</li>
-										<li>
-											<a href="{{ path('h_spa', {'pseudo_hotel' : hotel}) }}">
-												<span>Spa</span>
-											</a>
-										</li>
-									</ul>
-								</li>
-								<div class="liste_dj_dm">
-									<div class="liste_dj_dm_item"
-									
-										{% if id is defined and id is not null and id == "li__donnee_du_jour"  %}
-											id = "{{ id }}"
-										{% endif %}
-									>
-										<a href="{{ path('donnee_jour', {'pseudo_hotel' : hotel}) }}">
-											<span class="fa fa-plus"></span><span>Données journalières</span>
+											</i>
+											<span>Spa</span>
 										</a>
-									</div>
-									<div class="liste_dj_dm_item" {% if id is defined and id is not null and id == "li__donnee_mensuelle"  %}
-											id = "{{ id }}"
-											{% endif %}
-									>
-										<a href="{{ path('donnee_mensuelle', {'pseudo_hotel' : hotel}) }}">
-											<span class="fa fa-plus"></span><span>Données mensuelles</span>
-										</a>
-									</div>
-								</div>
+									</li>
 
-							</ul>
-						{% else %}
-							<ul class="categories">
-								<li id="li__dashboard_tw">
-									<a href="{{ path('tropical_wood') }}">
-										{# <i aria-hidden="true" id="client">
-											<img src="{{ asset('images/client.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-										</i> #}
-										<i class="fa fa-dashboard"></i>
-										<span>Tableau de bord client</span>
-									</a>
-								</li>
-								<li>
-									<a
-										href="#">
-										<i aria-hidden="true" id="client">
-											<img src="{{ asset('images/client.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-										</i>
-										<span>Client</span>
-									</a>
-								</li>
-							</ul>
-						{% endif %}
+									<li {% if id is defined and id is not null and id == "li__fournisseur" %} id="{{ id }}" {% endif %}>
+										<a href="{{ path('fournisseur', {'pseudo_hotel' : hotel}) }}">
+											<i aria-hidden="true" id="fournisseur">
+												{% if id is defined and id is not null and id == "li__fournisseur"  %}
+													<img src="{{ asset('images/fournisseur_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+												{% else %}
+													<img src="{{ asset('images/fournisseur.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+												{% endif %}
+
+												<img src="{{ asset('images/fournisseur_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
+											</i>
+											<span>Fournisseur</span>
+										</a>
+									</li>
+									<li {% if id is defined and id is not null and id == "li__client_upload" %} id="{{ id }}" {% endif %}>
+										<a href="{{ path('client_upload', {'pseudo_hotel' : hotel}) }}">
+											<i aria-hidden="true" id="client">
+												{% if id is defined and id is not null and id == "li__client_upload"  %}
+													<img src="{{ asset('images/client_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+												{% else %}
+													<img src="{{ asset('images/client.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+												{% endif %}
+
+												<img src="{{ asset('images/client_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
+											</i>
+											<span>Client</span>
+										</a>
+									</li>
+									<li {% if id is defined and id is not null and id == "fiche_hotel" %} id="{{ id }}" {% endif %}>
+										<a href="{{ path('fiche_hotel', {'pseudo_hotel' : hotel}) }}">
+											<i aria-hidden="true" id="edit">
+												{% if id is defined and id is not null and id == "fiche_hotel"  %}
+													<img src="{{ asset('images/edit_2.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+												{% else %}
+													<img src="{{ asset('images/edit.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+												{% endif %}
+
+
+												<img src="{{ asset('images/edit_2.png') }}" alt="icone bed 2" class="img-responsive nav_icone_hover" width="40">
+
+											</i>
+											<span>Fiche hôtel</span>
+										</a>
+									</li>
+									<li {% if id is defined and id is not null and id == "li__stock" %} id="{{ id }}" {% endif %}>
+										<a href="{{ path('stock', {'pseudo_hotel' : hotel}) }}">
+											<small class="fa fa-archive" {% if id is defined and id is not null and id == "li__stock" %} style="color:#d29e00 !important" {% endif %}></small>
+											<span {% if id is defined and id is not null and id == "li__stock" %} style="color:#d29e00 !important" {% endif %}>Stock</span>
+										</a>
+									</li>
+									<li {% if id is defined and id is not null and id == "li__cost" %} id="{{ id }}" {% endif %}>
+										<a href="{{ path('cost', {'pseudo_hotel' : hotel}) }}">
+											<small class="fa fa-money" {% if id is defined and id is not null and id == "li__cost" %} style="color:#d29e00 !important" {% endif %}></small>
+											<span {% if id is defined and id is not null and id == "li__cost" %} style="color:#d29e00 !important" {% endif %}>Cost</span>
+										</a>
+									</li>
+									<li {% if id is defined and id is not null and id == "li__sqn" %} id="{{ id }}" {% endif %}>
+										<a href="{{ path('sqn', {'pseudo_hotel' : hotel}) }}">
+											<small class="fa fa-fax" {% if id is defined and id is not null and id == "li__sqn" %} style="color:#d29e00 !important" {% endif %}></small>
+											<span class="sqn" {% if id is defined and id is not null and id == "li__sqn" %} style="color:#d29e00 !important" {% endif %}>Service quality - Notation</span>
+										</a>
+									</li>
+									<li id="li_historique">
+										<a href="#">
+											<span class="fa fa-clock-o"></span>
+											<span>Historiques</span>
+											<span class="fa fa-angle-down"></span>
+										</a>
+										<ul class="ul_historique">
+											<li>
+												<a href="{{ path('h_hebergement', {'pseudo_hotel' : hotel}) }}">
+													<span>Hébergement</span>
+												</a>
+											</li>
+											<li>
+												<a href="{{ path('h_restaurant', {'pseudo_hotel' : hotel}) }}">
+													<span>Restaurant</span>
+												</a>
+											</li>
+											<li>
+												<a href="{{ path('h_spa', {'pseudo_hotel' : hotel}) }}">
+													<span>Spa</span>
+												</a>
+											</li>
+										</ul>
+									</li>
+									<div class="liste_dj_dm">
+										<div class="liste_dj_dm_item" {% if id is defined and id is not null and id == "li__donnee_du_jour" %} id="{{ id }}" {% endif %}>
+											<a href="{{ path('donnee_jour', {'pseudo_hotel' : hotel}) }}">
+												<span class="fa fa-plus"></span>
+												<span>Données journalières</span>
+											</a>
+										</div>
+										<div class="liste_dj_dm_item" {% if id is defined and id is not null and id == "li__donnee_mensuelle" %} id="{{ id }}" {% endif %}>
+											<a href="{{ path('donnee_mensuelle', {'pseudo_hotel' : hotel}) }}">
+												<span class="fa fa-plus"></span>
+												<span>Données mensuelles</span>
+											</a>
+										</div>
+									</div>
+
+								</ul>
+
+							{% endif %}
+						{# fin menu sounds #}
+						{# debut menu tropoical wood #}
+							{% if groupe == "tropical_wood" %}
+								<ul class="categories">
+									<li id="li__dashboard_tw">
+										<a
+											href="{{ path('tropical_wood') }}">
+											{# <i aria-hidden="true" id="client">
+																						<img src="{{ asset('images/client.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+																					</i> #}
+											<i class="fa fa-dashboard"></i>
+											<span>Tableau de bord client</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<i aria-hidden="true" id="client">
+												<img src="{{ asset('images/client.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+											</i>
+											<span>Client</span>
+										</a>
+									</li>
+								</ul>
+
+							{% endif %}
+						{# fin menu tropical wood #}
 					</div>
 				</aside>
 				

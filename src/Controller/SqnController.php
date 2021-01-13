@@ -67,6 +67,7 @@ class SqnController extends AbstractController
                 'tab_interne'           => $tab_interne,
                 'tab_booking'           => $tab_booking,
                 'tab_tripadvisor'       => $tab_tripadvisor,
+                "tropical_wood"     => false,
             ]);
         }
     }
