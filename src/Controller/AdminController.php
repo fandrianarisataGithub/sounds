@@ -59,9 +59,7 @@ class AdminController extends AbstractController
     {
         $response = new Response();
         if($request->isXmlHttpRequest()){
-
             // receuil des data
-
             $role = $request->get('role');
             $hotel = $request->get('hotel');
             $nom = $request->get('nom');
@@ -73,7 +71,6 @@ class AdminController extends AbstractController
             $user = new User();
             //$data = "role=".$role."/hotel=".$hotel."/nom=".$nom."/email=".$email."/prenom=".$prenom."/password=".$password;
             //return new JsonResponse(array("data" => json_encode($data)));
-
             if(!empty($email) && !empty($password) && !empty($nom)) {
                     $user = new User();
                     $tab = $repo->findBy(array("email"=>$email));
@@ -96,21 +93,36 @@ class AdminController extends AbstractController
                         //par défaut son username est la première partie de son nom 
                         $user->setUsername($username);
                         // le role 
-                        
-                        if($role == "administrateur"){
+                        if ($role == "super_admin") {
                             $user->setRoles(array('ROLE_ADMIN'));
+                            $user->setProfile("super_admin"); // acces à tous
+                            // on select tous les hotels
+                            $hotels = $reposHotel->findAll();
+                            foreach ($hotels as $h) {
+                                $user->addHotel($h);
+                            }
+                        }
+                       else if($role == "admin_all_hotels"){
+                            $user->setRoles(array('ROLE_ADMIN'));
+                            $user->setProfile("admin_all_hotels"); // acces unique pour tous les hotel
                             // on select tous les hotels
                             $hotels = $reposHotel->findAll();
                             foreach($hotels as $h){
-                                $user->addHotel($h);
+                                $son_nom = $h->getNom();
+                                // il ne faut pas que les noms d'hôtel autre que les hôtels entre dans cette liste
+                                if($son_nom != "Tropical wood"){
+                                    $user->addHotel($h);
+                                }
                             }
                         }
                         else if($role == "editeur") {
                             $user->setRoles(array('ROLE_USER'));
+                            $user->setProfile("admin_hotel"); // hotel unique
                             $hotels = $reposHotel->findOneByNom($hotel);
                             $user->addHotel($hotels);
                         } 
                         else if ($role == "tropical_wood") {
+                            $user->setProfile("admin_tropical_wood");
                             $user->setRoles(array('ROLE_TROPICAL_WOOD'));
                             $hotels = $reposHotel->findOneByNom($hotel);
                             $user->addHotel($hotels);
@@ -128,15 +140,10 @@ class AdminController extends AbstractController
                         ->getRepository(User::class)
                         ->findAll();
                         // on stock ces data dans u tableau 
-                       
-
                         $data = json_encode("ok"); // formater le résultat de la requête en json
                         $response->headers->set('Content-Type', 'application/json');
                         $response->setContent($data);
-
-                    }
-                
-                   
+                    }                   
             }
             else {
                 // erreur email et pass vide ou le nom
@@ -164,20 +171,26 @@ class AdminController extends AbstractController
             $html = "";
             foreach($users as $elm){
                
-                $son_role = $elm->getRoles();
-               $son_nom_hotel = $elm->getHotel();
-                if ($son_nom_hotel !="tous") {
-                    if($son_nom_hotel != "Tropical wood"){
-                        $son_role = 'Editeur';
-                        $son_nom_hotel = $elm->getHotel();
-                    }
-                    else{
-                        $son_role = 'Admin <br>Tropical wood';
-                        $son_nom_hotel = "";
-                    }
-                }else{
-                $son_role = 'Super Admin';
-                    $son_nom_hotel = $elm->getHotel();
+                $son_role = "";
+                $son_profile = $elm->getProfile();
+                $son_nom_hotel = "";
+                // les admin : super admin et admin all hotels
+               
+                if ($son_profile == "super_admin") {
+                    $son_role = "Super Admin";
+                    $son_nom_hotel = "Accès à tout";
+                }
+                else if($son_profile == "admin_all_hotels"){
+                    $son_role = 'Admin hôtels';
+                    $son_nom_hotel = "Accès à tous les hôtels";
+                }
+                else if($son_profile == "admin_hotel"){
+                    $son_role = 'Admin '. $elm->getHotel();
+                    $son_nom_hotel = "Accès simple";
+                } 
+                else if ($son_profile == "admin_tropical_wood") {
+                    $son_role = 'Admin Tropical wood';
+                    $son_nom_hotel = "Accès simple";
                 }
 
                 $html .= '
@@ -189,7 +202,6 @@ class AdminController extends AbstractController
 							</span>
 							<span class="role_pers">
 								' . $son_role . '</br>' . $son_nom_hotel . '
-
 							</span>
 							<div>
 								<a href="#" data-id = "' . $elm->getId() . '"  data-target="#modal_form_modif_admin" class = "edit_user">
@@ -207,6 +219,54 @@ class AdminController extends AbstractController
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent($data);
             return $response;
+        }
+        else{
+            // users
+            $users = $repoUser->findAll();
+            $html = "";
+            foreach ($users as $elm) {
+
+                $son_role = "";
+                $son_profile = $elm->getProfile();
+                $son_nom_hotel = "";
+                // les admin : super admin et admin all hotels
+
+                if ($son_profile == "super_admin") {
+                    $son_role = "Super Admin";
+                    $son_nom_hotel = "Accès à tout";
+                } else if ($son_profile == "admin_all_hotels") {
+                    $son_role = 'Admin hôtels';
+                    $son_nom_hotel = "Accès à tous les hôtels";
+                } else if ($son_profile == "editeur") {
+                    $son_role = 'Admin ' . $elm->getHotel();
+                    $son_nom_hotel = "Accès simple";
+                } else if ($son_profile == "admin_tropical_wood") {
+                    $son_role = 'Admin Tropical wood';
+                    $son_nom_hotel = "Accès simple";
+                }
+
+                $html .= '
+                    <li>
+							<span class="nom_pers">
+								' . $elm->getNom() . '
+								<br>
+								' . $elm->getPrenom() . '
+							</span>
+							<span class="role_pers">
+								' . $son_role . '</br>' . $son_nom_hotel . '
+							</span>
+							<div>
+								<a href="#" data-id = "' . $elm->getId() . '"  data-target="#modal_form_modif_admin" class = "edit_user">
+									<span class="fa fa-edit"></span>
+								</a>
+								<a href="#" data-id = "' . $elm->getId() . '" data-toggle="modal" data-target="#modal_form_confirme_pers" class="delete_user">
+									<span class="fa fa-trash-o"></span>
+								</a>
+							</div>
+						</li>
+                ';
+            }
+                dd($html);
         }
             
                 
@@ -228,95 +288,131 @@ class AdminController extends AbstractController
             $select_role = '';
             $select_hotel = '';
             $son_hotel = $user->getHotel();
-            if($t_role == 1){
-                $select_role.= '
-                    <select name="" id="modal_choix_role" class="form-control">
-                        <option value="administrateur">Administrateur</option>
-                        <option selected = "selected" value="editeur">Editeur</option>
-                    </select>
-                ';
-            }
-            if($t_role > 1){
+            $select_role = '
+                <select name="" id="modal_choix_role" class="form-control">';
+            $son_profile = $user->getProfile();
+            if($son_profile == "super_admin"){
                 $select_role .= '
-                    <select name="" id="modal_choix_role" class="form-control">
-                        <option selected = "selected" value="administrateur">Administrateur</option>
-                        <option value="editeur">Editeur</option>
-                    </select>
+                    <option selected="selected" value="super_admin">Super admin</option>
+                    <option value="admin_all_hotels">Admin des hôtels</option>
+                    <option value="editeur">Editeur pour un hôtel</option>
+                    <option value="tropical_wood">Admin Tropical Wood</option>
+                </select>
                 ';
             }
-            if($son_hotel == "tous"){
+            else if ($son_profile == "admin_all_hotels") {
+                $select_role .= '
+                    <option  value="super_admin">Super admin</option>
+                    <option selected="selected" value="admin_all_hotels">Admin des hôtels</option>
+                    <option value="editeur">Editeur pour un hôtel</option>
+                    <option value="tropical_wood">Admin Tropical Wood</option>
+                </select>
+                ';
+            }
+            else if ($son_profile == "admin_hotel") {
+                $select_role .= '
+                    <option  value="super_admin">Super admin</option>
+                    <option  value="admin_all_hotels">Admin des hôtels</option>
+                    <option selected="selected" value="editeur">Editeur pour un hôtel</option>
+                    <option value="tropical_wood">Admin Tropical Wood</option>
+                </select>
+                ';
+            }
+            else if ($son_profile == "admin_tropical_wood") {
+                $select_role .= '
+                    <option  value="super_admin">Super admin</option>
+                    <option  value="admin_all_hotels">Admin des hôtels</option>
+                    <option  value="editeur">Editeur pour un hôtel</option>
+                    <option selected="selected" value="tropical_wood">Admin Tropical Wood</option>
+                </select>
+                ';
+            }
+                   
+            $select_hotel = '
+                <select name="" id="modal_choix_hotel" class="form-control">';
+                $son_type_hotel = $user->getHotel();
+            if($son_type_hotel == "tous"){
                 $select_hotel .= '
-                    <select name="" id="modal_choix_hotel" class="form-control">
-                        <option selected = "selected" value="tous">Tous</option>
-                        <option value="Royal Beach">Royal Beach</option>
-                        <option value="Calypso">Calypso</option>
-                        <option value="Baobab Tree">Baobab Tree</option>
-                        <option value="Vanila Hotel">Vanila Hotel</option>
-                    </select>
+                    <option selected="selected" value="tous">Tous</option>
+                    <option value="tous_hotel">Tous/Hotels</option>
+                    <option value="Royal Beach">Royal Beach</option>
+                    <option value="Calypso">Calypso</option>
+                    <option value="Baobab Tree">Baobab Tree</option>
+                    <option value="Vanila Hotel">Vanila Hotel</option>
+                    <option value="Tropical wood">Tropical wood</option>
+                </select>
                 ';
             }
-
-            if ($son_hotel == "Royal Beach") {
+            else if($son_type_hotel == "tous_hotel") {
                 $select_hotel .= '
-                    <select name="" id="modal_choix_hotel" class="form-control">
-                        <option  value="tous">Tous</option>
-                        <option selected = "selected" value="Royal Beach">Royal Beach</option>
-                        <option value="Calypso">Calypso</option>
-                        <option value="Baobab Tree">Baobab Tree</option>
-                        <option value="Vanila Hotel">Vanila Hotel</option>
-                    </select>
+                    <option value="tous">Tous</option>
+                    <option selected="selected" value="tous_hotel">Tous/Hotels</option>
+                    <option value="Royal Beach">Royal Beach</option>
+                    <option value="Calypso">Calypso</option>
+                    <option value="Baobab Tree">Baobab Tree</option>
+                    <option value="Vanila Hotel">Vanila Hotel</option>
+                    <option value="Tropical wood">Tropical wood</option>
+                </select>
                 ';
-            }
-
-            if ($son_hotel == "Calypso") {
+            } 
+            else if ($son_type_hotel == "Royal Beach") {
                 $select_hotel .= '
-                    <select name="" id="modal_choix_hotel" class="form-control">
-                        <option  value="tous">Tous</option>
-                        <option value="Royal Beach">Royal Beach</option>
-                        <option selected = "selected" value="Calypso">Calypso</option>
-                        <option value="Baobab Tree">Baobab Tree</option>
-                        <option value="Vanila Hotel">Vanila Hotel</option>
-                    </select>
+                    <option value="tous">Tous</option>
+                    <option value="tous_hotel">Tous/Hotels</option>
+                    <option selected="selected" value="Royal Beach">Royal Beach</option>
+                    <option value="Calypso">Calypso</option>
+                    <option value="Baobab Tree">Baobab Tree</option>
+                    <option value="Vanila Hotel">Vanila Hotel</option>
+                    <option value="Tropical wood">Tropical wood</option>
+                </select>
                 ';
-            }
-
-            if ($son_hotel == "Baobab Tree") {
+            } 
+            else if ($son_type_hotel == "Calypso") {
                 $select_hotel .= '
-                    <select name="" id="modal_choix_hotel" class="form-control">
-                        <option  value="tous">Tous</option>
-                        <option value="Royal Beach">Royal Beach</option>
-                        <option value="Calypso">Calypso</option>
-                        <option selected = "selected" value="Baobab Tree">Baobab Tree</option>
-                        <option value="Vanila Hotel">Vanila Hotel</option>
-                    </select>
+                    <option value="tous">Tous</option>
+                    <option value="tous_hotel">Tous/Hotels</option>
+                    <option value="Royal Beach">Royal Beach</option>
+                    <option selected="selected" value="Calypso">Calypso</option>
+                    <option value="Baobab Tree">Baobab Tree</option>
+                    <option value="Vanila Hotel">Vanila Hotel</option>
+                    <option value="Tropical wood">Tropical wood</option>
+                </select>
                 ';
-            }
-
-            if ($son_hotel == "Vanila Hotel") {
+            } else if ($son_type_hotel == "Baobab Tree") {
                 $select_hotel .= '
-                    <select name="" id="modal_choix_hotel" class="form-control">
-                        <option  value="tous">Tous</option>
-                        <option value="Royal Beach">Royal Beach</option>
-                        <option value="Calypso">Calypso</option>
-                        <option value="Baobab Tree">Baobab Tree</option>
-                        <option selected = "selected" value="Vanila Hotel">Vanila Hotel</option>
-                    </select>
+                    <option value="tous">Tous</option>
+                    <option value="tous_hotel">Tous/Hotels</option>
+                    <option value="Royal Beach">Royal Beach</option>
+                    <option value="Calypso">Calypso</option>
+                    <option selected="selected" value="Baobab Tree">Baobab Tree</option>
+                    <option value="Vanila Hotel">Vanila Hotel</option>
+                    <option value="Tropical wood">Tropical wood</option>
+                </select>
                 ';
-            }
-            if ($son_hotel == "Tropical wood") {
+            } else if ($son_type_hotel == "Vanila Hotel") {
                 $select_hotel .= '
-                    <select name="" id="modal_choix_hotel" class="form-control">
-                        <option  value="tous">Tous / Hôtel</option>
-                        <option value="Royal Beach">Royal Beach</option>
-                        <option value="Calypso">Calypso</option>
-                        <option value="Baobab Tree">Baobab Tree</option>
-                        <option selected = "selected" value="Vanila Hotel">Vanila Hotel</option>
-                        <option value="Tropical wood">Tropical wood</option>
-                    </select>
+                    <option value="tous">Tous</option>
+                    <option value="tous_hotel">Tous/Hotels</option>
+                    <option value="Royal Beach">Royal Beach</option>
+                    <option value="Calypso">Calypso</option>
+                    <option value="Baobab Tree">Baobab Tree</option>
+                    <option selected="selected" value="Vanila Hotel">Vanila Hotel</option>
+                    <option value="Tropical wood">Tropical wood</option>
+                </select>
+                ';
+            } else if ($son_type_hotel == "Tropical wood") {
+                $select_hotel .= '
+                    <option value="tous">Tous</option>
+                    <option value="tous_hotel">Tous/Hotels</option>
+                    <option value="Royal Beach">Royal Beach</option>
+                    <option value="Calypso">Calypso</option>
+                    <option value="Baobab Tree">Baobab Tree</option>
+                    <option value="Vanila Hotel">Vanila Hotel</option>
+                    <option selected="selected" value="Tropical wood">Tropical wood</option>
+                </select>
                 ';
             }
-            
-
+                    
             $html.= '
                 <form action="">
 						<div class="form-group">
@@ -368,111 +464,110 @@ class AdminController extends AbstractController
             $email = $request->get('username_pers');
             $role = $request->get('choix_role');
             $hotel = $request->get('choix_hotel');
-            $l_hotel = $reposHotel->findOneByNom($hotel);
-            if (!empty($email) && !empty($nom)) {
-                $user = $repoUser->find($id);
-                $user->setEmail($email);
-                $user->setPrenom($prenom_user);
-                $user->setNom($nom);
-                $taille = "";
-                $users = $repoUser->findAll();
-                foreach ($users as $u) {
-                    $son_mail = $u->getEmail();
-                    $son_id = $u->getId();
-                    if($son_mail == $email){
-                        if($son_id != $id){
-                            $taille = 1;
-                        }
-                        else{
-                            $taille = 0;
-                        }
-                    }
-                    else{
-                        $taille = 0;
-                    }
-                }
-
-                if ($taille == 1) {
-                    // erreur email déjà utilisé
-                    $data = json_encode("L'adresse mail est déjà utilisé");
-                    $response->headers->set('Content-Type', 'application/json');
-                    $response->setContent($data);
-                }
-                // si ce user n'est pas là
-                else if ($taille == 0) {
-
-                    if ($role == "administrateur") {
-                        $user->setRoles([]);
+            // test validité
+            $retour = "";
+            $user = $repoUser->find($id);
+            if($nom != "" && $email != ""){
+                // si l'email est unique
+                $user_by_mail = $repoUser->findBy(['email'=>$email]);
+                if(count($user_by_mail) == 0){
+                    if ($role == "super_admin") {
                         $user->setRoles(array('ROLE_ADMIN'));
+                        $user->setProfile("super_admin"); // acces à tous
                         $user->setHotel("tous");
+                        // on select tous les hotels
                         $hotels = $reposHotel->findAll();
                         foreach ($hotels as $h) {
                             $user->addHotel($h);
                         }
-                        
-                        //$liste = $repoUser->findOneByIdJoinedToHotel($user->getId());
-                    } 
-                    else if ($role == "editeur") {
-
-                        if($hotel == "tous"){
-                            $data = json_encode("Veuiller choisir l'hotel correspondant");
-                            $response->headers->set('Content-Type', 'application/json');
-                            $response->setContent($data);
+                    } else if ($role == "admin_all_hotels") {
+                        $user->setRoles(array('ROLE_ADMIN'));
+                        $user->setHotel("tous_hotel");
+                        $user->setProfile("admin_all_hotels"); // acces unique pour tous les hotel
+                        // on select tous les hotels
+                        $hotels = $reposHotel->findAll();
+                        foreach ($hotels as $h) {
+                            $son_nom = $h->getNom();
+                            // il ne faut pas que les noms d'hôtel autre que les hôtels entre dans cette liste
+                            if ($son_nom != "Tropical wood") {
+                                $user->addHotel($h);
+                            }
                         }
-                        else{
-                            $user->setRoles([]);
-                            $user->setHotel($hotel);
-                            // esorina jiaby hotelinazy
-
+                    } else if ($role == "editeur") {
+                        $user->setRoles(array('ROLE_USER'));
+                        $user->setHotel($hotel);
+                        $user->setProfile("admin_hotel"); // hotel unique
+                        $hotels = $reposHotel->findOneByNom($hotel);
+                        $user->addHotel($hotels);
+                    } else if ($role == "tropical_wood") {
+                        $user->setProfile("admin_tropical_wood");
+                        $user->setHotel($hotel);
+                        $user->setRoles(array('ROLE_TROPICAL_WOOD'));
+                        $hotels = $reposHotel->findOneByNom($hotel);
+                        $user->addHotel($hotels);
+                    }
+                    $user->setNom($nom);
+                    $user->setPrenom($prenom_user);
+                    $manager->flush();
+                    $retour = "ok";
+                }
+                else{
+                    // si il a changé son adresse
+                    $son_email = $user->getEmail();
+                    if($email != $son_email){
+                        $retour = "Cet adresse mail est déjà utilisée ...";
+                    }
+                    else{
+                        if ($role == "super_admin") {
+                            $user->setRoles(array('ROLE_ADMIN'));
+                            $user->setProfile("super_admin"); // acces à tous
+                            $user->setHotel("tous");
+                            // on select tous les hotels
                             $hotels = $reposHotel->findAll();
                             foreach ($hotels as $h) {
-                                $user->removeHotel($h);
+                                $user->addHotel($h);
                             }
-
+                        } else if ($role == "admin_all_hotels") {
+                            $user->setRoles(array('ROLE_ADMIN'));
+                            $user->setHotel("tous_hotel");
+                            $user->setProfile("admin_all_hotels"); // acces unique pour tous les hotel
+                            // on select tous les hotels
+                            $hotels = $reposHotel->findAll();
+                            foreach ($hotels as $h) {
+                                $son_nom = $h->getNom();
+                                // il ne faut pas que les noms d'hôtel autre que les hôtels entre dans cette liste
+                                if ($son_nom != "Tropical wood") {
+                                    $user->addHotel($h);
+                                }
+                            }
+                        } else if ($role == "editeur") {
                             $user->setRoles(array('ROLE_USER'));
-                            $user->addHotel($l_hotel);
+                            $user->setHotel($hotel);
+                            $user->setProfile("admin_hotel"); // hotel unique
+                            $hotels = $reposHotel->findOneByNom($hotel);
+                            $user->addHotel($hotels);
+                        } else if ($role == "tropical_wood") {
+                            $user->setProfile("admin_tropical_wood");
+                            $user->setHotel($hotel);
+                            $user->setRoles(array('ROLE_TROPICAL_WOOD'));
+                            $hotels = $reposHotel->findOneByNom($hotel);
+                            $user->addHotel($hotels);
                         }
+                        $user->setNom($nom);
+                        $user->setPrenom($prenom_user);
+                        $manager->flush();
+                        $retour = "ok";
                     }
-
-                   
-                   
-                    // on persist 
-                    $manager->persist($user);
-                    // on flush 
-                    $manager->flush();
-
-                  
-                    // on stock ces data dans u tableau 
-
-                    
-                    $data = json_encode("ok"); // formater le résultat de la requête en json
-
-                    $response->headers->set('Content-Type', 'application/json');
-                    $response->setContent($data);
-                    
                 }
-            } else {
-                // erreur email et pass vide ou le nom
-                $data = json_encode("Veuiller remplir tous les champs");
-                $response->headers->set('Content-Type', 'application/json');
-                $response->setContent($data);
+            }else{
+                $retour = "Veuillez mentioner votre adresse email et nom ...";
             }
 
-            $data = json_encode("ok");
-            //  $data = json_encode($role ."/".$hotel."/".$nom."/".$prenom_user."/".$email."/ id = ".$id);
+            $data = json_encode($retour);
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent($data);
             return $response; 
         }
-
-        $user = $repoUser->find('120');
-        $hotels = $reposHotel->findAll();
-       foreach($hotels as $h){
-           $user->addHotel($h);
-       }
-        $liste = $repoUser->findOneByIdJoinedToHotel($user->getId());
-        $l_hotel = $reposHotel->findOneBy(array("nom" => "Calypso"));
-        dd($l_hotel);
         
     }
 

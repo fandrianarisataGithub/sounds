@@ -1,33 +1,30 @@
-{% extends "base.html.twig" %}
-{% block title %}
-	Reglage
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<section
+		id="contents" class="container-fluid">
+		<!-- entete content -->
+		{% include "nav2.html.twig" %}
+		<!-- / entete content -->
 
-{% block stylesheets %}
-	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
-{% endblock %}
-{% block body %}
-    
-<section
-	id="contents" class="container-fluid">
-	<!-- entete content -->
-	{% include "nav2.html.twig" %}
-	<!-- / entete content -->
-
-	<!-- contenue nouveau client -->
-	<div id="settings_content">
-		<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
-			<section class="section_part" id="section_part_top">
-				<div class="sous_titre">
-                    <h3>Cette page est en cours de maintenance...
-                        <br>Veuillez revenir plus tard.
-                        <span class="fa fa-smile-o" style="color:#000;"></span>
-                    </h3>
-				</div>
-			</section>
+		<!-- contenue nouveau client -->
+			<div id="settings_content"> <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+				<section class="section_part" id="section_part_top">
+					<div class="sous_titre">
+						<h3>Cette page est en cours de maintenance...
+							<br>Veuillez revenir plus tard.
+							<span class="fa fa-smile-o" style="color:#000;"></span>
+						</h3>
+					</div>
+				</section>
+			</div>
 		</div>
-	</div>
-</section>
+	</section>
 
-
-{% endblock %}
+</body>
+</html>

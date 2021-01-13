@@ -69,8 +69,13 @@
 		</div>
 		<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12"
 		
-				{% if is_granted('ROLE_ADMIN') %}
-							style =" display:block; "
+				{% if is_granted('ROLE_ADMIN')  %}
+					{% if app.user.profile == "super_admin" %}
+						style =" display:block; "
+					{% else %}
+						style =" display:none; "
+					{% endif %}
+
 				{% else %}
 					style = "display : none;"
 						{% endif %}
@@ -87,7 +92,11 @@
 		<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12"
 
 			{% if is_granted('ROLE_ADMIN') %}
-				style =" display:block; "
+				{% if app.user.profile == "super_admin" %}
+					style =" display:block; "
+				{% else %}
+					style =" display:none; "
+				{% endif %}
 			{% else %}
 				style =" display:none; "
 			{% endif %}
@@ -101,16 +110,17 @@
 					<div class="form-group">
 						<label for="choix_role">Type de l'administrateur :</label>
 						<select name="" id="choix_role" class="form-control">
-							<option value="administrateur">Administrateur</option>
-							{# <option selected = "selected" value="editeur">Editeur</option> #}
-							<option value="editeur">Editeur</option>
+							<option value="super_admin">Super admin</option>
+							<option value="admin_all_hotels">Admin des hôtels</option>
+							<option value="editeur">Editeur pour un hôtel</option>
 							<option value="tropical_wood">Admin Tropical Wood</option>
 						</select>
 					</div>
 					<div class="form-group nom_hotel">
 						<label for="choix_hotel">Nom de l'hôtel / Entreprise</label>
 						<select name="" id="choix_hotel" class="form-control">
-							<option value="tous">Tous/Hotels</option>
+							<option value="tous">Tous</option>
+							<option value="tous_hotel">Tous/Hotels</option>
 							<option value="Royal Beach">Royal Beach</option>
 							<option value="Calypso">Calypso</option>
 							<option value="Baobab Tree">Baobab Tree</option>
@@ -247,6 +257,8 @@
 					if(response == "ok"){
 						print_all_users();
 						$('#modal_form_modif_admin').modal('hide');
+					}else{
+						alert(response);
 					}
 				},
 				error : function(error){

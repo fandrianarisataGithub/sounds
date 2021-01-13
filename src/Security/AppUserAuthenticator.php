@@ -26,7 +26,9 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
 {
     use TargetPathTrait;
 
-    public const LOGIN_ROUTE = 'app_login';
+    public const LOGIN_ROUTE = 'app_login'; // si la page n'est plus en maintenance
+
+
 
     private $entityManager;
     private $urlGenerator;
@@ -112,67 +114,130 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
        
         if(!$l_hotel){ // pour le tous comme hotel
             
-            $hotel_cible = 'royal_beach';
+            // si le groupe est sounds
+            if($groupe == "sounds"){
+                // seules les profiles super_admin ou admin_all_hotels ou editeur peuvent s'y accéder
+                $array_administration = ["super_admin", "admin_all_hotels", "editeur"];
+                $son_profile = $user->getProfile();
+                if(in_array($son_profile, $array_administration)){
+                    $hotel_cible = 'royal_beach';
 
-            $session  = $request->getSession();
+                    $session  = $request->getSession();
 
-            // le nom de l'hotel qui va s'ouvrir pour les admin seulement
+                    // le nom de l'hotel qui va s'ouvrir pour les admin seulement
 
-            $hotel = $session->get('hotel', []);
+                    $hotel = $session->get('hotel', []);
 
-            // initialisation de la variable session hotel
+                    // initialisation de la variable session hotel
 
-            $hotel['pseudo_hotel'] = $hotel_cible;
-            $hotel['current_page'] = "crj";
-            $hotel['user'] = $user;
-            // Ca ne changera pas tant l'utilisateur est connecté
-            $hotel['groupe'] = $groupe;
-            //dd($hotel['pseudo_hotel']);
-            // on stock ça dans la variable de session 
+                    $hotel['pseudo_hotel'] = $hotel_cible;
+                    $hotel['current_page'] = "crj";
+                    $hotel['user'] = $user;
+                    // Ca ne changera pas tant l'utilisateur est connecté
+                    $hotel['groupe'] = $groupe;
+                    //dd($hotel['pseudo_hotel']);
+                    // on stock ça dans la variable de session 
 
-            $session->set("hotel", $hotel);
-            return new RedirectResponse($this->urlGenerator->generate($hotel_cible, [
-                "current_page" => $hotel['current_page'],
-            ]));
+                    $session->set("hotel", $hotel);
+                    return new RedirectResponse($this->urlGenerator->generate($hotel_cible, [
+                        "current_page" => $hotel['current_page'],
+                    ]));
+                }
+                // sinon erreur
+            }else{
+                // seules les profiles super_admin ou admin_tropical_wood peuvent s'y accéder
+                $array_administration = ["super_admin", "admin_tropical_wood"];
+                $son_profile = $user->getProfile();
+                if(in_array($son_profile, $array_administration)){
+                    $hotel_cible = 'tropical_wood';
+
+                    $session  = $request->getSession();
+
+                    // le nom de l'hotel qui va s'ouvrir pour les admin seulement
+
+                    $hotel = $session->get('hotel', []);
+
+                    // initialisation de la variable session hotel
+
+                    $hotel['pseudo_hotel'] = $hotel_cible;
+                    $hotel['current_page'] = "crj";
+                    $hotel['user'] = $user;
+                    // Ca ne changera pas tant l'utilisateur est connecté
+                    $hotel['groupe'] = $groupe;
+                    //dd($hotel['pseudo_hotel']);
+                    // on stock ça dans la variable de session 
+
+                    $session->set("hotel", $hotel);
+                    return new RedirectResponse($this->urlGenerator->generate($hotel_cible));
+                }
+                // sinon erreur
+            }
         }
         else{
             if($user_hotel != "Tropical wood"){
-                $hotel_cible = $l_hotel->getPseudo();
+                if($groupe == "sounds"){
+                    $hotel_cible = $l_hotel->getPseudo();
+                    $session  = $request->getSession();
+                    // le nom de l'hotel qui va s'ouvrir pour les admin seulement
+                    $hotel = $session->get('hotel', []);
+                    // initialisation de la variable session hotel
+                    $hotel['pseudo_hotel'] = $hotel_cible;
+                    $hotel['current_page'] = "crj";
+                    $hotel['user'] = $user;
+                    $hotel['groupe'] = $groupe;
+                    //dd($hotel['pseudo_hotel']);
+                    // on stock ça dans la variable de session 
+
+                    $session->set("hotel", $hotel);
+
+                    return new RedirectResponse($this->urlGenerator->generate($hotel_cible, [
+                        "current_page" => $hotel['current_page'],
+                    ]));
+                }
+                else{
+                    $hotel_cible = 'tropical_wood';
+
+                    $session  = $request->getSession();
+
+                    // le nom de l'hotel qui va s'ouvrir pour les admin seulement
+
+                    $hotel = $session->get('hotel', []);
+
+                    // initialisation de la variable session hotel
+
+                    $hotel['pseudo_hotel'] = $hotel_cible;
+                    $hotel['current_page'] = "crj";
+                    $hotel['user'] = $user;
+                    // Ca ne changera pas tant l'utilisateur est connecté
+                    $hotel['groupe'] = $groupe;
+                    //dd($hotel['pseudo_hotel']);
+                    // on stock ça dans la variable de session 
+
+                    $session->set("hotel", $hotel);
+                    return new RedirectResponse($this->urlGenerator->generate($hotel_cible));
+                }
+            }
+            else{
+                $hotel_cible = 'tropical_wood';
+
                 $session  = $request->getSession();
+
                 // le nom de l'hotel qui va s'ouvrir pour les admin seulement
+
                 $hotel = $session->get('hotel', []);
+
                 // initialisation de la variable session hotel
+
                 $hotel['pseudo_hotel'] = $hotel_cible;
                 $hotel['current_page'] = "crj";
                 $hotel['user'] = $user;
+                // Ca ne changera pas tant l'utilisateur est connecté
                 $hotel['groupe'] = $groupe;
                 //dd($hotel['pseudo_hotel']);
                 // on stock ça dans la variable de session 
 
                 $session->set("hotel", $hotel);
-
-                return new RedirectResponse($this->urlGenerator->generate($hotel_cible, [
-                    "current_page" => $hotel['current_page'],
-                ]));
-                // throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
-            }
-            else{
-                $hotel_cible = $l_hotel->getPseudo();
-                $session  = $request->getSession();
-                // le nom de l'hotel qui va s'ouvrir pour les admin seulement
-                $hotel = $session->get('hotel', []);
-                // initialisation de la variable session hotel
-                $hotel['pseudo_hotel'] = $hotel_cible;
-                $hotel['current_page'] = "tropical_wood";
-                $hotel['user'] = $user;
-                $hotel['groupe'] = $groupe;
-                //dd($hotel['pseudo_hotel']);
-                // on stock ça dans la variable de session
-                
-                $session->set("hotel", $hotel);
-
                 return new RedirectResponse($this->urlGenerator->generate($hotel_cible));
-                // throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
             }
         }
     }

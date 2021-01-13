@@ -129,8 +129,8 @@ class SecurityController extends AbstractController
             $user = $repoUser->findOneByEmail($mail);
             $data = json_encode("non");
             if ($user != null) {
-                $son_hotel = $user->gethotel();
-                $array_hotel = ["Royal Beach", "Calypso", "Baobab Tree", "Vanila Hote", "tous"];
+                $son_hotel = $user->getHotel();
+                $array_hotel = ["Royal Beach", "Calypso", "Baobab Tree", "Vanila Hote", "tous_hotel", "tous"];
                 if (in_array($son_hotel, $array_hotel)) {
                     $data = json_encode("oui");
                 }

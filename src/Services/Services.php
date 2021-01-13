@@ -38,7 +38,8 @@ class Services
         public function tester_droit($pseudo_hotel, User $user, HotelRepository $repoHotel)
         {
             $son_hotel = $user->getHotel();
-            if($son_hotel == 'tous'){
+            $array_hotel_possibility = ["tous", "tous_hotel"];
+            if(in_array($son_hotel, $array_hotel_possibility)){
                 return 'possible';
             }
             else{

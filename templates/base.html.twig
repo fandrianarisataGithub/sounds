@@ -44,7 +44,8 @@
 						<ul>
 							{# liste hotel sounds  #}
 							{% if groupe == "sounds" %}
-								{% if app.user.hotel != 'tous' %}
+								{% set array_admin_hotel = ["tous","tous_hotel"] %}
+								{% if app.user.hotel not in array_admin_hotel %}
 									{% if hotel == 'royal_beach' %}
 										<li {% if hotel == "royal_beach" %} class="logo_active" {% endif %}>
 											<a href="{{ path('royal_beach', {'current_page' : current_page }) }}">
@@ -63,7 +64,7 @@
 										</a>
 									</li>
 								{% endif %}
-								{% if  app.user.hotel != 'tous' %}
+								{% if  app.user.hotel not in array_admin_hotel %}
 									{% if hotel == 'calypso' %}
 										<li {% if hotel == "calypso" %} class="logo_active" {% endif %}>
 											<a href="{{ path('calypso', {'current_page' : current_page }) }}">
@@ -82,7 +83,7 @@
 										</a>
 									</li>
 								{% endif %}
-								{% if  app.user.hotel != 'tous' %}
+								{% if  app.user.hotel not in array_admin_hotel %}
 									{% if hotel == 'baobab_tree' %}
 										<li {% if hotel == "baobab_tree" %} class="logo_active" {% endif %}>
 											<a href="{{ path('baobab_tree', {'current_page' : current_page }) }}">
@@ -103,7 +104,7 @@
 									</li>
 
 								{% endif %}
-								{% if  app.user.hotel != 'tous' %}
+								{% if  app.user.hotel not in array_admin_hotel %}
 									{% if hotel == 'vanila_hotel' %}
 										<li {% if hotel == "vanila_hotel" %} class="logo_active" {% endif %}>
 											<a href="{{ path('vanila_hotel', {'current_page' : current_page }) }}">

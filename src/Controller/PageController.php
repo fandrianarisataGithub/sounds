@@ -198,6 +198,7 @@ class PageController extends AbstractController
             if ($pos == "impossible") {
                 return $this->render('/page/error.html.twig');
             } else {
+                
                 return $this->render('page/crj.html.twig', [
                     "pagination"            => $pagination,
                     "id"                    => "li__compte_rendu",
