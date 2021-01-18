@@ -440,7 +440,6 @@ class AdminController extends AbstractController
 							<button type="submit" class="form-control btn btn-warning" data-id = "' . $user->getId() . '" id="btn_modif_admin"><span>Enregistrer</span></button>
 						</div>
 					</form>
-            
             ';
 
             $data = json_encode($html);

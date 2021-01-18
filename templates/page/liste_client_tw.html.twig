@@ -1,0 +1,514 @@
+{% extends "base.html.twig" %}
+{% block title %}
+	Liste entreprise / contact
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
+{% endblock %}
+
+{% block body %}
+
+	<section id="contents" class="content_tropical container-fluid">
+		<!-- entete content -->
+		{% include "nav2.html.twig" %}
+		<!-- / entete content -->
+		<!-- contenue  -->
+			<div id="hrs_content"> 
+                <div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+                        <section class="section_part" id="section_part_top">
+                            <div class="sous_titre sous_titre_tw">
+                                <h3>Liste des entreprises / Contacts</h3>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+                        <div>
+                            <form action="{{ path('tropical_wood') }}" method="post" name="form_for_tri" id="form_for_tri">
+                                <a href="#" id="reinitialisation"  class="btn btn-default btn_black">Reinitialisation</a>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+                        <div class="liste_form_search">
+                            <div class="block_form_search">
+                                <form>
+                                    <a href="#"><span class="fa fa-search"></span></a>
+                                    <div class="block_deroulement">
+                                        <input type="text" id="entreprise_contact" class="form-control" placeholder="Entreprises/Contacts" autocomplete="off">
+                                        <div class="liste_result_search">
+                                            <ul>
+                                                
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="input__entreprise" value="" name="entreprise_contact">
+                                    <input type="hidden" name="detail" class="form-control" placeholder="Detail" value="vide">
+                                    <button type="submit" id="button_ok" class="btn btn_ok btn-sm"><span>OK</span></button>
+                                </form>
+                                <div class="liste_choice_search">
+                                    <ul>
+                                        {% if liste_choices is defined %}
+                                            {% for t in liste_choices %}
+                                                {% if t != "null" %}
+                                                    <li>
+                                                        <i class="fa fa-times"></i>
+                                                        <p>{{ t }}</p>
+                                                    </li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<div class="tableau_tropical">
+						<div class="table_content">
+							<div class="table_header">
+								<div class="t_header_row">
+									<div>
+										<span>Clients</span>
+									</div>
+									<div>
+										<span>chiffre d'affaires encaissé</span>
+										<span class="span_tri">
+											<a href="#" class="a_tri" data-type ="total_reglement" data-data = "ASC">
+												<small class="fa fa-sort-asc"></small>
+											</a>
+											<a href="#" class="a_tri" data-type ="total_reglement" data-data = "DESC">
+												<small class="fa fa-sort-desc"></small>
+											</a>
+										</span>
+									</div>
+									<div>
+										<span>Chiffre d'affaires à encaissé</span>
+										<span class="span_tri">
+											<a href="#" class="a_tri" data-type ="reste" data-data = "ASC">
+												<small class="fa fa-sort-asc"></small>
+											</a>
+											<a href="#" class="a_tri" data-type ="reste" data-data = "DESC">
+												<small class="fa fa-sort-desc"></small>
+											</a>
+										</span>
+									</div>
+									<div>
+										<span>chiffre d'affaire</span>
+										<span class="span_tri">
+											<a href="#" class="a_tri" data-type ="montant_total" data-data = "ASC">
+												<small class="fa fa-sort-asc"></small>
+											</a>
+											<a href="#" class="a_tri" data-type ="montant_total" data-data = "DESC">
+												<small class="fa fa-sort-desc"></small>
+											</a>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="table_body">
+										
+							</div>
+						</div>
+					</div>
+				</div>
+                </div>
+		</div>
+		<!-- / contenue  -->
+	</section>
+{% endblock %}
+
+{% block javascripts %}
+	<script src="{{ asset('js/cleave.min.js') }}"></script>
+	<script>
+		$(document).ready(function(){
+
+			// not allow submit form when pressing enter
+
+			$('.liste_form_search form').on('keyup keypress', function(e) {
+				var keyCode = e.keyCode || e.which;
+				if (keyCode === 13) { 
+					e.preventDefault();
+					return false;
+				}
+			});
+
+			// recherche stylé entreprise
+			$('#entreprise_contact').on({
+				keyup: function(){
+					var entre = $(this).val();
+					if(entre != ""){
+						$(".liste_result_search ul").html("");
+						$.ajax({
+							url : "{{ path('search_ajax_ec') }}", // search ajax entreprise contact
+							tyhpe : "POST",
+							data : {
+								'mot' : $(this).val()
+							},
+							success : function(response){
+								//console.log(response);
+								// on affiche .liste_result_search
+								var li = "";
+								for (let i = 0; i < response.length; i++) {
+									var mot = response[i].entreprise;
+									li += '<li><a href="#"><span>'+ mot +'</span></a></li>';
+								}
+								
+								$(".liste_result_search ul").append(li);
+								$('.liste_result_search').fadeIn("fast");
+							},
+							error : function(){
+								alert('erreur au niveau de ajax search')
+							}
+						})
+					}
+					else{
+						$('.liste_result_search').fadeOut("fast");
+					}
+				},
+				blur : function(){
+					$('.liste_result_search').fadeOut("fast");
+				}
+			})
+
+			var liste = [];
+			$.each($(".liste_choice_search ul li p"), function (indexInArray, valueOfElement) { 
+				 liste.push(valueOfElement.innerHTML);
+			});
+			// ajout
+			$(document).on('click','.liste_result_search ul li a', function(ev){
+				ev.preventDefault();
+				$(this).parent().parent().parent().fadeOut("fast");
+				$('.liste_choice_search').css('display', 'inline-flex');
+				var text = $(this).children('span').text();
+				liste = push_liste(liste,text);
+				afficher_liste(liste);
+			})
+
+			function afficher_liste(array){
+				var text = "";
+				for(var i=0; i<array.length; i++){
+					text += `<li>
+									<i class="fa fa-times"></i>
+									<p>` + array[i] + `</p>
+								</li>`;
+				}
+				$('.liste_choice_search ul').html(text);
+			}
+
+			// suppression 
+
+			$(document).on("click", ".liste_choice_search ul li i", function(){
+				var text = $(this).siblings('p').text();
+				remove_item(liste, text);
+				afficher_liste(liste);
+			})
+
+
+			function push_liste(arr, text){
+				if(text != ""){
+					arr.push(text);
+					var input = $('#input__entreprise').val();
+					var prim="null";
+					for(var i = 0; i< arr.length; i++){
+						prim += "*";
+						prim += arr[i];
+					}
+					$('#input__entreprise').val(prim)
+				}
+				return arr;
+			}
+
+			function remove_item(arr, text){
+				const index = arr.indexOf(text);
+				if (index > -1) {
+					arr.splice(index, 1);
+					var input = $('#input__entreprise').val();
+					var prim="null";
+					for(var i = 0; i< arr.length; i++){
+						prim += "*";
+						prim += arr[i];
+					}
+					$('#input__entreprise').val(prim)
+				}
+				return arr;
+			}
+
+			$('.logo_active').removeClass('logo_active');
+			$('#li_tropical').addClass('logo_active');
+			$('#li_tropical a div img').css('width', '53px');
+			
+			function arrayRemove(arr, value) { 
+				for(var i=0; i< arr.length; i++){
+					if(arr[i] == value){
+						var num = i;
+						arr.splice(num,1);
+					}
+				}
+				return arr;
+			}
+			function check_item(arr, item){
+				for(var i=0; i< arr.length; i++){
+					if(arr[i] == item){
+						return true;
+					}
+					else{
+						return false;
+					}
+				}
+			}
+
+			$('#reinitialisation').on('click', function(ev){
+				ev.preventDefault();
+				$('#input__entreprise').val("");
+				// on concatenne par * les données dans chaque liste
+				var data_type_trans = "";
+				var data_etat_prod = "";
+				var data_etat_paie = "";
+				
+				$.ajax({
+					url : "/tropical_wood/tri_ajax_entreprise_client",
+					type : "POST",
+					data : {
+						'type_transaction' : data_type_trans,
+						'etat_production'  : data_etat_prod,
+						'etat_paiement'	   : data_etat_paie
+						},
+					beforeSend : function(){
+						$('.table_body').html(`
+						<div style="display:flex; justify-content:center; align-items:center;">
+						   <p style="text-align:center;"> Chargement ....</p>
+						</div>						
+						`);
+					},
+					success : function(response){
+						$('.table_body').html("");
+						$('.table_body').html(response).promise().done(function(){
+							var montant = document.querySelectorAll(".montant");
+							var t = montant.length;
+							var test = new Intl.NumberFormat();
+							if (t > 0) {
+								for (var i = 0; i < t; i++) {
+									var val = test.format(montant[i].innerHTML);
+									montant[i].innerHTML = val;
+								}
+							}
+						});
+					},
+					error : function(){
+						alert('erreur ajax ri_ajax_btn_black/tropical')
+					}
+				})
+			})
+
+			function lister_datas(){
+
+				$.ajax({
+					url : "/tropical_wood/tri_ajax_entreprise_client",
+					type : "POST",
+					data : {
+						'type_transaction' : null,
+						'etat_production'  : null,
+						'etat_paiement'	   : null
+						},
+					beforeSend : function(){
+						$('.table_body').html(`
+						<div style="display:flex; justify-content:center; align-items:center;">
+						   <p style="text-align:center;"> Chargement ....</p>
+						</div>
+						
+						`);
+					},
+					success : function(response){
+						$('.table_body').html("");
+						$('.table_body').html(response).promise().done(function(){
+							var montant = document.querySelectorAll(".montant");
+							var t = montant.length;
+							var test = new Intl.NumberFormat();
+							if (t > 0) {
+								for (var i = 0; i < t; i++) {
+									var val = test.format(montant[i].innerHTML);
+									montant[i].innerHTML = val;
+								}
+							}
+						});
+					},
+					error : function(){
+						alert('erreur ajax ri_ajax_btn_black/tropical')
+					}
+				})
+
+			}
+
+			$('#button_ok').on('click', function(ev){
+				ev.preventDefault();
+				load_by_button_ok(null, null, "DESC"); // load_by_button_ok est la fonction pour activer les tri du tab lie avec submit button_ok
+			})
+
+			$('.a_tri').on('click', function(ev){
+				ev.preventDefault();
+				$.each($('.a_tri small'), function (indexInArray, valueOfElement) { 
+					 if($(this).hasClass('black')){
+						 $(this).removeClass('black');
+					 }
+				});
+				$(this).children("small").addClass('black');
+				var input__entreprise_ajax = $('#input__entreprise').val();
+				var son_data_type = $(this).attr('data-type');
+				var son_data_data = $(this).attr('data-data');
+				if(input__entreprise_ajax != ""){
+
+					if(son_data_type == "total_reglement"){
+						load_by_button_ok(son_data_data, null, null);
+					}
+					if(son_data_type == "reste"){
+						load_by_button_ok(null, son_data_data, null);
+					}
+					if(son_data_type == "montant_total"){
+						load_by_button_ok(null, null, son_data_data);
+					}
+				}
+				else{
+					if(son_data_type == "total_reglement"){
+						load_by_btn_black(son_data_data, null, null);
+					}
+					if(son_data_type == "reste"){
+						load_by_btn_black(null, son_data_data, null);
+					}
+					if(son_data_type == "montant_total"){
+						load_by_btn_black(null, null, son_data_data);
+					}
+				}
+				
+			})
+
+
+
+			function load_by_button_ok(tri_reglement, tri_reste, tri_montant){
+				var input__entreprise_ajax = $('#input__entreprise').val();
+				$.ajax({
+					url : "/tropical_wood/search_ajax_btn_ok/tropical_entreprise_client",
+					type : "POST",
+					data : {
+							'input__entreprise_ajax' 	: input__entreprise_ajax,
+							'tri_reglement' 			: tri_reglement,
+							'tri_reste'					: tri_reste,
+							'tri_montant'				: tri_montant,
+						},
+					beforeSend : function(){
+						$('.table_body').html(`
+						<div style="display:flex; justify-content:center; align-items:center;">
+						   <p style="text-align:center;"> Chargement ....</p>
+						</div>
+						
+						`);
+					},
+					success : function(response){
+						$('.table_body').html("");
+						$('.table_body').html(response).promise().done(function(){
+							var montant = document.querySelectorAll(".montant");
+							var t = montant.length;
+							var test = new Intl.NumberFormat();
+							if (t > 0) {
+								for (var i = 0; i < t; i++) {
+									var val = test.format(montant[i].innerHTML);
+									montant[i].innerHTML = val;
+								}
+							}
+						});
+					},
+					
+					error : function(){
+						alert('erreur ajax ri_ajax_btn_black/tropical')
+					}
+				})
+			}
+
+			function load_by_btn_black(typeReglement, typeReste, typeMontant){
+				$('#input__entreprise').val(""); // on vide cet input pour eviter les conflit avec le button ok du recherche
+				// on concatenne par * les données dans chaque liste
+				var data_type_trans = "";
+				var data_etat_prod = "";
+				var data_etat_paie = "";
+
+
+				$.ajax({
+					url : "/tropical_wood/tri_ajax_btn_black/tropical_entreprise_client",
+					type : "POST",
+					data : {
+						'type_transaction' 	: data_type_trans,
+						'etat_production'  	: data_etat_prod,
+						'etat_paiement'	   	: data_etat_paie,
+						'typeReglement'		: typeReglement,
+						'typeReste'			: typeReste,
+						'typeMontant'		: typeMontant,
+						},
+					beforeSend : function(){
+						$('.table_body').html(`
+						<div style="display:flex; justify-content:center; align-items:center;">
+						   <p style="text-align:center;"> Chargement ....</p>
+						</div>
+						
+						`);
+					},
+					success : function(response){
+						$('.table_body').html("");
+						$('.table_body').html(response).promise().done(function(){
+							var montant = document.querySelectorAll(".montant");
+							var t = montant.length;
+							var test = new Intl.NumberFormat();
+							if (t > 0) {
+								for (var i = 0; i < t; i++) {
+									var val = test.format(montant[i].innerHTML);
+									montant[i].innerHTML = val;
+								}
+							}
+						});
+					},
+					error : function(){
+						alert('erreur ajax ri_ajax_btn_black/tropical')
+					}
+				})
+			}
+
+
+			// a_tri
+			
+			lister_datas();
+			
+			// animation au drop down pour les detail des data
+
+			$(document).on('click', '.btn_drop_data', function(ev){
+				ev.preventDefault();
+				$(".div_for_droping").hide();
+				$('.btn_drop_data span').removeClass('fa-angle-down');
+				$('.btn_drop_data span').addClass('fa-angle-up');
+				// on drop ses details
+				if($(this).children('span').hasClass('fa-angle-up')){
+					if($(this).attr('clicked') == 'false'){
+						
+						$(this).children('span').removeClass('fa-angle-up');
+						$(this).children('span').addClass('fa-angle-down');
+						$(this).parent().siblings(".div_for_droping").slideDown();
+						$(this).attr('clicked', 'true');
+					}
+					else{
+						
+						$(this).children('span').removeClass('fa-angle-down');
+						$(this).children('span').addClass('fa-angle-up');
+						$(this).parent().siblings(".div_for_droping").slideUp();
+						$(this).attr('clicked', 'false');
+					}
+				}
+			})
+			
+			
+		})
+		
+
+		
+	</script>
+{% endblock %}
+

@@ -1130,7 +1130,7 @@ div.liste_dj_dm div a:hover span:last-child{
       margin-top: 50px;
       display: block;
   }
-  
+
   .section_part .sous_titre a {
       border: 1px solid #d29e00;
       color: #9eabbb;
@@ -1734,7 +1734,7 @@ div.liste_dj_dm div a:hover span:last-child{
       border-radius: 50px;
       flex-wrap: nowrap;
   }
-  
+
   .table_header .t_header_row div>span {
       color: #fff;
   }
@@ -1743,7 +1743,10 @@ div.liste_dj_dm div a:hover span:last-child{
       width: calc(100% / 9);
       text-align: center;
   }
-  
+.t_header_row_liste_entreprise_tw>div{
+    width: calc(100% / 5);
+      text-align: center;
+}
   .table_body {
       background: #fff;
       border-radius: 30px;
@@ -1761,7 +1764,7 @@ div.liste_dj_dm div a:hover span:last-child{
       align-items: center;
       padding: 5px;
   }
-  
+
   .t_footer_row {
       width: 100%;
       display: flex;
@@ -1861,7 +1864,7 @@ div.liste_dj_dm div a:hover span:last-child{
   }
   
   .sous_titre_tw h3 {
-      color: #452a17 !important;
+      color: #636363 !important;
   }
   
   .titre_gris {
@@ -4394,3 +4397,422 @@ div.liste_dj_dm div a:hover span:last-child{
   small.black {
       color: #000 !important;
   }
+  .table_body .block_entreprise:first-child .liste_contact_chiffre a:first-child div{
+    border-top-right-radius: 25px;
+      
+  }
+.table_body .block_entreprise:last-child .liste_contact_chiffre a:last-child div{
+    border-bottom-right-radius: 25px;
+      
+  }
+/* table liste entreprise tw */
+.table_content table thead{
+    background: #d29e00;
+}
+.table_content table thead tr th{
+    width: 150px;
+    vertical-align: middle;
+}
+.table_content table thead tr th span:first-child{
+    color: #fff;
+    font-size: 13px;
+    margin-right: 15px;
+    vertical-align: middle;
+}
+
+.table_content table thead tr th span:last-child{
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;  
+}
+.chiffre_daf{
+    position: relative;
+    top: 8px;
+}
+.a_tri small.fa{
+    color: #fff;
+}
+.block_entreprise{
+    display: flex;
+}
+.block_entreprise >.column_tab:first-child{
+    width: calc(100% / 5);
+    
+    border-right: 1px solid #ddd;
+}
+
+.liste_contact_chiffre{
+    width: 100%;
+    padding-bottom: 0px !important;
+}
+.unite_contact_ca{
+    display: flex;
+}
+
+.nom_entreprise span{
+    display: block;
+    height: 100%;
+     padding: 15px;
+    color: #000;
+}
+.table_body .block_entreprise:first-child .nom_entreprise span{
+    border-top-left-radius: 20px;
+}
+.table_body .block_entreprise:last-child .nom_entreprise span{
+    border-bottom-left-radius: 20px;
+}
+
+.unite_contact_ca .column_tab{
+    width: calc(100% / 3);
+    text-align: center;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+.liste_contact_chiffre .unite_contact_ca:not(:last-child){
+    border-bottom: 1px solid #ddd;
+}
+.liste_contact_chiffre a{
+    text-decoration: none;
+    color: #000;
+    display: block;
+}
+
+.liste_contact_chiffre a:not(:last-child){
+    border-bottom: 1px solid #ddd;
+}
+
+.liste_contact_chiffre a:hover div{
+    background: #ddd;
+    transition: all 1s linear ease-in-out;
+}
+
+    
+/*/ table liste entreprise tw*/
+
+/* style show contact entreprise tw */
+.sous_titre_tw{
+    text-align: center;
+    color: #323232;
+}
+.liste_chiffre_daf{
+    display: flex;
+    
+    justify-content: space-around;
+    align-items: center;
+    width: 75%;
+    margin: auto;
+    margin-top: 25px;
+}
+
+.unite_chiffre {
+    display: flex;
+    flex-direction: column;
+    justify-content:  center;
+    vertical-align: top;
+    width: 230px;
+    position: relative;
+    background: #5f5f5f;
+    top: 0;
+    border-radius: 50px;
+    height: 100px;
+    padding-left: 15px;
+}
+
+.unite_chiffre .titre_ca h4{
+    font-size: 13px;
+    color: rgba(255,255,255,1);
+    margin-left:15px;
+}
+.montant_value{
+    margin-left:15px;
+}
+.unite_chiffre span{
+    font-size: 20px;
+    color: #fff;
+   
+}
+.tab_small_content{
+    padding: 15px;
+    margin-bottom: 25px;
+}
+.small_tab{
+    border-collapse: separate;
+}
+.small_tittle{
+    color: #5f5f5f;
+    font-size: 14px;
+}
+.small_tab thead tr th{
+    border: none;
+}
+
+.small_tab >tbody>tr:first-child>td,
+.small_tab >tbody>tr:nth-child(2)>td
+{
+    border: none !important;
+}
+.separateur{
+    display: block;
+}
+.small_tab thead tr th{
+     background: #d29e00;
+    padding-left: 15px;
+}
+.small_tab tbody tr td{
+    padding-left: 15px;
+}
+.small_tab thead tr th:first-child{
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+.small_tab>tbody>tr:first-child td{
+    height: 20px !important;
+}
+.small_tab>tbody>tr:nth-child(2)>td:first-child{
+   border-top-left-radius: 25px !important;
+}
+.small_tab>tbody>tr:nth-child(2)>td:last-child{
+   border-top-right-radius: 25px !important;
+}
+
+.small_tab>tbody>tr>td>span{
+    position: relative;
+    top: 5px !important;
+}
+
+.small_tab>tbody>tr:last-child >td:first-child{
+   border-bottom-left-radius: 25px !important;
+}
+.small_tab>tbody>tr:last-child >td:last-child{
+   border-bottom-right-radius: 25px !important;
+}
+
+.small_tab thead tr th:last-child{
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+   
+}
+.small_tab tbody tr:not(:first-child) td{
+    background: #fff;
+}
+.small_tab thead tr th{
+    color: #fff;  
+   font-size: 13px;
+}
+.tw_sous_titre{
+    text-align: center;
+    border-top: 1px solid rgba(95,95,95,0.1);
+    margin-top: 25px;
+    margin-bottom: 20px;
+}
+.tw_sous_titre h3{
+    color: #323232;   
+}
+.block_entreprise:first-child >.column_tab:first-child {
+    
+    text-decoration: none;
+    border-top-left-radius: 25px;
+}
+.block_entreprise .column_tab a:hover{
+    text-decoration: none;
+}
+.block_entreprise .column_tab:hover{
+    background: #ddd !important;
+}
+.block_entreprise:last-child >.column_tab {
+    
+    text-decoration: none;
+    border-bottom-left-radius: 25px;
+}
+
+.block_entreprise:first-child >.column_tab:first-child:hover {
+    background: #ddd !important;
+    text-decoration: none;
+    border-top-left-radius: 25px;
+}
+.block_entreprise:last-child >.column_tab:hover {
+    background: #ddd !important;
+    text-decoration: none;
+    border-bottom-left-radius: 25px;
+}
+
+.table_transaction_enc table thead{
+    background: #d29e00;
+}
+
+.table_transaction_enc table thead tr th{
+     color: #fff;  
+     font-size: 13px;
+}
+table tbody tr td span{
+    color:#323232;
+}
+.titre_remarque{
+    text-decoration: underline;
+    width: 95%;
+    margin: auto;
+    margin-bottom: 25px;
+}
+.form_remarque1{
+    width: 95%;
+    margin: auto;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+.form_remarque1 form{
+ display: flex;
+    justify-content: space-around;
+    padding-right: 25px;
+    align-items: center;
+}
+.form_remarque1 input[type=date]{
+    padding-top: 0;
+    height: 32px;
+}
+.form_remarque1 form select{
+    height: 32px;
+}
+.form_remarque1 label{
+    margin-right: 15px;
+}
+.observation{
+    width: 350px !important;
+    height: 32px;
+}
+.form_remarque1 .form-control:not(.btn){
+    font-size: 12px;
+}
+.form_remarque1 .form-control:not(.btn):focus{
+    border-color: #5f5f5f;
+    box-shadow:0px 0px 5px #5f5f5f;
+}
+
+.form_remarque1 .form-group .btn{
+    height: 32px;
+    background: #5f5f5f;
+    border-color: transparent;
+    color: #fff;
+    transition: all 1s linear ease-in-out;
+}
+.form_remarque1 .form-group .btn:hover{
+    background: #5f5f5f;
+    opacity: 0.9;
+    transition: all 1s linear ease-in-out;
+}
+
+.tab_content_rem{
+    width: 95%;
+    margin: auto;
+}
+.tab_content_rem table thead{
+    background: #d29e00;
+}
+.tab_content_rem table thead tr th{
+    color: #fff;
+    font-size: 13px;
+}
+.add_contact{
+    margin-bottom: 15px;
+    margin-top: 25px;
+}
+.add_contact a{
+    background: #5f5f5f;
+    color: #fff;
+    border-color: transparent;
+    border-radius: 20px;
+}
+.add_contact a:focus{
+    background: #5f5f5f;
+    color: #fff;
+    border-color: transparent;
+    border-radius: 20px;
+}
+.add_contact a span.fa-plus{
+    margin-right: 7px;
+}
+.list_action{
+    position: relative;
+    bottom: 5px;
+}
+.list_action a{
+    display: inline-block;
+    width: 25px;
+    text-align: center;
+    margin-top: 5px;
+}
+.list_action a:last-child{
+    position: relative;
+    left: 5px;
+}
+
+div.list_action a:hover{
+    text-decoration: none;
+}
+.tab_content_rem .btn-primary span{
+    color: #fff;
+}
+.tab_content_rem .liste_action a{
+   background: #5f5f5f;
+   color: #fff;
+   padding: 5px;
+    display: inline-block;
+    height : 25px;
+    padding-top: 0;
+    border-radius:15px;
+    width:100px;
+    text-align:center;
+}
+.tab_content_rem .liste_action a:hover{
+    text-decoration: none;
+}
+.tab_content_rem .liste_action a span{
+    color: #fff;
+    position: relative;
+    bottom: 5px !important;
+}
+.tab_content_rem tbody tr td p{
+    position: relative;
+    top: 3px;
+}
+.link_client{
+    color: #323232;
+    display: block;
+}
+.link_client:hover{
+    text-decoration: none;
+    color: #323232;
+    opacity: 0.8;
+}
+/* modal */
+#modal_add_contact .modal-header{
+    display: flex;
+    justify-content: space-between;
+    background: #5f5f5f;;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+#modal_add_contact .modal-header button{
+    color: #fff !important;
+    opacity: 1;
+}
+#modal_add_contact .modal-header button:hover{
+    color: #fff !important;
+    opacity: 0.8;
+}
+#modal_add_contact .modal-header h5{
+    color: #fff;
+}
+#modal_add_contact button.btn{
+    color: #fff;
+}
+#modal_add_contact .form-control:focus{
+    box-shadow: 0px 0px 3px #5f5f5f;
+    border-color: #5f5f5f;
+}
+
+/* fin modal */
+
+/* / fin style contact show entreprise*/

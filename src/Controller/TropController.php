@@ -18,7 +18,7 @@ class TropController extends AbstractController
 
     /**
      * @Route("/tropical_wood/home_tropical_wood", name="tropical_wood")
-     */
+    */
     public function tropical_wood(SessionInterface $session, Request $request, Services $services, EntityManagerInterface $manager, DataTropicalWoodRepository $repoTrop)
     {
         // $test = $repoTrop->findAllGroupedByEntreprise();
@@ -151,6 +151,7 @@ class TropController extends AbstractController
                 'etat_paiement'             => $etat_paiement,
                 'etat_paiement_text'        => $request->request->get('etat_paiement'),
                 'tropical_wood'             => true,
+                "id_page"                   => "li__dashboard_tw",
             ]);
         }
         return $this->render('page/tropical_wood.html.twig', [
@@ -160,9 +161,10 @@ class TropController extends AbstractController
             'datas'             => $Liste,
             'tri'               => false,
             'tropical_wood'     => true,
+            "id_page"                   => "li__dashboard_tw",
         ]);
     }
-
+    
     /**
      * @Route("/tropical_wood/tri_ajax_btn_black/tropical", name = "tri_ajax_btn_black")
      */
@@ -345,6 +347,8 @@ class TropController extends AbstractController
         }
         return $response;
     }
+
+    
 
     /**
      * @Route("/tropical_wood/search_ajax_btn_ok/tropical", name = "search_ajax_btn_ok")
@@ -537,6 +541,7 @@ class TropController extends AbstractController
                     'date1'             => $request->request->get('date1'),
                     'date2'             => $request->request->get('date2'),
                     'tropical_wood'             => true,
+                    "id_page"                   => "li__dashboard_tw",
                 ]);
             }
             else{
@@ -563,6 +568,476 @@ class TropController extends AbstractController
             $result = $statement->fetchAll();
             
             $data = json_encode($result);
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+            return $response;
+        }
+    }
+
+    /*entreprise/contact*/
+
+    /**
+     * @Route("/tropical_wood/liste_client_tw", name="liste_client_tw")
+     */
+    public function liste_client_tw(SessionInterface $session, Request $request, Services $services, EntityManagerInterface $manager, DataTropicalWoodRepository $repoTrop)
+    {
+        $data_session = $session->get('hotel');
+        $data_session['pseudo_hotel'] = "tropical_wood";
+        $datas = $repoTrop->findAll();
+        $datasAsc = $repoTrop->findAllGroupedAsc();
+        $Liste = [];
+        //dd($datasAsc);
+        foreach ($datasAsc as $d) {
+            $tab_temp = [];
+            $son_entreprise = $d[0]->getEntreprise();
+            $liste = $repoTrop->findBy(["entreprise" => $son_entreprise]);
+
+            $tab_temp["entreprise"] = $son_entreprise;
+            $tab_temp["listes"] = $liste;
+            $tab_temp["sous_total_montant_total"] = $d["sous_total_montant_total"];
+            $tab_temp["sous_total_total_reglement"] = $d["sous_total_total_reglement"];
+            $tab_temp["total_reste"] = $d["total_reste"];
+            array_push($Liste, $tab_temp);
+        }
+        return $this->render('page/liste_client_tw.html.twig', [
+            "hotel"             => $data_session['pseudo_hotel'],
+            "current_page"      => $data_session['current_page'],
+            'datas'             => $Liste,
+            'tri'               => false,
+            'tropical_wood'     => true,
+            "id_page"                   => "li_entreprise_contact",
+        ]);
+    }
+    /**
+     * @Route("/tropical_wood/show_entreprise/{nom_entreprise}", name="show_entreprise")
+     */
+    public function show_entreprise($nom_entreprise, SessionInterface $session, Request $request, Services $services, EntityManagerInterface $manager, DataTropicalWoodRepository $repoTrop)
+    {   
+        //dd($nom_entreprise);
+        $data_session = $session->get('hotel');
+        $data_session['pseudo_hotel'] = "tropical_wood";
+
+        $All_data_ne = $repoTrop->findBy([
+            'entreprise'    => $nom_entreprise,
+        ]);
+        // Calcul des chiffres d'affaire
+
+        $ca = 0;
+        $cae = 0;
+        $caae = 0;
+
+        foreach($All_data_ne as $item){
+            $ca = $ca + $item->getMontantTotal();
+            $cae = $cae + $item->getTotalReglement();
+            $r = $item->getMontantTotal() - $item->getTotalReglement();
+            $caae = $caae + $r;
+        }
+
+        //dd($All_data_ne);
+        return $this->render('page/show_entreprise.html.twig', [
+            "hotel"             => $data_session['pseudo_hotel'],
+            "current_page"      => $data_session['current_page'],
+            'tri'               => false,
+            'tropical_wood'     => true,
+            "id_page"           => "li_entreprise_contact",
+            "datas"             => $All_data_ne,
+            "nom_client"        => $nom_entreprise,
+            "chiffre_daf"       => $ca,
+            "chiffre_daf_enc"   => $cae,
+            "chiffre_daf_a_enc" => $caae,
+        ]);
+    }
+
+
+    /**
+     * @Route("/tropical_wood/tri_ajax_entreprise_client", name = "tri_ajax_entreprise_client")
+     */
+    public function tri_ajax_entreprise_client(Request $request, DataTropicalWoodRepository $repoTrop)
+    {
+        $response = new Response();
+        if ($request->isXmlHttpRequest()) {
+
+            $typeReglement = $request->get('typeReglement');
+            $typeReste = $request->get('typeReste');
+            $typeMontant = $request->get('typeMontant');
+
+            $type_transaction = $request->get('type_transaction');
+            $type_transaction = explode("*", $type_transaction);
+            $etat_production = $request->get('etat_production');
+            $etat_production = explode("*", $etat_production);
+            $etat_paiement = $request->get('etat_paiement');
+            $etat_paiement = explode("*", $etat_paiement);
+            if ($typeReglement == null && $typeReste == null && $typeMontant == null) {
+                $typeMontant = "DESC";
+            }
+            $Liste = $repoTrop->filtrer(
+                $request->request->get('date1'),
+                $request->request->get('date2'),
+                $type_transaction,
+                $etat_production,
+                $etat_paiement,
+                $typeReglement,
+                $typeReste,
+                $typeMontant
+            );
+
+
+            $stringP = '';
+            $Total_Reglement = 0;
+            $Total_Reste = 0;
+            $Total_Montant = 0;
+            foreach ($Liste as $data) {
+                //dd($data['listes']);
+                $stringP .= '
+
+                <div>
+                    ';
+                $string1 = '';
+                $total_reste = 0;
+                $total_reglement = 0;
+                $total_montant = 0;
+                foreach ($data['listes'] as $item) {
+                    $reste = $item->getMontantTotal() - $item->getTotalReglement();
+                    $total_reglement = $total_reglement + $item->getTotalReglement();
+                    $total_montant = $total_montant + $item->getMontantTotal();
+                    $total_reste += $reste;
+                    $date = "";
+                    if ($item->getDateConfirmation() != null) {
+                        $date = $item->getDateConfirmation()->format("d-m-Y");
+                    }
+                    $string1 .= '
+                                <div class="t_body_row sous_tab_body div_for_droping"
+                                    style="display:none !important;"
+                                > 
+                                    <div>
+                                        <span class="montant value">' . $item->getTotalReglement() . '</span>
+                                    </div>
+                                    <div>
+                                        <span class="montant">
+                                            ' . $reste . '
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span class="montant">' . $item->getMontantTotal() . '</span>
+                                    </div>
+                                </div>
+                            ';
+                }
+
+                $stringP .= $string1;
+
+                $stringP .= '
+                                <div class="t_body_row sous_tab_body sous_total_content">
+                                    <div>
+                                        <a href="/tropical_wood/show_entreprise/' . $data["entreprise"] . '" class="link_client">
+                                            <span>' . $data["entreprise"] . '</span>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <span class="montant value total_paiement">
+                                            ' . $total_reglement . '
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span class="montant value total_reste">' . $total_reste . '</span>
+                                    </div>
+                                    <div>
+                                        <span class="montant value total_montant">' . $total_montant . '</span>
+                                    </div>
+                                </div>
+                        </div>
+                    ';
+
+                $Total_Reglement = $Total_Reglement + $total_reglement;
+                $Total_Reste = $Total_Reste + $total_reste;
+                $Total_Montant = $Total_Montant + $total_montant;
+            }
+
+            $stringP .= '
+                        <div class="t_footer_row sous_tab_body tota_content">
+                            <div>
+                                <span>Total</span>
+                            </div>
+                            <div>
+                                <span class="montant value" id="total_paiement">
+                                    ' . $Total_Reglement . '
+                                </span>
+                            </div>
+                            <div>
+                                <span class="montant value" id="total_reste">										
+                                        ' . $Total_Reste . '
+                                </span>
+                            </div>
+                            <div>
+                                <span class="montant value" id="total_montant">
+                                        ' . $Total_Montant . '
+                                </span>
+                            </div>
+                        </div>
+                    
+                    ';
+
+
+
+
+            $data = json_encode($stringP);
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+        }
+        return $response;
+    }
+
+    /**
+     * @Route("/tropical_wood/tri_ajax_btn_black/tropical_entreprise_client", name = "tri_ajax_btn_black_tropical_entreprise_client")
+     */
+    public function tri_ajax_btn_black_tropical_entreprise_client(Request $request, DataTropicalWoodRepository $repoTrop)
+    {
+        $response = new Response();
+        if ($request->isXmlHttpRequest()) {
+
+            $typeReglement = $request->get('typeReglement');
+            $typeReste = $request->get('typeReste');
+            $typeMontant = $request->get('typeMontant');
+
+            $type_transaction = $request->get('type_transaction');
+            $type_transaction = explode("*", $type_transaction);
+            $etat_production = $request->get('etat_production');
+            $etat_production = explode("*", $etat_production);
+            $etat_paiement = $request->get('etat_paiement');
+            $etat_paiement = explode("*", $etat_paiement);
+            if ($typeReglement == null && $typeReste == null && $typeMontant == null) {
+                $typeMontant = "DESC";
+            }
+            $Liste = $repoTrop->filtrer(
+                $request->request->get('date1'),
+                $request->request->get('date2'),
+                $type_transaction,
+                $etat_production,
+                $etat_paiement,
+                $typeReglement,
+                $typeReste,
+                $typeMontant
+            );
+
+
+            $stringP = '';
+            $Total_Reglement = 0;
+            $Total_Reste = 0;
+            $Total_Montant = 0;
+            foreach ($Liste as $data) {
+                $stringP .= '
+
+                <div>
+                    ';
+                $string1 = '';
+                $total_reste = 0;
+                $total_reglement = 0;
+                $total_montant = 0;
+                foreach ($data['listes'] as $item) {
+                    $reste = $item->getMontantTotal() - $item->getTotalReglement();
+                    $total_reglement = $total_reglement + $item->getTotalReglement();
+                    $total_montant = $total_montant + $item->getMontantTotal();
+                    $total_reste += $reste;
+                    $date = "";
+                    if ($item->getDateConfirmation() != null) {
+                        $date = $item->getDateConfirmation()->format("d-m-Y");
+                    }
+                    $string1 .= '
+                                <div class="t_body_row sous_tab_body div_for_droping"
+                                    style="display:none !important;"
+                                > 
+                                    <div>
+                                        <span class="montant value">' . $item->getTotalReglement() . '</span>
+                                    </div>
+                                    <div>
+                                        <span class="montant">
+                                            ' . $reste . '
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span class="montant">' . $item->getMontantTotal() . '</span>
+                                    </div>
+                                    
+                                </div>
+                            ';
+                }
+
+                $stringP .= $string1;
+
+                $stringP .= '
+                                <div class="t_body_row sous_tab_body sous_total_content">
+                                    <div>
+                                        <a href="#" class="link_client">
+                                            <span>' . $data["entreprise"] . '</span>
+                                        </a> 
+                                    </div>
+                                   
+                                    <div>
+                                        <span class="montant value total_paiement">
+                                            ' . $total_reglement . '
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span class="montant value total_reste">' . $total_reste . '</span>
+                                    </div>
+                                    <div>
+                                   
+                                        <span class="montant value total_montant">' . $total_montant . '</span>
+                                    </div>
+                                   
+                                </div>
+                        </div>
+                    ';
+
+                $Total_Reglement = $Total_Reglement + $total_reglement;
+                $Total_Reste = $Total_Reste + $total_reste;
+                $Total_Montant = $Total_Montant + $total_montant;
+            }
+
+            $stringP .= '
+                        <div class="t_footer_row sous_tab_body tota_content">
+                            <div>
+                                <span>Total</span>
+                            </div>
+                            <div>
+                                <span class="montant value" id="total_paiement">
+                                    ' . $Total_Reglement . '
+                                </span>
+                            </div>
+                            <div>
+                                <span class="montant value" id="total_reste">										
+                                        ' . $Total_Reste . '
+                                </span>
+                            </div>
+                            <div>
+                                <span class="montant value" id="total_montant">
+                                        ' . $Total_Montant . '
+                                </span>
+                            </div>
+                        </div>
+                    
+                    ';
+
+
+
+
+            $data = json_encode($stringP);
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+        }
+        return $response;
+    }
+
+    /**
+     * @Route("/tropical_wood/search_ajax_btn_ok/tropical_entreprise_client", name = "search_ajax_btn_ok_tropical_entreprise_client")
+     */
+    public function search_ajax_btn_ok_tropical_entreprise_client(Request $request, DataTropicalWoodRepository $repoTrop)
+    {
+        $response = new Response();
+        if ($request->isXmlHttpRequest()) {
+
+            $input__entreprise_ajax = $request->get('input__entreprise_ajax');
+            $tri_reglement = $request->get('tri_reglement');
+            $tri_reste = $request->get('tri_reste');
+            $tri_montant = $request->get('tri_montant');
+
+            $input__entreprise_ajax = explode("*", $input__entreprise_ajax);
+
+            $Liste = $repoTrop->searchEntrepriseContact($input__entreprise_ajax, $tri_reglement, $tri_reste, $tri_montant);
+
+            $stringP = '';
+            $Total_Reglement = 0;
+            $Total_Reste = 0;
+            $Total_Montant = 0;
+            foreach ($Liste as $data) {
+                $stringP .= '
+
+                <div>
+                    ';
+                $string1 = '';
+                $total_reste = 0;
+                $total_reglement = 0;
+                $total_montant = 0;
+                foreach ($data['listes'] as $item) {
+                    $reste = $item->getMontantTotal() - $item->getTotalReglement();
+                    $total_reglement = $total_reglement + $item->getTotalReglement();
+                    $total_montant = $total_montant + $item->getMontantTotal();
+                    $total_reste += $reste;
+                    $date = "";
+                    if ($item->getDateConfirmation() != null) {
+                        $date = $item->getDateConfirmation()->format("d-m-Y");
+                    }
+                    $string1 .= '
+    
+                            <div class="t_body_row sous_tab_body div_for_droping"
+                                    style="display:none !important;">
+                                
+                                <div>
+                                    <span class="montant value">' . $item->getTotalReglement() . '</span>
+                                </div>
+                                <div>
+                                    <span class="montant">
+                                        ' . $reste . '
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="montant">' . $item->getMontantTotal() . '</span>
+                                </div>
+                            </div>
+                        ';
+                }
+                $stringP .= $string1;
+
+                $stringP .= '
+                                <div class="t_body_row sous_tab_body sous_total_content">
+                                    <div>
+                                        <a href="#" class="link_client">
+                                            <span>' . $data["entreprise"] . '</span>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <span class="montant value total_paiement">
+                                            ' . $total_reglement . '
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span class="montant value total_reste">' . $total_reste . '</span>
+                                    </div>
+                                    <div>
+                                        <span class="montant value total_montant">' . $total_montant . '</span>
+                                    </div>
+                                </div>
+                        </div>
+                    ';
+
+                $Total_Reglement = $Total_Reglement + $total_reglement;
+                $Total_Reste = $Total_Reste + $total_reste;
+                $Total_Montant = $Total_Montant + $total_montant;
+            }
+
+            $stringP .= '
+                        <div class="t_footer_row sous_tab_body tota_content">
+                            <div>
+                                <span>Total</span>
+                            </div>
+                            <div>
+                                <span class="montant value" id="total_paiement">
+                                    ' . $Total_Reglement . '
+                                </span>
+                            </div>
+                            <div>
+                                <span class="montant value" id="total_reste">										
+                                        ' . $Total_Reste . '
+                                </span>
+                            </div>
+                            <div>
+                                <span class="montant value" id="total_montant">
+                                        ' . $Total_Montant . '
+                                </span>
+                            </div>
+                        </div>
+                    ';
+            $data = json_encode($stringP);
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent($data);
             return $response;

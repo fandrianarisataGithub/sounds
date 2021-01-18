@@ -341,22 +341,30 @@
 						{# debut menu tropoical wood #}
 							{% if groupe == "tropical_wood" %}
 								<ul class="categories">
-									<li id="li__dashboard_tw">
+									<li 
+										{% if id_page is defined and id_page=="li__dashboard_tw" %}
+											id="li__dashboard_tw"
+										{% endif %}
+									>
 										<a
 											href="{{ path('tropical_wood') }}">
-											{# <i aria-hidden="true" id="client">
-																						<img src="{{ asset('images/client.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-																					</i> #}
-											<i class="fa fa-dashboard"></i>
+											<i aria-hidden="true" id="client" style="opacity:0 !important">
+												<img src="{{ asset('images/client.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
+											</i>
+											
 											<span>Tableau de bord client</span>
 										</a>
 									</li>
-									<li>
-										<a href="#">
-											<i aria-hidden="true" id="client">
+									<li
+										{% if id_page is defined and id_page=="li_entreprise_contact" %}
+											 id="li_entreprise_contact"
+										{% endif %}
+									>
+										<a href="{{ path('liste_client_tw') }}">
+											<i aria-hidden="true" id="client" style="opacity:0 !important">
 												<img src="{{ asset('images/client.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
 											</i>
-											<span>Client</span>
+											<span>Entreprise/Contact</span>
 										</a>
 									</li>
 								</ul>
