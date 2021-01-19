@@ -54,23 +54,26 @@
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
                         <h3 class="small_tittle"><u>Clients</u></h3>
+                         <div class="add_contact">
+                            <a href="#" class="btn btn-default" data-toggle="modal" data-target="#modal_add_adresse">
+                                <span class="fa fa-plus"></span>Adresse siège social
+                            </a>
+                        </div>
                         <div class="tab_small_content">
+                        {# <table class="table small_tab"> #}
                             <table class="table small_tab">
                                 <thead>
                                     <tr>
                                         <th><span>Entreprise</span></th>
                                         <th><span>Adresse siège social</span></th>
+                                        <th><span></span></th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td><span>Akadin</span></td>
-                                        <td><span>Adresse ldshkljh</span></td>
-                                    </tr>
+                                <tbody id="body_tab_adresse">
+                                   
+                                    {# tbody_adresse #}
+                                   
+                                    {# fin tbody adresse #}
                                 </tbody>
                             </table>
                         </div>
@@ -91,46 +94,8 @@
                                         <th></th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                 <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td><span>N° de tél</span></td>
-                                        <td><span>contact principal</span></td>
-                                        <td><span>email@gmail.com</span></td>
-                                        <td><span>0325485612</span></td>
-                                        <td>
-                                            <div class="list_action">
-                                                <a href="#">
-                                                    <span class="fa fa-edit"></span>
-                                                </a>
-                                                <a href="#">
-                                                    <span class="fa fa-trash-o"></span>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><span>contact 2</span></td>
-                                        <td><span>contact secondaire</span></td>
-                                        <td><span>email@gmail.com</span></td>
-                                        <td><span>0325485612</span></td>
-                                        <td>
-                                            <div class="list_action">
-                                                <a href="#">
-                                                    <span class="fa fa-edit"></span>
-                                                </a>
-                                                <a href="#">
-                                                    <span class="fa fa-trash-o"></span>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                <tbody id="liste_tab_contact">
+
                                 </tbody>
                             </table>
 
@@ -142,7 +107,7 @@
                         </div>  
                         <div class="table_transaction_enc">
                             <div class="tab_small_content">
-                                <table class="table small_tab" id="tab_tw_ca">
+                                <table class="table" id="tab_tw_ca_enc">
                                     <thead>
                                         <tr>
                                             <th>Référence</th>
@@ -158,75 +123,51 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td><span>pf/43589</span></td>
-                                            <td><span>Porte en bois</span></td>
-                                            <td><span>NON OFFICIEL</span></td>
-                                            <td><span>Fini - Facturé</span></td>
-                                            <td><span>100%</span></td>
-                                            <td><span class="montant">1221252</span></td>
-                                            <td><span class="montant">1221252</span></td>
-                                            <td><span class="montant">1221252</span></td>
-                                            <td>
-                                                <span>Date de conf: 12/05/2020</span>
-                                                <br>
-                                                <span>Date de paiement prévue: 12/05/2020</span>
-                                                <br>
-                                                <span>Date de paiement éffectif: 12/05/2020</span>
-                                                <br>
-                                            </td>
-                                            <td></td>
-                                        </tr> 
-                                        <tr>
-                                            <td><span>pf/43589</span></td>
-                                            <td><span>Porte en bois</span></td>
-                                            <td><span>NON OFFICIEL</span></td>
-                                            <td><span>Fini - Facturé</span></td>
-                                            <td><span>100%</span></td>
-                                            <td><span class="montant">1221252</span></td>
-                                            <td><span class="montant">1221252</span></td>
-                                            <td><span class="montant">1221252</span></td>
-                                        <td>
-                                                <span>Date de conf: 12/05/2020</span>
-                                                <br>
-                                                <span>Date de paiement prévue: 12/05/2020</span>
-                                                <br>
-                                                <span>Date de paiement éffectif: 12/05/2020</span>
-                                                <br>
-                                            </td>
-                                            <td></td>
-                                        </tr> 
-                                        <tr>
-                                            <td><span>pf/43589</span></td>
-                                            <td><span>Porte en bois</span></td>
-                                            <td><span>NON OFFICIEL</span></td>
-                                            <td><span>Fini - Facturé</span></td>
-                                            <td><span>100%</span></td>
-                                            <td><span class="montant">1221252</span></td>
-                                            <td><span class="montant">1221252</span></td>
-                                            <td><span class="montant">1221252</span></td>
-                                        <td>
-                                                <span>Date de conf: 12/05/2020</span>
-                                                <br>
-                                                <span>Date de paiement prévue: 12/05/2020</span>
-                                                <br>
-                                                <span>Date de paiement éffectif: 12/05/2020</span>
-                                                <br>
-                                            </td>
-                                            <td></td>
-                                        </tr>                                  
+                                        {% for item in tab_trans_enc %}
+                                            <tr>
+                                                <td>
+                                                    <span>{{ item.getIdPro() }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{ item.getDetail() }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{ item.getTypeTransaction() }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{ item.getEtatProduction() }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>
+                                                        <span></td>
+                                                        <td>
+                                                            <span class="montant">{{ item.getTotalReglement() }}</span>
+                                                        </td>
+                                                        {% set paye  = item.getTotalReglement() %}
+                                                        {% set total  =  item.getMontantTotal() %}
+                                                        {% set reste = total - paye %}
+                                                        <td>
+                                                            <span class="montant">{{ reste }}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span class="montant">{{ item.getMontantTotal() }}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span>Date de conf:
+                                                                {{ item.getDateConfirmation() | date('d/m/Y') }}</span>
+                                                            <br>
+                                                            <span>Date de paiement prévue:
+                                                            </span>
+                                                            <br>
+                                                            <span>Date de paiement éffectif:
+                                                            </span>
+                                                            <br>
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tr>
+
                                     </tbody>
                                 </table>
                             </div>
@@ -246,9 +187,9 @@
                                 <div class="form-group">                                  
                                     <label for="">Concerne: </label>
                                     <select name="" id="" class="form-control">
-                                        <option value="">pf/1245</option>
-                                        <option value="">pf/1245</option>
-                                        <option value="">pf/1245</option>
+                                        {% for item in liste_pf %}
+                                            <option value="{{ item }}">{{ item }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -321,7 +262,7 @@
                         </div>  
                         <div class="table_transaction_enc">
                             <div class="tab_small_content">
-                                <table class="table small_tab">
+                                <table class="table" id="tab_tw_ca_ter">
                                     <thead>
                                         <tr>
                                             <th>Référence</th>
@@ -337,75 +278,44 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td><span>pf/43589</span></td>
-                                            <td><span>Porte en bois</span></td>
-                                            <td><span>NON OFFICIEL</span></td>
-                                            <td><span>Fini - Facturé</span></td>
-                                            <td><span>100%</span></td>
-                                            <td><span class="montant">1225481252</span></td>
-                                            <td><span class="montant">0</span></td>
-                                            <td><span class="montant">1221252</span></td>
-                                            <td>
-                                                <span>Date de conf: 12/05/2020</span>
-                                                <br>
-                                                <span>Date de paiement prévue: 12/05/2020</span>
-                                                <br>
-                                                <span>Date de paiement éffectif: 12/05/2020</span>
-                                                <br>
-                                            </td>
-                                            <td></td>
-                                        </tr> 
-                                        <tr>
-                                            <td><span>pf/43589</span></td>
-                                            <td><span>Porte en bois</span></td>
-                                            <td><span>NON OFFICIEL</span></td>
-                                            <td><span>Fini - Facturé</span></td>
-                                            <td><span>100%</span></td>
-                                            <td><span class="montant">1221252</span></td>
-                                            <td><span class="montant">0</span></td>
-                                            <td><span class="montant">1221252</span></td>
-                                        <td>
-                                                <span>Date de conf: 12/05/2020</span>
-                                                <br>
-                                                <span>Date de paiement prévue: 12/05/2020</span>
-                                                <br>
-                                                <span>Date de paiement éffectif: 12/05/2020</span>
-                                                <br>
-                                            </td>
-                                            <td></td>
-                                        </tr> 
-                                        <tr>
-                                            <td><span>pf/43589</span></td>
-                                            <td><span>Porte en bois</span></td>
-                                            <td><span>NON OFFICIEL</span></td>
-                                            <td><span>Fini - Facturé</span></td>
-                                            <td><span>100%</span></td>
-                                            <td><span class="montant">1221252</span></td>
-                                            <td><span class="montant">0</span></td>
-                                            <td><span class="montant">1221252</span></td>
-                                        <td>
-                                                <span>Date de conf: 12/05/2020</span>
-                                                <br>
-                                                <span>Date de paiement prévue: 12/05/2020</span>
-                                                <br>
-                                                <span>Date de paiement éffectif: 12/05/2020</span>
-                                                <br>
-                                            </td>
-                                            <td></td>
-                                        </tr>                                  
+                                       {% for item in tab_trans_ter %}
+                                            <tr>
+                                                <td>
+                                                    <span>{{ item.getIdPro() }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{ item.getDetail() }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{ item.getTypeTransaction() }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{ item.getEtatProduction() }}</span>
+                                                </td>
+                                                <td><span><span></td>
+                                                <td>
+                                                    <span class="montant">{{ item.getTotalReglement() }}</span>
+                                                </td>
+                                                {% set paye  = item.getTotalReglement() %}
+                                                {% set total  =  item.getMontantTotal() %}
+                                                {% set reste = total - paye %}
+                                                <td>
+                                                    <span class="montant">{{ reste }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="montant">{{ item.getMontantTotal() }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>Date de conf: {{ item.getDateConfirmation() | date('d/m/Y') }}</span>
+                                                    <br>
+                                                    <span>Date de paiement prévue: </span>
+                                                    <br>
+                                                    <span>Date de paiement éffectif: </span>
+                                                    <br>
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                       {% endfor %}                                  
                                     </tbody>
                                 </table>
                             </div>
@@ -471,6 +381,35 @@
                 </div>
             </div>
     </section>
+    
+    {# modal nouveau adresse #}
+    <div class="modal fade" id="modal_add_adresse" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ajouter un adresse siège social</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="">
+                        <div class="form-group">
+                            <label for="">Adresse siège social</label>
+                            <input type="text" placeholder="Adresse" id="adresse" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-default" type="submit" id="button_modal_add_adresse">
+                                <span>Enregistrer</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# fin modal adresse #}
+
     {# modal nouveau contact #}
     <div class="modal fade" id="modal_add_contact" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -485,34 +424,26 @@
                     <form action="">
                         <div class="form-group">
                             <label for="">Contact</label>
-                            <input type="text" placeholder="Contact" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="">Pro Forma</label>
-                            <select name="" id="" class="form-control">
-                                <option value="">pf/1245</option>
-                                <option value="">pf/5487</option>
-                                <option value="">pf/8745</option>
-                                <option value="">pf/3687</option>
-                            </select>
+                            <input type="text" placeholder="Contact" id="contact" class="form-control">
                         </div>
                         <div class="form-group">
                             <label for="">Type de contact</label>
-                            <select name="" id="" class="form-control">
-                                <option value="">Contact primaire</option>
-                                <option value="">Contact secondaire</option>
+                            <select name="" id="type_contact" class="form-control">
+                                <option value="Contact primaire">Contact primaire</option>
+                                <option value="Contact secondaire">Contact secondaire</option>
+                                <option value="Simple contact">Simple contact</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="">Email</label>
-                            <input type="text" placeholder="Adresse@mail...." class="form-control">
+                            <input type="text" id="email" placeholder="Adresse@mail...." class="form-control">
                         </div>
                         <div class="form-group">
                             <label for="">N° Téléphone</label>
-                            <input type="text" placeholder="03x xxx" class="form-control">
+                            <input type="text" id="telephone" placeholder="03x xxx" class="form-control">
                         </div>
                         <div class="form-group">
-                            <button class="btn btn-default" type="submit">
+                            <button class="btn btn-default" type="submit" id="button_add_contact">
                                 <span>Enregistrer</span>
                             </button>
                         </div>
@@ -526,8 +457,10 @@
 {% endblock %}
 {% block javascripts %}
     <script>
+
+    $(document).ready(function(){
     
-        var table = $('#tab_tw_ca').DataTable({
+        var table_enc = $('#tab_tw_ca_enc').DataTable({
 				"language": {
 				"sEmptyTable": "Aucune donnée disponible dans le tableau",
 				"sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
@@ -558,25 +491,23 @@
 				}
 				}
 				},
-				// "ajax" : {
-				// 		url : "/profile/historique_res", // any am Clientcontroller
-				// 		type : 'POST', 
-				// 		data : {
-				// 			'pseudo_hotel' : pseudo_hotel,
-				// 			'date1' : $("#date1").val(),
-				// 			'date2' : $("#date2").val(),
-				// 		},
-				// 		// success : function(response){
-				// 		//     alert(response);
-				// 		// }, 
-				// 		// error : function(){
-				// 		//     alert('erreur server');
-				// 		// },
-				// 		"dataSrc":"",
-						
-				// 	},
-
-					//annule le tri
+                // "ajax" : {
+                // 		url : "/profile/historique_res", // any am Clientcontroller
+                // 		type : 'POST', 
+                // 		data : {
+                // 			'pseudo_hotel' : pseudo_hotel,
+                // 			'date1' : $("#date1").val(),
+                // 			'date2' : $("#date2").val(),
+                // 		},
+                // 		// success : function(response){
+                // 		//     alert(response);
+                // 		// }, 
+                // 		// error : function(){
+                // 		//     alert('erreur server');
+                // 		// },
+                // 		"dataSrc":"",	
+                // 	},
+                //annule le tri
 					order : [[0 , 'desc']],
 					ordering : true,
 					responsive: true,
@@ -586,6 +517,195 @@
 					paging: true,
 					autoFill: true
 				});
-				new $.fn.dataTable.FixedHeader(table);
+				new $.fn.dataTable.FixedHeader(table_enc);
+
+
+        var table_termine = $('#tab_tw_ca_ter').DataTable({
+				"language": {
+				"sEmptyTable": "Aucune donnée disponible dans le tableau",
+				"sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
+				"sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
+				"sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
+				"sInfoPostFix": "",
+				"sInfoThousands": ",",
+				"sLengthMenu": "Afficher _MENU_ éléments",
+				"sLoadingRecords": "Chargement...",
+				"sProcessing": "Traitement...",
+				"sSearch": "Rechercher :",
+				"sZeroRecords": "Aucun élément correspondant trouvé",
+				"oPaginate": {
+				"sFirst": "Premier",
+				"sLast": "Dernier",
+				"sNext": "Suivant",
+				"sPrevious": "Précédent"
+				},
+				"oAria": {
+				"sSortAscending": ": activer pour trier la colonne par ordre croissant",
+				"sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+				},
+				"select": {
+				"rows": {
+				"_": "%d lignes sélectionnées",
+				"0": "Aucune ligne sélectionnée",
+				"1": "1 ligne sélectionnée"
+				}
+				}
+				},
+                // "ajax" : {
+                // 		url : "/profile/historique_res", // any am Clientcontroller
+                // 		type : 'POST', 
+                // 		data : {
+                // 			'pseudo_hotel' : pseudo_hotel,
+                // 			'date1' : $("#date1").val(),
+                // 			'date2' : $("#date2").val(),
+                // 		},
+                // 		// success : function(response){
+                // 		//     alert(response);
+                // 		// }, 
+                // 		// error : function(){
+                // 		//     alert('erreur server');
+                // 		// },
+                // 		"dataSrc":"",	
+                // 	},
+                //annule le tri
+					order : [[0 , 'desc']],
+					ordering : true,
+					responsive: true,
+					scrollY: false,
+					scrollX: true,
+					scrollCollapse: true,
+					paging: true,
+					autoFill: true
+				});
+				new $.fn.dataTable.FixedHeader(table_termine);
+
+                // lister adresse pour l'entreprise
+
+                function liter_adresse_entreprise(){
+                    var nom_entreprise = '{{ nom_client }}';
+                     var data = {
+                        "entreprise"    : nom_entreprise
+                    }
+                    $.ajax({
+                        url         : "/tropical_wood/entreprise/listerAdresse",
+                        type        : "POST",
+                        data        : data,
+                        success     : function(response){
+                           $("#body_tab_adresse").html(response);
+                        },
+                        error       : function () {
+                            alert('Erreur dans lister adress');
+                        }
+                    })
+                }
+                liter_adresse_entreprise();
+
+        // action ajout adresse 
+
+        $("#button_modal_add_adresse").on('click', function(ev){
+            ev.preventDefault();
+            var nom_entreprise = '{{ nom_client }}';
+            //alert(nom_entreprise);
+            var data = {
+                "adresse"       : $("#adresse").val(),
+                "entreprise"    : nom_entreprise
+            }
+            $.ajax({
+                url         : "/tropical_wood/entreprise/addAdresse",
+                type        : "POST",
+                data        : data,
+                success     : function(response){
+                    liter_adresse_entreprise();
+                     $("#modal_add_adresse").modal('hide');
+                },
+                error       : function () {
+                    alert('Erreur dans add adress');
+                }
+            })
+            
+        })
+
+        $(document).on('click','.tab_adress_edit', function(ev){
+            ev.preventDefault();
+            
+            var nom_entreprise = '{{ nom_client }}';
+            var adresse = $(this).attr('data-adresse');
+            $("#modal_add_adresse").modal('show');
+            $('#adresse').text(adresse);
+            //alert(nom_entreprise);
+            // var data = {
+            //     "id"       : $(this).attr("data-id"),
+            //     "adresse"    : $("#adresse").val(),
+            //     "entreprise"    : nom_entreprise
+            // }
+            // $.ajax({
+            //     url         : "/tropical_wood/entreprise/edit/addAdresse",
+            //     type        : "POST",
+            //     data        : data,
+            //     success     : function(response){
+            //         liter_adresse_entreprise();
+            //     },
+            //     error       : function () {
+            //         alert('Erreur dans add adress');
+            //     }
+            // })
+            
+        })
+
+        // add contact
+
+        $("#button_add_contact").on("click", function(ev){
+            ev.preventDefault();
+            var nom_entreprise = '{{ nom_client }}';
+            var contact = $("#contact").val();
+            var type_contact = $("#type_contact").val();
+            var email = $("#email").val(); 
+            var telephone = $("#telephone").val();
+
+            var data = {
+                "nom_en_contact"       : contact,
+                "type"  : type_contact,
+                "email"         : email,
+                "telephone"     : telephone,
+                "entreprise"    : nom_entreprise,
+            }
+
+            $.ajax({
+                url         :  "/tropical_wood/add_contact",
+                type        : "POST",
+                data        : data,
+                success     : function(response){
+                    liter_contact_entreprise();
+                     $("#modal_add_contact").modal('hide');
+                },
+                error       : function(){
+                    alert("erreur add contact");
+                }
+            })
+        })
+
+            // liste contact
+            function liter_contact_entreprise(){
+                var nom_entreprise = '{{ nom_client }}';
+                    var data = {
+                    "entreprise"    : nom_entreprise
+                }
+                $.ajax({
+                    url         : "/tropical_wood/entreprise/listercontact",
+                    type        : "POST",
+                    data        : data,
+                    success     : function(response){
+                        $("#liste_tab_contact").html(response);
+                    },
+                    error       : function () {
+                        alert('Erreur dans lister adress');
+                    }
+                })
+            }
+            liter_contact_entreprise();
+
+    })
+
+        
     </script>
 {% endblock %}

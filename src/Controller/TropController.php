@@ -3,13 +3,17 @@
 namespace App\Controller;
 
 use App\Services\Services;
+use App\Entity\EntrepriseTW;
 use App\Entity\DataTropicalWood;
 use App\Form\FournisseurFileType;
+use App\Entity\ContactEntrepriseTW;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\EntrepriseTWRepository;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\DataTropicalWoodRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\ContactEntrepriseTWRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -19,7 +23,7 @@ class TropController extends AbstractController
     /**
      * @Route("/tropical_wood/home_tropical_wood", name="tropical_wood")
     */
-    public function tropical_wood(SessionInterface $session, Request $request, Services $services, EntityManagerInterface $manager, DataTropicalWoodRepository $repoTrop)
+    public function tropical_wood(SessionInterface $session, Request $request, Services $services, EntityManagerInterface $manager, DataTropicalWoodRepository $repoTrop, EntrepriseTWRepository $repoEntre)
     {
         // $test = $repoTrop->findAllGroupedByEntreprise();
         // dd($test);
@@ -28,6 +32,7 @@ class TropController extends AbstractController
         $form_add = $this->createForm(FournisseurFileType::class);
         $form_add->handleRequest($request);
         $text = "tsisy";
+        $all_entreprises = $repoEntre->findAllNomEntreprise();
         if ($form_add->isSubmitted() && $form_add->isValid()) {
 
             $fichier = $form_add->get('fichier')->getData();
@@ -37,7 +42,7 @@ class TropController extends AbstractController
             $fileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($fichier->getRealPath()); // d'après dd($fichier)
             $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($fileType); // ty le taloha
             /* $sheetname = "FOURNISSEURS";
-            $reader->setLoadSheetsOnly($sheetname);*/
+                $reader->setLoadSheetsOnly($sheetname); */
             $spreadsheet = $reader->load($fichier->getRealPath()); // le nom temporaire
             $data = $spreadsheet->getActiveSheet()->toArray();
             $d_aff = [];
@@ -45,10 +50,21 @@ class TropController extends AbstractController
                 array_push($d_aff, $data[$i]);
             }
             //dd($d_aff);
+            // on listes selectiopnne toutes les entreprise dans la base entrepriseTW
+
+            // $All_entreprises = $this->getDoctrine()->getRepository(EntrepriseTW::class)->findAllNomEntreprise();
+
             for ($i = 0; $i < count($d_aff); $i++) {
                 $data_tw = new DataTropicalWood();
                 $idPro = $d_aff[$i][0];
                 $entreprise = $d_aff[$i][2];
+                // averina any @ liste_entreprise_client fa tsy mbola niainga ty methode ty taorian'ny import fichier excel
+                if(!in_array($entreprise, $all_entreprises)){
+                    //on insert l'entreprise dans la base de donnée table entrepriseTW
+                    $entreprise_tw = new EntrepriseTW();
+                    $entreprise_tw->setNom($entreprise);
+                    $manager->persist($entreprise_tw);
+                }
                 $type_transaction = $d_aff[$i][1];
                 $detail = $d_aff[$i][3];
                 $etat_production = $d_aff[$i][5];
@@ -73,7 +89,7 @@ class TropController extends AbstractController
                 // préparation de l'objet
                 // on teste l'unicité de idPro
                 $dataTrop = $repoTrop->findBy(['id_pro' => $idPro]);
-                if($dataTrop){
+                if(count($dataTrop)>0){
                     $data_tw->setTypeTransaction($type_transaction);
                     $data_tw->setEntreprise($entreprise);
                     $data_tw->setDetail($detail);
@@ -97,11 +113,8 @@ class TropController extends AbstractController
                 }
                 
             }
-            // foreach ($repoTrop->findAll() as $t) {
-            //     $manager->remove($t);
-            // }
+            
             $manager->flush();
-
             // on liste tous les data    
         }
         $datas = $repoTrop->findAll();
@@ -587,6 +600,7 @@ class TropController extends AbstractController
         $datasAsc = $repoTrop->findAllGroupedAsc();
         $Liste = [];
         //dd($datasAsc);
+        
         foreach ($datasAsc as $d) {
             $tab_temp = [];
             $son_entreprise = $d[0]->getEntreprise();
@@ -633,6 +647,28 @@ class TropController extends AbstractController
             $caae = $caae + $r;
         }
 
+        // les donnée pour transaction en cours et celles qui sont terminées
+        $tab_trans_enc = [];
+        $tab_trans_ter = [];
+        foreach ($All_data_ne as $item) {
+            $ca = $ca + $item->getMontantTotal();
+            $cae = $cae + $item->getTotalReglement();
+            $r = $item->getMontantTotal() - $item->getTotalReglement();
+           if($r > 0){
+               array_push($tab_trans_enc, $item);
+           }else{
+                array_push($tab_trans_ter, $item);
+           }
+        }
+
+        // liste des pf dans tab_trans_enc
+        $liste_pf = [];
+
+        foreach($tab_trans_enc as $item){
+            array_push($liste_pf, $item->getIdPro());
+        }
+        
+
         //dd($All_data_ne);
         return $this->render('page/show_entreprise.html.twig', [
             "hotel"             => $data_session['pseudo_hotel'],
@@ -645,9 +681,201 @@ class TropController extends AbstractController
             "chiffre_daf"       => $ca,
             "chiffre_daf_enc"   => $cae,
             "chiffre_daf_a_enc" => $caae,
+            "tab_trans_enc"     => $tab_trans_enc,
+            "tab_trans_ter"     => $tab_trans_ter,
+            "liste_pf"          => $liste_pf,
         ]);
     }
 
+    /**
+     * @Route("/tropical_wood/entreprise/addAdresse", name = "add_address")
+     */
+    public function add_address(Request $request, EntrepriseTWRepository $repoEntre, EntityManagerInterface $manager)
+    {
+        $response = new Response();
+        if($request->isXmlHttpRequest()){
+
+            $adresse = $request->get('adresse');
+            $entreprise = $request->get('entreprise');
+
+            $entreprise = $repoEntre->findBy(["nom"=>$entreprise]);
+            $entreprise[0]->setAdresse($adresse);
+            $manager->flush();
+            $data = json_encode("ok");
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+        }
+        else{
+            $entreprise = $repoEntre->findBy(["nom" => "Ministère de la communication et de la culture"]);
+            $entreprise[0]->setAdresse("tsoka");
+        }
+        return $response;
+    }
+
+    /**
+     * @Route("/tropical_wood/add_contact", name = "add_contact")
+     */
+    public function add_contact(Request $request, EntrepriseTWRepository $repoEntre, EntityManagerInterface $manager)
+    {
+        $response = new Response();
+        if($request->isXmlHttpRequest()){
+
+            $entreprise = $request->get('entreprise');
+            $nom_en_contact = $request->get('nom_en_contact');
+            $type = $request->get('type');
+            $email = $request->get('email');
+            $telephone = $request->get('telephone');
+
+            $ce = new ContactEntrepriseTW();
+            $ce->setNomEnContact($nom_en_contact);
+            $ce->setType($type);
+            $ce->setEmail($email);
+            $ce->setTelephone($telephone);
+            $entreprise = $repoEntre->findBy(["nom"=>$entreprise]);
+            //$entreprise[0]->setAdresse($adresse);
+            $ce->setEntreprise($entreprise[0]);
+            $manager->persist($ce);
+            $manager->flush();
+            $data = json_encode("ok");
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+        }
+        else{
+            $entreprise = $repoEntre->findBy(["nom" => "Ministère de la communication et de la culture"]);
+            $entreprise[0]->setAdresse("tsoka");
+        }
+        return $response;
+    }
+
+    /**
+     * @Route("/tropical_wood/entreprise/listercontact", name = "listercontact")
+     */
+    public function listercontact(Request $request, EntrepriseTWRepository $repoEntre, EntityManagerInterface $manager, ContactEntrepriseTWRepository $repoContact)
+    {
+        $response = new Response();
+        
+        if($request->isXmlHttpRequest()){
+
+            $entreprise = $request->get('entreprise');           
+            $entreprise = $repoEntre->findBy(["nom"=>$entreprise]);
+            $contacts = $entreprise[0]->getContactEntrepriseTWs();
+
+            $html = '
+
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>';
+               
+
+            foreach ($contacts as $item) {
+               $html .=
+                    '
+                    <tr>
+                        <td><span>'. $item->getNomEnContact() . '</span></td>
+                        <td><span>' . $item->getType() . '</span></td>
+                        <td><span>' . $item->getEmail() . '</span></td>
+                        <td><span>' . $item->getTelephone() . '</span></td>
+                        <td>
+                            <div class="list_action">
+                                <a href="#">
+                                    <span class="fa fa-edit"></span>
+                                </a>
+                                <a href="#">
+                                    <span class="fa fa-trash-o"></span>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                
+                ';
+            }
+            
+            $data = json_encode($html);
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+        }
+        else{
+            $entreprise = $repoEntre->findBy(["nom" => "Tany be club"]);
+            $contacts = $entreprise[0]->getContactEntrepriseTWs();
+            foreach($contacts as $item){
+                dd($item);
+            }
+        }
+        return $response;
+    }
+    
+
+    /**
+     * @Route("/tropical_wood/entreprise/listerAdresse", name = "listerAdresse")
+     */
+    public function listerAdresse(Request $request, EntrepriseTWRepository $repoEntre, EntityManagerInterface $manager)
+    {
+        $response = new Response();
+        if($request->isXmlHttpRequest()){
+            $entreprise = $request->get('entreprise');
+
+            $entreprise = $repoEntre->findBy(["nom"=>$entreprise]);
+            $html = '
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><span>'. $entreprise[0]->getNom() . '</span></td>
+                    <td><span>' . $entreprise[0]->getAdresse() . '</span></td>
+                    <td>
+                        <div class="list_action">
+                            <a href="#" class="tab_adress_edit" data-id="'.  $entreprise[0]->getId() .'" 
+                                data-adresse ="'. $entreprise[0]->getAdresse() .'"
+                            >
+                                <span class="fa fa-edit"></span>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            ' ;
+            
+            $manager->flush();
+            $data = json_encode($html);
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+        }
+        else{
+            $entreprise = $repoEntre->findBy(["nom" => "Ministère de la communication et de la culture"]);
+            $entreprise[0]->setAdresse("tsoka");
+        }
+        return $response;
+    }
+
+    /**
+     * @Route("/tropical_wood/entreprise/edit/addAdresse", name = "editAdresse")
+     */
+    public function editAdresse(Request $request, EntrepriseTWRepository $repoEntre, EntityManagerInterface $manager)
+    {
+        $response = new Response();
+        if($request->isXmlHttpRequest()){
+            $entreprise = $request->get('entreprise');
+            $adresse = $request->get('adresse');
+
+            $entreprise = $repoEntre->findBy(["nom"=>$entreprise]);
+            $entreprise[0]->setAdresse($adresse);
+            
+            $manager->flush();
+            $data = json_encode("ok");
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+        }
+        else{
+            $entreprise = $repoEntre->findBy(["nom" => "Ministère de la communication et de la culture"]);
+            $entreprise[0]->setAdresse("tsoka");
+        }
+        return $response;
+    }
 
     /**
      * @Route("/tropical_wood/tri_ajax_entreprise_client", name = "tri_ajax_entreprise_client")

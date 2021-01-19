@@ -1862,9 +1862,13 @@ div.liste_dj_dm div a:hover span:last-child{
   .sous_titre a span:not(.fa) {
       margin-left: 10px;
   }
-  
+    .sous_titre_tw{
+        margin-bottom: 50px !important;
+    }
   .sous_titre_tw h3 {
-      color: #636363 !important;
+      color: #d29e00; !important;
+      font-size: 2em;
+      height: 50px !important;
   }
   
   .titre_gris {
@@ -4541,14 +4545,24 @@ div.liste_dj_dm div a:hover span:last-child{
 .small_tab{
     border-collapse: separate;
 }
+thead.thead_adresse{
+    background: #d29e00;
+    
+}
+
+.thead_adresse th span{
+    color: #fff;
+}
 .small_tittle{
     color: #5f5f5f;
-    font-size: 14px;
+    font-size: 1.5em;
 }
 .small_tab thead tr th{
     border: none;
 }
-
+#tab_tw_ca_ter{
+    margin-left: 0;
+}
 .small_tab >tbody>tr:first-child>td,
 .small_tab >tbody>tr:nth-child(2)>td
 {
@@ -4590,6 +4604,13 @@ div.liste_dj_dm div a:hover span:last-child{
    border-bottom-right-radius: 25px !important;
 }
 
+.div_ca{
+   display: flex; 
+    width: 25% !important;
+    justify-content: center;
+    height: 30px;
+    align-items: center;
+}
 .small_tab thead tr th:last-child{
     border-top-right-radius: 25px;
     border-bottom-right-radius: 25px;
@@ -4655,6 +4676,9 @@ table tbody tr td span{
     width: 95%;
     margin: auto;
     margin-bottom: 25px;
+}
+.titre_remarque h4{
+    color: #5f5f5f;
 }
 .form_remarque1{
     width: 95%;
@@ -4787,28 +4811,34 @@ div.list_action a:hover{
     opacity: 0.8;
 }
 /* modal */
-#modal_add_contact .modal-header{
+#modal_add_contact .modal-header,
+#modal_add_adresse .modal-header{
     display: flex;
     justify-content: space-between;
     background: #5f5f5f;;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 }
-#modal_add_contact .modal-header button{
+#modal_add_contact .modal-header button,
+#modal_add_adresse .modal-header button{
     color: #fff !important;
     opacity: 1;
 }
-#modal_add_contact .modal-header button:hover{
+#modal_add_contact .modal-header button:hover,
+#modal_add_adresse .modal-header button:hover{
     color: #fff !important;
     opacity: 0.8;
 }
-#modal_add_contact .modal-header h5{
+#modal_add_contact .modal-header h5,
+#modal_add_adresse .modal-header h5{
     color: #fff;
 }
-#modal_add_contact button.btn{
-    color: #fff;
+#modal_add_contact button.btn span,
+#modal_add_adresse button.btn span{
+    color: #fff !important;
 }
-#modal_add_contact .form-control:focus{
+#modal_add_contact .form-control:focus,
+#modal_add_adresse .form-control:focus{
     box-shadow: 0px 0px 3px #5f5f5f;
     border-color: #5f5f5f;
 }
