@@ -1123,7 +1123,7 @@ div.liste_dj_dm div a:hover span:last-child{
   .section_part {
       margin-top: 0px;
       padding-top: 0px;
-      padding-bottom: 20px;
+      /*! padding-bottom: 20px; */
   }
   
   .sous_titre {
@@ -1733,6 +1733,7 @@ div.liste_dj_dm div a:hover span:last-child{
       padding: 5px;
       border-radius: 50px;
       flex-wrap: nowrap;
+      height: 35px !important;
   }
 
   .table_header .t_header_row div>span {
@@ -1774,11 +1775,12 @@ div.liste_dj_dm div a:hover span:last-child{
   }
   
   .t_footer_row div {
-      margin-left: -25px;
+      margin-left: 25px!important;
       width: calc(100% / 9);
-      text-align: center;
+      text-align: start;
       margin-bottom: 15px;
       margin-top: 15px;
+      margin-left: 25px;
   }
   
   .t_footer_row div span {
@@ -1799,7 +1801,7 @@ div.liste_dj_dm div a:hover span:last-child{
   .table_body>div>div.t_body_row:first-child span {
       font-weight: bold;
   }
-  
+
   .table_body>div>div.t_body_row>div {
       text-align: start !important;
       margin-left: 25px;
@@ -1848,7 +1850,9 @@ div.liste_dj_dm div a:hover span:last-child{
   .sous_tab_body {
       border-bottom: 1px solid rgba(204, 204, 204, 0.2);
   }
-  
+   .t_footer_row{
+        border-bottom: none !important;
+  }
   .sous_total_content div {
       padding-top: 5px;
       padding-bottom: 5px;
@@ -1863,12 +1867,18 @@ div.liste_dj_dm div a:hover span:last-child{
       margin-left: 10px;
   }
     .sous_titre_tw{
-        margin-bottom: 50px !important;
+        margin-bottom: 0px !important;
+        margin-top: 0px;
     }
   .sous_titre_tw h3 {
       color: #d29e00; !important;
       font-size: 2em;
       height: 50px !important;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px !important;
+      margin-bottom: 20px !important;
   }
   
   .titre_gris {
@@ -2120,7 +2130,64 @@ div.liste_dj_dm div a:hover span:last-child{
       position: relative;
       top: 5px;
   }
-  
+.edit_remarque{
+     background: #5f5f5f;
+    border-radius: 20px;
+    width: 100px;
+    height: 35px;
+    padding-top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.edit_remarque:hover{
+    background: transparent;
+    border: 1px solid #5f5f5f;
+    text-decoration: none;
+    box-shadow: none;
+}
+
+.edit_remarque:hover span{
+    color: #5f5f5f !important;
+}
+.edit_remarque span{
+    color: #fff;
+    position: relative;
+    display: block;
+    top: 0px !important;
+}
+
+.delete_remarque{
+    background: #5f5f5f;
+    border-radius: 20px;
+    width: 100px;
+    height: 35px;
+    padding-top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.delete_remarque:hover{
+    background: transparent;
+    border: 1px solid #5f5f5f;
+    text-decoration: none;
+    box-shadow: none;
+}
+
+.delete_remarque:hover span{
+    color: #5f5f5f !important;
+}
+.delete_remarque span{
+    color: #fff;
+    position: relative;
+    display: block;
+    top: 0px !important;
+}
+.observation{
+    padding-top: 3px;
+    color: #514f4e;
+}
   thead tr td span {
       color: #a3a6b4;
       font-weight: 700 !important;
@@ -4484,6 +4551,34 @@ div.liste_dj_dm div a:hover span:last-child{
     display: block;
 }
 
+.table_body > div.dr_tab_trans > .t_body_row{
+    padding-left: 25px;
+}
+.dr_tab_trans .sous_tab_body{
+   justify-content: start;
+}
+.dr_tab_trans .sous_tab_body div{
+    width: calc(100% / 8) !important;
+    margin-left: 25px !important;
+}
+.dr_tab_trans .sous_tab_body div span{
+  font-weight: 500 !important;
+}
+
+/*ajout div pour scroller les pf */
+div.block_all_tr .t_body_row{
+    display: flex;
+    min-height: 35px;
+    align-items: center;
+}
+.block_tr_scroll{
+    height: 400px;
+    overflow-y: scroll;
+}
+
+/* fin scroll*/
+
+
 .liste_contact_chiffre a:not(:last-child){
     border-bottom: 1px solid #ddd;
 }
@@ -4503,12 +4598,11 @@ div.liste_dj_dm div a:hover span:last-child{
 }
 .liste_chiffre_daf{
     display: flex;
-    
     justify-content: space-around;
     align-items: center;
     width: 75%;
     margin: auto;
-    margin-top: 25px;
+    margin-top: 0px;
 }
 
 .unite_chiffre {
@@ -4520,7 +4614,7 @@ div.liste_dj_dm div a:hover span:last-child{
     position: relative;
     background: #5f5f5f;
     top: 0;
-    border-radius: 50px;
+    border-radius: 5px;
     height: 100px;
     padding-left: 15px;
 }
@@ -4539,8 +4633,23 @@ div.liste_dj_dm div a:hover span:last-child{
    
 }
 .tab_small_content{
-    padding: 15px;
+    padding: 0px;
     margin-bottom: 25px;
+}
+.tab_small_content th{
+    text-align: center;
+}
+.tab_small_content table tbody tr{
+     text-align: center;
+}
+.tab_small_content tr:not(:first-child){
+    height: 35px !important;
+    text-align: center;
+}
+
+.small_tab thead th span{
+    font-size: 12px;
+    font-weight: 500;
 }
 .small_tab{
     border-collapse: separate;
@@ -4572,7 +4681,7 @@ thead.thead_adresse{
     display: block;
 }
 .small_tab thead tr th{
-     background: #d29e00;
+     background: #c79c67;;
     padding-left: 15px;
 }
 .small_tab tbody tr td{
@@ -4626,11 +4735,14 @@ thead.thead_adresse{
 .tw_sous_titre{
     text-align: center;
     border-top: 1px solid rgba(95,95,95,0.1);
-    margin-top: 25px;
+    margin-top: 0px;
     margin-bottom: 20px;
 }
 .tw_sous_titre h3{
-    color: #323232;   
+    color: #323232;  
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .block_entreprise:first-child >.column_tab:first-child {
     
@@ -4740,7 +4852,7 @@ table tbody tr td span{
 }
 .add_contact{
     margin-bottom: 15px;
-    margin-top: 25px;
+    margin-top: 15px;
 }
 .add_contact a{
     background: #5f5f5f;
@@ -4842,6 +4954,14 @@ div.list_action a:hover{
     box-shadow: 0px 0px 3px #5f5f5f;
     border-color: #5f5f5f;
 }
+table.small_tab tbody tr td{
+    padding-top: 10px;
+    padding-bottom: 0px;
+}
+/*.liste_pf{
+    height: 500px;
+    overflow-y: scroll;
+}*/
 
 /* fin modal */
 

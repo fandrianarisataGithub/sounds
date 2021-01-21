@@ -35,7 +35,7 @@ class EntrepriseTW
     private $remarqueEntrepriseTWs;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $adresse;
 
@@ -127,7 +127,7 @@ class EntrepriseTW
         return $this->adresse;
     }
 
-    public function setAdresse(string $adresse): self
+    public function setAdresse(?string $adresse): self
     {
         $this->adresse = $adresse;
 

@@ -33,26 +33,26 @@
                                     <div class="titre_ca">
                                         <h4>Chiffre d'affaires ancaissé</h4>
                                     </div>
-                                   <div class="montant_value">
-                                        <span class="montant">
-                                            {{ chiffre_daf_enc }}
-                                        </span>
-                                        <span>Ar</span>
-                                   </div>
+                                    <div class="montant_value">
+                                            <span class="montant">
+                                                {{ chiffre_daf_enc }}
+                                            </span>
+                                            <span>Ar</span>
+                                    </div>
                                 </div>
                                 <div class="unite_chiffre chiffre_daf_a_enc">
                                     <div class="titre_ca">
                                         <h4>Chiffre d'affaires à encaissé</h4>
                                     </div>
-                                   <div class="montant_value">
-                                        <span class="montant">{{ chiffre_daf_a_enc }}</span>
-                                        <span>Ar</span>
-                                   </div>
+                                    <div class="montant_value">
+                                            <span class="montant">{{ chiffre_daf_a_enc }}</span>
+                                            <span>Ar</span>
+                                    </div>
                                 </div>
                             </div>
                         </section>
                     </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+                    {# <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
                         <h3 class="small_tittle"><u>Clients</u></h3>
                          <div class="add_contact">
                             <a href="#" class="btn btn-default" data-toggle="modal" data-target="#modal_add_adresse">
@@ -60,7 +60,7 @@
                             </a>
                         </div>
                         <div class="tab_small_content">
-                        {# <table class="table small_tab"> #}
+                       
                             <table class="table small_tab">
                                 <thead>
                                     <tr>
@@ -71,13 +71,10 @@
                                 </thead>
                                 <tbody id="body_tab_adresse">
                                    
-                                    {# tbody_adresse #}
-                                   
-                                    {# fin tbody adresse #}
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                    </div> #}
                     <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
                         <h3 class="small_tittle"><u>Contact</u></h3>
                         <div class="add_contact">
@@ -88,7 +85,6 @@
                                 <thead>
                                     <tr>
                                         <th><span>Contact</span></th>
-                                        <th><span>Type de contact</span></th>
                                         <th><span>Email</span></th>
                                         <th><span>N° de tél</span></th>
                                         <th></th>
@@ -105,73 +101,66 @@
                         <div class="tw_sous_titre">
                             <h3>Transaction en cours</h3>
                         </div>  
-                        <div class="table_transaction_enc">
-                            <div class="tab_small_content">
-                                <table class="table" id="tab_tw_ca_enc">
-                                    <thead>
-                                        <tr>
-                                            <th>Référence</th>
-                                            <th>Détails</th>
-                                            <th>Type transaction</th>
-                                            <th>Etape de production</th>
-                                            <th>Etat de production</th>
-                                            <th>Paiement</th>
-                                            <th>Reste à payer</th>
-                                            <th>Montant total</th>
-                                            <th>Dates</th>
-                                            <th>Devis</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for item in tab_trans_enc %}
-                                            <tr>
-                                                <td>
-                                                    <span>{{ item.getIdPro() }}</span>
-                                                </td>
-                                                <td>
-                                                    <span>{{ item.getDetail() }}</span>
-                                                </td>
-                                                <td>
-                                                    <span>{{ item.getTypeTransaction() }}</span>
-                                                </td>
-                                                <td>
-                                                    <span>{{ item.getEtatProduction() }}</span>
-                                                </td>
-                                                <td>
-                                                    <span>
-                                                        <span></td>
-                                                        <td>
-                                                            <span class="montant">{{ item.getTotalReglement() }}</span>
-                                                        </td>
-                                                        {% set paye  = item.getTotalReglement() %}
-                                                        {% set total  =  item.getMontantTotal() %}
-                                                        {% set reste = total - paye %}
-                                                        <td>
-                                                            <span class="montant">{{ reste }}</span>
-                                                        </td>
-                                                        <td>
-                                                            <span class="montant">{{ item.getMontantTotal() }}</span>
-                                                        </td>
-                                                        <td>
-                                                            <span>Date de conf:
-                                                                {{ item.getDateConfirmation() | date('d/m/Y') }}</span>
-                                                            <br>
-                                                            <span>Date de paiement prévue:
-                                                            </span>
-                                                            <br>
-                                                            <span>Date de paiement éffectif:
-                                                            </span>
-                                                            <br>
-                                                        </td>
-                                                        <td></td>
-                                                    </tr>
-                                                {% endfor %}
-                                            </tr>
-
-                                    </tbody>
-                                </table>
+                        <div class="tableau_tropical">
+                            <div class="table_content">
+                                <div class="table_header">
+                                    <div class="t_header_row">
+                                        <div>
+                                            <span>Référence</span>
+                                        </div>
+                                        <div>
+                                            <span>Détails</span>
+                                        </div>
+                                        <div>
+                                            <span>Type de transaction</span>
+                                        </div>
+                                        <div>
+                                            <span>Etat de production</span>
+                                        </div>
+                                        <div>
+                                            <span>Paiement</span>
+                                            <span class="span_tri">
+                                                <a href="#" class="a_tri" data-type="total_reglement" data-data="ASC" data-trans ="encours">
+                                                    <small class="fa fa-sort-asc"></small>
+                                                </a>
+                                                <a href="#" class="a_tri" data-type="total_reglement" data-data="DESC" data-trans ="encours">
+                                                    <small class="fa fa-sort-desc"></small>
+                                                </a>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span>Reste à payé</span>
+                                            <span class="span_tri">
+                                                <a href="#" class="a_tri" data-type="reste" data-data="ASC" data-trans ="encours">
+                                                    <small class="fa fa-sort-asc"></small>
+                                                </a>
+                                                <a href="#" class="a_tri" data-type="reste" data-data="DESC" data-trans ="encours">
+                                                    <small class="fa fa-sort-desc"></small>
+                                                </a>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span>Montant total</span>
+                                            <span class="span_tri">
+                                                <a href="#" class="a_tri" data-type="montant_total" data-data="ASC" data-trans ="encours">
+                                                    <small class="fa fa-sort-asc"></small>
+                                                </a>
+                                                <a href="#" class="a_tri" data-type="montant_total" data-data="DESC" data-trans ="encours">
+                                                    <small class="fa fa-sort-desc"></small>
+                                                </a>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span>Date de confirmation</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table_body liste_pf" id="dr_tab_trans_encours">
+                                    
+                                </div>
                             </div>
                         </div>
+
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
                         <div class="titre_remarque">
@@ -182,11 +171,11 @@
                                 <div class="form-group">
                                     {# par defaut date du jour #}
                                     <label for="">Date: </label>
-                                    <input type="date" class="form-control">
+                                    <input type="date" id="date_remarque" class="form-control">
                                 </div>
                                 <div class="form-group">                                  
                                     <label for="">Concerne: </label>
-                                    <select name="" id="" class="form-control">
+                                    <select name="" id="id_pro" class="form-control">
                                         {% for item in liste_pf %}
                                             <option value="{{ item }}">{{ item }}</option>
                                         {% endfor %}
@@ -194,64 +183,27 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="">Observation: </label>
-                                    <input type="text" class="form-control observation">
+                                    <input type="text" id="observation" class="form-control observation">
                                 </div>
                                  <div class="form-group">
-                                    <input type="submit" class="btn btn-xs btn-default" value="Valider">
+                                    <input type="submit" class="btn btn-xs btn-default" value="Valider" id="valider_remarque">
                                 </div>
                             </form>
                         </div>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
-                        <div class="tab_small_content tab_content_rem">
+                         <div class="tab_small_content">
                             <table class="table small_tab">
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
-                                        <th>Concerne</th>
-                                        <th>Explication</th>
+                                        <th><span>Date</span></th>
+                                        <th><span>Concerne</span></th>
+                                        <th><span>Explication</span></th>
                                         <th></th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td><span>date12</span></td>
-                                        <td><span>concerne sdkjg</span></td>
-                                        <td>
-                                            <p>
-                                                Lorem, ipsum dolor sit amet consectetur adipisicing 
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <div class="liste_action">
-                                                <a href="#">
-                                                    <span>Terminer</span>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <tr>
-                                        <td><span>date12</span></td>
-                                        <td><span>concerne sdkjg</span></td>
-                                        <td>
-                                            <p>
-                                                Lorem, ipsum dolor sit amet consectetur adipisicing 
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <div class="liste_action">
-                                                <a href="#">
-                                                    <span>Terminer</span>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                <tbody id="tbody__liste_rem_non">
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -260,120 +212,84 @@
                         <div class="tw_sous_titre">
                             <h3>Transaction terminée</h3>
                         </div>  
-                        <div class="table_transaction_enc">
-                            <div class="tab_small_content">
-                                <table class="table" id="tab_tw_ca_ter">
-                                    <thead>
-                                        <tr>
-                                            <th>Référence</th>
-                                            <th>Détails</th>
-                                            <th>Type transaction</th>
-                                            <th>Etape de production</th>
-                                            <th>Etat de production</th>
-                                            <th>Paiement</th>
-                                            <th>Reste à payer</th>
-                                            <th>Montant total</th>
-                                            <th>Dates</th>
-                                            <th>Devis</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                       {% for item in tab_trans_ter %}
-                                            <tr>
-                                                <td>
-                                                    <span>{{ item.getIdPro() }}</span>
-                                                </td>
-                                                <td>
-                                                    <span>{{ item.getDetail() }}</span>
-                                                </td>
-                                                <td>
-                                                    <span>{{ item.getTypeTransaction() }}</span>
-                                                </td>
-                                                <td>
-                                                    <span>{{ item.getEtatProduction() }}</span>
-                                                </td>
-                                                <td><span><span></td>
-                                                <td>
-                                                    <span class="montant">{{ item.getTotalReglement() }}</span>
-                                                </td>
-                                                {% set paye  = item.getTotalReglement() %}
-                                                {% set total  =  item.getMontantTotal() %}
-                                                {% set reste = total - paye %}
-                                                <td>
-                                                    <span class="montant">{{ reste }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="montant">{{ item.getMontantTotal() }}</span>
-                                                </td>
-                                                <td>
-                                                    <span>Date de conf: {{ item.getDateConfirmation() | date('d/m/Y') }}</span>
-                                                    <br>
-                                                    <span>Date de paiement prévue: </span>
-                                                    <br>
-                                                    <span>Date de paiement éffectif: </span>
-                                                    <br>
-                                                </td>
-                                                <td></td>
-                                            </tr>
-                                       {% endfor %}                                  
-                                    </tbody>
-                                </table>
+                        <div class="tableau_tropical">
+                            <div class="table_content">
+                                <div class="table_header">
+                                    <div class="t_header_row">
+                                        <div>
+                                            <span>Référence</span>
+                                        </div>
+                                        <div>
+                                            <span>Détails</span>
+                                        </div>
+                                        <div>
+                                            <span>Type de transaction</span>
+                                        </div>
+                                        <div>
+                                            <span>Etat de production</span>
+                                        </div>
+                                        <div>
+                                            <span>Paiement</span>
+                                            <span class="span_tri">
+                                                <a href="#" class="a_tri" data-type="total_reglement" data-data="ASC" data-trans ="terminer">
+                                                    <small class="fa fa-sort-asc"></small>
+                                                </a>
+                                                <a href="#" class="a_tri" data-type="total_reglement" data-data="DESC" data-trans ="terminer">
+                                                    <small class="fa fa-sort-desc"></small>
+                                                </a>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span>Reste à payé</span>
+                                            <span class="span_tri">
+                                                <a href="#" class="a_tri" data-type="reste" data-data="ASC" data-trans ="terminer">
+                                                    <small class="fa fa-sort-asc"></small>
+                                                </a>
+                                                <a href="#" class="a_tri" data-type="reste" data-data="DESC" data-trans ="terminer">
+                                                    <small class="fa fa-sort-desc"></small>
+                                                </a>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span>Montant total</span>
+                                            <span class="span_tri">
+                                                <a href="#" class="a_tri" data-type="montant_total" data-data="ASC" data-trans ="terminer">
+                                                    <small class="fa fa-sort-asc"></small>
+                                                </a>
+                                                <a href="#" class="a_tri" data-type="montant_total" data-data="DESC" data-trans ="terminer">
+                                                    <small class="fa fa-sort-desc"></small>
+                                                </a>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span>Date de confirmation</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table_body liste_pf" id="dr_tab_trans_terminer">
+                                    
+                                </div>
+
                             </div>
                         </div>
+
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
                         <div class="titre_remarque">
                             <h4>Remarque</h4>
                         </div>
-                        <div class="tab_small_content tab_content_rem" style="margin-bottom:25px;">
+                       <div class="tab_small_content" style="margin-top:25px;">
                             <table class="table small_tab">
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
-                                        <th>Concerne</th>
-                                        <th>Explication</th>
+                                        <th><span>Date</span></th>
+                                        <th><span>Concerne</span></th>
+                                        <th><span>Explication</span></th>
                                         <th></th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td><span>date12</span></td>
-                                        <td><span>concerne sdkjg</span></td>
-                                        <td>
-                                            <p>
-                                                Lorem, ipsum dolor sit amet consectetur adipisicing 
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <div class="liste_action">
-                                                <a href="#">
-                                                    <span>Supprimer</span>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <tr>
-                                        <td><span>date12</span></td>
-                                        <td><span>concerne sdkjg</span></td>
-                                        <td>
-                                            <p>
-                                                Lorem, ipsum dolor sit amet consectetur adipisicing 
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <div class="liste_action">
-                                                <a href="#">
-                                                    <span>Supprimer</span>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                <tbody id="tbody__liste_rem_oui">
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -420,20 +336,20 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="modal_form_add_contact">
                     <form action="">
                         <div class="form-group">
                             <label for="">Contact</label>
                             <input type="text" placeholder="Contact" id="contact" class="form-control">
                         </div>
-                        <div class="form-group">
+                        {# <div class="form-group">
                             <label for="">Type de contact</label>
                             <select name="" id="type_contact" class="form-control">
                                 <option value="Contact primaire">Contact primaire</option>
                                 <option value="Contact secondaire">Contact secondaire</option>
                                 <option value="Simple contact">Simple contact</option>
                             </select>
-                        </div>
+                        </div> #}
                         <div class="form-group">
                             <label for="">Email</label>
                             <input type="text" id="email" placeholder="Adresse@mail...." class="form-control">
@@ -443,7 +359,7 @@
                             <input type="text" id="telephone" placeholder="03x xxx" class="form-control">
                         </div>
                         <div class="form-group">
-                            <button class="btn btn-default" type="submit" id="button_add_contact">
+                            <button class="btn btn-default" type="submit" id="button_add_contact" data-id = "">
                                 <span>Enregistrer</span>
                             </button>
                         </div>
@@ -459,132 +375,14 @@
     <script>
 
     $(document).ready(function(){
-    
-        var table_enc = $('#tab_tw_ca_enc').DataTable({
-				"language": {
-				"sEmptyTable": "Aucune donnée disponible dans le tableau",
-				"sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
-				"sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
-				"sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
-				"sInfoPostFix": "",
-				"sInfoThousands": ",",
-				"sLengthMenu": "Afficher _MENU_ éléments",
-				"sLoadingRecords": "Chargement...",
-				"sProcessing": "Traitement...",
-				"sSearch": "Rechercher :",
-				"sZeroRecords": "Aucun élément correspondant trouvé",
-				"oPaginate": {
-				"sFirst": "Premier",
-				"sLast": "Dernier",
-				"sNext": "Suivant",
-				"sPrevious": "Précédent"
-				},
-				"oAria": {
-				"sSortAscending": ": activer pour trier la colonne par ordre croissant",
-				"sSortDescending": ": activer pour trier la colonne par ordre décroissant"
-				},
-				"select": {
-				"rows": {
-				"_": "%d lignes sélectionnées",
-				"0": "Aucune ligne sélectionnée",
-				"1": "1 ligne sélectionnée"
-				}
-				}
-				},
-                // "ajax" : {
-                // 		url : "/profile/historique_res", // any am Clientcontroller
-                // 		type : 'POST', 
-                // 		data : {
-                // 			'pseudo_hotel' : pseudo_hotel,
-                // 			'date1' : $("#date1").val(),
-                // 			'date2' : $("#date2").val(),
-                // 		},
-                // 		// success : function(response){
-                // 		//     alert(response);
-                // 		// }, 
-                // 		// error : function(){
-                // 		//     alert('erreur server');
-                // 		// },
-                // 		"dataSrc":"",	
-                // 	},
-                //annule le tri
-					order : [[0 , 'desc']],
-					ordering : true,
-					responsive: true,
-					scrollY: false,
-					scrollX: true,
-					scrollCollapse: true,
-					paging: true,
-					autoFill: true
-				});
-				new $.fn.dataTable.FixedHeader(table_enc);
-
-
-        var table_termine = $('#tab_tw_ca_ter').DataTable({
-				"language": {
-				"sEmptyTable": "Aucune donnée disponible dans le tableau",
-				"sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
-				"sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
-				"sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
-				"sInfoPostFix": "",
-				"sInfoThousands": ",",
-				"sLengthMenu": "Afficher _MENU_ éléments",
-				"sLoadingRecords": "Chargement...",
-				"sProcessing": "Traitement...",
-				"sSearch": "Rechercher :",
-				"sZeroRecords": "Aucun élément correspondant trouvé",
-				"oPaginate": {
-				"sFirst": "Premier",
-				"sLast": "Dernier",
-				"sNext": "Suivant",
-				"sPrevious": "Précédent"
-				},
-				"oAria": {
-				"sSortAscending": ": activer pour trier la colonne par ordre croissant",
-				"sSortDescending": ": activer pour trier la colonne par ordre décroissant"
-				},
-				"select": {
-				"rows": {
-				"_": "%d lignes sélectionnées",
-				"0": "Aucune ligne sélectionnée",
-				"1": "1 ligne sélectionnée"
-				}
-				}
-				},
-                // "ajax" : {
-                // 		url : "/profile/historique_res", // any am Clientcontroller
-                // 		type : 'POST', 
-                // 		data : {
-                // 			'pseudo_hotel' : pseudo_hotel,
-                // 			'date1' : $("#date1").val(),
-                // 			'date2' : $("#date2").val(),
-                // 		},
-                // 		// success : function(response){
-                // 		//     alert(response);
-                // 		// }, 
-                // 		// error : function(){
-                // 		//     alert('erreur server');
-                // 		// },
-                // 		"dataSrc":"",	
-                // 	},
-                //annule le tri
-					order : [[0 , 'desc']],
-					ordering : true,
-					responsive: true,
-					scrollY: false,
-					scrollX: true,
-					scrollCollapse: true,
-					paging: true,
-					autoFill: true
-				});
-				new $.fn.dataTable.FixedHeader(table_termine);
 
                 // lister adresse pour l'entreprise
-
+                var id_client = '{{ id_client }}';
+    
                 function liter_adresse_entreprise(){
-                    var nom_entreprise = '{{ nom_client }}';
+                        
                      var data = {
-                        "entreprise"    : nom_entreprise
+                        "id_client"    : id_client
                     }
                     $.ajax({
                         url         : "/tropical_wood/entreprise/listerAdresse",
@@ -604,11 +402,11 @@
 
         $("#button_modal_add_adresse").on('click', function(ev){
             ev.preventDefault();
-            var nom_entreprise = '{{ nom_client }}';
+            
             //alert(nom_entreprise);
             var data = {
                 "adresse"       : $("#adresse").val(),
-                "entreprise"    : nom_entreprise
+                "id_client"    : id_client
             }
             $.ajax({
                 url         : "/tropical_wood/entreprise/addAdresse",
@@ -616,7 +414,7 @@
                 data        : data,
                 success     : function(response){
                     liter_adresse_entreprise();
-                     $("#modal_add_adresse").modal('hide');
+                    $("#modal_add_adresse").modal('hide');
                 },
                 error       : function () {
                     alert('Erreur dans add adress');
@@ -628,46 +426,29 @@
         $(document).on('click','.tab_adress_edit', function(ev){
             ev.preventDefault();
             
-            var nom_entreprise = '{{ nom_client }}';
             var adresse = $(this).attr('data-adresse');
             $("#modal_add_adresse").modal('show');
             $('#adresse').text(adresse);
-            //alert(nom_entreprise);
-            // var data = {
-            //     "id"       : $(this).attr("data-id"),
-            //     "adresse"    : $("#adresse").val(),
-            //     "entreprise"    : nom_entreprise
-            // }
-            // $.ajax({
-            //     url         : "/tropical_wood/entreprise/edit/addAdresse",
-            //     type        : "POST",
-            //     data        : data,
-            //     success     : function(response){
-            //         liter_adresse_entreprise();
-            //     },
-            //     error       : function () {
-            //         alert('Erreur dans add adress');
-            //     }
-            // })
             
         })
 
         // add contact
 
-        $("#button_add_contact").on("click", function(ev){
+        $(document).on("click", "#button_add_contact", function(ev){
             ev.preventDefault();
-            var nom_entreprise = '{{ nom_client }}';
             var contact = $("#contact").val();
-            var type_contact = $("#type_contact").val();
+            // var type_contact = $("#type_contact").val();
             var email = $("#email").val(); 
             var telephone = $("#telephone").val();
-
+            var id_contact = $(this).attr("data-id");
+            
             var data = {
-                "nom_en_contact"       : contact,
-                "type"  : type_contact,
-                "email"         : email,
-                "telephone"     : telephone,
-                "entreprise"    : nom_entreprise,
+                "nom_en_contact"        : contact,               
+                // "type"                  : type_contact,
+                "email"                 : email,
+                "telephone"             : telephone,
+                "id_client"            : id_client,
+                "id_contact"            : id_contact,
             }
 
             $.ajax({
@@ -676,7 +457,7 @@
                 data        : data,
                 success     : function(response){
                     liter_contact_entreprise();
-                     $("#modal_add_contact").modal('hide');
+                    $("#modal_add_contact").modal('hide');
                 },
                 error       : function(){
                     alert("erreur add contact");
@@ -684,11 +465,58 @@
             })
         })
 
+        // edit contact
+        // click edit contact 
+        $(document).on("click", ".edit_contact", function(ev){
+            ev.preventDefault();
+            var id_contact = $(this).attr('data-id');
+            
+            $.ajax({
+                url : "/tropical_wood/edit_contact",
+                type : "POST",
+                data : {
+                    "id_client" : id_client,
+                    "id_contact" : id_contact
+                },
+                success : function(response){
+                    $("#modal_form_add_contact").html(response);
+                    $("#modal_add_contact").modal('show');
+                }, 
+                error : function(){
+                    alert("erreur au niveau de edit contact");
+                }
+            })
+        })
+
+         // delete contact
+        // click delete contact 
+        $(document).on("click", ".delete_contact", function(ev){
+            ev.preventDefault();
+            var id_contact = $(this).attr('data-id');
+            $bool = confirm("Voulez-vous vraiment supprimer ce contact ?")
+            if($bool == true){
+                $.ajax({
+                    url : "/tropical_wood/delete_contact",
+                    type : "POST",
+                    data : {
+                        "id_client" : id_client,
+                        "id_contact" : id_contact
+                    },
+                    success : function(response){
+                        liter_contact_entreprise();
+                    }, 
+                    error : function(){
+                        alert("erreur au niveau de delete contact");
+                    }
+                })
+            }
+        })
+
             // liste contact
             function liter_contact_entreprise(){
-                var nom_entreprise = '{{ nom_client }}';
+                
                     var data = {
-                    "entreprise"    : nom_entreprise
+                    "id_client"    : id_client
                 }
                 $.ajax({
                     url         : "/tropical_wood/entreprise/listercontact",
@@ -698,14 +526,201 @@
                         $("#liste_tab_contact").html(response);
                     },
                     error       : function () {
-                        alert('Erreur dans lister adress');
+                        alert('Erreur dans lister contact');
                     }
                 })
             }
             liter_contact_entreprise();
 
+            // remarque 
+
+            // add remarque 
+
+            $("#valider_remarque").on("click", function(ev){
+                ev.preventDefault();
+                var data = {
+                    "date_remarque" : $("#date_remarque").val(),
+                    "id_pro"        : $("#id_pro").val(),
+                    "observation"   : $("#observation").val(),
+                    "id_client"     : id_client,
+                }
+                $.ajax({
+                    url     : "/tropical_wood/add_remarque", 
+                    type    : "POST",
+                    data    : data, 
+                    success : function(response){
+                        lister_rem_non_terminer();
+                    },
+                    error   : function(){
+                        alert('erreur dans valider remarque');
+                    }
+                })
+            })
+
+            // lister remarque non terminé
+
+            function lister_rem_non_terminer(){
+                 $.ajax({
+                    url     : "/tropical_wood/lister_remarque_non", 
+                    type    : "POST",
+                    data    : {
+                        "id_client" : id_client,
+                    }, 
+                    success : function(response){
+                        $("#tbody__liste_rem_non").html(response);
+                    },
+                    error   : function(){
+                        alert('erreur dans liste remarque non terminer');
+                    }
+                })
+            }
+
+            // lister remarque non terminé
+
+            function lister_rem_terminer(){
+               
+                 $.ajax({
+                    url     : "/tropical_wood/lister_remarque_oui", 
+                    type    : "POST",
+                    data    : {
+                        "id_client" : id_client,
+                    }, 
+                    success : function(response){
+                        $("#tbody__liste_rem_oui").html(response);
+                    },
+                    error   : function(){
+                        alert('erreur dans lister remarque terminer');
+                    }
+                })
+            }
+
+
+            // edit remarque 
+            $(document).on('click', ".edit_remarque", function(ev){
+                ev.preventDefault();
+                var id_remarque = $(this).attr("data-id");
+                var data = {
+                    "id_remarque" : id_remarque
+                };
+                $.ajax({
+                    url : "/tropical_wood/edit_remarque",
+                    type : "POST",
+                    data : data,
+                    success : function(response){
+                        lister_rem_non_terminer();
+                        lister_rem_terminer();
+                    }, 
+                    error : function(){
+                        alert('erreur edit remarque passer de ter à supp');
+                    }
+                })
+            })
+
+            // delete remarque 
+            $(document).on('click', ".delete_remarque", function(ev){
+                ev.preventDefault();
+                var id_remarque = $(this).attr("data-id");
+                var data = {
+                    "id_remarque" : id_remarque
+                };
+                $.ajax({
+                    url : "/tropical_wood/delete_remarque",
+                    type : "POST",
+                    data : data,
+                    success : function(response){
+                        lister_rem_terminer();
+                    }, 
+                    error : function(){
+                        alert('erreur edit remarque passer de ter à supp');
+                    }
+                })
+            })
+
+
+            lister_rem_non_terminer();
+            lister_rem_terminer();
+
+            // lister transaction et tri
+
+            function lister_transaction_enc(tri_total_reg, tri_reste, tri_total_montant){
+                var data = {
+                    "id_client" : id_client,
+                    "tri_total_reglement" : tri_total_reg,
+                    "tri_reste" : tri_reste,
+                    "tri_total_montant" : tri_total_montant
+                }
+                $.ajax({
+                    url : "/tropical_wood/lister_transaction_enc",
+                    type : "POST",
+                    data : data,
+                    beforeSend : function(){
+                        $("#dr_tab_trans_encours").html('<p style="text-align:center">chargement ...</p>');
+                    },
+                    success : function(response){
+                        $("#dr_tab_trans_encours").html(response);
+                    },
+                    error : function(){
+                        alert('erreur au niveau de liste trans enc');
+                    }
+                })
+            }
+             function lister_transaction_terminer(tri_total_reg, tri_reste, tri_total_montant){
+                 var data = {
+                    "id_client" : id_client,
+                    "tri_total_reglement" : tri_total_reg,
+                    "tri_reste" : tri_reste,
+                    "tri_total_montant" : tri_total_montant
+                }
+                $.ajax({
+                    url : "/tropical_wood/lister_transaction_terminer",
+                    type : "POST",
+                    data : data,
+                    beforeSend : function(){
+                        $("#dr_tab_trans_terminer").html('<p style="text-align:center">chargement ...</p>');
+                    },
+                    success : function(response){
+                        $("#dr_tab_trans_terminer").html(response);
+                    },
+                    error : function(){
+                        alert('erreur au niveau de liste trans terminer');
+                    }
+                })
+            }
+            lister_transaction_enc(null,null,"DESC");
+            lister_transaction_terminer(null,null,"DESC");
+
+            // tri
+            $(".a_tri").on("click", function(ev){
+                ev.preventDefault();
+                var data_type = $(this).attr("data-type");
+                var data_data = $(this).attr("data-data");
+                var data_trans = $(this).attr("data-trans");
+                if(data_trans == "encours"){
+                    if(data_type == "total_reglement"){
+                        lister_transaction_enc(data_data,null,null);
+                    }
+                    if(data_type == "reste"){
+                        lister_transaction_enc(null,data_data,null);
+                    }
+                    if(data_type == "montant_total"){
+                        lister_transaction_enc(null,null,data_data);
+                    }
+                }
+                else if(data_trans == "terminer"){
+                    if(data_type == "total_reglement"){
+                        lister_transaction_terminer(data_data,null,null);
+                    }
+                    if(data_type == "reste"){
+                        lister_transaction_terminer(null,data_data,null);
+                    }
+                    if(data_type == "montant_total"){
+                        lister_transaction_terminer(null,null,data_data);
+                    }
+                }
+            })
+
+
     })
 
-        
     </script>
 {% endblock %}

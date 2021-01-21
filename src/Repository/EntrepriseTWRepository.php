@@ -37,6 +37,27 @@ class EntrepriseTWRepository extends ServiceEntityRepository
         // returns an array of arrays (i.e. a raw data set)
         return $liste;
     }
+    // /**
+    //  * @return EntrepriseTW[] Returns an array of EntrepriseTW objects
+    //  */
+    public function touslesNoms()
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+            SELECT DISTINCT nom FROM entreprise_tw 
+            ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $tab = $stmt->fetchAll();
+        $tab_simple = [];
+        foreach($tab as $value){
+            
+            array_push($tab_simple, $value["nom"]);
+        }
+        return $tab_simple;
+    }
+    
 
     // /**
     //  * @return EntrepriseTW[] Returns an array of EntrepriseTW objects

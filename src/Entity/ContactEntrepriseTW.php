@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use App\Repository\ContactEntrepriseTWRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ContactEntrepriseTWRepository;
 
 /**
  * @ORM\Entity(repositoryClass=ContactEntrepriseTWRepository::class)
@@ -18,22 +18,22 @@ class ContactEntrepriseTW
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable = true)
      */
     private $nom_en_contact;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable = true)
      */
     private $type;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable = true)
      */
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable = true)
      */
     private $telephone;
 
@@ -52,7 +52,7 @@ class ContactEntrepriseTW
         return $this->nom_en_contact;
     }
 
-    public function setNomEnContact(string $nom_en_contact): self
+    public function setNomEnContact(?string $nom_en_contact): self
     {
         $this->nom_en_contact = $nom_en_contact;
 
@@ -64,7 +64,7 @@ class ContactEntrepriseTW
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(?string $type): self
     {
         $this->type = $type;
 
@@ -76,7 +76,7 @@ class ContactEntrepriseTW
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(?string $email): self
     {
         $this->email = $email;
 
@@ -88,7 +88,7 @@ class ContactEntrepriseTW
         return $this->telephone;
     }
 
-    public function setTelephone(string $telephone): self
+    public function setTelephone(?string $telephone): self
     {
         $this->telephone = $telephone;
 

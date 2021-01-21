@@ -66,8 +66,6 @@ class DataTropicalWood
      * @ORM\Column(type="decimal", precision=10, scale=0, nullable=true)
      */
     private $montant_paye; // total reglé
-
-    private $reste;
     
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -79,19 +77,14 @@ class DataTropicalWood
      */
     private $total_reglement;
 
+    /**
+     * @ORM\Column(type="float", nullable = true)
+     */
+    private $reste;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function setReste($reste)
-    {
-        $this->reste = $reste;
-    }
-
-    public function getReste()
-    {
-        return $this->reste;
     }
 
     public function getEntreprise(): ?string
@@ -245,6 +238,18 @@ class DataTropicalWood
     public function setTotalReglement(?string $total_reglement): self
     {
         $this->total_reglement = $total_reglement;
+
+        return $this;
+    }
+
+    public function getReste(): ?float
+    {
+        return $this->reste;
+    }
+
+    public function setReste(?float $reste): self
+    {
+        $this->reste = $reste;
 
         return $this;
     }
