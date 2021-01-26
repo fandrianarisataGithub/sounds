@@ -12,6 +12,13 @@
         {% include "nav2.html.twig" %}
             <div id="hrs_content">
                 <div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+                    <div class="add_contact div_revenir">
+                        <a href="{{ path('liste_client_tw') }}" class="btn btn-default">
+                            <span class="fa fa-arrow-left"></span><span class="revenir_liste">Revenir à la liste</span>
+                        </a>
+                    </div>
+                </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
                         <section class="section_part" id="section_part_top">
                             <div class="sous_titre sous_titre_tw">
@@ -31,7 +38,7 @@
                                 </div>
                                 <div class="unite_chiffre chiffre_daf_enc">
                                     <div class="titre_ca">
-                                        <h4>Chiffre d'affaires ancaissé</h4>
+                                        <h4>Chiffre d'affaires encaissé</h4>
                                     </div>
                                     <div class="montant_value">
                                             <span class="montant">
@@ -52,29 +59,7 @@
                             </div>
                         </section>
                     </div>
-                    {# <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
-                        <h3 class="small_tittle"><u>Clients</u></h3>
-                         <div class="add_contact">
-                            <a href="#" class="btn btn-default" data-toggle="modal" data-target="#modal_add_adresse">
-                                <span class="fa fa-plus"></span>Adresse siège social
-                            </a>
-                        </div>
-                        <div class="tab_small_content">
-                       
-                            <table class="table small_tab">
-                                <thead>
-                                    <tr>
-                                        <th><span>Entreprise</span></th>
-                                        <th><span>Adresse siège social</span></th>
-                                        <th><span></span></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="body_tab_adresse">
-                                   
-                                </tbody>
-                            </table>
-                        </div>
-                    </div> #}
+                    
                     <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
                         <h3 class="small_tittle"><u>Contact</u></h3>
                         <div class="add_contact">
@@ -87,7 +72,7 @@
                                         <th><span>Contact</span></th>
                                         <th><span>Email</span></th>
                                         <th><span>N° de tél</span></th>
-                                        <th></th>
+                                        <th><span>Actions</span></th>
                                     </tr>
                                 </thead>
                                 <tbody id="liste_tab_contact">
@@ -101,23 +86,27 @@
                         <div class="tw_sous_titre">
                             <h3>Transaction en cours</h3>
                         </div>  
-                        <div class="tableau_tropical">
+                        <div class="tableau_tropical tableau_scroll">
                             <div class="table_content">
                                 <div class="table_header">
                                     <div class="t_header_row">
-                                        <div>
+                                        <div class="tw_client">
                                             <span>Référence</span>
                                         </div>
-                                        <div>
+                                        <div class="tw_details">
                                             <span>Détails</span>
                                         </div>
-                                        <div>
+                                        <div class="tw_type_trans">
                                             <span>Type de transaction</span>
                                         </div>
-                                        <div>
+                                        <div class="tw_etat_prod">
                                             <span>Etat de production</span>
                                         </div>
-                                        <div>
+                                        <div class="tw_etape_prod">
+                                            <span>% production</span>
+                                            {# eto le etape de production en % #}
+                                        </div>
+                                        <div class="tw_paiement">
                                             <span>Paiement</span>
                                             <span class="span_tri">
                                                 <a href="#" class="a_tri" data-type="total_reglement" data-data="ASC" data-trans ="encours">
@@ -128,7 +117,7 @@
                                                 </a>
                                             </span>
                                         </div>
-                                        <div>
+                                        <div class="tw_reste">
                                             <span>Reste à payé</span>
                                             <span class="span_tri">
                                                 <a href="#" class="a_tri" data-type="reste" data-data="ASC" data-trans ="encours">
@@ -139,7 +128,7 @@
                                                 </a>
                                             </span>
                                         </div>
-                                        <div>
+                                        <div class="tw_montant_total">
                                             <span>Montant total</span>
                                             <span class="span_tri">
                                                 <a href="#" class="a_tri" data-type="montant_total" data-data="ASC" data-trans ="encours">
@@ -150,8 +139,11 @@
                                                 </a>
                                             </span>
                                         </div>
-                                        <div>
+                                        <div class="tw_date_conf">
                                             <span>Date de confirmation</span>
+                                        </div>
+                                        <div class="tw_date_facture">
+                                            <span>Date de facture</span>
                                         </div>
                                     </div>
                                 </div>
@@ -167,11 +159,11 @@
                             <h4>Remarque</h4>
                         </div>
                         <div class="form_remarque1">
-                            <form action="" class="form-inline">
+                            <form action="" class="form-inline" id="form_remarque">
                                 <div class="form-group">
                                     {# par defaut date du jour #}
                                     <label for="">Date: </label>
-                                    <input type="date" id="date_remarque" class="form-control">
+                                    <input type="date" id="date_remarque" class="form-control" value="{{ today }}">
                                 </div>
                                 <div class="form-group">                                  
                                     <label for="">Concerne: </label>
@@ -189,17 +181,20 @@
                                     <input type="submit" class="btn btn-xs btn-default" value="Valider" id="valider_remarque">
                                 </div>
                             </form>
+                            <div class="liste_pf_selected">
+                                
+                            </div>
                         </div>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
                          <div class="tab_small_content">
                             <table class="table small_tab">
                                 <thead>
-                                    <tr>
+                                    <tr class="trh_remarque_a_ter">
                                         <th><span>Date</span></th>
                                         <th><span>Concerne</span></th>
-                                        <th><span>Explication</span></th>
-                                        <th></th>
+                                        <th class="thh_remarque_a_ter"><span>Explication</span></th>
+                                        <th><span>Terminer</span></th>
                                     </tr>
                                 </thead>
                                 <tbody id="tbody__liste_rem_non">
@@ -212,57 +207,64 @@
                         <div class="tw_sous_titre">
                             <h3>Transaction terminée</h3>
                         </div>  
-                        <div class="tableau_tropical">
+                        <div class="tableau_tropical tableau_scroll">
                             <div class="table_content">
                                 <div class="table_header">
                                     <div class="t_header_row">
-                                        <div>
+                                        <div class="tw_client">
                                             <span>Référence</span>
                                         </div>
-                                        <div>
+                                        <div class="tw_details">
                                             <span>Détails</span>
                                         </div>
-                                        <div>
+                                        <div class="tw_type_trans">
                                             <span>Type de transaction</span>
                                         </div>
-                                        <div>
+                                        <div class="tw_etat_prod">
                                             <span>Etat de production</span>
                                         </div>
-                                        <div>
+                                        <div class="tw_etape_prod">
+                                            <span>% production</span>
+                                            {# eto le etape de production en % #}
+                                        </div>
+                                        <div class="tw_paiement">
                                             <span>Paiement</span>
                                             <span class="span_tri">
-                                                <a href="#" class="a_tri" data-type="total_reglement" data-data="ASC" data-trans ="terminer">
+                                                <a href="#" class="a_tri" data-type="total_reglement" data-data="ASC" data-trans="encours">
                                                     <small class="fa fa-sort-asc"></small>
                                                 </a>
-                                                <a href="#" class="a_tri" data-type="total_reglement" data-data="DESC" data-trans ="terminer">
+                                                <a href="#" class="a_tri" data-type="total_reglement" data-data="DESC" data-trans="encours">
                                                     <small class="fa fa-sort-desc"></small>
                                                 </a>
                                             </span>
                                         </div>
-                                        <div>
+                                        <div class="tw_reste">
                                             <span>Reste à payé</span>
                                             <span class="span_tri">
-                                                <a href="#" class="a_tri" data-type="reste" data-data="ASC" data-trans ="terminer">
+                                                <a href="#" class="a_tri" data-type="reste" data-data="ASC" data-trans="encours">
                                                     <small class="fa fa-sort-asc"></small>
                                                 </a>
-                                                <a href="#" class="a_tri" data-type="reste" data-data="DESC" data-trans ="terminer">
+                                                <a href="#" class="a_tri" data-type="reste" data-data="DESC" data-trans="encours">
                                                     <small class="fa fa-sort-desc"></small>
                                                 </a>
                                             </span>
                                         </div>
-                                        <div>
+                                        <div class="tw_montant_total">
                                             <span>Montant total</span>
                                             <span class="span_tri">
-                                                <a href="#" class="a_tri" data-type="montant_total" data-data="ASC" data-trans ="terminer">
+                                                <a href="#" class="a_tri" data-type="montant_total" data-data="ASC" data-trans="encours">
                                                     <small class="fa fa-sort-asc"></small>
                                                 </a>
-                                                <a href="#" class="a_tri" data-type="montant_total" data-data="DESC" data-trans ="terminer">
+                                                <a href="#" class="a_tri" data-type="montant_total" data-data="DESC" data-trans="encours">
                                                     <small class="fa fa-sort-desc"></small>
                                                 </a>
                                             </span>
                                         </div>
-                                        <div>
+                                        <div class="tw_date_conf">
                                             <span>Date de confirmation</span>
+                                        </div>
+                                        <div class="tw_date_facture">
+                                            <span>Date de facture</span>
                                         </div>
                                     </div>
                                 </div>
@@ -281,11 +283,19 @@
                        <div class="tab_small_content" style="margin-top:25px;">
                             <table class="table small_tab">
                                 <thead>
-                                    <tr>
-                                        <th><span>Date</span></th>
-                                        <th><span>Concerne</span></th>
-                                        <th><span>Explication</span></th>
-                                        <th></th>
+                                    <tr class="trh_remarque_a_ter">
+                                        <th>
+                                            <span>Date</span>
+                                        </th>
+                                        <th>
+                                            <span>Concerne</span>
+                                        </th>
+                                        <th class="thh_remarque_a_ter">
+                                            <span>Explication</span>
+                                        </th>
+                                        <th>
+                                            <span>Supprimer</span>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody id="tbody__liste_rem_oui">
@@ -378,7 +388,54 @@
 
                 // lister adresse pour l'entreprise
                 var id_client = '{{ id_client }}';
-    
+
+                var liste_pf = [];
+
+                $("#id_pro").on('change', function(){
+                    var choice = $(this).val();
+                    var test = false;
+                    for(var i=0; i< liste_pf.length; i++){
+                        if(choice == liste_pf[i]){
+                            test = true;
+                        }
+                    }
+                    
+                    if(test == false){
+                        liste_pf.push(choice);
+                    }
+                    lister_choice_pf()
+                })
+
+                function lister_choice_pf(){
+                    var html = "<ul>";
+                    for(var i = 0; i<liste_pf.length; i++){
+                        html += `
+
+                                <li class="li_unite_selected_pf">
+                                    <div>
+                                        <p class="p_pf_value">`+ liste_pf[i] +`</p>
+                                        <span class="fa fa-times exit_pf" data-pf = "`+ liste_pf[i] +`"></span>
+                                    </div>
+                                </li>
+
+                        `;
+                    }
+                    html += "</ul>";
+                    
+                    $(".liste_pf_selected").html(html);
+
+                }
+
+                $(document).on("click", ".exit_pf", function(){
+                    var text = $(this).attr("data-pf");
+                    const index = liste_pf.indexOf(text);
+				    if (index > -1) {
+					    liste_pf.splice(index, 1);
+                    }
+                    // console.log(liste_pf);
+                    lister_choice_pf();
+                })
+
                 function liter_adresse_entreprise(){
                         
                      var data = {
@@ -538,24 +595,48 @@
 
             $("#valider_remarque").on("click", function(ev){
                 ev.preventDefault();
-                var data = {
-                    "date_remarque" : $("#date_remarque").val(),
-                    "id_pro"        : $("#id_pro").val(),
-                    "observation"   : $("#observation").val(),
-                    "id_client"     : id_client,
+                if(liste_pf.length == 0){
+                    var data = {
+                        "date_remarque" : $("#date_remarque").val(),
+                        "id_pro"        : $("#id_pro").val(),
+                        "observation"   : $("#observation").val(),
+                        "id_client"     : id_client,
+                    }
+                    add_remarque_pf(data);
                 }
-                $.ajax({
+               
+                if(liste_pf.length > 0){
+
+                    for(var i = 0; i< liste_pf.length; i++){
+                        var data = {
+                            "date_remarque" : $("#date_remarque").val(),
+                            "id_pro"        : liste_pf[i],
+                            "observation"   : $("#observation").val(),
+                            "id_client"     : id_client,
+                        }
+                        add_remarque_pf(data);
+                    }
+                    
+                }
+            })
+
+            function add_remarque_pf(data){
+                 $.ajax({
                     url     : "/tropical_wood/add_remarque", 
                     type    : "POST",
                     data    : data, 
                     success : function(response){
+                        $("#form_remarque")[0].reset();
                         lister_rem_non_terminer();
+                        // fafana daholo le liste_pf
+                        liste_pf = [];
+                        lister_choice_pf();
                     },
                     error   : function(){
                         alert('erreur dans valider remarque');
                     }
                 })
-            })
+            }
 
             // lister remarque non terminé
 
@@ -657,7 +738,17 @@
                         $("#dr_tab_trans_encours").html('<p style="text-align:center">chargement ...</p>');
                     },
                     success : function(response){
-                        $("#dr_tab_trans_encours").html(response);
+                        $("#dr_tab_trans_encours").html(response).promise().done(function(){
+							var montant = document.querySelectorAll("#dr_tab_trans_encours .montant");
+							var t = montant.length;
+							var test = new Intl.NumberFormat();
+							if (t > 0) {
+								for (var i = 0; i < t; i++) {
+									var val = test.format(montant[i].innerHTML);
+									montant[i].innerHTML = val;
+								}
+							};
+                        })
                     },
                     error : function(){
                         alert('erreur au niveau de liste trans enc');
@@ -679,7 +770,18 @@
                         $("#dr_tab_trans_terminer").html('<p style="text-align:center">chargement ...</p>');
                     },
                     success : function(response){
-                        $("#dr_tab_trans_terminer").html(response);
+                        $("#dr_tab_trans_terminer").html(response).promise().done(function(){
+							var montant = document.querySelectorAll("#dr_tab_trans_terminer .montant");
+
+							var t = montant.length;
+							var test = new Intl.NumberFormat();
+							if (t > 0) {
+								for (var i = 0; i < t; i++) {
+									var val = test.format(montant[i].innerHTML);
+									montant[i].innerHTML = val;
+								}
+							};
+                        })
                     },
                     error : function(){
                         alert('erreur au niveau de liste trans terminer');
@@ -718,6 +820,9 @@
                     }
                 }
             })
+            // choix de pf
+
+            
 
 
     })

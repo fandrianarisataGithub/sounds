@@ -1164,7 +1164,12 @@ div.liste_dj_dm div a:hover span:last-child{
       display: flex;
       justify-content: space-between;
   }
-  
+.sous_titre_tw{
+    margin-top: 25px !important;
+}
+.sous_titre_tw h3{
+    width: 100%;
+}
   #section_part_top .sous_titre:last-child h2 {
       font-size: 23px;
       color: #d29e00;
@@ -1412,10 +1417,19 @@ div.liste_dj_dm div a:hover span:last-child{
   /*fournisseur*/
   
   .div__form_upload_excel {
-      background-color: rgba(255, 255, 255, 0.9);
-      margin-bottom: 50px;
+      
+      margin-bottom: 0px;
       padding: 15px;
   }
+    
+#block_group_form_import_tw{
+    height: 310px;
+    margin-top: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
   
   .import_trop {
       margin-bottom: 20px !important;
@@ -1719,7 +1733,8 @@ div.liste_dj_dm div a:hover span:last-child{
   .tableau_tropical {
       margin-bottom: 25px;
   }
-  
+   
+
   .table_header {
       display: flex;
   }
@@ -1733,7 +1748,7 @@ div.liste_dj_dm div a:hover span:last-child{
       padding: 5px;
       border-radius: 50px;
       flex-wrap: nowrap;
-      height: 35px !important;
+      height: 40px !important;
   }
 
   .table_header .t_header_row div>span {
@@ -1775,7 +1790,6 @@ div.liste_dj_dm div a:hover span:last-child{
   }
   
   .t_footer_row div {
-      margin-left: 25px!important;
       width: calc(100% / 9);
       text-align: start;
       margin-bottom: 15px;
@@ -1804,14 +1818,10 @@ div.liste_dj_dm div a:hover span:last-child{
 
   .table_body>div>div.t_body_row>div {
       text-align: start !important;
-      margin-left: 25px;
+      margin-left: 0px;
   }
   
-  .table_body>div>div.t_body_row div {
-      width: calc(100% / 9);
-      text-align: center;
-  }
-  
+
   .btn_drop_data,
   .btn_drop_data:hover,
   .btn_drop_data:focus {
@@ -1819,7 +1829,10 @@ div.liste_dj_dm div a:hover span:last-child{
       background: transparent;
       border: none;
   }
-  
+.td_long{
+    text-align: start !important;
+    padding-left: 15px;
+}
   .btn_drop_data span.fa {
       color: #c79c67;
       display: block;
@@ -1840,7 +1853,7 @@ div.liste_dj_dm div a:hover span:last-child{
   }
   
   .table_body>div>.t_body_row:not(:first-child) {
-      padding-left: 25px;
+      /*! padding-left: 25px; */
   }
   
   .table_content div>span {
@@ -1918,7 +1931,9 @@ div.liste_dj_dm div a:hover span:last-child{
   }
   
   .sous_titre h3 {
-      margin: 0px;
+      margin: 0px !important;
+      margin-top: 10px !important;
+      margin-bottom: 10px !important;
       height: 30px;
       color: #d29e00;
   }
@@ -4595,6 +4610,7 @@ div.block_all_tr .t_body_row{
 .sous_titre_tw{
     text-align: center;
     color: #323232;
+    margin-top: -20px;
 }
 .liste_chiffre_daf{
     display: flex;
@@ -4603,6 +4619,7 @@ div.block_all_tr .t_body_row{
     width: 75%;
     margin: auto;
     margin-top: 0px;
+    margin-bottom: 5px;
 }
 
 .unite_chiffre {
@@ -4665,6 +4682,10 @@ thead.thead_adresse{
 .small_tittle{
     color: #5f5f5f;
     font-size: 1.5em;
+    margin-top: 15px;
+    display: inline-block;
+    position: relative;
+    top: 5px;
 }
 .small_tab thead tr th{
     border: none;
@@ -4853,6 +4874,18 @@ table tbody tr td span{
 .add_contact{
     margin-bottom: 15px;
     margin-top: 15px;
+    display: inline-block;
+    margin-left: 15px;
+}
+.div_revenir{
+    margin-left: 0px;
+}
+.revenir_liste{
+    margin-left: 10px;
+    margin-bottom: 0px !important;
+}
+.div_revenir a{
+    text-decoration: none;
 }
 .add_contact a{
     background: #5f5f5f;
@@ -4922,6 +4955,29 @@ div.list_action a:hover{
     color: #323232;
     opacity: 0.8;
 }
+.trh_remarque_a_ter th{
+    width: 150px;
+    text-align: center;
+}
+.trb_remarque_a_ter td{
+    width: 150px;
+    text-align: center;
+}
+/*.trb_remarque_a_ter td.tbd_remarque_a_ter{
+    background: red !important; 
+}*/
+.trb_remarque_a_ter td.tbd_remarque_a_ter p.observation{
+    
+    width: 100% !important;
+    height: auto;
+    text-align: center;
+}
+.trb_remarque_a_ter td .liste_action{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
 /* modal */
 #modal_add_contact .modal-header,
 #modal_add_adresse .modal-header{
@@ -4958,11 +5014,107 @@ table.small_tab tbody tr td{
     padding-top: 10px;
     padding-bottom: 0px;
 }
+
+
 /*.liste_pf{
     height: 500px;
     overflow-y: scroll;
 }*/
 
 /* fin modal */
+
+/* liste choices pf */
+.liste_pf_selected{
+    display: block;
+}
+
+.liste_pf_selected ul{
+    display: flex;
+    margin-top: 20px;
+    margin-left: 35px;
+}
+.li_unite_selected_pf{
+    background: #fff;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    display: flex;
+    width: 100px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+}
+.li_unite_selected_pf:not(:first-child){
+    margin-left: 25px;
+}
+.li_unite_selected_pf >div span.exit_pf{
+    position: relative;
+    left: 72px;
+    bottom: 45px; !important;
+    display: inline-flex;
+    background: #fff;
+    box-shadow: 0px 0px 2px #ccc;
+    width: 15px;
+    height: 15px;
+    justify-content: center;
+    align-items: center;
+    color: #ddd;
+    border-radius: 50%;
+    padding: 1.2px;
+    font-size: 12px;
+    cursor: pointer;
+}
+.li_unite_selected_pf div p{
+    width: 100%;
+    color: #5f5e5e;
+    position: relative;
+    top: 15px;
+    font-size: 13px;
+}
+.tableau_scroll{
+    overflow-x: scroll;
+    
+}
+.tableau_scroll .table_content{
+    width: 1500px !important;
+
+}
+.tableau_scroll .t_header_row{
+    width: 1500px !important;
+}
+.tw_date_facture{
+    text-align: center !important;
+}
+.td_long span{
+    margin-left: 15px;
+}
+.t_header_row > div{
+     margin-left: 0!important;
+    text-align: start;
+}
+.div_for_droping > div{
+    margin-left: 0!important;
+}
+.t_footer_row >div{
+    margin-left: 0!important;
+}
+.tw_client{
+    padding-left: 15px;
+}
+.tw_details{
+    width: 250px !important;
+    padding-left: 15px;
+}
+.tw_paiement,
+.tw_reste,
+.tw_montant_total{
+    width: 150px !important;
+}
+.tw_date_conf,
+.tw_date_facture{
+    width: 150px !important;
+}
+
+/* fin liste choices pf */
 
 /* / fin style contact show entreprise*/

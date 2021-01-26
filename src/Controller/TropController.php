@@ -38,6 +38,28 @@ class TropController extends AbstractController
         $all_entreprises = $repoEntre->findAllNomEntreprise();
         if ($form_add->isSubmitted() && $form_add->isValid()) {
 
+            // on clean les mot de la base de donnée d'avant
+            $d = $repoTrop->findAll();
+            // on clean les mauvaise formation de nom dans entreprise
+            foreach ($d as $item) {
+                $son_nom = $item->getEntreprise();
+                $son_id_pro = $item->getIdPro();
+                if (strpos($son_nom, "\n") !== false) {
+                    $son_nom = str_replace("\n", " ", $son_nom);
+                    $son_nom = trim(str_replace("  ", " ", $son_nom));
+                    $item->setEntreprise($son_nom);
+                    $manager->flush();
+                }
+                if (strpos($son_id_pro, "\n") !== false) {
+                    $son_id_pro = str_replace("\n", " ", $son_id_pro);
+                    $son_id_pro = trim(str_replace("  ", " ", $son_id_pro));
+                    $item->setIdPro($son_id_pro);
+                    $manager->flush();
+                }
+
+            }
+            
+
             $fichier = $form_add->get('fichier')->getData();
             $originalFilename1 = pathinfo($fichier->getClientOriginalName(), PATHINFO_FILENAME);
             $safeFilename1 = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename1);
@@ -55,32 +77,42 @@ class TropController extends AbstractController
             //dd($d_aff);
             // on listes selectiopnne toutes les entreprise dans la base entrepriseTW
 
-            // $All_entreprises = $this->getDoctrine()->getRepository(EntrepriseTW::class)->findAllNomEntreprise();
-            $new_liste_entreprise = [];
+            $all_entreprises = $repoEntre->findAllNomEntreprise();
+           
             for ($i = 0; $i < count($d_aff); $i++) {
                 $data_tw = new DataTropicalWood();
-                $idPro = $d_aff[$i][0];
-                $entreprise = $d_aff[$i][2];
-                if(!in_array($entreprise, $new_liste_entreprise)){
-                    array_push($new_liste_entreprise, $entreprise);
-                }
-                // averina any @ liste_entreprise_client fa tsy mbola niainga ty methode ty taorian'ny import fichier excel
-                if(!in_array($entreprise, $all_entreprises)){
-                    //on insert l'entreprise dans la base de donnée table entrepriseTW
-                    $entreprise_tw = new EntrepriseTW();
-                    $entreprise_tw->setNom($entreprise);
-                    $manager->persist($entreprise_tw);
-                }
-                $type_transaction = $d_aff[$i][1];
+                $idPro = $services->clean_word($d_aff[$i][0]);
+                $entreprise = $services->clean_word($d_aff[$i][2]);
+                
+                $type_transaction = $services->clean_word($d_aff[$i][1]);
                 $detail = $d_aff[$i][3];
-                $etat_production = $d_aff[$i][5];
+               
+                $etat_production = $d_aff[$i][6];
+                // déjà le reste n'est plus à calculer
                 $montant_total = $services->no_space(str_replace(",", " ", $d_aff[$i][10]));
-                $montant_paye =  $services->no_space(str_replace(",", " ", $d_aff[$i][7])); // reste
+                $reste =  $services->no_space(str_replace(",", " ", $d_aff[$i][7])); // reste
                 $montant_avance = $services->no_space(str_replace(",", " ", $d_aff[$i][9]));
                 $date_confirmation = null;
+                $date_facture = null;
+                $etape_production = $d_aff[$i][11];
                 if ($services->parseMyDate($d_aff[$i][4]) != null) {
                     $date_confirmation = date_create($services->parseMyDate($d_aff[$i][4]));
                     if ($date_confirmation == false) {
+                        return $this->render('page/tropical_wood.html.twig', [
+                            "hotel"             => $data_session['pseudo_hotel'],
+                            "current_page"      => $data_session['current_page'],
+                            "form_add"          => $form_add->createView(),
+                            'error'             => $i,
+                            'tri'               => false,
+                            'tropical_wood'     => true,
+                            'datas'             => null,
+                        ]);
+                    }
+                }
+
+                if ($services->parseMyDate($d_aff[$i][5]) != null) {
+                    $date_facture = date_create($services->parseMyDate($d_aff[$i][4]));
+                    if ($date_facture == false) {
                         return $this->render('page/tropical_wood.html.twig', [
                             "hotel"             => $data_session['pseudo_hotel'],
                             "current_page"      => $data_session['current_page'],
@@ -101,11 +133,11 @@ class TropController extends AbstractController
                     $data_tw->setDetail($detail);
                     $data_tw->setEtatProduction($etat_production);
                     $data_tw->setMontantTotal($montant_total);
-                    $data_tw->setMontantPaye($montant_paye);
-                    $data_tw->setTotalReglement($montant_avance);
-                    $reste = $montant_total - $montant_avance;
                     $data_tw->setReste($reste);
+                    $data_tw->setTotalReglement($montant_avance);
                     $data_tw->setDateConfirmation($date_confirmation);
+                    $data_tw->setDateFacture($date_facture);
+                    $data_tw->setEtapeProduction($etape_production);
                     $manager->persist($data_tw);
                 }else if(count($dataTrop) == 0){
                     $data_tw->setIdPro($idPro);
@@ -114,10 +146,10 @@ class TropController extends AbstractController
                     $data_tw->setDetail($detail);
                     $data_tw->setEtatProduction($etat_production);
                     $data_tw->setMontantTotal($montant_total);
-                    $data_tw->setMontantPaye($montant_paye);
-                    $data_tw->setTotalReglement($montant_avance);
-                    $reste = $montant_total - $montant_avance;
                     $data_tw->setReste($reste);
+                    $data_tw->setDateFacture($date_facture);
+                    $data_tw->setEtapeProduction($etape_production);
+                    $data_tw->setTotalReglement($montant_avance);
                     $data_tw->setDateConfirmation($date_confirmation);
                     $manager->persist($data_tw);
                 }
@@ -129,31 +161,44 @@ class TropController extends AbstractController
             // on re_actualise la tab entreprise_contact
             // liste_entreprises présentes
 
-            $liste_presente = $repoEntre->touslesNoms(); 
-            // liste des nouvelles entreprises importé dernièrement est $new_liste_entreprise
-            for($i=0; $i < count($new_liste_entreprise); $i++){
-                if(!in_array($new_liste_entreprise[$i],$liste_presente)){
-                    // on crée la nouvelle entreprise
-                    $new_entre = new EntrepriseTW();
-                    $new_entre->setNom($new_liste_entreprise[$i]);
-                    $manager->persist($new_entre);
-                    $manager->flush();
-                }
-            }
-
         }
-        // on truc un peu pour generer les reste 
-        // $datas = $repoTrop->findAll();
-        // foreach ($datas as $item) {
-        //     //dd($item);
-        //     $total_reglement = $item->getTotalReglement();
-        //     $total_total = $item->getMontantTotal();
-        //     $reste = $total_total - $total_reglement;
-        //     $item->setReste($reste);
-        //     //dd($item);
-        //     $manager->flush();
-        // }
+        /*
+        // tsy atao rehefa voadio indray mandeha le base 
 
+        $liste_presente = $repoEntre->findAll();
+        // diovina
+        foreach($liste_presente as $item){
+            $c = $item->getContactEntrepriseTWs();
+            foreach($c as $con){
+                $item->removeContactEntrepriseTW($con);
+            }
+           $manager->remove($item);
+           $manager->flush();
+        }
+        
+        
+        // faran'ny fandiovana
+        */
+
+        // on crée les entreprise
+
+        $all = $repoTrop->findAll();
+        
+        foreach($all as $item){
+            $tab_nom_entre = $repoEntre->findAllNomEntreprise();
+            $nom = $item->getEntreprise();
+            if(!in_array($nom, $tab_nom_entre)){
+                $entreprise_objet = new EntrepriseTW();
+                $entreprise_objet->setNom($nom);
+                $manager->persist($entreprise_objet);
+                $manager->flush();
+            }
+        }
+        
+       
+        
+
+        
         
         $datasAsc = $repoTrop->findAllGroupedAsc();
         $Liste = [];
@@ -280,32 +325,40 @@ class TropController extends AbstractController
                                 <div class="t_body_row sous_tab_body div_for_droping"
                                     style="display:none !important;"
                                 > 
-                                    <div>
+                                    <div class="tw_client">
                                         <span>'. $item->getIdPro() . '</span>
                                     </div>
-                                    <div>
+                                    <div class="tw_details">
                                         <span>'. $item->getDetail() .'</span>
                                     </div>
-                                    <div>
+                                    <div class="tw_type_trans">
                                         <span class="value">'. $item->getTypeTransaction() .'</span>
                                     </div>
-                                    <div>
+                                    <div class="tw_etat_prod">
                                         <span class="value">'.$item->getEtatProduction(). '</span>
                                     </div>
-                                    <div>
+                                    <div class="tw_etape_prod">
+                                        <span class="value">45%</span>
+                                    </div>
+                                    <div class="tw_paiement">
                                         <span class="montant value">' . $item->getTotalReglement() . '</span>
                                     </div>
-                                    <div>
+                                    <div class="tw_reste">
                                         <span class="montant">
                                             '. $reste .'
                                         </span>
                                     </div>
-                                    <div>
+                                    <div class="tw_montant_total">
                                         <span class="montant">'. $item->getMontantTotal() .'</span>
                                     </div>
-                                    <div>
+                                    <div class="tw_date_conf">
                                         <span>
                                         '. $date .'
+                                        </span>
+                                    </div>
+                                    <div class="tw_date_facture">
+                                        <span>
+                                            date_facture ...
                                         </span>
                                     </div>
                                 </div>
@@ -316,31 +369,37 @@ class TropController extends AbstractController
                     
                     $stringP .= '
                                 <div class="t_body_row sous_tab_body sous_total_content">
-                                    <div>
+                                    <div class="tw_client">
                                         <span>Sous-total</span> 
                                     </div>
-                                    <div>
+                                    <div class="tw_details">
                                         <span></span>
                                     </div>
-                                    <div>
+                                    <div class="tw_type_trans">
                                         <span></span>
                                     </div>
-                                    <div>
+                                    <div class="tw_etat_prod">
                                         <span></span>
                                     </div>
-                                    <div>
+                                    <div class="tw_etape_prod">
+                                        <span></span>
+                                    </div>
+                                    <div class="tw_paiement">
                                         <span class="montant value total_paiement">
-                                            '. $total_reglement .'
+                                            '. $total_reglement . '
                                         </span>
                                     </div>
-                                    <div>
+                                    <div class="tw_reste">
                                         <span class="montant value total_reste">' . $total_reste . '</span>
                                     </div>
-                                    <div>
+                                    <div class="tw_montant_total">
                                    
-                                        <span class="montant value total_montant">'. $total_montant .'</span>
+                                        <span class="montant value total_montant">'. $total_montant . '</span>
                                     </div>
-                                    <div>
+                                    <div class="tw_date_conf">
+                                        <span></span>
+                                    </div>
+                                    <div class="tw_date_facture">
                                         <span></span>
                                     </div>
                                 </div>
@@ -353,35 +412,41 @@ class TropController extends AbstractController
             }
 
             $stringP .= '
-                        <div class="t_footer_row sous_tab_body tota_content">
-                            <div>
+                        <div class="t_footer_row sous_tab_body total_content">
+                            <div class="tw_client">
                                 <span>Total</span>
                             </div>
-                            <div>
+                            <div class="tw_details">
                                 <span></span>
                             </div>
-                            <div>
+                            <div class="tw_type_trans">
                                 <span></span>
                             </div>
-                            <div>
+                            <div class="tw_etat_prod">
                                 <span></span>
                             </div>
-                            <div>
+                            <div class="tw_etape_prod">
+                                <span></span>
+                            </div>
+                            <div class="tw_paiement">
                                 <span class="montant value" id="total_paiement">
                                     ' . $Total_Reglement . '
                                 </span>
                             </div>
-                            <div>
+                            <div class="tw_reste">
                                 <span class="montant value" id="total_reste">										
                                         ' . $Total_Reste . '
                                 </span>
                             </div>
-                            <div>
+                            <div class="tw_montant_total">
                                 <span class="montant value" id="total_montant">
                                         ' . $Total_Montant . '
                                 </span>
                             </div>
-                            <div>
+                            <div class="tw_date_conf">
+                                <span></span>
+                            </div>
+                            <div class="tw_date_facture">
                                 <span></span>
                             </div>
                         </div>
@@ -445,69 +510,83 @@ class TropController extends AbstractController
                         $date = $item->getDateConfirmation()->format("d-m-Y");
                     }
                     $string1 .= '
-    
-                            <div class="t_body_row sous_tab_body div_for_droping"
-                                    style="display:none !important;">
-                                <div>
-                                    <span>' . $item->getIdPro() . '</span>
+                                <div class="t_body_row sous_tab_body div_for_droping"
+                                    style="display:none !important;"
+                                > 
+                                    <div class="tw_client">
+                                        <span>' . $item->getIdPro() . '</span>
+                                    </div>
+                                    <div class="tw_details">
+                                        <span>' . $item->getDetail() . '</span>
+                                    </div>
+                                    <div class="tw_type_trans">
+                                        <span class="value">' . $item->getTypeTransaction() . '</span>
+                                    </div>
+                                    <div class="tw_etat_prod">
+                                        <span class="value">' . $item->getEtatProduction() . '</span>
+                                    </div>
+                                    <div class="tw_etape_prod">
+                                        <span class="value">45%</span>
+                                    </div>
+                                    <div class="tw_paiement">
+                                        <span class="montant value">' . $item->getTotalReglement() . '</span>
+                                    </div>
+                                    <div class="tw_reste">
+                                        <span class="montant">
+                                            ' . $reste . '
+                                        </span>
+                                    </div>
+                                    <div class="tw_montant_total">
+                                        <span class="montant">' . $item->getMontantTotal() . '</span>
+                                    </div>
+                                    <div class="tw_date_conf">
+                                        <span>
+                                        ' . $date . '
+                                        </span>
+                                    </div>
+                                    <div class="tw_date_facture">
+                                        <span>
+                                            date_facture ...
+                                        </span>
+                                    </div>
                                 </div>
-                                <div>
-                                    <span>' . $item->getDetail() . '</span>
-                                </div>
-                                <div>
-                                    <span class="value">' . $item->getTypeTransaction() . '</span>
-                                </div>
-                                <div>
-                                    <span class="value">' . $item->getEtatProduction() . '</span>
-                                </div>
-                                <div>
-                                    <span class="montant value">' . $item->getTotalReglement() . '</span>
-                                </div>
-                                <div>
-                                    <span class="montant">
-                                        ' . $reste . '
-                                    </span>
-                                </div>
-                                <div>
-                                    <span class="montant">' . $item->getMontantTotal() . '</span>
-                                </div>
-                                <div>
-                                    <span>
-                                       ' . $date . '
-                                    </span>
-                                </div>
-                            </div>
-                        ';
+                            ';
                 }
                 $stringP .= $string1;
 
                 $stringP .= '
                                 <div class="t_body_row sous_tab_body sous_total_content">
-                                    <div>
+                                    <div class="tw_client">
                                         <span>Sous-total</span> 
                                     </div>
-                                    <div>
+                                    <div class="tw_details">
                                         <span></span>
                                     </div>
-                                    <div>
+                                    <div class="tw_type_trans">
                                         <span></span>
                                     </div>
-                                    <div>
+                                    <div class="tw_etat_prod">
                                         <span></span>
                                     </div>
-                                    <div>
+                                    <div class="tw_etape_prod">
+                                        <span></span>
+                                    </div>
+                                    <div class="tw_paiement">
                                         <span class="montant value total_paiement">
                                             ' . $total_reglement . '
                                         </span>
                                     </div>
-                                    <div>
+                                    <div class="tw_reste">
                                         <span class="montant value total_reste">' . $total_reste . '</span>
                                     </div>
-                                    <div>
+                                    <div class="tw_montant_total">
                                    
                                         <span class="montant value total_montant">' . $total_montant . '</span>
                                     </div>
-                                    <div>
+                                    <div class="tw_date_conf">
+                                        <span></span>
+                                    </div>
+                                    <div class="tw_date_facture">
                                         <span></span>
                                     </div>
                                 </div>
@@ -520,38 +599,45 @@ class TropController extends AbstractController
             }
 
             $stringP .= '
-                        <div class="t_footer_row sous_tab_body tota_content">
-                            <div>
+                        <div class="t_footer_row sous_tab_body total_content">
+                            <div class="tw_client">
                                 <span>Total</span>
                             </div>
-                            <div>
+                            <div class="tw_details">
                                 <span></span>
                             </div>
-                            <div>
+                            <div class="tw_type_trans">
                                 <span></span>
                             </div>
-                            <div>
+                            <div class="tw_etat_prod">
                                 <span></span>
                             </div>
-                            <div>
+                            <div class="tw_etape_prod">
+                                <span></span>
+                            </div>
+                            <div class="tw_paiement">
                                 <span class="montant value" id="total_paiement">
                                     ' . $Total_Reglement . '
                                 </span>
                             </div>
-                            <div>
+                            <div class="tw_reste">
                                 <span class="montant value" id="total_reste">										
                                         ' . $Total_Reste . '
                                 </span>
                             </div>
-                            <div>
+                            <div class="tw_montant_total">
                                 <span class="montant value" id="total_montant">
                                         ' . $Total_Montant . '
                                 </span>
                             </div>
-                            <div>
+                            <div class="tw_date_conf">
+                                <span></span>
+                            </div>
+                            <div class="tw_date_facture">
                                 <span></span>
                             </div>
                         </div>
+                    
                     ';
             $data = json_encode($stringP);
             $response->headers->set('Content-Type', 'application/json');
@@ -668,13 +754,45 @@ class TropController extends AbstractController
         $data_session['pseudo_hotel'] = "tropical_wood";
 
         $nom_entreprise = $repoEntre->find($id_entreprise)->getNom();
-
+        $today = new \DateTime();
+        $now = $today->format("Y-m-d");
         //dd($nom_entreprise);
+
+        $d = $repoTrop->findAll();
+        // on clean les mauvaise formation de nom dans entreprise
+        foreach($d as $item){
+            $son_nom = $item->getEntreprise();
+            if (strpos($son_nom, "\n") !== false) {
+               $son_nom = str_replace("\n", " ", $son_nom);
+                $son_nom = trim(str_replace("  ", " ", $son_nom));
+                $item->setEntreprise($son_nom);
+                $manager->flush();
+            }
+        }
+        //dd("vita");
+
+        //pour le test 
+        
+          /*$ex = [];
+            foreach($d as $item){
+                $son_nom = $item->getEntreprise();
+                if (strpos($son_nom, "\n") !== false) {
+                $son_nom = str_replace("\n", " ", $son_nom);
+                    $son_nom = trim(str_replace("  ", " ", $son_nom));
+                    // on enlève le dernier espace
+                    array_push($ex, $son_nom);
+                    
+                } else {
+                    echo "Le mot n'existe pas!";
+                }
+            }
+
+            dd($ex);*/
+        
 
         $All_data_ne = $repoTrop->findBy(
             ['entreprise'    => $nom_entreprise],
             ['montant_total' => 'DESC']
-        
         );
         
         // Calcul des chiffres d'affaire
@@ -728,6 +846,7 @@ class TropController extends AbstractController
             "tab_trans_enc"     => $tab_trans_enc,
             "tab_trans_ter"     => $tab_trans_ter,
             "liste_pf"          => $liste_pf,
+            "today"             => $now,
         ]);
     }
 
@@ -832,34 +951,40 @@ class TropController extends AbstractController
                 $html .= '
                 
                     <div class="t_body_row sous_tab_body">
-                        <div>
+                        <div class="tw_client">
                             <span>'. $item->getIdPro() .'</span>
                         </div>
-                        <div>
+                        <div class="tw_details">
                             <span>'. $item->getDetail() .'</span>
                         </div>
-                        <div>
-                            <span class="value">'. $item->getTypeTransaction() .'/span>
+                        <div class="tw_type_trans">
+                            <span class="value">'. $item->getTypeTransaction() .'</span>
                         </div>
-                        <div>
-                            <span class="value">' . $item->getEtatProduction() .'</span>
+                        <div class="tw_etat_prod">
+                            <span class="value">' . $item->getEtatProduction() . '</span>
                         </div>
-                        <div>
+                        <div class="tw_etape_prod">
+                            <span class="value">' . $item->getEtapeProduction() . '</span>
+                        </div>
+                        <div class="tw_paiement">
                             <span class="montant value">'. $item->getTotalReglement() .'</span>
                             
                         </div>
-                        <div>
+                        <div class="tw_reste">
                             <span class="montant">
                                 '. $reste .'
                             </span>
                         </div>
-                        <div>
+                        <div class="tw_montant_total">
                             <span class="montant">'. $total_montant .'</span>
                         </div>
-                        <div>
+                        <div class="tw_date_conf">
                             <span>
-                                '. $date .'
+                                '. $date . '
                             </span>
+                        </div>
+                        <div class="tw_date_facture">
+                            <span></span>
                         </div>
                     </div>
                 
@@ -870,34 +995,40 @@ class TropController extends AbstractController
                 </div>
             </div>
             <div class="t_footer_row sous_tab_body total_content">
-                <div>
+                <div class="tw_client">
                     <span>Total</span>
                 </div>
-                <div>
+                <div class="tw_details">
                     <span></span>
                 </div>
-                <div>
+                <div class="tw_type_prod">
                     <span></span>
                 </div>
-                <div>
+                <div class="tw_etat_prod">
                     <span></span>
                 </div>
-                <div>
+                <div class="tw_etape_prod">
+                    <span></span>
+                </div>
+                <div class="tw_paiement">
                     <span class="montant value" id="total_paiement">
                     '. $total_total_reglement .'
                     </span>
                 </div>
-                <div>
+                <div class="tw_reste">
                     <span class="montant value" id="total_reste">
                         '. $total_reste .'
                     </span>
                 </div>
-                <div>
+                <div class="tw_montant_total">
                     <span class="montant value" id="total_montant">
-                        '. $total_total_montant .'
+                        '. $total_total_montant . '
                     </span>
                 </div>
-                <div>
+                <div class="tw_date_conf">
+                    <span></span>
+                </div>
+                <div class="tw_date_facture">
                     <span></span>
                 </div>
             </div>
@@ -990,37 +1121,44 @@ class TropController extends AbstractController
                 $total_reste += $reste;
                 $total_total_montant += $total_montant;
                 $total_total_reglement += $total_reglement;
+                // à retenir etape en % etat text ex facturé...
                 $html .= '
                 
                     <div class="t_body_row sous_tab_body">
-                        <div>
+                        <div class="tw_client">
                             <span>' . $item->getIdPro() . '</span>
                         </div>
-                        <div>
+                        <div class="tw_details">
                             <span>' . $item->getDetail() . '</span>
                         </div>
-                        <div>
-                            <span class="value">' . $item->getTypeTransaction() . '/span>
+                        <div class="tw_type_trans">
+                            <span class="value">' . $item->getTypeTransaction() . '</span>
                         </div>
-                        <div>
+                        <div class="tw_etat_prod">
                             <span class="value">' . $item->getEtatProduction() . '</span>
                         </div>
-                        <div>
+                        <div class="tw_etape_prod">
+                            <span class="value">' . $item->getEtapeProduction() . '</span>
+                        </div>
+                        <div class="tw_paiement">
                             <span class="montant value">' . $item->getTotalReglement() . '</span>
                             
                         </div>
-                        <div>
+                        <div class="tw_reste">
                             <span class="montant">
                                 ' . $reste . '
                             </span>
                         </div>
-                        <div>
+                        <div class="tw_montant_total">
                             <span class="montant">' . $total_montant . '</span>
                         </div>
-                        <div>
+                        <div class="tw_date_conf">
                             <span>
                                 ' . $date . '
                             </span>
+                        </div>
+                        <div class="tw_date_facture">
+                            <span></span>
                         </div>
                     </div>
                 
@@ -1031,34 +1169,40 @@ class TropController extends AbstractController
                 </div>
             </div>
             <div class="t_footer_row sous_tab_body total_content">
-                <div>
+                <div class="tw_client">
                     <span>Total</span>
                 </div>
-                <div>
+                <div class="tw_details">
                     <span></span>
                 </div>
-                <div>
+                <div class="tw_type_prod">
                     <span></span>
                 </div>
-                <div>
+                <div class="tw_etat_prod">
                     <span></span>
                 </div>
-                <div>
+                <div class="tw_etape_prod">
+                    <span></span>
+                </div>
+                <div class="tw_paiement">
                     <span class="montant value" id="total_paiement">
                     ' . $total_total_reglement . '
                     </span>
                 </div>
-                <div>
+                <div class="tw_reste">
                     <span class="montant value" id="total_reste">
                         ' . $total_reste . '
                     </span>
                 </div>
-                <div>
+                <div class="tw_montant_total">
                     <span class="montant value" id="total_montant">
                         ' . $total_total_montant . '
                     </span>
                 </div>
-                <div>
+                <div class="tw_date_conf">
+                    <span></span>
+                </div>
+                <div class="tw_date_facture">
                     <span></span>
                 </div>
             </div>
@@ -1270,10 +1414,10 @@ class TropController extends AbstractController
                     $date = $item->getDateRemarque()->format('d/m/Y');
                
                     $html .= '
-                        <tr>
+                        <tr class="trb_remarque_a_ter">
                             <td><span>'. $date .'</span></td>
-                            <td><span>'. $item->getConcerne() .'</span></td>
-                            <td>
+                            <td><span>'. $item->getConcerne() . '</span></td>
+                            <td class="tbd_remarque_a_ter">
                                 <p class="observation">
                                     '. $item->getObservation() .'
                                 </p>
@@ -1327,10 +1471,10 @@ class TropController extends AbstractController
 
                     $date = $item->getDateRemarque()->format('d/m/Y'); 
                     $html .= '
-                        <tr>
+                        <tr class="trb_remarque_a_ter">
                             <td><span>' . $date . '</span></td>
                             <td><span>' . $item->getConcerne() . '</span></td>
-                            <td>
+                            <td class="tbd_remarque_a_ter">
                                 <p class="observation">
                                     ' . $item->getObservation() . '
                                 </p>
@@ -1572,7 +1716,6 @@ class TropController extends AbstractController
             foreach ($Liste as $data) {
                 //dd($data['listes']);
                 $stringP .= '
-
                 <div>
                     ';
                 $string1 = '';
@@ -1580,14 +1723,17 @@ class TropController extends AbstractController
                 $total_reglement = 0;
                 $total_montant = 0;
                 foreach ($data['listes'] as $item) {
-                    $nom_entre = trim($data["entreprise"]);
                     
+                    $nom_entre = trim($data["entreprise"]);
+                    $nom_entre = preg_replace("# {2,}#", " ", preg_replace("#(\r\n|\n\r|\n|\r)#", " ", $nom_entre));
                     // $order   = array("\r\n", "\n", "\r", '""');
                     // $replace = ' ';
 
                     // // Traitement du premier \r\n, ils ne seront pas convertis deux fois.
                     // $nom_entre_new = str_replace($order, $replace, trim($nom_entre));
+                    
                     $id_entre = 1371;
+                    
                     if ($repoEntre->findOneByNom($nom_entre)) {
                         
                         $id_entre = $repoEntre->findOneByNom($nom_entre)->getId();
@@ -1732,6 +1878,7 @@ class TropController extends AbstractController
                 foreach ($data['listes'] as $item) {
                     
                     $nom_entre = $data["entreprise"];
+                    $nom_entre = preg_replace("# {2,}#", " ", preg_replace("#(\r\n|\n\r|\n|\r)#", " ", $nom_entre));
                     $id_entre = $repoEntre->findOneByNom($nom_entre)->getId();
 
                     $reste = $item->getMontantTotal() - $item->getTotalReglement();
@@ -1836,15 +1983,44 @@ class TropController extends AbstractController
         $response = new Response();
         if ($request->isXmlHttpRequest()) {
 
-            $input__entreprise_ajax = $request->get('input__entreprise_ajax');
+            /*$input__entreprise_ajax = $request->get('input__entreprise_ajax');
             $tri_reglement = $request->get('tri_reglement');
             $tri_reste = $request->get('tri_reste');
             $tri_montant = $request->get('tri_montant');
 
             $input__entreprise_ajax = explode("*", $input__entreprise_ajax);
 
-            $Liste = $repoTrop->searchEntrepriseContact($input__entreprise_ajax, $tri_reglement, $tri_reste, $tri_montant);
+            $Liste = $repoTrop->searchEntrepriseContact($input__entreprise_ajax, $tri_reglement, $tri_reste, $tri_montant);*/
 
+                $typeReglement = $request->get('tri_reglement');
+                $typeReste = $request->get('tri_reste');
+                $typeMontant = $request->get('tri_montant');
+
+                // ty no nijanonako farany taorianle connexion tapaka
+
+               /* $type_transaction = $request->get('type_transaction');
+                $type_transaction = explode("*", $type_transaction);
+                $etat_production = $request->get('etat_production');
+                $etat_production = explode("*", $etat_production);
+                $etat_paiement = $request->get('etat_paiement');
+                $etat_paiement = explode("*", $etat_paiement);
+                
+                if ($typeReglement == null && $typeReste == null && $typeMontant == null) {
+                    $typeMontant = "DESC";
+                }
+                
+                $Liste = $repoTrop->filtrer(
+                    $request->request->get('date1'),
+                    $request->request->get('date2'),
+                    $type_transaction,
+                    $etat_production,
+                    $etat_paiement,
+                    $typeReglement,
+                    $typeReste,
+                    $typeMontant
+            );
+             
+           
             $stringP = '';
             $Total_Reglement = 0;
             $Total_Reste = 0;
@@ -1859,7 +2035,9 @@ class TropController extends AbstractController
                 $total_reglement = 0;
                 $total_montant = 0;
                 foreach ($data['listes'] as $item) {
+                    
                     $nom_entre = $data["entreprise"];
+                    $nom_entre = preg_replace("# {2,}#", " ", preg_replace("#(\r\n|\n\r|\n|\r)#", " ", $nom_entre));
                     $id_entre = $repoEntre->findOneByNom($nom_entre)->getId();
                     
                     $reste = $item->getMontantTotal() - $item->getTotalReglement();
@@ -1939,8 +2117,8 @@ class TropController extends AbstractController
                                 </span>
                             </div>
                         </div>
-                    ';
-            $data = json_encode($stringP);
+                    ';*/
+            $data = json_encode($typeReglement);
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent($data);
             return $response;

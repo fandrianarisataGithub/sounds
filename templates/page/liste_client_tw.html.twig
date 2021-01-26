@@ -350,16 +350,16 @@
 			$('.a_tri').on('click', function(ev){
 				ev.preventDefault();
 				$.each($('.a_tri small'), function (indexInArray, valueOfElement) { 
-					 if($(this).hasClass('black')){
-						 $(this).removeClass('black');
-					 }
+					if($(this).hasClass('black')){
+						$(this).removeClass('black');
+					}
 				});
 				$(this).children("small").addClass('black');
 				var input__entreprise_ajax = $('#input__entreprise').val();
 				var son_data_type = $(this).attr('data-type');
 				var son_data_data = $(this).attr('data-data');
+				
 				if(input__entreprise_ajax != ""){
-
 					if(son_data_type == "total_reglement"){
 						load_by_button_ok(son_data_data, null, null);
 					}

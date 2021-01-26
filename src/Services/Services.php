@@ -109,5 +109,13 @@ class Services
             $tab_annee = [$annee, $prec];
             return $tab_annee;
         }
+        public function clean_word($word){
+            $result = "";
+            if (strpos($word, "\n") !== false) {
+                $word = str_replace("\n", " ", $word);
+                $result = trim(str_replace("  ", " ", $word));
+            }
+            return $result;
+        }
         
     } 

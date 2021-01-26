@@ -82,6 +82,26 @@ class DataTropicalWood
      */
     private $reste;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $date_facture;
+
+    /**
+     * @ORM\Column(type="float", nullable = true)
+     */
+    private $etape_production;
+
+    /**
+     * @ORM\Column(type="datetime", nullable = true)
+     */
+    private $date_paiement_prevu;
+
+    /**
+     * @ORM\Column(type="datetime", nullable = true)
+     */
+    private $date_paiement_effectif;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -250,6 +270,54 @@ class DataTropicalWood
     public function setReste(?float $reste): self
     {
         $this->reste = $reste;
+
+        return $this;
+    }
+
+    public function getDateFacture(): ?\DateTimeInterface
+    {
+        return $this->date_facture;
+    }
+
+    public function setDateFacture(\DateTimeInterface $date_facture): self
+    {
+        $this->date_facture = $date_facture;
+
+        return $this;
+    }
+
+    public function getEtapeProduction(): ?float
+    {
+        return $this->etape_production;
+    }
+
+    public function setEtapeProduction(?float $etape_production): self
+    {
+        $this->etape_production = $etape_production;
+
+        return $this;
+    }
+
+    public function getDatePaiementPrevu(): ?\DateTimeInterface
+    {
+        return $this->date_paiement_prevu;
+    }
+
+    public function setDatePaiementPrevu(?\DateTimeInterface $date_paiement_prevu): self
+    {
+        $this->date_paiement_prevu = $date_paiement_prevu;
+
+        return $this;
+    }
+
+    public function getDatePaiementEffectif(): ?\DateTimeInterface
+    {
+        return $this->date_paiement_effectif;
+    }
+
+    public function setDatePaiementEffectif(?\DateTimeInterface $date_paiement_effectif): self
+    {
+        $this->date_paiement_effectif = $date_paiement_effectif;
 
         return $this;
     }
