@@ -24,10 +24,10 @@
 				</div>
 				{# eto #}
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<div class="col-sm-12 col-xs-12">
+					<div class="col-sm-6 col-xs-6">
 						<h4 class="titre_gris">Date de confirmation:
 						</h4>
-						<form action="{{ path('tri.date_confirmation') }}" method="post">
+						<form action="" method="post">
 							<div class="form-group date_confirmation">
 								<span class="fa fa-calendar"></span>
 								<input type="date" name="date1" id="date1" class="date_conf-item" {% if date1 is defined %} value={{date1}} {% endif %}>
@@ -36,10 +36,25 @@
 								</span>
 								<input
 								type="date" name="date2" id="date2" class="date_conf-item" {% if date2 is defined %} value={{date2}} {% endif %}>
-							{# <button type = "submit" class="btn btn-primary btn-xs btn_filter filter_crj"><span>Filtrer</span></button> #}
 							</div>
 						</form>
 					</div>
+					<div class="col-sm-6 col-xs-6">
+						<h4 class="titre_gris">Date de facture:
+						</h4>
+						<form action="" method="post">
+							<div class="form-group date_confirmation">
+								<span class="fa fa-calendar"></span>
+								<input type="date" name="date3" id="date3" class="date_conf-item">
+								<span class="date_conf-item">
+									-
+								</span>
+								<input
+								type="date" name="date4" id="date4" class="date_conf-item">
+							</div>
+						</form>
+					</div>
+
 					<div class="col-sm-12 col-xs-12">
 						<h4 class="titre_gris">Type de transaction:
 						</h4>
@@ -71,13 +86,10 @@
 							<a href="#" {% if etat_production is defined %} {% if "Pose" in etat_production %} class="btn btn-default btn_dore" {% else %} class="btn btn-default btn_gris" {% endif %} {% else %} class="btn btn-default btn_gris" {% endif %} data="Pose">
 								<span>En pose</span>
 							</a>
-							<a href="#" {% if etat_production is defined %} {% if "Fini" in etat_production %} class="btn btn-default btn_dore" {% else %} class="btn btn-default btn_gris" {% endif %} {% else %} class="btn btn-default btn_gris" {% endif %} data="Fini">
-								<span>Fini</span>
+							<a href="#" {% if etat_production is defined %} {% if "A facturer" in etat_production %} class="btn btn-default btn_dore" {% else %} class="btn btn-default btn_gris" {% endif %} {% else %} class="btn btn-default btn_gris" {% endif %} data="A facturer">
+								<span>Fini - à Facturer</span>
 							</a>
-							<a href="#" {% if etat_production is defined %} {% if "A facturé" in etat_production %} class="btn btn-default btn_dore" {% else %} class="btn btn-default btn_gris" {% endif %} {% else %} class="btn btn-default btn_gris" {% endif %} data="A facturé">
-								<span>Fini - à Facturé</span>
-							</a>
-							<a href="#" {% if etat_production is defined %} {% if "Facturé" in etat_production %} class="btn btn-default btn_dore" {% else %} class="btn btn-default btn_gris" {% endif %} {% else %} class="btn btn-default btn_gris" {% endif %} data="Facturé">
+							<a href="#" {% if etat_production is defined %} {% if "Facturé" in etat_production %} class="btn btn-default btn_dore" {% else %} class="btn btn-default btn_gris" {% endif %} {% else %} class="btn btn-default btn_gris" {% endif %} data="facturé">
 								<span>Fini - Facturé</span>
 							</a>
 						</div>
@@ -506,6 +518,10 @@
 						'typeReglement'		: typeReglement,
 						'typeReste'			: typeReste,
 						'typeMontant'		: typeMontant,
+						'date1'				: $('#date1').val(),
+						'date2'				: $('#date2').val(),
+						'date3'				: $('#date3').val(),
+						'date4'				: $('#date4').val(),
 						},
 					beforeSend : function(){
 						$('.table_body').html(`
@@ -534,6 +550,32 @@
 					}
 				})
 			}
+			
+			// supprimer par ligne pf
+
+			$(document).on('click', '.btn_delete_pf', function(ev){
+				ev.preventDefault();
+				var data_id = $(this).attr('data-id');
+				var test = confirm("Voulez-vous vraiment supprimer cette ligne");
+				if(test == true){
+					$(this).parent().parent().hide();
+					$.ajax({
+						url : "/tropical_wood/delete_pf",
+						type : "POST",
+						data : {
+							"id" : data_id,
+						},
+						success : function(response){
+							if($response == "suppression ok"){
+								console.log("ok pour la suppression");	
+							}
+						},
+						error : function(){
+							alert('Error au niveau de la suppression id_pro');
+						}
+					})
+				}
+			})
 
 			$('#reinitialisation').on('click', function(ev){
 				ev.preventDefault();
@@ -743,8 +785,8 @@
 
 			$(document).on('click', '.btn_drop_data', function(ev){
 				ev.preventDefault();
-				$(".div_for_droping").hide();
-				$('.btn_drop_data span').removeClass('fa-angle-down');
+				//$(".div_for_droping").hide(); on peut voir plusieurs
+				//$('.btn_drop_data span').removeClass('fa-angle-down');
 				$('.btn_drop_data span').addClass('fa-angle-up');
 				// on drop ses details
 				if($(this).children('span').hasClass('fa-angle-up')){

@@ -83,7 +83,7 @@ class DataTropicalWood
     private $reste;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable = true)
      */
     private $date_facture;
 
@@ -279,7 +279,7 @@ class DataTropicalWood
         return $this->date_facture;
     }
 
-    public function setDateFacture(\DateTimeInterface $date_facture): self
+    public function setDateFacture(?\DateTimeInterface $date_facture): self
     {
         $this->date_facture = $date_facture;
 

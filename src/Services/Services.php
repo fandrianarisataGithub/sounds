@@ -110,11 +110,15 @@ class Services
             return $tab_annee;
         }
         public function clean_word($word){
+            
             $result = "";
             if (strpos($word, "\n") !== false) {
                 $word = str_replace("\n", " ", $word);
                 $result = trim(str_replace("  ", " ", $word));
+            }else{
+                $result  = $word;
             }
+            
             return $result;
         }
         
