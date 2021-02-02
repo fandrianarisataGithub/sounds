@@ -179,22 +179,7 @@ class TropController extends AbstractController
             // liste_entreprises présentes
 
         }
-        /*
-        // tsy atao rehefa voadio indray mandeha le base 
-
-        $liste_presente = $repoEntre->findAll();
-        // diovina
-        foreach($liste_presente as $item){
-            $c = $item->getContactEntrepriseTWs();
-            foreach($c as $con){
-                $item->removeContactEntrepriseTW($con);
-            }
-           $manager->remove($item);
-           $manager->flush();
-        }
-        // faran'ny fandiovana
-        */
-
+        
         // on crée les entreprise
 
         $all = $repoTrop->findAll();
@@ -213,13 +198,11 @@ class TropController extends AbstractController
                 }
            }
         }
-        
-       
-        
 
-        
-        
+        // });
+        //dd($Liste_cache);
         $datasAsc = $repoTrop->findAllGroupedAsc();
+        
         $Liste = [];
         //dd($datasAsc);
         foreach ($datasAsc as $d) {
@@ -284,7 +267,7 @@ class TropController extends AbstractController
     /**
      * @Route("/tropical_wood/delete_pf", name = "delete_pf")
      */
-    public function delete_pf(Request $request, DataTropicalWoodRepository $repoTrop, EntityManagerInterface $manager)
+    public function delete_pf(CacheInterface $cache_liste_tw, Request $request, DataTropicalWoodRepository $repoTrop, EntityManagerInterface $manager)
     {
         $response = new Response();
         if ($request->isXmlHttpRequest()) {
@@ -299,7 +282,8 @@ class TropController extends AbstractController
             if($test == null){
                 $data = json_encode("suppression ok");
             }
-            
+            // on delete le cache 
+            $cache_liste_tw->delete("init_tw");
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent($data);
         }
@@ -318,6 +302,7 @@ class TropController extends AbstractController
         if($request->isXmlHttpRequest()){
             
             $typeReglement = $request->get('typeReglement');
+            $filtre = $request->get('filtre');
             $typeReste = $request->get('typeReste');
             $typeMontant = $request->get('typeMontant'); 
             $type_transaction = $request->get('type_transaction');
@@ -331,6 +316,38 @@ class TropController extends AbstractController
                 $typeMontant = "DESC";
             }
             
+            //$Liste = [];
+            /*if($filtre == "filtrer"){
+                    $Liste = $repoTrop->filtrer(
+                        $request->request->get('date1'),
+                        $request->request->get('date2'),
+                        $request->request->get('date3'),
+                        $request->request->get('date4'),
+                        $type_transaction,
+                        $etat_production,
+                        $etat_paiement,
+                        $typeReglement,
+                        $typeReste,
+                        $typeMontant
+                    );
+            }
+            if ($filtre == "init") {
+                $Liste = $cache_init_tw->get('init_tw', function () use ($request, $type_transaction, $etat_production, $etat_paiement, $typeReglement, $typeReste, $typeMontant, $repoTrop) {
+                    return $repoTrop->filtrer(
+                        "",
+                        "",
+                        "",
+                        "",
+                        $type_transaction,
+                        $etat_production,
+                        $etat_paiement,
+                        $typeReglement,
+                        $typeReste,
+                        $typeMontant
+                    );
+                });
+            }*/
+
             $Liste = $repoTrop->filtrer(
                 $request->request->get('date1'),
                 $request->request->get('date2'),
@@ -344,7 +361,6 @@ class TropController extends AbstractController
                 $typeMontant
             );
             
-
             $stringP = '';
             $Total_Reglement = 0;
             $Total_Reste = 0;
@@ -362,7 +378,7 @@ class TropController extends AbstractController
                 <div>
                     <div class="t_body_row">
                         <div class="td_long" colspan="9">
-                            <a href="/tropical_wood/show_entreprise/' . $id_entre.'">
+                            <a href="/tropical_wood/show_entreprise/' . $id_entre. '" target=_blank>
                                 <span>' . $data["entreprise"] . '</span>
                             </a>
                         </div>
@@ -581,7 +597,7 @@ class TropController extends AbstractController
                 <div>
                     <div class="t_body_row">
                         <div class="td_long" colspan="9">
-                            <a href="/tropical_wood/show_entreprise/' . $id_entre . '">
+                            <a href="/tropical_wood/show_entreprise/' . $id_entre . '" target=_blank>
                                 <span>' . $data["entreprise"] . '</span>
                             </a>
                         </div>

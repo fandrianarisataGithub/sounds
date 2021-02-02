@@ -1805,9 +1805,6 @@ li#li_historique>a:hover span:last-child {
     margin-top: 15px;
 }
 
-#reinitialisation {
-    display: none;
-}
 
 .btn_black:hover {
     background: transparent !important;
@@ -6044,10 +6041,20 @@ table.small_tab tbody tr td {
 }
 .t_header_row>div.tw_paiement_trans,
 .t_header_row>div.tw_reste_trans,
-.t_header_row>div.tw_montant_total_trans{
+.t_header_row>div.tw_montant_total_trans,
+.t_header_row>div.tw_client_trans,
+.t_header_row>div.tw_details_trans,
+.t_header_row>div.tw_type_trans_trans,
+.t_header_row>div.tw_etape_prod_trans,
+.t_header_row>div.tw_etat_prod_trans,
+.t_header_row>div.tw_date_conf_trans{
     display: block !important;
     text-align: center!important;
     border-right: 1px solid rgba(255,255,255,0.2);
+}
+.t_header_row>div.tw_date_facture_trans{
+    display: block !important;
+    text-align: center!important;
 }
 .div_for_droping>div {
     margin-left: 0!important;
@@ -6183,10 +6190,20 @@ table.small_tab tbody tr td {
 }
 .t_header_row>div.tw_paiement,
 .t_header_row>div.tw_reste,
-.t_header_row>div.tw_montant_total{
+.t_header_row>div.tw_montant_total,
+.t_header_row>div.tw_client,
+.t_header_row>div.tw_details,
+.t_header_row>div.tw_type_trans,
+.t_header_row>div.tw_etat_prod,
+.t_header_row>div.tw_etape_prod,
+.t_header_row>div.tw_date_conf{
     display: block;
     text-align: center!important;
     border-right: 1px solid rgba(255,255,255,0.2);
+}
+.t_header_row>div.tw_date_facture{
+    display: block;
+    text-align: center!important;
 }
 
 .table_header .div_ca:not(:last-child) {

@@ -117,7 +117,7 @@
 								<input type="hidden" name="type_transaction" {% if type_transaction_text is defined %} value="{{type_transaction_text}}" {% else %} value="" {% endif %} id="form_type_transaction">
 								<input type="hidden" name="etat_production" {% if etat_production_text is defined %} value="{{etat_production_text}}" {% else %} value="" {% endif %} id="form_etat_production">
 								<input type="hidden" name="etat_paiement" {% if etat_paiement_text is defined %} value="{{etat_paiement_text}}" {% else %} value="" {% endif %} id="form_etat_paiement">
-								<button type="submit" class="btn btn-default btn_black">Filtrer</button>
+								<button type="submit" class="btn btn-default btn_black" id="btn_black_filtrer">Filtrer</button>
 								<a href="#" id="reinitialisation" class="btn btn-default btn_black">Reinitialisation</a>
 							</form>
 						</div>
@@ -466,12 +466,13 @@
 					}
 				}	
 			})
-			$('.btn_black').on('click', function(ev){
+			$('#btn_black_filtrer').on('click', function(ev){
 				ev.preventDefault();
-				load_by_btn_black(null, null, "DESC");
+				load_by_btn_black(null, null, "DESC", "filtrer");
 			})
 
-			function load_by_btn_black(typeReglement, typeReste, typeMontant){
+			function load_by_btn_black(typeReglement, typeReste, typeMontant, filtre){
+				// init prend soit la valeur init ou filtrer
 				$('#input__entreprise').val(""); // on vide cet input pour eviter les conflit avec le button ok du recherche
 				// on concatenne par * les données dans chaque liste
 				var data_type_trans = "";
@@ -522,6 +523,7 @@
 						'date2'				: $('#date2').val(),
 						'date3'				: $('#date3').val(),
 						'date4'				: $('#date4').val(),
+						"filtre"			: filtre,
 						},
 					beforeSend : function(){
 						$('.table_body').html(`
@@ -584,14 +586,26 @@
 				var data_type_trans = "";
 				var data_etat_prod = "";
 				var data_etat_paie = "";
+
+				liste_type_transaction = [];
+				liste_etat_production = [];
+				liste_etat_paiement = [];
+
+				// on remet tout à gris
+
+				$(".btn_dore").addClass('btn_gris');
+				$(".btn_gris").removeClass('btn_dore');
+
+				$("input[type=date]").val("");
 				
-				$.ajax({
+				/*$.ajax({
 					url : "/tropical_wood/tri_ajax_btn_black/tropical",
 					type : "POST",
 					data : {
 						'type_transaction' : data_type_trans,
 						'etat_production'  : data_etat_prod,
-						'etat_paiement'	   : data_etat_paie
+						'etat_paiement'	   : data_etat_paie,
+						''
 						},
 					beforeSend : function(){
 						$('.table_body').html(`
@@ -618,7 +632,8 @@
 					error : function(){
 						alert('erreur ajax ri_ajax_btn_black/tropical')
 					}
-				})
+				})*/
+				load_by_btn_black(null, null, "DESC", "init");
 			})
 
 			function lister_datas(){
@@ -662,7 +677,8 @@
 					data : {
 						'type_transaction' : data_type_trans,
 						'etat_production'  : data_etat_prod,
-						'etat_paiement'	   : data_etat_paie
+						'etat_paiement'	   : data_etat_paie,
+						"filtre"		   : "init",
 						},
 					beforeSend : function(){
 						$('.table_body').html(`
