@@ -1642,8 +1642,17 @@ li#li_historique>a:hover span:last-child {
 
 .import_trop {
     margin-bottom: 20px !important;
+    
+    position: absolute;
+    top: 0px;
+    padding: 0!important;
 }
-
+.import_trop h3{
+    display: none;
+}
+.import_trop form{
+margin-top: 0 !important;
+}
 .div__form_upload_excel h3 {
     font-size: 15px;
     text-align: center;

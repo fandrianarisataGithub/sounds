@@ -11,6 +11,7 @@ use App\Entity\RemarqueEntrepriseTW;
 use App\Repository\ContactTwRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\EntrepriseTWRepository;
+use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\DataTropicalWoodRepository;
@@ -18,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ContactEntrepriseTWRepository;
 use App\Repository\RemarqueEntrepriseTWRepository;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -27,7 +29,7 @@ class TropController extends AbstractController
     /**
      * @Route("/tropical_wood/home_tropical_wood", name="tropical_wood")
     */
-    public function tropical_wood(SessionInterface $session, Request $request, Services $services, EntityManagerInterface $manager, DataTropicalWoodRepository $repoTrop, EntrepriseTWRepository $repoEntre)
+    public function tropical_wood(CacheInterface $cache_init_tw, SessionInterface $session, Request $request, Services $services, EntityManagerInterface $manager, DataTropicalWoodRepository $repoTrop, EntrepriseTWRepository $repoEntre)
     {
         // $test = $repoTrop->findAllGroupedByEntreprise();
         // dd($test);
@@ -93,7 +95,7 @@ class TropController extends AbstractController
                 $detail = $d_aff[$i][3];
                
                 $etat_production = $d_aff[$i][6];
-                // déjà le reste n'est plus à calculer
+                // déjà le reste n'est plus à calculer:
                 $montant_total = $services->no_space(str_replace(",", " ", $d_aff[$i][10]));
                 $reste =  $services->no_space(str_replace(",", " ", $d_aff[$i][7])); // reste
                 $montant_avance = $services->no_space(str_replace(",", " ", $d_aff[$i][9]));
@@ -165,19 +167,14 @@ class TropController extends AbstractController
                         $data_tw->setTotalReglement($montant_avance);
                         $data_tw->setDateConfirmation($date_confirmation);
                         $manager->persist($data_tw);
-                        
                     }
                     
                 }
                 $manager->flush();
                 
             }
-            
-            
-            
             // on re_actualise la tab entreprise_contact
             // liste_entreprises présentes
-
         }
         
         // on crée les entreprise
@@ -198,66 +195,43 @@ class TropController extends AbstractController
                 }
            }
         }
+        $Liste = $cache_init_tw->get('init_tw', function () use ($repoTrop) {
+            return $repoTrop->filtrer(
+                "",
+                "",
+                "",
+                "",
+                [0 => ""],
+                [0 => ""],
+                [0 => ""],
+                null,
+                null,
+                "DESC"
+            );
+        });
+        /*$cache = new FilesystemAdapter();
+        $Liste = $cache->get('my_cache_key', function (ItemInterface $item) use ($repoTrop){
+            $item->expiresAfter(3600);
+            //$repoTrop = $this->getDoctrine()->getRepository(DataTropicalWood::class);
+            return $repoTrop->filtrer(
+                "",
+                "",
+                "",
+                "",
+                [0 => ""],
+                [0 => ""],
+                [0 => ""],
+                null,
+                null,
+                "DESC"
+            );
 
-        // });
-        //dd($Liste_cache);
-        $datasAsc = $repoTrop->findAllGroupedAsc();
-        
-        $Liste = [];
-        //dd($datasAsc);
-        foreach ($datasAsc as $d) {
-            $tab_temp = [];
-            $son_entreprise = $d[0]->getEntreprise();
-            $liste = $repoTrop->findBy(["entreprise" => $son_entreprise]);
-
-            $tab_temp["entreprise"] = $son_entreprise;
-            $tab_temp["listes"] = $liste;
-            $tab_temp["sous_total_montant_total"] = $d["sous_total_montant_total"];
-            $tab_temp["sous_total_total_reglement"] = $d["sous_total_total_reglement"];
-            $tab_temp["total_reste"] = $d["total_reste"];
-            array_push($Liste, $tab_temp);
-        }
-        // dd($Liste);
-
-        if ($request->request->count()) {
-            $type_transaction = $request->request->get('type_transaction');
-            $type_transaction = explode("*", $type_transaction);
-            $etat_production = $request->request->get('etat_production');
-            $etat_production = explode("*", $etat_production);
-            $etat_paiement = $request->request->get('etat_paiement');
-            $etat_paiement = explode("*", $etat_paiement);
-            $Liste = $repoTrop->filtrer(
-                $request->request->get('date1'), 
-                $request->request->get('date2'),
-                $request->request->get('date3'),
-                $request->request->get('date4'), 
-                $type_transaction, $etat_production, $etat_paiement, 
-                null, null, "DESC"
-            ); // typeReglement, typeReste, typeMontant
-            //dd($les_datas);
-            return $this->render('page/tropical_wood.html.twig', [
-                "hotel"                     => $data_session['pseudo_hotel'],
-                "current_page"              => $data_session['current_page'],
-                "form_add"                  => $form_add->createView(),
-                'datas'                     => $Liste,
-                'tri'                       => false,
-                'date1'                     => $request->request->get('date1'),
-                'date2'                     => $request->request->get('date2'),
-                'type_transaction'          => $type_transaction,
-                'type_transaction_text'     => $request->request->get('type_transaction'),
-                'etat_production'           => $etat_production,
-                'etat_production_text'      => $request->request->get('etat_production'),
-                'etat_paiement'             => $etat_paiement,
-                'etat_paiement_text'        => $request->request->get('etat_paiement'),
-                'tropical_wood'             => true,
-                "id_page"                   => "li__dashboard_tw",
-            ]);
-        }
+        });*/
+        //dd($Liste);
         return $this->render('page/tropical_wood.html.twig', [
             "hotel"             => $data_session['pseudo_hotel'],
             "current_page"      => $data_session['current_page'],
             "form_add"          => $form_add->createView(),
-            'datas'             => $Liste,
             'tri'               => false,
             'tropical_wood'     => true,
             "id_page"                   => "li__dashboard_tw",
@@ -274,7 +248,6 @@ class TropController extends AbstractController
 
             $id = $request->get('id');
             $data = $repoTrop->find($id);
-           
             $manager->remove($data);
             $manager->flush();
             $test = $repoTrop->find($id);
@@ -293,7 +266,7 @@ class TropController extends AbstractController
     /**
      * @Route("/tropical_wood/tri_ajax_btn_black/tropical", name = "tri_ajax_btn_black")
      */
-    public function tri_ajax_btn_black(Request $request, DataTropicalWoodRepository $repoTrop, SessionInterface $session, EntrepriseTWRepository $repoEntre)
+    public function tri_ajax_btn_black(CacheInterface $cache_liste_tw, Request $request, DataTropicalWoodRepository $repoTrop, SessionInterface $session, EntrepriseTWRepository $repoEntre)
     {
         $response = new Response();
         $data_session = $session->get('hotel');
@@ -311,13 +284,13 @@ class TropController extends AbstractController
             $etat_production = explode("*", $etat_production);
             $etat_paiement = $request->get('etat_paiement');
             $etat_paiement = explode("*", $etat_paiement);
-            
+           
             if ($typeReglement == null && $typeReste == null && $typeMontant == null) {
                 $typeMontant = "DESC";
             }
             
-            //$Liste = [];
-            /*if($filtre == "filtrer"){
+            $Liste = [];
+            if($filtre == "filtrer"){
                     $Liste = $repoTrop->filtrer(
                         $request->request->get('date1'),
                         $request->request->get('date2'),
@@ -332,35 +305,56 @@ class TropController extends AbstractController
                     );
             }
             if ($filtre == "init") {
-                $Liste = $cache_init_tw->get('init_tw', function () use ($request, $type_transaction, $etat_production, $etat_paiement, $typeReglement, $typeReste, $typeMontant, $repoTrop) {
+                $Liste = $cache_liste_tw->get('init_tw', function () use ($repoTrop){
                     return $repoTrop->filtrer(
                         "",
                         "",
                         "",
                         "",
-                        $type_transaction,
-                        $etat_production,
-                        $etat_paiement,
-                        $typeReglement,
-                        $typeReste,
-                        $typeMontant
+                        [0=>""],
+                        [0=>""],
+                        [0=>""],
+                        null,
+                        null,
+                        "DESC"
                     );
-                });
-            }*/
 
-            $Liste = $repoTrop->filtrer(
-                $request->request->get('date1'),
-                $request->request->get('date2'),
-                $request->request->get('date3'),
-                $request->request->get('date4'),
-                $type_transaction,
-                $etat_production,
-                $etat_paiement,
-                $typeReglement,
-                $typeReste,
-                $typeMontant
-            );
-            
+                });
+
+                // $cache = new FilesystemAdapter();
+                // $Liste = $cache->get('my_cache_key', function (ItemInterface $item) use ($repoTrop) {
+                //     $item->expiresAfter(3600);
+                //     //$repoTrop = $this->getDoctrine()->getRepository(DataTropicalWood::class);
+                //     return $repoTrop->filtrer(
+                //         "",
+                //         "",
+                //         "",
+                //         "",
+                //         [0 => ""],
+                //         [0 => ""],
+                //         [0 => ""],
+                //         null,
+                //         null,
+                //         "DESC"
+                //     );
+                // });
+               
+            }
+
+            // $Liste = $repoTrop->filtrer(
+            //     $request->request->get('date1'),
+            //     $request->request->get('date2'),
+            //     $request->request->get('date3'),
+            //     $request->request->get('date4'),
+            //     $type_transaction,
+            //     $etat_production,
+            //     $etat_paiement,
+            //     $typeReglement,
+            //     $typeReste,
+            //     $typeMontant
+            // );
+            // dd($filtre);
+            // dd($Liste);
             $stringP = '';
             $Total_Reglement = 0;
             $Total_Reste = 0;
@@ -461,7 +455,7 @@ class TropController extends AbstractController
                                         </span>
                                     </div>
                                 </div>
-                            ';
+                            '; 
                         }
                     
                         $stringP .= $string1 ;
