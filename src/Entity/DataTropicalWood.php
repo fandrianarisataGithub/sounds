@@ -102,6 +102,11 @@ class DataTropicalWood
      */
     private $date_paiement_effectif;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $createdAt;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -318,6 +323,18 @@ class DataTropicalWood
     public function setDatePaiementEffectif(?\DateTimeInterface $date_paiement_effectif): self
     {
         $this->date_paiement_effectif = $date_paiement_effectif;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

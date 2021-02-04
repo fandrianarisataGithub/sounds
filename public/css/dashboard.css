@@ -6304,11 +6304,65 @@ tr td.t_concerne_rem {
     padding-top: 35px;
 }
 
+ul.categories>li{
+    padding-left: 55px !important;
+}
 
-/* fin anim header fixed */
+/* tableau liste changement */
 
+.unite_date_changement{
+    
+}
+.date_changement{
+    width: 100% !important;
+    border-bottom: 1px solid rgba(204, 204, 204, 0.8);
+    display: flex;
+    height: 35px;
+    justify-content: start;
+    align-items: center;
+}
+.date_changement div.inner_date{
+    
+    width: 200px;
+    text-align: center;
+}
+.loop_client{
+   
+    width: 100% !important;
+}
+.unite_client_tw{
+   width: 100% !important;
+    border-bottom: 1px solid rgba(204, 204, 204, 0.4);
+    display: flex;
+    height: 35px;
+    justify-content: start;
+    align-items: center;
+}
+.unite_client_entreprise{
+    width: 200px;
+    height: auto !important;
+    text-align: center; 
+    text-align: start;
+    padding-left: 15px;
+}
+.unite_pf{
+    display: flex;
+    border-bottom: 1px solid rgba(204, 204, 204, 0.2);
+    height: 35px;
+    
+}
 
-/* fin liste choices pf */
-
-
-/* / fin style contact show entreprise*/
+.div_change{
+   
+    min-height: 10px;
+    width: calc(100% / 4) !important;
+    flex-shrink: 0 !important;
+    text-align: start;
+    display: flex;
+    align-items: center;
+}
+.loop_pf{
+    display: flex;
+    height: 35px;
+    border-bottom: 1px solid rgba(204, 204, 204, 0.2);
+}

@@ -1,0 +1,178 @@
+{% extends "base.html.twig" %}
+{% block title %}
+	Liste clients
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">	
+{% endblock %}
+
+{% block body %}
+
+	<section id="contents" class="content_tropical container-fluid">
+		<!-- entete content -->
+		{% include "nav2.html.twig" %}
+		<!-- / entete content -->
+		<!-- contenue  -->
+			<div id="hrs_content"> 
+                <div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+                        <section class="section_part" id="section_part_top">
+                            <div class="sous_titre sous_titre_tw">
+                                <h3>Liste des changements</h3>
+                            </div>
+                        </section>
+                    </div>
+                    
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<div class="tableau_tropical">
+						<div class="table_content">
+							<div class="table_header" id="myHeader">
+								<div class="t_header_row">
+									<div class="div_change">
+										<span></span>
+									</div>
+									<div class="div_change">
+										<span>Changement</span>
+									</div>
+									<div class="div_change">
+										<span>Ancienne donnée</span>
+									</div>
+                                    <div class="div_change">
+										<span>Nouvelle donnée</span>
+									</div>
+								</div>
+							</div>
+							<div class="table_body">
+                            {# boucle par date #}
+                                <div class="t_body_row unite_date_changement">
+                                    <div class="date_changement">
+                                        <div class="inner_date">
+                                            <span>date1</span>
+                                            <span class="tiret">-</span>
+                                            <span>date2</span>
+                                        </div>
+                                        <button clicked="false" class="btn_drop_data btn btn-warning btn-xs">
+                                            <span class="fa fa-angle-up"></span>
+                                        </button>
+                                    </div>
+                                    {# boucle entreprise #}
+                                    <div class="loop_client">
+                                        <div class="unite_client_tw">
+                                            <div class="unite_client_entreprise">
+                                               <span>Client</span>
+                                            </div>
+                                            <button clicked="false" class="btn_drop_data btn btn-warning btn-xs">
+                                                <span class="fa fa-angle-up"></span>
+                                            </button>
+                                        </div>
+                                        {# boucle liste pf #}
+                                        <div class="loop_liste_pf">
+                                            {# pf #}
+                                            <div class="unite_client_tw">
+                                                <div class="unite_client_entreprise">
+                                                    <span>Proforma 1</span>
+                                                </div>
+                                                <button clicked="false" class="btn_drop_data btn btn-warning btn-xs">
+                                                    <span class="fa fa-angle-up"></span>
+                                                </button>
+                                            </div>
+                                            {# fin pf #}
+                                            {# boucle pf #}
+                                            <div class="loop_pf">
+                                                <div class="div_change">
+                                                    <span></span>
+                                                </div>
+                                                <div class="div_change">
+                                                    <span>Changement</span>
+                                                </div>
+                                                <div class="div_change">
+                                                    <span>Ancienne donnée</span>
+                                                </div>
+                                                <div class="div_change">
+                                                    <span>Nouvelle donnée</span>
+                                                </div>
+                                            </div>
+                                            <div class="loop_pf">
+                                                <div class="div_change">
+                                                    <span></span>
+                                                </div>
+                                                <div class="div_change">
+                                                    <span>Changement</span>
+                                                </div>
+                                                <div class="div_change">
+                                                    <span>Ancienne donnée</span>
+                                                </div>
+                                                <div class="div_change">
+                                                    <span>Nouvelle donnée</span>
+                                                </div>
+                                            </div>
+                                            {# fin boucle pf #}
+                                        </div>
+                                        <div class="loop_liste_pf">
+                                            {# pf #}
+                                            <div class="unite_client_tw">
+                                                <div class="unite_client_entreprise">
+                                                    <span>Proforma 2</span>
+                                                </div>
+                                                <button clicked="false" class="btn_drop_data btn btn-warning btn-xs">
+                                                    <span class="fa fa-angle-up"></span>
+                                                </button>
+                                            </div>
+                                            {# fin pf #}
+                                            {# boucle pf #}
+                                            <div class="loop_pf">
+                                                <div class="div_change">
+                                                    <span></span>
+                                                </div>
+                                                <div class="div_change">
+                                                    <span>Changement</span>
+                                                </div>
+                                                <div class="div_change">
+                                                    <span>Ancienne donnée</span>
+                                                </div>
+                                                <div class="div_change">
+                                                    <span>Nouvelle donnée</span>
+                                                </div>
+                                            </div>
+                                            <div class="loop_pf">
+                                                <div class="div_change">
+                                                    <span></span>
+                                                </div>
+                                                <div class="div_change">
+                                                    <span>Changement</span>
+                                                </div>
+                                                <div class="div_change">
+                                                    <span>Ancienne donnée</span>
+                                                </div>
+                                                <div class="div_change">
+                                                    <span>Nouvelle donnée</span>
+                                                </div>
+                                            </div>
+                                            {# fin boucle pf #}
+                                        </div>
+                                        {# fin boucle liste pf #}
+                                    </div>
+                                    {# fin boucle entreprise #}
+                                </div>
+                            {# fin boucle par date  #}
+							</div>
+						</div>
+					</div>
+				</div>
+                </div>
+		</div>
+		<!-- / contenue  -->
+	</section>
+{% endblock %}
+
+{% block javascripts %}
+	<script src="{{ asset('js/cleave.min.js') }}"></script>
+	<script>
+		
+		
+
+		
+	</script>
+{% endblock %}
+

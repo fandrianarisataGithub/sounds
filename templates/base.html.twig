@@ -348,10 +348,6 @@
 									>
 										<a
 											href="{{ path('tropical_wood') }}">
-											<i aria-hidden="true" id="client" style="opacity:0 !important">
-												<img src="{{ asset('images/client.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-											</i>
-											
 											<span>Tableau de bord client</span>
 										</a>
 									</li>
@@ -361,12 +357,16 @@
 										{% endif %}
 									>
 										<a href="{{ path('liste_client_tw') }}">
-											<i aria-hidden="true" id="client" style="opacity:0 !important">
-												<img src="{{ asset('images/client.png') }}" alt="icone bed 1" class="img-responsive nav_icone" width="40">
-											</i>
+											
 											<span>Fiche client</span>
 										</a>
 									</li>
+									<li {% if id_page is defined and id_page=="li_liste_changement" %} id="li_liste_changement" {% endif %}>
+										<a href="{{ path('liste_changement_pf') }}">
+											<span>Liste changement</span>
+										</a>
+									</li>
+
 								</ul>
 
 							{% endif %}

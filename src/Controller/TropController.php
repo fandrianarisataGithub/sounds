@@ -37,7 +37,9 @@ class TropController extends AbstractController
         $data_session['pseudo_hotel'] = "tropical_wood";
         $form_add = $this->createForm(FournisseurFileType::class);
         $form_add->handleRequest($request);
-        
+        $today = new \Datetime();
+        $today = $today->format("Y-m-d");
+        $today = date_create($today);
         $all_entreprises = $repoEntre->findAllNomEntreprise();
         $d = $repoTrop->findAll();
         if ($form_add->isSubmitted() && $form_add->isValid()) {
@@ -135,26 +137,63 @@ class TropController extends AbstractController
                 // on teste l'unicité de idPro
                 $dataTrop = $repoTrop->findOneByIdPro($idPro);
                 // dd($dataTrop);
+                $tab_change = [];
                 if($dataTrop != null){
-                    $dataTrop->setIdPro($idPro);
-                    $dataTrop->setTypeTransaction($type_transaction);
-                    $dataTrop->setEntreprise($entreprise);
-                    $dataTrop->setDetail($detail);
-                    $dataTrop->setEtatProduction($etat_production);
-                    $dataTrop->setMontantTotal($montant_total);
-                    $dataTrop->setReste($reste);
-                    $dataTrop->setTotalReglement($montant_avance);
-                    $dataTrop->setDateConfirmation($date_confirmation);
-                    $dataTrop->setDateFacture($date_facture);
-                    // on enlève le signe % s'il existe dans etape prod
+                    // s'il ya un ou des changements
                     $etape_production = floatVal(trim(str_replace("%", "", $etape_production)));
-                    $dataTrop->setEtapeProduction($etape_production);
+                    $son_type_trans = $dataTrop->getTypeTransaction() ;
+                    $son_entreprise = $dataTrop->getEntreprise();
+                    $son_detail = $dataTrop->getDetail();
+                    $son_etat_prod =  $dataTrop->getEtatProduction();
+                    $son_montant = $dataTrop->getMontantTotal();
+                    $son_reste = $dataTrop->getReste();
+                    $son_total_reglement =  $dataTrop->getTotalReglement();
+                    $sa_date_conf =  $dataTrop->getDateConfirmation();
+                    $sa_date_fact = $dataTrop->getDateFacture();
+                    $son_etape_prod = $dataTrop->getEtapeProduction();
+                    $synthese = [
+                        "entreprise"    => $dataTrop->getEntreprise(),
+                        "id_pro"        => $dataTrop->getIdPro(),
+                        "date_avant"    => $dataTrop->getCreatedAt(),
+                        "date_MAJ"      => $today,
+                        "liste_changement"=> []
+                    ];
+                    // ancien tab 
+                    $ancien = [
                     
-                    
+                        "type_transaction"  => $son_type_trans,
+                        "details"           => $son_detail,
+                        "etat_production"   => $son_etat_prod,
+                        "montant_total"     => $son_montant,
+                        "reste"             => $son_reste,
+                        "total_reglement"   => $son_total_reglement,
+                        "date_confirmation" => $sa_date_conf,
+                        "date_facture"      => $sa_date_fact,
+                        "etape_production"  => $son_etape_prod
+                    ];
+                    $nouveau = [
+
+                        "type_transaction"  => $type_transaction,
+                        "details"           => $detail,
+                        "etat_production"   => $etat_production,
+                        "montant_total"     => $montant_total,
+                        "reste"             => $reste,
+                        "total_reglement"   => $montant_avance,
+                        "date_confirmation" => $date_confirmation,
+                        "date_facture"      => $date_facture,
+                        "etape_production"  => $etape_production
+                    ];
+                    foreach($ancien as $key => $value){
+                        if($ancien[$key] != $nouveau[$key]){
+                            array_push($synthese["liste_changement"], $key);
+                        }
+                    }
+                    dd($synthese);
                 }else if($dataTrop == null){
                     
                     if($idPro != null && $entreprise != null){
                         $data_tw->setIdPro($idPro);
+                        $data_tw->setCreatedAt($today);
                         $data_tw->setTypeTransaction($type_transaction);
                         $data_tw->setEntreprise($entreprise);
                         $data_tw->setDetail($detail);
@@ -850,6 +889,24 @@ class TropController extends AbstractController
             "id_page"                   => "li_entreprise_contact",
         ]);
     }
+
+    /**
+     * @Route("/tropical_wood/liste_changement_pf", name="liste_changement_pf")
+     */
+    public function liste_changement_pf(CacheInterface $cache_demande, SessionInterface $session, Request $request, Services $services, EntityManagerInterface $manager, DataTropicalWoodRepository $repoTrop)
+    {
+        $data_session = $session->get('hotel');
+        $data_session['pseudo_hotel'] = "tropical_wood";
+       
+        return $this->render('page/liste_changement.html.twig', [
+            "hotel"             => $data_session['pseudo_hotel'],
+            "current_page"      => $data_session['current_page'],
+            'tri'               => false,
+            'tropical_wood'     => true,
+            "id_page"                   => "li_liste_changement",
+        ]);
+    }
+
     /**
      * @Route("/tropical_wood/show_entreprise/{id_entreprise}", name="show_entreprise")
      */
