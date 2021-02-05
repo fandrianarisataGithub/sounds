@@ -45,116 +45,70 @@
 							</div>
 							<div class="table_body">
                             {# boucle par date #}
+                                {% for Item  in Tableau %}
                                 <div class="t_body_row unite_date_changement">
                                     <div class="date_changement">
                                         <div class="inner_date">
-                                            <span>date1</span>
-                                            <span class="tiret">-</span>
-                                            <span>date2</span>
+                                            <span>{{ Item['date_interval'] }}</span>
                                         </div>
                                         <button clicked="false" class="btn_drop_data btn btn-warning btn-xs">
                                             <span class="fa fa-angle-up"></span>
                                         </button>
                                     </div>
                                     {# boucle entreprise #}
-                                    <div class="loop_client">
-                                        <div class="unite_client_tw">
-                                            <div class="unite_client_entreprise">
-                                               <span>Client</span>
-                                            </div>
-                                            <button clicked="false" class="btn_drop_data btn btn-warning btn-xs">
-                                                <span class="fa fa-angle-up"></span>
-                                            </button>
-                                        </div>
-                                        {# boucle liste pf #}
-                                        <div class="loop_liste_pf">
-                                            {# pf #}
+                                    {% for item_client in Item['liste_client'] %}
+                                        <div class="loop_client">
                                             <div class="unite_client_tw">
                                                 <div class="unite_client_entreprise">
-                                                    <span>Proforma 1</span>
+                                                    <span>{{ item_client['nom_client'] }}</span>
                                                 </div>
                                                 <button clicked="false" class="btn_drop_data btn btn-warning btn-xs">
                                                     <span class="fa fa-angle-up"></span>
                                                 </button>
                                             </div>
-                                            {# fin pf #}
-                                            {# boucle pf #}
-                                            <div class="loop_pf">
-                                                <div class="div_change">
-                                                    <span></span>
+                                            {# boucle liste pf #}
+                                            {% for item_pf in item_client['liste_pf'] %}
+                                                <div
+                                                    class="loop_liste_pf">
+                                                    {# pf #}
+                                                    <div class="unite_client_tw">
+                                                        <div class="unite_client_entreprise">
+                                                            <span>{{ item_pf['id_pro'] }}</span>
+                                                        </div>
+                                                        <button clicked="false" class="btn_drop_data btn btn-warning btn-xs">
+                                                            <span class="fa fa-angle-up"></span>
+                                                        </button>
+                                                    </div>
+                                                    {# fin pf #}
+                                                    {# boucle pf #}
+                                                    {% for item_changement in item_pf['liste_changement'] %}
+                                                        <div class="loop_pf">
+                                                            <div class="div_change">
+                                                                <span></span>
+                                                            </div>
+                                                            <div class="div_change">
+                                                                <span>{{ item_changement['nom'] }}</span>
+                                                            </div>
+                                                            <div class="div_change">
+                                                                <span>{{ item_changement['last_data'] }}</span>
+                                                            </div>
+                                                            <div class="div_change">
+                                                                <span>{{ item_changement['next_data'] }}</span>
+                                                            </div>
+                                                        </div>
+
+                                                    {% endfor %}
+                                                    {# fin boucle pf #}
                                                 </div>
-                                                <div class="div_change">
-                                                    <span>Changement</span>
-                                                </div>
-                                                <div class="div_change">
-                                                    <span>Ancienne donnée</span>
-                                                </div>
-                                                <div class="div_change">
-                                                    <span>Nouvelle donnée</span>
-                                                </div>
-                                            </div>
-                                            <div class="loop_pf">
-                                                <div class="div_change">
-                                                    <span></span>
-                                                </div>
-                                                <div class="div_change">
-                                                    <span>Changement</span>
-                                                </div>
-                                                <div class="div_change">
-                                                    <span>Ancienne donnée</span>
-                                                </div>
-                                                <div class="div_change">
-                                                    <span>Nouvelle donnée</span>
-                                                </div>
-                                            </div>
-                                            {# fin boucle pf #}
+
+                                            {% endfor %}
+                                            {# fin boucle liste pf #}
                                         </div>
-                                        <div class="loop_liste_pf">
-                                            {# pf #}
-                                            <div class="unite_client_tw">
-                                                <div class="unite_client_entreprise">
-                                                    <span>Proforma 2</span>
-                                                </div>
-                                                <button clicked="false" class="btn_drop_data btn btn-warning btn-xs">
-                                                    <span class="fa fa-angle-up"></span>
-                                                </button>
-                                            </div>
-                                            {# fin pf #}
-                                            {# boucle pf #}
-                                            <div class="loop_pf">
-                                                <div class="div_change">
-                                                    <span></span>
-                                                </div>
-                                                <div class="div_change">
-                                                    <span>Changement</span>
-                                                </div>
-                                                <div class="div_change">
-                                                    <span>Ancienne donnée</span>
-                                                </div>
-                                                <div class="div_change">
-                                                    <span>Nouvelle donnée</span>
-                                                </div>
-                                            </div>
-                                            <div class="loop_pf">
-                                                <div class="div_change">
-                                                    <span></span>
-                                                </div>
-                                                <div class="div_change">
-                                                    <span>Changement</span>
-                                                </div>
-                                                <div class="div_change">
-                                                    <span>Ancienne donnée</span>
-                                                </div>
-                                                <div class="div_change">
-                                                    <span>Nouvelle donnée</span>
-                                                </div>
-                                            </div>
-                                            {# fin boucle pf #}
-                                        </div>
-                                        {# fin boucle liste pf #}
-                                    </div>
+
+                                    {% endfor %}
                                     {# fin boucle entreprise #}
                                 </div>
+                                {% endfor %}
                             {# fin boucle par date  #}
 							</div>
 						</div>

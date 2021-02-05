@@ -3,22 +3,34 @@
 namespace App\Controller;
 
 use App\Services\Services;
+use App\Entity\ChangementPF;
 use App\Entity\EntrepriseTW;
+use App\Entity\ClientUpdated;
+use App\Entity\ListePFUpdated;
+use App\Entity\ListeChangement;
 use App\Entity\DataTropicalWood;
+use App\Entity\IntervalChangePF;
 use App\Form\FournisseurFileType;
 use App\Entity\ContactEntrepriseTW;
 use App\Entity\RemarqueEntrepriseTW;
+use App\Entity\ChangementAfterImport;
 use App\Repository\ContactTwRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ChangementPFRepository;
 use App\Repository\EntrepriseTWRepository;
 use Symfony\Contracts\Cache\ItemInterface;
+use App\Repository\ClientUpdatedRepository;
 use Symfony\Contracts\Cache\CacheInterface;
+use App\Repository\ListePFUpdatedRepository;
+use App\Repository\ListeChangementRepository;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\DataTropicalWoodRepository;
+use App\Repository\IntervalChangePFRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ContactEntrepriseTWRepository;
 use App\Repository\RemarqueEntrepriseTWRepository;
+use App\Repository\ChangementAfterImportRepository;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -42,8 +54,10 @@ class TropController extends AbstractController
         $today = date_create($today);
         $all_entreprises = $repoEntre->findAllNomEntreprise();
         $d = $repoTrop->findAll();
+        $last_insert = $repoTrop->findLastinsert();
+        $last_date_insertion = $last_insert[0]->getCreatedAt();
         if ($form_add->isSubmitted() && $form_add->isValid()) {
-
+            // date de l'ancien chargement
             // on clean les mot de la base de donnée d'avant
             // on clean les mauvaise formation de nom dans entreprise
             if(count($d)>0){
@@ -87,6 +101,7 @@ class TropController extends AbstractController
             // on listes selectiopnne toutes les entreprise dans la base entrepriseTW
 
             //dd($all_entreprises);
+            $Total_data_updated = [];
             for ($i = 0; $i < count($d_aff); $i++) {
                 $data_tw = new DataTropicalWood();
                 $idPro = $services->clean_word($d_aff[$i][0]);
@@ -98,9 +113,9 @@ class TropController extends AbstractController
                
                 $etat_production = $d_aff[$i][6];
                 // déjà le reste n'est plus à calculer:
-                $montant_total = $services->no_space(str_replace(",", " ", $d_aff[$i][10]));
-                $reste =  $services->no_space(str_replace(",", " ", $d_aff[$i][7])); // reste
-                $montant_avance = $services->no_space(str_replace(",", " ", $d_aff[$i][9]));
+                $montant_total = floatval($services->no_space(str_replace(",", " ", $d_aff[$i][10])));
+                $reste =  floatval($services->no_space(str_replace(",", " ", $d_aff[$i][7]))); // reste
+                $montant_avance = floatval($services->no_space(str_replace(",", " ", $d_aff[$i][9])));
                 $date_confirmation = null;
                 $date_facture = null;
                 $etape_production = $d_aff[$i][11];
@@ -137,7 +152,7 @@ class TropController extends AbstractController
                 // on teste l'unicité de idPro
                 $dataTrop = $repoTrop->findOneByIdPro($idPro);
                 // dd($dataTrop);
-                $tab_change = [];
+                
                 if($dataTrop != null){
                     // s'il ya un ou des changements
                     $etape_production = floatVal(trim(str_replace("%", "", $etape_production)));
@@ -152,11 +167,11 @@ class TropController extends AbstractController
                     $sa_date_fact = $dataTrop->getDateFacture();
                     $son_etape_prod = $dataTrop->getEtapeProduction();
                     $synthese = [
-                        "entreprise"    => $dataTrop->getEntreprise(),
-                        "id_pro"        => $dataTrop->getIdPro(),
-                        "date_avant"    => $dataTrop->getCreatedAt(),
-                        "date_MAJ"      => $today,
-                        "liste_changement"=> []
+                        "entreprise"        => $dataTrop->getEntreprise(),
+                        "id_pro"            => $dataTrop->getIdPro(),
+                        "date_avant"        => $dataTrop->getCreatedAt(),
+                        "date_MAJ"          => $today,
+                        "liste_changement"  => []
                     ];
                     // ancien tab 
                     $ancien = [
@@ -184,16 +199,58 @@ class TropController extends AbstractController
                         "etape_production"  => $etape_production
                     ];
                     foreach($ancien as $key => $value){
+                        $val_a_tester = ['total_reglement', 'reste', 'montant_total'];
                         if($ancien[$key] != $nouveau[$key]){
-                            array_push($synthese["liste_changement"], $key);
+                           if(!in_array($key, $val_a_tester)){
+                                $changement = [
+                                    "nom_changement"    => $key,
+                                    "last_data"         => $ancien[$key],
+                                    "next_data"         => $nouveau[$key]
+                                ];
+                                array_push($synthese["liste_changement"], $changement);
+                           }
+                           else{
+                               $val = abs($ancien[$key] - $nouveau[$key]);
+                                if($val >= 1){
+                                    
+                                    $changement = [
+                                        "nom_changement"    => $key,
+                                        "last_data"         => $ancien[$key],
+                                        "next_data"         => $nouveau[$key]
+                                    ];
+                                    array_push($synthese["liste_changement"], $changement);
+                                }
+                           }
+                           
                         }
                     }
-                    dd($synthese);
+                    if(count($synthese["liste_changement"]) > 0){
+                        array_push($Total_data_updated, $synthese);
+                    }
+                    // on met à jour
+                    $dataTrop->setIdPro($idPro);
+                    $dataTrop->setCreatedAt($today);
+                    $dataTrop->setTypeTransaction($type_transaction);
+                    $dataTrop->setEntreprise($entreprise);
+                    $dataTrop->setDetail($detail);
+                    $dataTrop->setEtatProduction($etat_production);
+                    $dataTrop->setMontantTotal($montant_total);
+                    $dataTrop->setReste($reste);
+                    $dataTrop->setDateFacture($date_facture);
+                    $etape_production = floatVal(trim(str_replace("%",
+                        "",
+                        $etape_production
+                    )));
+                    $dataTrop->setEtapeProduction($etape_production);
+                    $dataTrop->setTotalReglement($montant_avance);
+                    $dataTrop->setDateConfirmation($date_confirmation);
+                    
+                    
                 }else if($dataTrop == null){
                     
                     if($idPro != null && $entreprise != null){
                         $data_tw->setIdPro($idPro);
-                        $data_tw->setCreatedAt($today);
+                        $dataTrop->setCreatedAt($today);
                         $data_tw->setTypeTransaction($type_transaction);
                         $data_tw->setEntreprise($entreprise);
                         $data_tw->setDetail($detail);
@@ -212,8 +269,62 @@ class TropController extends AbstractController
                 $manager->flush();
                 
             }
-            // on re_actualise la tab entreprise_contact
-            // liste_entreprises présentes
+            //dd($Total_data_updated);
+            // insertion de l'interval de changement
+            $interval = new IntervalChangePF();
+            $interval->setDateLast($last_date_insertion);
+            $interval->setDateNext($today);
+            $date_last_text = $last_date_insertion->format('d-m-Y');
+            $date_next_text = $today->format('d-m-Y');
+            $intervalle_date = $date_last_text . " - " . $date_next_text;
+            $interval->setIntervalle($intervalle_date);
+            
+            // les entreprises 
+
+            foreach($Total_data_updated as $Item){
+                $nom_entreprise = $Item['entreprise'];
+                $le_client = new ClientUpdated();
+                $le_client->setNom($nom_entreprise);
+                $le_client->addIntervalchangePF($interval);
+                // insertion de ListePFUpdated tokony- unitePFUpdated
+                $unite_pf = new ListePFUpdated();
+                $unite_pf->setIdPro($Item['id_pro']);
+                $unite_pf->setClientUpdated($le_client);
+                
+                // insertion des changement
+                foreach($Item['liste_changement'] as $item_change){
+                    $changement = new ChangementAfterImport();
+                    $changement->setNom($item_change['nom_changement']);
+                    $type_data = gettype($item_change['last_data']);
+                    if($type_data != "object"){
+                        $changement->setLastData($item_change['last_data']);
+                        $changement->setNextData($item_change['next_data']);
+                    }else{
+                        if($item_change['last_data'] != null){
+                            $data_string1 = $item_change['last_data']->format('d-m-Y');
+                        }
+                        else if ($item_change['last_data'] == null) {
+                            $data_string1 = "";
+                        }
+                        if ($item_change['next_data'] != null) {
+                            $data_string2 = $item_change['next_data']->format('d-m-Y');
+                        }
+                        else if ($item_change['next_data'] == null) {
+                            $data_string2 = "";
+                        }
+                        
+                        $changement->setLastData($data_string1);
+                        $changement->setNextData($data_string2);
+                    }
+                    $changement->setListePFUpdated($unite_pf);
+                    $manager->persist($changement);
+                }
+                $manager->persist($le_client);
+                $manager->persist($unite_pf);
+                
+            }
+            $manager->persist($interval);
+            $manager->flush();
         }
         
         // on crée les entreprise
@@ -248,25 +359,7 @@ class TropController extends AbstractController
                 "DESC"
             );
         });
-        /*$cache = new FilesystemAdapter();
-        $Liste = $cache->get('my_cache_key', function (ItemInterface $item) use ($repoTrop){
-            $item->expiresAfter(3600);
-            //$repoTrop = $this->getDoctrine()->getRepository(DataTropicalWood::class);
-            return $repoTrop->filtrer(
-                "",
-                "",
-                "",
-                "",
-                [0 => ""],
-                [0 => ""],
-                [0 => ""],
-                null,
-                null,
-                "DESC"
-            );
-
-        });*/
-        //dd($Liste);
+        
         return $this->render('page/tropical_wood.html.twig', [
             "hotel"             => $data_session['pseudo_hotel'],
             "current_page"      => $data_session['current_page'],
@@ -893,17 +986,69 @@ class TropController extends AbstractController
     /**
      * @Route("/tropical_wood/liste_changement_pf", name="liste_changement_pf")
      */
-    public function liste_changement_pf(CacheInterface $cache_demande, SessionInterface $session, Request $request, Services $services, EntityManagerInterface $manager, DataTropicalWoodRepository $repoTrop)
-    {
+    public function liste_changement_pf(CacheInterface $cache_demande, 
+                                        SessionInterface $session, 
+                                        Request $request, Services $services, 
+                                        EntityManagerInterface $manager, DataTropicalWoodRepository $repoTrop,
+                                        ChangementAfterImportRepository $repoChangement,
+                                        ClientUpdatedRepository $repoClientUp,
+                                        IntervalChangePFRepository $repoInterval,
+                                        ListePFUpdatedRepository $repoListePF
+                                        )
+    {   
+        $all_interval = $repoInterval->findAll();
+        $Tableau_recap_changement = [];
+        foreach($all_interval as $Item){
+            $tab_interval = [
+                "date_interval" => $Item->getIntervalle(),
+                "liste_client"  => []
+            ];
+            $ses_clients = $Item->getClientUpdateds();
+            // les pf changés pour chaque clients
+            foreach($ses_clients as $item_client){
+                $tab_client = [
+                    "nom_client" => $item_client->getNom(),
+                    "liste_pf" => []
+                ];
+
+                $ses_pf = $item_client->getListePFUpdateds();
+                foreach($ses_pf as $item_pf){
+                   $tab_pf = [
+                       "id_pro" => $item_pf->getIdPro(),
+                       "liste_changement" => []
+                   ];
+                   $changements = $item_pf->getChangementAfterImports();
+                    foreach($changements as $item_changement){
+                       $last_data = $item_changement->getLastData();
+                       $next_data = $item_changement->getNextData();
+                       $nom_changement = $item_changement->getNom();
+                       $tab_changement = [
+                           "nom" => $nom_changement,
+                           "last_data" => $last_data,
+                           "next_data" => $next_data
+                       ];
+                       array_push($tab_pf['liste_changement'], $tab_changement);
+                    }
+                   array_push($tab_client['liste_pf'], $tab_pf);
+                }
+                array_push($tab_interval['liste_client'], $tab_client);
+            }
+           array_push($Tableau_recap_changement, $tab_interval);
+        }
+        //dd($Tableau_recap_changement);
         $data_session = $session->get('hotel');
         $data_session['pseudo_hotel'] = "tropical_wood";
+        // préparation des listes
        
+        
+        
         return $this->render('page/liste_changement.html.twig', [
             "hotel"             => $data_session['pseudo_hotel'],
             "current_page"      => $data_session['current_page'],
             'tri'               => false,
             'tropical_wood'     => true,
             "id_page"                   => "li_liste_changement",
+            "Tableau"           => $Tableau_recap_changement,
         ]);
     }
 
