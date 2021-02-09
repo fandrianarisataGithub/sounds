@@ -51,49 +51,80 @@
                                         <div class="inner_date">
                                             <span>{{ Item['date_interval'] }}</span>
                                         </div>
-                                        <button clicked="false" class="btn_drop_data btn btn-warning btn-xs">
+                                        <button clicked="false" class="btn_drop_data btn btn-warning btn-xs" data-hide = "loop_client">
                                             <span class="fa fa-angle-up"></span>
                                         </button>
                                     </div>
                                     {# boucle entreprise #}
                                     {% for item_client in Item['liste_client'] %}
-                                        <div class="loop_client">
+                                        <div class="loop_client" style="display:none;">
                                             <div class="unite_client_tw">
                                                 <div class="unite_client_entreprise">
                                                     <span>{{ item_client['nom_client'] }}</span>
                                                 </div>
-                                                <button clicked="false" class="btn_drop_data btn btn-warning btn-xs">
+                                                <button clicked="false" class="btn_drop_data btn btn-warning btn-xs" data-hide ="loop_liste_pf">
                                                     <span class="fa fa-angle-up"></span>
                                                 </button>
                                             </div>
                                             {# boucle liste pf #}
                                             {% for item_pf in item_client['liste_pf'] %}
                                                 <div
-                                                    class="loop_liste_pf">
+                                                    class="loop_liste_pf" style="display:none;">
                                                     {# pf #}
                                                     <div class="unite_client_tw">
-                                                        <div class="unite_client_entreprise">
+                                                        <div class="unite_client_entreprise entete_pf">
                                                             <span>{{ item_pf['id_pro'] }}</span>
                                                         </div>
-                                                        <button clicked="false" class="btn_drop_data btn btn-warning btn-xs">
+                                                        <button clicked="false" class="btn_drop_data btn btn-warning btn-xs" data-hide="loop_pf">
                                                             <span class="fa fa-angle-up"></span>
                                                         </button>
                                                     </div>
                                                     {# fin pf #}
                                                     {# boucle pf #}
+                                                    {# associative array for the index of changement #}
+                                                    {% set index = {
+                                                        details             : "Detail",
+                                                        type_transaction    : "Type de transaction",
+                                                        etat_production     : "Etat de production",
+                                                        reste               : "Reste à payer",
+                                                        montant_total       : "Montant total",
+                                                        date_confirmation   : "Date de confirmation",
+                                                        devis               : "Devis",
+                                                        id_pro              : "Pro forma",
+                                                        total_reglement     : "Total règlement",
+                                                        date_facture        : "Date de facture",
+                                                        etape_production    : "Etape de production",
+
+                                                    } 
+                                                    %}
                                                     {% for item_changement in item_pf['liste_changement'] %}
-                                                        <div class="loop_pf">
+                                                        <div class="loop_pf" style="display:none;">
                                                             <div class="div_change">
                                                                 <span></span>
                                                             </div>
                                                             <div class="div_change">
-                                                                <span>{{ item_changement['nom'] }}</span>
+                                                                <span>{{ index[item_changement['nom']] }}</span>
                                                             </div>
                                                             <div class="div_change">
-                                                                <span>{{ item_changement['last_data'] }}</span>
+                                                                <span 
+                                                                    {% if item_changement['nom'] == "reste" 
+                                                                        or item_changement['nom'] == "total_reglement"
+                                                                        or item_changement['nom'] == "montant_total"
+                                                                    %}
+                                                                        class = "montant"
+                                                                    {% endif %}
+                                                                
+                                                                >{{ item_changement['last_data'] }}</span>
                                                             </div>
                                                             <div class="div_change">
-                                                                <span>{{ item_changement['next_data'] }}</span>
+                                                                <span
+                                                                    {% if item_changement['nom'] == "reste" 
+                                                                        or item_changement['nom'] == "total_reglement"
+                                                                        or item_changement['nom'] == "montant_total"
+                                                                    %}
+                                                                        class = "montant"
+                                                                    {% endif %}
+                                                                >{{ item_changement['next_data'] }}</span>
                                                             </div>
                                                         </div>
 
@@ -124,7 +155,24 @@
 	<script src="{{ asset('js/cleave.min.js') }}"></script>
 	<script>
 		
-		
+        $(document).ready(function(){
+            $('.btn_drop_data').on('click', function(ev){
+                ev.preventDefault();
+                var data_hide = $(this).attr('data-hide');
+                $(this).parent().siblings('.'+data_hide).slideToggle();
+                var click = $(this).attr('clicked');
+                if(click == "false"){
+                    $(this).attr('clicked', "true");
+                    $(this).find(".fa").removeClass('fa-angle-up');
+                    $(this).find(".fa").addClass('fa-angle-down');
+                }
+                else if(click == "true"){
+                    $(this).attr('clicked', "false");
+                    $(this).find(".fa").removeClass('fa-angle-down');
+                    $(this).find(".fa").addClass('fa-angle-up');
+                }
+            })
+        })
 
 		
 	</script>

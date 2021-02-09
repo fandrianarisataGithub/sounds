@@ -66,7 +66,7 @@
 							</div>
 						</form>
 						<form action="" class="form_tri_services">
-							<select name="" id="mois">
+							<select name="" class="select_radius">
 								<option value="tous_service">Tout service</option>
 								<option value="direction">Direction</option>
 								<option value="service_rh">Service RH</option>
@@ -74,6 +74,7 @@
 								<option value="comptabilite">Compta</option>
 								<option value="reception">Réception</option>
 								<option value="restaurant">Restaurant</option>
+								<option value="hebergment">Hébergement</option>
 								<option value="spa">Spa</option>
 								<option value="service_technique">Service techniques</option>
 								<option value="litiges">Litiges</option>
@@ -158,6 +159,12 @@
 												<h4>Litiges</h4>
 												<p>
 													{{ item.getCrjLitiges() }}
+												</p>
+											</div>
+											<div class="hebergement">
+												<h4>Hébergment</h4>
+												<p>
+													{{ item.getCrjHebergement() }}
 												</p>
 											</div>
 										</div>

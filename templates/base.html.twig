@@ -345,6 +345,7 @@
 										{% if id_page is defined and id_page=="li__dashboard_tw" %}
 											id="li__dashboard_tw"
 										{% endif %}
+										class="li_tw"
 									>
 										<a
 											href="{{ path('tropical_wood') }}">
@@ -355,13 +356,14 @@
 										{% if id_page is defined and id_page=="li_entreprise_contact" %}
 											 id="li_entreprise_contact"
 										{% endif %}
+										class="li_tw"
 									>
 										<a href="{{ path('liste_client_tw') }}">
 											
 											<span>Fiche client</span>
 										</a>
 									</li>
-									<li {% if id_page is defined and id_page=="li_liste_changement" %} id="li_liste_changement" {% endif %}>
+									<li {% if id_page is defined and id_page=="li_liste_changement" %} id="li_liste_changement" {% endif %} class="li_tw">
 										<a href="{{ path('liste_changement_pf') }}">
 											<span>Liste changement</span>
 										</a>

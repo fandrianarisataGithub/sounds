@@ -233,8 +233,8 @@
                                                 ticks: {
                                                     padding: 20, // pour le marge % axe y
                                                     min: 0,
-                                                    max: parseInt(my_max),
-                                                    stepSize: parseInt(my_stepSize),
+                                                    max: my_max,
+                                                    stepSize: my_stepSize,
                                                     callback: function (value) {
                                                         return value + " M Ar"
                                                     }
@@ -684,15 +684,31 @@
 
 					var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 
-                
+                    function findArrayMax(array){
+                        var M = array[0];
+                        for(var i = 0; i< array.length; i++){
+                            if(M < array[i]){
+                                M = array[i];
+                            }
+                        }
+                        var m_quart = M ;
+                        return m_quart;
+                    }
+
+                    function portionner(val){
+                        return val / 4 ;
+                    } 
+
+
                     var w = $(window).width();
                     if (w <= 768) {
-                        var myChart1 = draw_chart1(my_data_ca, my_labels, 100, 20);
-                        var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 1000, 200);
+                        var myChart1 = draw_chart1(my_data_ca, my_labels, findArrayMax(my_data_ca) + portionner(findArrayMax(my_data_ca)), portionner(findArrayMax(my_data_ca)));
+                        var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, findArrayMax(my_data_total) + portionner(findArrayMax(my_data_total)), portionner(findArrayMax(my_data_total)));
+
                         add_resp_heb(myChart1, myChart2);
                     } else {
-                        var myChart1 = draw_chart1(my_data_ca, my_labels, 100, 20);
-                        var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 1000, 100);
+                        var myChart1 = draw_chart1(my_data_ca, my_labels, findArrayMax(my_data_ca) + portionner(findArrayMax(my_data_ca)), portionner(findArrayMax(my_data_ca)));
+                        var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, findArrayMax(my_data_total) + portionner(findArrayMax(my_data_total)), portionner(findArrayMax(my_data_total)));
                     }
                 
                 /* tri graph res  */
@@ -722,12 +738,12 @@
 										var w = $(window).width();
 										if (w <= 768) {
                                             $('#element_canvas_nc').html('<div><canvas id="canvas_nc"></canvas></div><div id="chart-legends_nc"></div>');
-											var myChart1 = draw_chart1(my_data, my_labels, 20, 5);
+											var myChart1 = draw_chart1(my_data, my_labels, findArrayMax(my_data), portionner(findArrayMax(my_data)));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart1);
 										} else {
                                             $('#element_canvas_nc').html('<div><canvas id="canvas_nc"></canvas></div><div id="chart-legends_nc"></div>');
-											var myChart1 = draw_chart1(my_data, my_labels, 20, 5);
+											var myChart1 = draw_chart1(my_data, my_labels, findArrayMax(my_data), portionner(findArrayMax(my_data)));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart1);
 											
@@ -740,12 +756,12 @@
 										var w = $(window).width();
 										if (w <= 768) {
                                             $('#element_canvas_nc').html('<div><canvas id="canvas_nc"></canvas></div><div id="chart-legends_nc"></div>');
-											var myChart1 = draw_chart1(my_data, my_labels, 100, 20);
+											var myChart1 = draw_chart1(my_data, my_labels, findArrayMax(my_data), portionner(findArrayMax(my_data)));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart1);
 										} else {
                                             $('#element_canvas_nc').html('<div><canvas id="canvas_nc"></canvas></div><div id="chart-legends_nc"></div>');
-											var myChart1 = draw_chart1(my_data, my_labels, 100, 20);
+											var myChart1 = draw_chart1(my_data, my_labels, findArrayMax(my_data), portionner(findArrayMax(my_data)));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart1);
 											
@@ -781,12 +797,12 @@
 										var w = $(window).width();
 										if (w <= 768) {
                                             $('#element_canvas_nc').html('<div><canvas id="canvas_nc"></canvas></div><div id="chart-legends_nc"></div>');
-											var myChart1 = draw_chart1(my_data, my_labels, 20, 5);
+											var myChart1 = draw_chart1(my_data, my_labels, findArrayMax(my_data), portionner(findArrayMax(my_data)));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart1);
 										} else {
                                             $('#element_canvas_nc').html('<div><canvas id="canvas_nc"></canvas></div><div id="chart-legends_nc"></div>');
-											var myChart1 = draw_chart1(my_data, my_labels, 20, 5);
+											var myChart1 = draw_chart1(my_data, my_labels, findArrayMax(my_data), portionner(findArrayMax(my_data)));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart1); 
 										}
@@ -798,12 +814,12 @@
 										var w = $(window).width();
 										if (w <= 768) {
                                             $('#element_canvas_nc').html('<div><canvas id="canvas_nc"></canvas></div><div id="chart-legends_nc"></div>');
-											var myChart1 = draw_chart1(my_data, my_labels, 100, 20);
+											var myChart1 = draw_chart1(my_data, my_labels, findArrayMax(my_data), portionner(findArrayMax(my_data)));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart1);
 										} else {
                                             $('#element_canvas_nc').html('<div><canvas id="canvas_nc"></canvas></div><div id="chart-legends_nc"></div>');
-											var myChart1 = draw_chart1(my_data, my_labels, 100, 20);
+											var myChart1 = draw_chart1(my_data, my_labels, findArrayMax(my_data), portionner(findArrayMax(my_data)));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart1);
 										}
@@ -843,12 +859,14 @@
                                         var w = $(window).width();
                                         if (w <= 768) {
                                             $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
-                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 300, 50);
+                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, findArrayMax(my_data_total), portionner(findArrayMax(my_data_total)));
+
                                             myChart2.update();
                                            
                                         } else {
                                              $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
-                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 300, 20);
+                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, findArrayMax(my_data_total), portionner(findArrayMax(my_data_total)));
+
                                             myChart2.update();
                                            
                                         }
@@ -864,12 +882,14 @@
                                         
                                         if (w <= 768) {
                                             $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
-                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 1000, 200);
+                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, findArrayMax(my_data_total), portionner(findArrayMax(my_data_total)));
+
                                             myChart2.update();
                                            
                                         } else {
-                                             $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
-                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 1000, 100);
+                                            $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
+                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, findArrayMax(my_data_total), portionner(findArrayMax(my_data_total)));
+
                                             myChart2.update();
                                            
                                         }
@@ -907,12 +927,13 @@
                                         var w = $(window).width();
                                         if (w <= 768) {
                                             $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
-                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 300, 50);
+                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, findArrayMax(my_data_total), portionner(findArrayMax(my_data_total)));
                                             myChart2.update();
                                            
                                         } else {
                                              $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
-                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 300, 20);
+                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, findArrayMax(my_data_total), portionner(findArrayMax(my_data_total)));
+
                                             myChart2.update();
                                            
                                         }
@@ -929,11 +950,13 @@
                                         
                                         if (w <= 768) {
                                             $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
-                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 1000, 200);
+                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, findArrayMax(my_data_total), portionner(findArrayMax(my_data_total)));
+
                                             myChart2.update();
                                         } else {
                                              $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
-                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 1000, 100);
+                                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, findArrayMax(my_data_total), portionner(findArrayMax(my_data_total)));
+
                                             myChart2.update();
                                            
                                         }

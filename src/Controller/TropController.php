@@ -60,6 +60,7 @@ class TropController extends AbstractController
             // date de l'ancien chargement
             // on clean les mot de la base de donnée d'avant
             // on clean les mauvaise formation de nom dans entreprise
+            $cache_init_tw->delete("init_tw");
             if(count($d)>0){
                 foreach ($d as $item) {
                     $son_nom = $item->getEntreprise();
@@ -113,9 +114,9 @@ class TropController extends AbstractController
                
                 $etat_production = $d_aff[$i][6];
                 // déjà le reste n'est plus à calculer:
-                $montant_total = floatval($services->no_space(str_replace(",", " ", $d_aff[$i][10])));
-                $reste =  floatval($services->no_space(str_replace(",", " ", $d_aff[$i][7]))); // reste
-                $montant_avance = floatval($services->no_space(str_replace(",", " ", $d_aff[$i][9])));
+                $montant_total = $services->no_space(str_replace(",", " ", $d_aff[$i][10]));
+                $reste =  $services->no_space(str_replace(",", " ", $d_aff[$i][7])); // reste
+                $montant_avance = $services->no_space(str_replace(",", " ", $d_aff[$i][9]));
                 $date_confirmation = null;
                 $date_facture = null;
                 $etape_production = $d_aff[$i][11];
@@ -247,22 +248,22 @@ class TropController extends AbstractController
                     
                     
                 }else if($dataTrop == null){
-                    
+                    $data_new = new DataTropicalWood();
                     if($idPro != null && $entreprise != null){
-                        $data_tw->setIdPro($idPro);
-                        $dataTrop->setCreatedAt($today);
-                        $data_tw->setTypeTransaction($type_transaction);
-                        $data_tw->setEntreprise($entreprise);
-                        $data_tw->setDetail($detail);
-                        $data_tw->setEtatProduction($etat_production);
-                        $data_tw->setMontantTotal($montant_total);
-                        $data_tw->setReste($reste);
-                        $data_tw->setDateFacture($date_facture);
+                        $data_new->setIdPro($idPro);
+                        $data_new->setCreatedAt($today);
+                        $data_new->setTypeTransaction($type_transaction);
+                        $data_new->setEntreprise($entreprise);
+                        $data_new->setDetail($detail);
+                        $data_new->setEtatProduction($etat_production);
+                        $data_new->setMontantTotal($montant_total);
+                        $data_new->setReste($reste);
+                        $data_new->setDateFacture($date_facture);
                         $etape_production = floatVal(trim(str_replace("%", "", $etape_production)));
-                        $data_tw->setEtapeProduction($etape_production);
-                        $data_tw->setTotalReglement($montant_avance);
-                        $data_tw->setDateConfirmation($date_confirmation);
-                        $manager->persist($data_tw);
+                        $data_new->setEtapeProduction($etape_production);
+                        $data_new->setTotalReglement($montant_avance);
+                        $data_new->setDateConfirmation($date_confirmation);
+                        $manager->persist($data_new);
                     }
                     
                 }
@@ -278,9 +279,17 @@ class TropController extends AbstractController
             $date_next_text = $today->format('d-m-Y');
             $intervalle_date = $date_last_text . " - " . $date_next_text;
             $interval->setIntervalle($intervalle_date);
-            
+            $repoInterval = $this->getDoctrine()->getRepository(IntervalChangePF::class);
+            $test_interval = $repoInterval->findBy(['intervalle' => $intervalle_date]);
+            // dd($intervalle_date);
+            if(count($test_interval) > 0){
+                $interval = $test_interval[0];
+            }
+            else if(count($test_interval) == 0){
+                $manager->persist($interval);
+            }
             // les entreprises 
-
+           
             foreach($Total_data_updated as $Item){
                 $nom_entreprise = $Item['entreprise'];
                 $le_client = new ClientUpdated();
@@ -323,7 +332,7 @@ class TropController extends AbstractController
                 $manager->persist($unite_pf);
                 
             }
-            $manager->persist($interval);
+           
             $manager->flush();
         }
         
@@ -498,12 +507,15 @@ class TropController extends AbstractController
                 if($client){
                     $id_entre = $client->getId();
                 }
-                
+                // <span class="span_check_unite" style="display:none;">
+                //                 <input type="checkbox" class="checkbox_unite" checked data-check = "true">
+                //             </span> les petit boutons
                     $stringP .= '
 
                 <div>
                     <div class="t_body_row">
                         <div class="td_long" colspan="9">
+                            
                             <a href="/tropical_wood/show_entreprise/' . $id_entre. '" target=_blank>
                                 <span>' . $data["entreprise"] . '</span>
                             </a>
@@ -615,7 +627,7 @@ class TropController extends AbstractController
                                         </span>
                                     </div>
                                     <div class="tw_reste">
-                                        <span class="montant value total_reste">' . $total_reste . '</span>
+                                        <span class="montant value total_reste" >' . $total_reste . '</span>
                                     </div>
                                     <div class="tw_montant_total">
                                    
@@ -653,19 +665,19 @@ class TropController extends AbstractController
                             <div class="tw_etape_prod">
                                 <span></span>
                             </div>
-                            <div class="tw_paiement">
+                            <div class="tw_paiement" id="parent_total_paiement">
                                 <span class="montant value" id="total_paiement">
                                     ' . $Total_Reglement . '
                                 </span>
                             </div>
-                            <div class="tw_reste">
-                                <span class="montant value" id="total_reste">										
+                            <div class="tw_reste" id="parent_total_reste">
+                                <span class="montant value" id="total_reste" data = "' . $Total_Reste . '">										
                                         ' . $Total_Reste . '
                                 </span>
                             </div>
-                            <div class="tw_montant_total">
+                            <div class="tw_montant_total" id="parent_total_montant">
                                 <span class="montant value" id="total_montant">
-                                        ' . $Total_Montant . '
+                                        ' .$Total_Montant . '
                                 </span>
                             </div>
                             <div class="tw_date_conf">
@@ -723,6 +735,7 @@ class TropController extends AbstractController
                 <div>
                     <div class="t_body_row">
                         <div class="td_long" colspan="9">
+                           
                             <a href="/tropical_wood/show_entreprise/' . $id_entre . '" target=_blank>
                                 <span>' . $data["entreprise"] . '</span>
                             </a>
@@ -771,7 +784,7 @@ class TropController extends AbstractController
                                     </div>
                                     <div class="tw_reste">
                                         <span class="montant">
-                                            ' . $reste . '
+                                            ' .$reste . '
                                         </span>
                                     </div>
                                     <div class="tw_montant_total">
@@ -810,8 +823,8 @@ class TropController extends AbstractController
                                         <span></span>
                                     </div>
                                     <div class="tw_paiement">
-                                        <span class="montant value total_paiement">
-                                            ' . $total_reglement . '
+                                        <span class="montant value total_paiement" >
+                                            ' .$total_reglement . '
                                         </span>
                                     </div>
                                     <div class="tw_reste">
@@ -853,17 +866,17 @@ class TropController extends AbstractController
                             <div class="tw_etape_prod">
                                 <span></span>
                             </div>
-                            <div class="tw_paiement">
+                            <div class="tw_paiement" id="parent_total_paiement">
                                 <span class="montant value" id="total_paiement">
                                     ' . $Total_Reglement . '
                                 </span>
                             </div>
-                            <div class="tw_reste">
+                            <div class="tw_reste" id="parent_total_reste">
                                 <span class="montant value" id="total_reste">										
                                         ' . $Total_Reste . '
                                 </span>
                             </div>
-                            <div class="tw_montant_total">
+                            <div class="tw_montant_total" id="parent_total_montant">
                                 <span class="montant value" id="total_montant">
                                         ' . $Total_Montant . '
                                 </span>

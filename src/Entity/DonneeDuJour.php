@@ -123,6 +123,11 @@ class DonneeDuJour
      */
     private $hotel;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $crj_hebergement;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -376,6 +381,18 @@ class DonneeDuJour
     public function setHotel(?Hotel $hotel): self
     {
         $this->hotel = $hotel;
+
+        return $this;
+    }
+
+    public function getCrjHebergement(): ?string
+    {
+        return $this->crj_hebergement;
+    }
+
+    public function setCrjHebergement(?string $crj_hebergement): self
+    {
+        $this->crj_hebergement = $crj_hebergement;
 
         return $this;
     }

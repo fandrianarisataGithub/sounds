@@ -352,7 +352,9 @@ ul {
     padding: 0px;
     margin: 0px;
 }
-
+.li_tw{
+    
+}
 @media all and (max-width:767px) {
     .loader-wrapper .loader {
         display: block;
@@ -1469,7 +1471,9 @@ li#li_historique>a:hover span:last-child {
     font-size: 11px;
     padding: 5px;
 }
-
+.form_tri_services .select_radius{
+    margin-bottom: 15px;
+}
 #tri_annee {
     display: inline-block;
     padding: 0;
@@ -1527,9 +1531,7 @@ li#li_historique>a:hover span:last-child {
     justify-content: space-between;
 }
 
-.service .data-service:last-child {
-    width: 50%;
-}
+
 
 .service .data-service>div {
     padding-bottom: 15px;
@@ -1542,7 +1544,7 @@ li#li_historique>a:hover span:last-child {
     padding-bottom: 15px;
     font-size: 13px;
     color: rgba(0, 0, 0, 0.5);
-    font-weight: 550;
+    font-weight: 600;
 }
 
 .service .data-service>div>p {
@@ -4413,7 +4415,19 @@ form .form-group span.span__ar {
     color: rgba(0, 0, 0, 0.6) !important;
     font-weight: 500;
 }
+#li_submit_add_ddj{
+    margin-left: 0;
+   
+}
 
+#btn_add_donnee_dj:hover{
+   border-color: #323232;
+    background: transparent !important;
+    transition: all 2s linear ease-in-out;
+}
+#btn_add_donnee_dj:hover span{
+    color: #323232;
+}
 .h2_titre {
     border-bottom: 1px solid rgba(200, 200, 200, .3);
     margin-bottom: 15px;
@@ -4552,6 +4566,7 @@ form .form-group span.span__ar {
     padding: 4.5px 10px;
     border-radius: 4px;
     color: #858790;
+    margin-bottom: 15px;
 }
 
 .sous_data_form button.btn {
@@ -6304,10 +6319,6 @@ tr td.t_concerne_rem {
     padding-top: 35px;
 }
 
-ul.categories>li{
-    padding-left: 55px !important;
-}
-
 /* tableau liste changement */
 
 .unite_date_changement{
@@ -6323,7 +6334,7 @@ ul.categories>li{
 }
 .date_changement div.inner_date{
     
-    width: 200px;
+    width: 250px;
     text-align: center;
 }
 .loop_client{
@@ -6339,11 +6350,14 @@ ul.categories>li{
     align-items: center;
 }
 .unite_client_entreprise{
-    width: 200px;
+    width: 225px;
     height: auto !important;
     text-align: center; 
     text-align: start;
     padding-left: 15px;
+}
+.entete_pf{
+     width: 200px !important;
 }
 .unite_pf{
     display: flex;
@@ -6365,4 +6379,10 @@ ul.categories>li{
     display: flex;
     height: 35px;
     border-bottom: 1px solid rgba(204, 204, 204, 0.2);
+}
+.table_body .unite_date_changement:last-child .loop_client:last-child .loop_liste_pf .loop_pf:last-child{
+    border-bottom: none !important;
+}
+.li_tw{
+    padding-left: 55px !important;
 }

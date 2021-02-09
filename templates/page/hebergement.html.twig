@@ -370,8 +370,8 @@
 									ticks: {
 										padding: 20, // pour le marge % axe y
 										min: 0,
-										max: parseInt(max_y),
-										stepSize: parseInt(stepSize),
+										max: max_y,
+										stepSize: stepSize,
 										callback: function (value) {
 											return value + "%"
 										}
@@ -529,8 +529,8 @@
 								ticks: {
 									padding: 20, // pour le marge % axe y
 									min: 0,
-									max: parseInt(max_y),
-									stepSize: parseInt(stepSize),
+									max: max_y,
+									stepSize: stepSize,
 
 									callback: function (value) {
 										return value + "M Ar"
@@ -635,10 +635,27 @@
 
 		}
 
+		// on cherche le maximum 
+		// on prend le quart de ce maximum pour pas de vice
+		 // my_data_ca
+		 //alert(my_data_ca);
+		 function findArrayMax(array){
+			 var M = array[0];
+			 for(var i = 0; i< array.length; i++){
+				 if(M < array[i]){
+					 M = array[i];
+				 }
+			 }
+			 var m_quart = M ;
+			 return m_quart;
+		 }
 
+		 function portionner(val){
+			 return parseInt(val / 4) ;
+		 } 
 		var myChart1 = create_chart1(create_ctx1(), create_config1(my_data_to, my_labels, 100, 20));
 
-		var myChart2 = create_chart2(create_ctx2(), create_config2(my_data_ca, my_labels, 100, 20));
+		var myChart2 = create_chart2(create_ctx2(), create_config2(my_data_ca, my_labels, findArrayMax(my_data_ca), portionner(findArrayMax(my_data_ca))));
 
 		/* ajax pour loader le graph */
 
@@ -959,7 +976,7 @@
 
 								setTimeout(function () {
 
-										myChart1 = new Chart(create_ctx1(), create_config1(my_data, my_labels, 100, 20));
+										myChart1 = new Chart(create_ctx1(), create_config1(my_data, my_labels, 100,20));
 										myChart1.update();
 										// pour dire qu'on va utiliser notre propre légende html fenitra
 										document.getElementById('chart-legends_to').innerHTML = myChart1.generateLegend();
@@ -1078,7 +1095,7 @@
 
 							setTimeout(function () {
 
-							myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, 20, 5));
+							myChart2 = new Chart(create_ctx2(), create_config2 (my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
 							myChart2.update();
 
 							// pour dire qu'on va utiliser notre propre légende html fenitra
@@ -1123,7 +1140,7 @@
 
 						setTimeout(function () {
 
-							myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, 100, 20));
+							myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
 							myChart2.update();
 
 							// pour dire qu'on va utiliser notre propre légende html fenitra
@@ -1199,7 +1216,7 @@
 
 								setTimeout(function () {
 
-									myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, 20, 5));
+									myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
 									myChart2.update();
 
 									// pour dire qu'on va utiliser notre propre légende html fenitra
@@ -1259,7 +1276,7 @@
 
 								setTimeout(function () {
 
-								myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, 100, 20));
+								myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
 								myChart2.update();
 
 								// pour dire qu'on va utiliser notre propre légende html fenitra

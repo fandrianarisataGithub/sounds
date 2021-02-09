@@ -267,30 +267,33 @@ class PageController extends AbstractController
         $all_ddj = $repoDoneeDJ->findAll();
         //dd($all_ddj);
         $current_hotel_ddj = [];
-        foreach($all_ddj as $d){
-            $son_hotel = $d->getHotel()->getPseudo();
-            //dd($son_hotel);
-            if($son_hotel == $pseudo_hotel){
-                array_push($current_hotel_ddj, $d);
-            }
-        }
         //dd($current_hotel_ddj);
         $tab_annee = [];
         $tab_sans_doublant = [];
-        foreach($current_hotel_ddj as $c){
-            $son_created_at = $c->getCreatedAt();
-            $annee = $son_created_at->format('Y');
-            array_push($tab_annee, $annee); 
+        if(count($all_ddj) > 0){
+            foreach ($all_ddj as $d) {
+                $son_hotel = $d->getHotel()->getPseudo();
+                //dd($son_hotel);
+                if ($son_hotel == $pseudo_hotel) {
+                    array_push($current_hotel_ddj, $d);
+                }
+            }
+
+            foreach ($current_hotel_ddj as $c) {
+                $son_created_at = $c->getCreatedAt();
+                $annee = $son_created_at->format('Y');
+                array_push($tab_annee, $annee);
+            }
+
+            array_push($tab_sans_doublant, $tab_annee[0]);
+            for ($i = 0; $i < count($tab_annee); $i++) {
+
+                if (!in_array($tab_annee[$i], $tab_sans_doublant)) {
+                    array_push($tab_sans_doublant, $tab_annee[$i]);
+                }
+            }
         }
         
-        array_push($tab_sans_doublant, $tab_annee[0]);
-        for($i = 0; $i < count($tab_annee); $i++){
-            
-            if(!in_array($tab_annee[$i], $tab_sans_doublant)){
-                array_push($tab_sans_doublant, $tab_annee[$i]);
-            }
-            
-        }
         //dd($tab_sans_doublant);
         // on affiche le donné dans chart
         // selection de tous les ddj pour heb
@@ -369,7 +372,7 @@ class PageController extends AbstractController
             if ($son_annee_ca == $annee_actuel) {
                 if ($son_mois_ca == "01") {
                     $eca_jan++;
-                    $x = intVal($ddj->getHebCa());
+                    $x = floatval(str_replace(' ', '', $ddj->getHebCa()));
                     $heb_ca_jan += $x;
 
                     $e_jan++;
@@ -377,7 +380,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "02") {
                     $eca_fev++;
-                    $x = intVal($ddj->getHebCa());
+                    $x = floatval(str_replace(' ', '', $ddj->getHebCa()));
                     $heb_ca_fev += $x;
 
                     $e_fev++;
@@ -385,7 +388,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "03") {
                     $eca_mars++;
-                    $x = intVal($ddj->getHebCa());
+                    $x = floatval(str_replace(' ', '', $ddj->getHebCa()));
                     $heb_ca_mars += $x;
 
                     $e_mars++;
@@ -393,7 +396,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "04") {
                     $eca_avr++;
-                    $x = intVal($ddj->getHebCa());
+                    $x = floatval(str_replace(' ', '', $ddj->getHebCa()));
                     $heb_ca_avr += $x;
 
                     $e_avr++;
@@ -401,7 +404,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "05") {
                     $eca_mai++;
-                    $x = intVal($ddj->getHebCa());
+                    $x = floatval(str_replace(' ', '', $ddj->getHebCa()));
                     $heb_ca_mai += $x;
 
                     $e_mai++;
@@ -409,7 +412,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "06") {
                     $eca_juin++;
-                    $x = intVal($ddj->getHebCa());
+                    $x = floatval(str_replace(' ', '', $ddj->getHebCa()));
                     $heb_ca_juin += $x;
 
                     $e_juin++;
@@ -417,7 +420,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "07") {
                     $eca_juil++;
-                    $x = intVal($ddj->getHebCa());
+                    $x = floatval(str_replace(' ', '', $ddj->getHebCa()));
                     $heb_ca_juil += $x;
 
                     $e_juil++;
@@ -425,7 +428,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "08") {
                     $eca_aou++;
-                    $x = intVal($ddj->getHebCa());
+                    $x = floatval(str_replace(' ', '', $ddj->getHebCa()));
                     $heb_ca_aou += $x;
 
                     $e_aou++;
@@ -433,7 +436,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "09") {
                     $eca_sep++;
-                    $x = intVal($ddj->getHebCa());
+                    $x = floatval(str_replace(' ', '', $ddj->getHebCa()));
                     $heb_ca_sep += $x;
 
                     $e_sep++;
@@ -441,7 +444,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "10") {
                     $eca_oct++;
-                    $x = intVal($ddj->getHebCa());
+                    $x = floatval(str_replace(' ', '', $ddj->getHebCa()));
                    
                     $heb_ca_oct += $x;
 
@@ -450,7 +453,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "11") {
                     $eca_nov++;
-                    $x = intVal($ddj->getHebCa());
+                    $x = floatval(str_replace(' ', '', $ddj->getHebCa()));
                     $heb_ca_nov += $x;
 
                     $e_nov++;
@@ -458,7 +461,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "12") {
                     $eca_dec++;
-                    $x = intVal($ddj->getHebCa());
+                    $x = floatval(str_replace(' ', '', $ddj->getHebCa()));
                     $heb_ca_dec += $x;
 
                     $e_dec++;
@@ -483,7 +486,7 @@ class PageController extends AbstractController
                 $tab_eca[$i] = 1;
             }
             $tab_heb_ca[$i] = $tab_heb_ca[$i] / $tab_eca[$i] ; // / 10^6 car l'unité de graphe est le million
-            $tab_heb_ca[$i] = $tab_heb_ca[$i] / 1000000;
+            $tab_heb_ca[$i] = floatval(str_replace(' ', '', $tab_heb_ca[$i])) / 1000000;
             $tab_heb_ca[$i] = number_format($tab_heb_ca[$i], 2);
         }
 
@@ -592,6 +595,7 @@ class PageController extends AbstractController
             return $this->render('/page/error.html.twig');
         }
        else{
+           //dd($tab_heb_ca);
             return $this->render('page/hebergement.html.twig', [
                 "id" => "li__hebergement",
                 "tab_annee" => $tab_sans_doublant,
@@ -785,7 +789,7 @@ class PageController extends AbstractController
                     $res_di_jan += intval($ddj->getResDinner());
 
                     $eca_jan++;
-                    $res_ca_jan += intval($ddj->getResCa());
+                    $res_ca_jan += floatval(str_replace(' ', '', $ddj->getResCa()));
                 }
                 if ($son_mois_ca == "02") {
                     $epd_fev++;
@@ -798,7 +802,7 @@ class PageController extends AbstractController
                     $res_di_fev += intval($ddj->getResDinner());
 
                     $eca_fev++;
-                    $res_ca_fev += intval($ddj->getResCa());
+                    $res_ca_fev += floatval(str_replace(' ', '', $ddj->getResCa()));
                 }
                 if ($son_mois_ca == "03") {
                     $epd_mars++;
@@ -811,7 +815,7 @@ class PageController extends AbstractController
                     $res_di_mars += intval($ddj->getResDinner());
 
                     $eca_mars++;
-                    $res_ca_mars += intval($ddj->getResCa());
+                    $res_ca_mars += floatval(str_replace(' ', '', $ddj->getResCa()));
                 }
                 if ($son_mois_ca == "04") {
                     $epd_avr++;
@@ -824,7 +828,7 @@ class PageController extends AbstractController
                     $res_di_avr += intval($ddj->getResDinner());
 
                     $eca_avr++;
-                    $res_ca_avr += intval($ddj->getResCa());
+                    $res_ca_avr += floatval(str_replace(' ', '', $ddj->getResCa()));
                 }
                 if ($son_mois_ca == "05") {
                     $epd_mai++;
@@ -837,7 +841,7 @@ class PageController extends AbstractController
                     $res_di_mai += intval($ddj->getResDinner());
 
                     $eca_mai++;
-                    $res_ca_mai += intval($ddj->getResCa());
+                    $res_ca_mai += floatval(str_replace(' ', '', $ddj->getResCa()));
                 }
                 if ($son_mois_ca == "06") {
                     $epd_juin++;
@@ -850,7 +854,7 @@ class PageController extends AbstractController
                     $res_di_juin += intval($ddj->getResDinner());
 
                     $eca_juin++;
-                    $res_ca_juin += intval($ddj->getResCa());
+                    $res_ca_juin += floatval(str_replace(' ', '', $ddj->getResCa()));
                 }
                 if ($son_mois_ca == "07") {
                     $epd_juil++;
@@ -863,7 +867,7 @@ class PageController extends AbstractController
                     $res_di_juil += intval($ddj->getResDinner());
 
                     $eca_juil++;
-                    $res_ca_juil += intval($ddj->getResCa());
+                    $res_ca_juil += floatval(str_replace(' ', '', $ddj->getResCa()));
                 }
                 if ($son_mois_ca == "08") {
                     $epd_aou++;
@@ -876,7 +880,7 @@ class PageController extends AbstractController
                     $res_di_aou += intval($ddj->getResDinner());
 
                     $eca_aou++;
-                    $res_ca_aou += intval($ddj->getResCa());
+                    $res_ca_aou += floatval(str_replace(' ', '', $ddj->getResCa()));
                 }
                 if ($son_mois_ca == "09") {
                     $epd_sep++;
@@ -889,7 +893,7 @@ class PageController extends AbstractController
                     $res_di_sep += intval($ddj->getResDinner());
 
                     $eca_sep++;
-                    $res_ca_sep += intval($ddj->getResCa());
+                    $res_ca_sep += floatval(str_replace(' ', '', $ddj->getResCa()));
                 }
                 if ($son_mois_ca == "10") {
                     $epd_oct++;
@@ -902,7 +906,7 @@ class PageController extends AbstractController
                     $res_di_oct += intval($ddj->getResDinner());
 
                     $eca_oct++;
-                    $res_ca_oct += intval($ddj->getResCa());
+                    $res_ca_oct += floatval(str_replace(' ', '', $ddj->getResCa()));
                 }
                 if ($son_mois_ca == "11") {
                     $epd_nov++;
@@ -915,7 +919,7 @@ class PageController extends AbstractController
                     $res_di_nov += intval($ddj->getResDinner());
 
                     $eca_nov++;
-                    $res_ca_nov += intval($ddj->getResCa());
+                    $res_ca_nov += floatval(str_replace(' ', '', $ddj->getResCa()));
                 }
                 if ($son_mois_ca == "12") {
                     $epd_dec++;
@@ -928,7 +932,7 @@ class PageController extends AbstractController
                     $res_di_dec += intval($ddj->getResDinner());
 
                     $eca_dec++;
-                    $res_ca_dec += intval($ddj->getResCa());
+                    $res_ca_dec += floatval(str_replace(' ', '', $ddj->getResCa()));
                 }
             }
         }
@@ -940,7 +944,7 @@ class PageController extends AbstractController
                 $tab_eca[$i] = 1;
             }
             $tab_res_ca[$i] = $tab_res_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
-            $tab_res_ca[$i] = $tab_res_ca[$i] / 1000000;
+            $tab_res_ca[$i] = floatval(str_replace(' ', '', $tab_res_ca[$i])) / 1000000;
             $tab_res_ca[$i] = number_format($tab_res_ca[$i], 2);
         }
 
@@ -1163,7 +1167,7 @@ class PageController extends AbstractController
             if ($son_annee_ca == $annee_actuel) {
                 if ($son_mois_ca == "01") {
                     $eca_jan++;
-                    $spa_ca_jan += $ddj->getSpaCa();
+                    $spa_ca_jan += floatval(str_replace(' ', '', $ddj->getSpaCa()));
 
                     $ena_jan++;
                     $spa_na_jan += $ddj->getSpaNAbonne();
@@ -1173,7 +1177,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "02") {
                     $eca_fev++;
-                    $spa_ca_fev += $ddj->getSpaCa();
+                    $spa_ca_fev += floatval(str_replace(' ', '', $ddj->getSpaCa()));
 
                     $ena_fev++;
                     $spa_na_fev += $ddj->getSpaNAbonne();
@@ -1183,7 +1187,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "03") {
                     $eca_mars++;
-                    $spa_ca_mars += $ddj->getSpaCa();
+                    $spa_ca_mars += floatval(str_replace(' ', '', $ddj->getSpaCa()));
 
                     $ena_mars++;
                     $spa_na_mars += $ddj->getSpaNAbonne();
@@ -1193,7 +1197,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "04") {
                     $eca_avr++;
-                    $spa_ca_avr += $ddj->getSpaCa();
+                    $spa_ca_avr += floatval(str_replace(' ', '', $ddj->getSpaCa()));
 
                     $ena_avr++;
                     $spa_na_avr += $ddj->getSpaNAbonne();
@@ -1205,7 +1209,7 @@ class PageController extends AbstractController
                 if ($son_mois_ca == "05") {
                     
                     $eca_mai++;
-                    $spa_ca_mai += $ddj->getSpaCa();
+                    $spa_ca_mai += floatval(str_replace(' ', '', $ddj->getSpaCa()));
 
                     $ena_mai++;
                     $spa_na_mai += $ddj->getSpaNAbonne();
@@ -1216,7 +1220,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "06") {
                     $eca_juin++;
-                    $spa_ca_juin += $ddj->getSpaCa();
+                    $spa_ca_juin += floatval(str_replace(' ', '', $ddj->getSpaCa()));
 
                     $ena_juin++;
                     $spa_na_juin += $ddj->getSpaNAbonne();
@@ -1227,7 +1231,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "07") {
                     $eca_juil++;
-                    $spa_ca_juil += $ddj->getSpaCa();
+                    $spa_ca_juil += floatval(str_replace(' ', '', $ddj->getSpaCa()));
 
                     $ena_juil++;
                     $spa_na_juil += $ddj->getSpaNAbonne();
@@ -1238,7 +1242,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "08") {
                     $eca_aou++;
-                    $spa_ca_aou += $ddj->getSpaCa();
+                    $spa_ca_aou += floatval(str_replace(' ', '', $ddj->getSpaCa()));
 
                     $ena_aou++;
                     $spa_na_aou += $ddj->getSpaNAbonne();
@@ -1249,7 +1253,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "09") {
                     $eca_sep++;
-                    $spa_ca_sep += $ddj->getSpaCa();
+                    $spa_ca_sep += floatval(str_replace(' ', '', $ddj->getSpaCa()));
 
                     $ena_sep++;
                     $spa_na_sep += $ddj->getSpaNAbonne();
@@ -1260,7 +1264,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "10") {
                     $eca_oct++;
-                    $spa_ca_oct += $ddj->getSpaCa();
+                    $spa_ca_oct += floatval(str_replace(' ', '', $ddj->getSpaCa()));
 
                     $ena_oct++;
                     $spa_na_oct += $ddj->getSpaNAbonne();
@@ -1270,7 +1274,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "11") {
                     $eca_nov++;
-                    $spa_ca_nov += $ddj->getSpaCa();
+                    $spa_ca_nov += floatval(str_replace(' ', '', $ddj->getSpaCa()));
 
                     $ena_nov++;
                     $spa_na_nov += $ddj->getSpaNAbonne();
@@ -1280,7 +1284,7 @@ class PageController extends AbstractController
                 }
                 if ($son_mois_ca == "12") {
                     $eca_dec++;
-                    $spa_ca_dec += $ddj->getSpaCa();
+                    $spa_ca_dec += floatval(str_replace(' ', '', $ddj->getSpaCa()));
 
                     $ena_dec++;
                     $spa_na_dec += $ddj->getSpaNAbonne();
@@ -1300,7 +1304,7 @@ class PageController extends AbstractController
                 $tab_eca[$i] = 1;
             }
             $tab_spa_ca[$i] = $tab_spa_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
-            $tab_spa_ca[$i] = $tab_spa_ca[$i] / 1000000;
+            $tab_spa_ca[$i] = floatval(str_replace(' ', '', $tab_spa_ca[$i])) / 1000000;
             $tab_spa_ca[$i] = number_format($tab_spa_ca[$i], 2);
         }
 
@@ -1947,6 +1951,7 @@ class PageController extends AbstractController
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         $value_date1 = "";
         $value_date2 = "";
+        $today = new \DateTime();
         if($request->request->count() > 0){
             $value_date1 = $request->request->get('date1');
             $value_date2 = $request->request->get('date2');
@@ -1960,11 +1965,12 @@ class PageController extends AbstractController
         }
        else{
             return $this->render('page/h_hebergement.html.twig', [
-                "hotel" => $data_session['pseudo_hotel'],
+                "hotel"             => $data_session['pseudo_hotel'],
                 "tropical_wood"     => false,
-                "current_page" => $data_session['current_page'],
-                "value_date1" => $value_date1,
-                "value_date2" => $value_date2,
+                "current_page"      => $data_session['current_page'],
+                "value_date1"       => $value_date1,
+                "value_date2"       => $value_date2,
+                "today"             => $today,   
             ]);
        }
     }
@@ -1978,6 +1984,7 @@ class PageController extends AbstractController
         $data_session['current_page'] = "h_restaurant";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         // HotelRepository $repoHotel
+        $today = new \DateTime();
         $value_date1 = "";
         $value_date2 = "";
         if ($request->request->count() > 0) {
@@ -1992,11 +1999,12 @@ class PageController extends AbstractController
         }
        else{
             return $this->render('page/h_restaurant.html.twig', [
-                "hotel" => $data_session['pseudo_hotel'],
-                "tropical_wood"     => false,
-                "current_page" => $data_session['current_page'],
-                "value_date1" => $value_date1,
-                "value_date2" => $value_date2,
+                "hotel"                 => $data_session['pseudo_hotel'],
+                "tropical_wood"         => false,
+                "current_page"          => $data_session['current_page'],
+                "value_date1"           => $value_date1,
+                "value_date2"           => $value_date2,
+                "today"                 => $today, 
             ]);
        }
     }
@@ -2010,6 +2018,7 @@ class PageController extends AbstractController
         $data_session['current_page'] = "h_spa";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         // HotelRepository $repoHotel
+        $today = new \DateTime();
         $value_date1 = "";
         $value_date2 = "";
         if ($request->request->count() > 0) {
@@ -2026,9 +2035,10 @@ class PageController extends AbstractController
             return $this->render('page/h_spa.html.twig', [
                 "hotel" => $data_session['pseudo_hotel'],
                 "tropical_wood"     => false,
-                "current_page" => $data_session['current_page'],
-                "value_date1" => $value_date1,
-                "value_date2" => $value_date2,
+                "current_page"      => $data_session['current_page'],
+                "value_date1"       => $value_date1,
+                "value_date2"       => $value_date2,
+                "today"             => $today, 
             ]);
        }
     }
@@ -2269,7 +2279,7 @@ class PageController extends AbstractController
             $donnee = $request->get('data');
             $donnee_explode = explode("-", $donnee);
             if ($donnee_explode[0] != 'tous_les_mois') {
-
+                
                 $all_ddj = $repoDoneeDJ->findAll();
 
                 // les var pour les heb_to
@@ -2284,8 +2294,9 @@ class PageController extends AbstractController
 
                         $son_num_jour = $d->getCreatedAt()->format('d');
                         $num = intval($son_num_jour) - 1;
+                        //$val = floatval(str_replace(" ", "", $tab_jour_heb_ca[$num]));
                         $tab_jour_heb_ca[$num] = $d->getHebCa();
-                        $tab_jour_heb_ca[$num] =  $tab_jour_heb_ca[$num] / 1000000;
+                        $tab_jour_heb_ca[$num] =  floatval(str_replace(' ', '', $tab_jour_heb_ca[$num])) / 1000000;
                         $tab_jour_heb_ca[$num] = number_format($tab_jour_heb_ca[$num], 2);
                     }
                 }
@@ -2335,51 +2346,51 @@ class PageController extends AbstractController
                     if ($son_annee_ca == $annee_actuel) {
                         if ($son_mois_ca == "01") {
                             $eca_jan++;
-                            $heb_ca_jan += intval($ddj->getHebCa());
+                            $heb_ca_jan += floatval(str_replace(' ', '', $ddj->getHebCa()));
                         }
                         if ($son_mois_ca == "02") {
                             $eca_fev++;
-                            $heb_ca_fev += intval($ddj->getHebCa());
+                            $heb_ca_fev += floatval(str_replace(' ', '', $ddj->getHebCa()));
                         }
                         if ($son_mois_ca == "03") {
                             $eca_mars++;
-                            $heb_ca_mars += intval($ddj->getHebCa());
+                            $heb_ca_mars += floatval(str_replace(' ', '', $ddj->getHebCa()));
                         }
                         if ($son_mois_ca == "04") {
                             $eca_avr++;
-                            $heb_ca_avr += intval($ddj->getHebCa());
+                            $heb_ca_avr += floatval(str_replace(' ', '', $ddj->getHebCa()));
                         }
                         if ($son_mois_ca == "05") {
                             $eca_mai++;
-                            $heb_ca_mai += intval($ddj->getHebCa());
+                            $heb_ca_mai += floatval(str_replace(' ', '', $ddj->getHebCa()));
                         }
                         if ($son_mois_ca == "06") {
                             $eca_juin++;
-                            $heb_ca_juin += intval($ddj->getHebCa());
+                            $heb_ca_juin += floatval(str_replace(' ', '', $ddj->getHebCa()));
                         }
                         if ($son_mois_ca == "07") {
                             $eca_juil++;
-                            $heb_ca_juil += intval($ddj->getHebCa());
+                            $heb_ca_juil += floatval(str_replace(' ', '', $ddj->getHebCa()));
                         }
                         if ($son_mois_ca == "08") {
                             $eca_aou++;
-                            $heb_ca_aou += intval($ddj->getHebCa());
+                            $heb_ca_aou += floatval(str_replace(' ', '', $ddj->getHebCa()));
                         }
                         if ($son_mois_ca == "09") {
                             $eca_sep++;
-                            $heb_ca_sep += intval($ddj->getHebCa());
+                            $heb_ca_sep += floatval(str_replace(' ', '', $ddj->getHebCa()));
                         }
                         if ($son_mois_ca == "10") {
                             $eca_oct++;
-                            $heb_ca_oct += intval($ddj->getHebCa());
+                            $heb_ca_oct += floatval(str_replace(' ', '', $ddj->getHebCa()));
                         }
                         if ($son_mois_ca == "11") {
                             $eca_nov++;
-                            $heb_ca_nov += intval($ddj->getHebCa());
+                            $heb_ca_nov += floatval(str_replace(' ', '', $ddj->getHebCa()));
                         }
                         if ($son_mois_ca == "12") {
                             $eca_dec++;
-                            $heb_ca_dec += intval($ddj->getHebCa());
+                            $heb_ca_dec += floatval(str_replace(' ', '', $ddj->getHebCa()));
                         }
                     }
                 }
@@ -2389,8 +2400,9 @@ class PageController extends AbstractController
                     if ($tab_eca[$i] == 0) {
                         $tab_eca[$i] = 1;
                     }
+                   
                     $tab_heb_ca[$i] = $tab_heb_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
-                    $tab_heb_ca[$i] = $tab_heb_ca[$i] / 1000000;
+                    $tab_heb_ca[$i] = floatval(str_replace(' ', '', $tab_heb_ca[$i])) / 1000000;
                     $tab_heb_ca[$i] = number_format($tab_heb_ca[$i], 2);
                 }
 
@@ -2401,6 +2413,33 @@ class PageController extends AbstractController
                 $response->setContent($data);
                 return $response;
             }
+        }
+        else{
+            // url /profile/filtre/graph/heb_ca/royal_beach
+            $all_ddj = $repoDoneeDJ->findAll();
+
+            // les var pour les heb_to
+
+            $tab_jour_heb_ca = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+            $num = 0;
+            foreach ($all_ddj as $d) {
+                $son_mois_createdAt = $d->getCreatedAt()->format('m-Y');
+                //dd($donnee);
+                $donnee = "02-2021";
+                if ($donnee == $son_mois_createdAt) {
+
+                    $son_num_jour = $d->getCreatedAt()->format('d');
+                    $num = intval($son_num_jour) - 1;
+                    //$val = floatval(str_replace(" ", "", $tab_jour_heb_ca[$num]));
+                    $tab_jour_heb_ca[$num] = $d->getHebCa();
+                    //dd(floatval(str_replace(' ','', $tab_jour_heb_ca[$num])));
+                    $tab_jour_heb_ca[$num] =  floatval(str_replace(' ', '', $tab_jour_heb_ca[$num])) / 1000000;
+                    $tab_jour_heb_ca[$num] = number_format($tab_jour_heb_ca[$num], 2);
+                }
+            }
+
+            //dd($tab_jour_heb_ca);
         }
 
     }
@@ -2433,7 +2472,7 @@ class PageController extends AbstractController
                         $son_num_jour = $d->getCreatedAt()->format('d');
                         $num = intval($son_num_jour) - 1;
                         $tab_jour_res_ca[$num] = $d->getResCa();
-                        $tab_jour_res_ca[$num] =  $tab_jour_res_ca[$num] / 1000000;
+                        $tab_jour_res_ca[$num] =  floatval(str_replace(' ', '', $tab_jour_res_ca[$num])) / 1000000;
                         $tab_jour_res_ca[$num] = number_format($tab_jour_res_ca[$num], 2);
                     }
                 }
@@ -2483,51 +2522,51 @@ class PageController extends AbstractController
                     if ($son_annee_ca == $annee_actuel) {
                         if ($son_mois_ca == "01") {
                             $eca_jan++;
-                            $res_ca_jan += intval($ddj->getResCa());
+                            $res_ca_jan += floatval(str_replace(' ', '', $ddj->getResCa()));
                         }
                         if ($son_mois_ca == "02") {
                             $eca_fev++;
-                            $res_ca_fev += intval($ddj->getResCa());
+                            $res_ca_fev += floatval(str_replace(' ', '', $ddj->getResCa()));
                         }
                         if ($son_mois_ca == "03") {
                             $eca_mars++;
-                            $res_ca_mars += intval($ddj->getResCa());
+                            $res_ca_mars += floatval(str_replace(' ', '', $ddj->getResCa()));
                         }
                         if ($son_mois_ca == "04") {
                             $eca_avr++;
-                            $res_ca_avr += intval($ddj->getResCa());
+                            $res_ca_avr += floatval(str_replace(' ', '', $ddj->getResCa()));
                         }
                         if ($son_mois_ca == "05") {
                             $eca_mai++;
-                            $res_ca_mai += intval($ddj->getResCa());
+                            $res_ca_mai += floatval(str_replace(' ', '', $ddj->getResCa()));
                         }
                         if ($son_mois_ca == "06") {
                             $eca_juin++;
-                            $res_ca_juin += intval($ddj->getResCa());
+                            $res_ca_juin += floatval(str_replace(' ', '', $ddj->getResCa()));
                         }
                         if ($son_mois_ca == "07") {
                             $eca_juil++;
-                            $res_ca_juil += intval($ddj->getResCa());
+                            $res_ca_juil += floatval(str_replace(' ', '', $ddj->getResCa()));
                         }
                         if ($son_mois_ca == "08") {
                             $eca_aou++;
-                            $res_ca_aou += intval($ddj->getResCa());
+                            $res_ca_aou += floatval(str_replace(' ', '', $ddj->getResCa()));
                         }
                         if ($son_mois_ca == "09") {
                             $eca_sep++;
-                            $res_ca_sep += intval($ddj->getResCa());
+                            $res_ca_sep += floatval(str_replace(' ', '', $ddj->getResCa()));
                         }
                         if ($son_mois_ca == "10") {
                             $eca_oct++;
-                            $res_ca_oct += intval($ddj->getResCa());
+                            $res_ca_oct += floatval(str_replace(' ', '', $ddj->getResCa()));
                         }
                         if ($son_mois_ca == "11") {
                             $eca_nov++;
-                            $res_ca_nov += intval($ddj->getResCa());
+                            $res_ca_nov += floatval(str_replace(' ', '', $ddj->getResCa()));
                         }
                         if ($son_mois_ca == "12") {
                             $eca_dec++;
-                            $res_ca_dec += intval($ddj->getResCa());
+                            $res_ca_dec += floatval(str_replace(' ', '', $ddj->getResCa()));
                         }
                     }
                 }
@@ -2538,7 +2577,7 @@ class PageController extends AbstractController
                         $tab_eca[$i] = 1;
                     }
                     $tab_res_ca[$i] = $tab_res_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
-                    $tab_res_ca[$i] = $tab_res_ca[$i] / 1000000;
+                    $tab_res_ca[$i] = floatval(str_replace(' ', '', $tab_res_ca[$i])) / 1000000;
                     $tab_res_ca[$i] = number_format($tab_res_ca[$i], 2);
                 }
 
@@ -2909,7 +2948,7 @@ class PageController extends AbstractController
                         $son_num_jour = $d->getCreatedAt()->format('d');
                         $num = intval($son_num_jour) - 1;
                         $tab_jour_res_ca[$num] = $d->getSpaCa();
-                        $tab_jour_res_ca[$num] =  $tab_jour_res_ca[$num] / 1000000;
+                        $tab_jour_res_ca[$num] =  floatval(str_replace(' ', '', $tab_jour_res_ca[$num])) / 1000000;
                         $tab_jour_res_ca[$num] = number_format($tab_jour_res_ca[$num], 2);
                     }
                 }
@@ -2959,51 +2998,51 @@ class PageController extends AbstractController
                     if ($son_annee_ca == $annee_actuel) {
                         if ($son_mois_ca == "01") {
                             $eca_jan++;
-                            $res_ca_jan += $ddj->getSpaCa();
+                            $res_ca_jan += floatval(str_replace(' ', '', $ddj->getSpaCa()));
                         }
                         if ($son_mois_ca == "02") {
                             $eca_fev++;
-                            $res_ca_fev += $ddj->getSpaCa();
+                            $res_ca_fev += floatval(str_replace(' ', '', $ddj->getSpaCa()));
                         }
                         if ($son_mois_ca == "03") {
                             $eca_mars++;
-                            $res_ca_mars += $ddj->getSpaCa();
+                            $res_ca_mars += floatval(str_replace(' ', '', $ddj->getSpaCa()));
                         }
                         if ($son_mois_ca == "04") {
                             $eca_avr++;
-                            $res_ca_avr += $ddj->getSpaCa();
+                            $res_ca_avr += floatval(str_replace(' ', '', $ddj->getSpaCa()));
                         }
                         if ($son_mois_ca == "05") {
                             $eca_mai++;
-                            $res_ca_mai += $ddj->getSpaCa();
+                            $res_ca_mai += floatval(str_replace(' ', '', $ddj->getSpaCa()));
                         }
                         if ($son_mois_ca == "06") {
                             $eca_juin++;
-                            $res_ca_juin += $ddj->getSpaCa();
+                            $res_ca_juin += floatval(str_replace(' ', '', $ddj->getSpaCa()));
                         }
                         if ($son_mois_ca == "07") {
                             $eca_juil++;
-                            $res_ca_juil += $ddj->getSpaCa();
+                            $res_ca_juil += floatval(str_replace(' ', '', $ddj->getSpaCa()));
                         }
                         if ($son_mois_ca == "08") {
                             $eca_aou++;
-                            $res_ca_aou += $ddj->getSpaCa();
+                            $res_ca_aou += floatval(str_replace(' ', '', $ddj->getSpaCa()));
                         }
                         if ($son_mois_ca == "09") {
                             $eca_sep++;
-                            $res_ca_sep += $ddj->getSpaCa();
+                            $res_ca_sep += floatval(str_replace(' ', '', $ddj->getSpaCa()));
                         }
                         if ($son_mois_ca == "10") {
                             $eca_oct++;
-                            $res_ca_oct += $ddj->getSpaCa();
+                            $res_ca_oct += floatval(str_replace(' ', '', $ddj->getSpaCa()));
                         }
                         if ($son_mois_ca == "11") {
                             $eca_nov++;
-                            $res_ca_nov += $ddj->getSpaCa();
+                            $res_ca_nov += floatval(str_replace(' ', '', $ddj->getSpaCa()));
                         }
                         if ($son_mois_ca == "12") {
                             $eca_dec++;
-                            $res_ca_dec += $ddj->getSpaCa();
+                            $res_ca_dec += floatval(str_replace(' ', '', $ddj->getSpaCa()));
                         }
                     }
                 }
@@ -3014,7 +3053,7 @@ class PageController extends AbstractController
                         $tab_eca[$i] = 1;
                     }
                     $tab_res_ca[$i] = $tab_res_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
-                    $tab_res_ca[$i] = $tab_res_ca[$i] / 1000000;
+                    $tab_res_ca[$i] = floatval(str_replace(' ', '', $tab_res_ca[$i])) / 1000000;
                     $tab_res_ca[$i] = number_format($tab_res_ca[$i], 2);
                 }
 

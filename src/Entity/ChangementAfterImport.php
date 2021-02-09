@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use App\Repository\ChangementAfterImportRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ChangementAfterImportRepository;
 
 /**
  * @ORM\Entity(repositoryClass=ChangementAfterImportRepository::class)
@@ -18,17 +18,17 @@ class ChangementAfterImport
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $nom;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $last_data;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $next_data;
 
@@ -47,7 +47,7 @@ class ChangementAfterImport
         return $this->nom;
     }
 
-    public function setNom(string $nom): self
+    public function setNom(?string $nom): self
     {
         $this->nom = $nom;
 
@@ -59,7 +59,7 @@ class ChangementAfterImport
         return $this->last_data;
     }
 
-    public function setLastData(string $last_data): self
+    public function setLastData(?string $last_data): self
     {
         $this->last_data = $last_data;
 
@@ -71,7 +71,7 @@ class ChangementAfterImport
         return $this->next_data;
     }
 
-    public function setNextData(string $next_data): self
+    public function setNextData(?string $next_data): self
     {
         $this->next_data = $next_data;
 

@@ -136,6 +136,12 @@ class DonneeDuJourType extends AbstractType
                 "attr" => [
                     "class" => "form-control"
                 ]
+            ])
+            ->add('crj_hebergement', TextareaType::class, [
+                'required' => false,
+                "attr" => [
+                    "class" => "form-control"
+                ]
             ]);
     }
 

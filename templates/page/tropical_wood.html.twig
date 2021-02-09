@@ -77,15 +77,30 @@
 						<h4 class="titre_gris">Etat de production:
 						</h4>
 						<div class="liste_btn" data="etat_production">
-							<a href="#" {% if etat_production is defined %} {% if "A faire" in etat_production %} class="btn btn-default btn_dore" {% else %} class="btn btn-default btn_gris" {% endif %} {% else %} class="btn btn-default btn_gris" {% endif %} data="A faire">
+							<a href="#" 
+								{% if etat_production is defined %} 
+									{% if "A faire" in etat_production or "Planning" in etat_production %} class="btn btn-default btn_dore" 
+										{% else %} class="btn btn-default btn_gris" 
+									{% endif %} 
+										{% else %} class="btn btn-default btn_gris" 
+								{% endif %} data="A faire*Planning">
 								<span>A faire</span>
 							</a>
-							<a href="#" {% if etat_production is defined %} {% if "Production" in etat_production %} class="btn btn-default btn_dore" {% else %} class="btn btn-default btn_gris" {% endif %} {% else %} class="btn btn-default btn_gris" {% endif %} data="Production">
+							<a href="#" 
+								{% if etat_production is defined %} 
+									{% if "Production" in etat_production or "en pose" in etat_production 
+										or "en cours" in etat_production or "a controler" in etat_production
+									%} 
+										class="btn btn-default btn_dore" 
+										{% else %} class="btn btn-default btn_gris" 
+									{% endif %} 
+									{% else %} class="btn btn-default btn_gris" 
+								{% endif %} data="Production*en cours*en pose*a controler">
 								<span>En production</span>
 							</a>
-							<a href="#" {% if etat_production is defined %} {% if "Pose" in etat_production %} class="btn btn-default btn_dore" {% else %} class="btn btn-default btn_gris" {% endif %} {% else %} class="btn btn-default btn_gris" {% endif %} data="Pose">
+							{# <a href="#" {% if etat_production is defined %} {% if "Pose" in etat_production %} class="btn btn-default btn_dore" {% else %} class="btn btn-default btn_gris" {% endif %} {% else %} class="btn btn-default btn_gris" {% endif %} data="Pose">
 								<span>En pose</span>
-							</a>
+							</a> #}
 							<a href="#" {% if etat_production is defined %} {% if "A facturer" in etat_production %} class="btn btn-default btn_dore" {% else %} class="btn btn-default btn_gris" {% endif %} {% else %} class="btn btn-default btn_gris" {% endif %} data="A facturer">
 								<span>Fini - à Facturer</span>
 							</a>
@@ -205,6 +220,9 @@
 							<div class="table_header">
 								<div class="t_header_row">
 									<div class="tw_client">
+										{# <span class="span_check_total" style="float:left !important">
+											<input type="checkbox" class="checkbox_total" checked="false" data-check = "false">
+										</span> #}
 										<span>Client</span>
 									</div>
 									<div class="tw_details">
@@ -728,24 +746,24 @@
 				if(input__entreprise_ajax != ""){
 
 					if(son_data_type == "total_reglement"){
-						load_by_button_ok(son_data_data, null, null);
+						load_by_button_ok(son_data_data, null, null, "filtrer");
 					}
 					if(son_data_type == "reste"){
-						load_by_button_ok(null, son_data_data, null);
+						load_by_button_ok(null, son_data_data, null, "filtrer");
 					}
 					if(son_data_type == "montant_total"){
-						load_by_button_ok(null, null, son_data_data);
+						load_by_button_ok(null, null, son_data_data, "filtrer");
 					}
 				}
 				else{
 					if(son_data_type == "total_reglement"){
-						load_by_btn_black(son_data_data, null, null);
+						load_by_btn_black(son_data_data, null, null, "filtrer");
 					}
 					if(son_data_type == "reste"){
-						load_by_btn_black(null, son_data_data, null);
+						load_by_btn_black(null, son_data_data, null, "filtrer");
 					}
 					if(son_data_type == "montant_total"){
-						load_by_btn_black(null, null, son_data_data);
+						load_by_btn_black(null, null, son_data_data, "filtrer");
 					}
 				}
 				
@@ -822,7 +840,136 @@
 					}
 				}
 			})
+			// annimation checkbox
+			// $('.checkbox_total').prop('checked', false);
+			// $('.checkbox_total').on("change", function(){
+				
+			// 	if($(this).attr('data-check') == "false"){
+			// 		$(this).attr('data-check', "true");
+			// 		$('.span_check_unite').prop('checked', true);
+			// 		$('.span_check_unite').show();
+			// 	}
+			// 	else{
+			// 		$(this).attr('data-check', "false");
+			// 		$('.span_check_unite').hide();
+			// 	}
+			// })
 			
+			/*$(document).on('change', '.checkbox_unite', function(){
+				var data_check = $(this).attr('data-check');
+				if(data_check == "true"){
+					// +
+					$(this).attr('data-check', "false");
+					var total_reglement = $(this).parent().parent().parent().siblings(".sous_total_content").find(".total_paiement").attr('data');
+					var total_reste = $(this).parent().parent().parent().siblings(".sous_total_content").find(".total_reste").attr('data');
+					var total_montant = $(this).parent().parent().parent().siblings(".sous_total_content").find(".total_montant").attr('data');
+
+					total_reglement = parseInt(total_reglement)
+					total_reste = parseInt(total_reste)
+					total_montant = parseInt(total_montant)
+					//alert("reg = " + total_reglement + " reste = " + total_reste + " montant = " + total_montant);
+					Total_reglement = parseInt($('#total_paiement').attr('data'));
+					Total_reglement = Total_reglement - total_reglement;
+					$('#total_paiement').attr('data', Total_reglement);
+					Total_reste = parseInt($('#total_reste').attr('data'));
+					Total_reste = Total_reste - total_reste;
+					$('#total_reste').attr('data', Total_reste);
+					Total_montant = parseInt($('#total_montant').attr('data'));
+					Total_montant = Total_montant - total_montant;
+					$("#total_montant").attr('data', Total_montant);
+
+					var tr_aff = $("#total_paiement").attr('data')
+					var treste_aff = $("#total_reste").attr('data')
+					var tm_aff = $("#total_montant").attr('data')
+					// affichage
+					$("#parent_total_paiement").html(`
+						 <span class="montant value" id="total_paiement" data="` + Total_reglement + `">
+							` + Total_reglement + `
+						</span>
+					`).promise().done(function(){
+							var montant = document.querySelector("#total_paiement");
+							var test = new Intl.NumberFormat();
+							var val = test.format(montant.innerHTML);
+							montant.innerHTML = val;
+						});
+					$("#parent_total_reste").html(`
+						 <span class="montant value" id="total_reste" data="` + Total_reste + `">
+							` + Total_reste + `
+						</span>
+					`).promise().done(function(){
+							var montant = document.querySelector("#total_reste");
+							var test = new Intl.NumberFormat();
+							var val = test.format(montant.innerHTML);
+							montant.innerHTML = val;
+						});
+
+					$("#parent_total_montant").html(`
+						 <span class="montant value" id="total_montant" data="` + Total_montant + `">
+							` + Total_montant + `
+						</span>
+					`).promise().done(function(){
+							var montant = document.querySelector("#total_montant");
+							var test = new Intl.NumberFormat();
+							var val = test.format(montant.innerHTML);
+							montant.innerHTML = val;
+						});
+
+				}
+				else if(data_check == "false"){
+					// -
+					$(this).attr('data-check', "true");
+					var total_reglement = $(this).parent().parent().parent().siblings(".sous_total_content").find(".total_paiement").attr('data');
+					var total_reste = $(this).parent().parent().parent().siblings(".sous_total_content").find(".total_reste").attr('data');
+					var total_montant = $(this).parent().parent().parent().siblings(".sous_total_content").find(".total_montant").attr('data');
+					total_reglement = parseInt(total_reglement)
+					total_reste = parseInt(total_reste)
+					total_montant = parseInt(total_montant)
+					//alert("reg = " + total_reglement + " reste = " + total_reste + " montant = " + total_montant);
+					Total_reglement = parseInt($('#total_paiement').attr('data'));
+					Total_reglement = Total_reglement + total_reglement;
+					$('#total_paiement').attr('data', Total_reglement);
+					Total_reste = parseInt($('#total_reste').attr('data'));
+					Total_reste = Total_reste + total_reste;
+					$('#total_reste').attr('data', Total_reste);
+					Total_montant = parseInt($('#total_montant').attr('data'));
+					Total_montant = Total_montant + total_montant;
+					$("#total_montant").attr('data', Total_montant);
+					// affichage
+					$("#parent_total_paiement").html(`
+						 <span class="montant value" id="total_paiement" data="` + Total_reglement + `">
+							` + Total_reglement + `
+						</span>
+					`).promise().done(function(){
+							var montant = document.querySelector("#total_paiement");
+							var test = new Intl.NumberFormat();
+							var val = test.format(montant.innerHTML);
+							montant.innerHTML = val;
+						});
+					$("#parent_total_reste").html(`
+						 <span class="montant value" id="total_reste" data="` + Total_reste + `">
+							` + Total_reste + `
+						</span>
+					`).promise().done(function(){
+							var montant = document.querySelector("#total_reste");
+							var test = new Intl.NumberFormat();
+							var val = test.format(montant.innerHTML);
+							montant.innerHTML = val;
+						});
+
+					$("#parent_total_montant").html(`
+						 <span class="montant value" id="total_montant" data="` + Total_montant + `">
+							` + Total_montant + `
+						</span>
+					`).promise().done(function(){
+							var montant = document.querySelector("#total_montant");
+							var test = new Intl.NumberFormat();
+							var val = test.format(montant.innerHTML);
+							montant.innerHTML = val;
+						});
+				}
+				//total_reste, total_montant
+				
+			})*/
 			
 		})
 		
