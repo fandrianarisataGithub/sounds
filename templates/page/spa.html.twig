@@ -278,7 +278,9 @@
                                             max: my_max,
                                             stepSize: my_stepSize,
                                             callback: function (value) {
-                                                return value + "M Ar"
+                                                var test = new Intl.NumberFormat();
+                                                var val = test.format(value);
+                                                return val + " Ar"
                                             }
                                         },
                                             display: true,
@@ -722,13 +724,15 @@
                 
                 function findArrayMax(array){
                     var M = array[0];
+                    
                     for(var i = 0; i< array.length; i++){
-                        if(M < array[i]){
-                            M = array[i];
+                        var x = parseFloat(array[i]);
+                        if(M < x){
+                            M = x;
                         }
                     }
                     var m_quart = M ;
-                    return parseInt(m_quart);
+                    return m_quart;
                 }
 
                 function portionner(val){
@@ -737,11 +741,11 @@
 
                 var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Sept","Oct","Nov","Dec"];
 
-                var myChart1 = create_chart1(create_ctx1(), create_config1(my_data_spa_ca, my_labels, findArrayMax(my_data_spa_ca) + portionner(findArrayMax(my_data_spa_ca)), portionner(findArrayMax(my_data_spa_ca))));
+                var myChart1 = create_chart1(create_ctx1(), create_config1(my_data_spa_ca, my_labels, parseInt(findArrayMax(my_data_spa_ca) + portionner(findArrayMax(my_data_spa_ca))), portionner(findArrayMax(my_data_spa_ca))));
 
-                var myChart2 = create_chart2(create_ctx2(), create_config2(my_data_spa_na, my_labels, findArrayMax(my_data_spa_na) + portionner(findArrayMax(my_data_spa_na)), portionner(findArrayMax(my_data_spa_na))));
+                var myChart2 = create_chart2(create_ctx2(), create_config2(my_data_spa_na, my_labels, parseInt(findArrayMax(my_data_spa_na) + portionner(findArrayMax(my_data_spa_na))), portionner(findArrayMax(my_data_spa_na))));
 
-                var myChart3 = create_chart2(create_ctx3(), create_config3(my_data_spa_cu, my_labels, findArrayMax(my_data_spa_cu), portionner(findArrayMax(my_data_spa_cu))));
+                var myChart3 = create_chart2(create_ctx3(), create_config3(my_data_spa_cu, my_labels, parseInt(findArrayMax(my_data_spa_cu) + portionner(findArrayMax(my_data_spa_cu))), portionner(findArrayMax(my_data_spa_cu))));
 
                 // triage chart heb_ca
 					$('#mois_spa_ca').on('change', function(){
@@ -767,12 +771,12 @@
 										if (w <= 768) {
                                             // $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
                                             $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-											 var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											 var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart2);
 										} else {
 											 $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-											var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart2);
 										}
@@ -785,12 +789,12 @@
 										if (w <= 768) {
                                             // $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
                                             $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-											 var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											 var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart2);
 										} else {
 											 $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-											var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart2);
 										}
@@ -827,12 +831,12 @@
 										if (w <= 768) {
                                             // $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
                                             $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-											var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart2);
 										} else {
 											 $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-											var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart2);
 										}
@@ -845,12 +849,12 @@
 										if (w <= 768) {
                                             // $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
                                             $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-											 var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											 var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart2);
 										} else {
 											 $("#element_canvas_cas").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
-											var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart1.update();
 											//add_resp_heb(myChart1, myChart2);
 										}
@@ -888,12 +892,12 @@
 										var w = $(window).width();
 										if (w <= 768) {
                                              $("#element_canvas_na").html('<div><canvas id="canvas_na"></canvas></div><div id="chart-legends_na"></div>');
-											 var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											 var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart2.update();
 											
 										} else {
 											$("#element_canvas_na").html('<div><canvas id="canvas_na"></canvas></div><div id="chart-legends_na"></div>');
-											var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart2.update();
 										}
 									}
@@ -904,12 +908,12 @@
 										var w = $(window).width();
 										if (w <= 768) {
                                              $("#element_canvas_na").html('<div><canvas id="canvas_na"></canvas></div><div id="chart-legends_na"></div>');
-											var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart2.update();
 											
 										} else {
 											$("#element_canvas_na").html('<div><canvas id="canvas_na"></canvas></div><div id="chart-legends_na"></div>');
-											var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels,findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels,parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart2.update();
 										}
 									}
@@ -941,12 +945,12 @@
 										var w = $(window).width();
 										if (w <= 768) {
                                              $("#element_canvas_na").html('<div><canvas id="canvas_na"></canvas></div><div id="chart-legends_na"></div>');
-											 var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											 var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart2.update();
 											
 										} else {
 											$("#element_canvas_na").html('<div><canvas id="canvas_na"></canvas></div><div id="chart-legends_na"></div>');
-											var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart2.update();
 										}
 									}
@@ -957,12 +961,12 @@
 										var w = $(window).width();
 										if (w <= 768) {
                                              $("#element_canvas_na").html('<div><canvas id="canvas_na"></canvas></div><div id="chart-legends_na"></div>');
-											var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart2.update();
 											
 										} else {
 											$("#element_canvas_na").html('<div><canvas id="canvas_na"></canvas></div><div id="chart-legends_na"></div>');
-											var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels,findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels,parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart2.update();
 										}
 									}
@@ -1000,12 +1004,12 @@
 										var w = $(window).width();
 										if (w <= 768) {
                                             $("#element_canvas_cu").html('<div><canvas id="canvas_cu"></canvas></div><div id="chart-legends_cu"></div>');
-											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels,findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels,parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart3.update();
 											
 										} else {
                                              $("#element_canvas_cu").html('<div><canvas id="canvas_cu"></canvas></div><div id="chart-legends_cu"></div>');
-											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels,findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels,parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart3.update();
 											
 											
@@ -1018,12 +1022,12 @@
 										var w = $(window).width();
 										if (w <= 768) {
                                             $("#element_canvas_cu").html('<div><canvas id="canvas_cu"></canvas></div><div id="chart-legends_cu"></div>');
-											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels, parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart3.update();
 											
 										} else {
                                              $("#element_canvas_cu").html('<div><canvas id="canvas_cu"></canvas></div><div id="chart-legends_cu"></div>');
-											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels,findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels,parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart3.update();
 											
 											
@@ -1057,12 +1061,12 @@
 										var w = $(window).width();
 										if (w <= 768) {
                                             $("#element_canvas_cu").html('<div><canvas id="canvas_cu"></canvas></div><div id="chart-legends_cu"></div>');
-											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels,findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels,parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart3.update();
 											
 										} else {
                                              $("#element_canvas_cu").html('<div><canvas id="canvas_cu"></canvas></div><div id="chart-legends_cu"></div>');
-											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels,findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels,parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart3.update();
 											
 											
@@ -1075,12 +1079,12 @@
 										var w = $(window).width();
 										if (w <= 768) {
                                             $("#element_canvas_cu").html('<div><canvas id="canvas_cu"></canvas></div><div id="chart-legends_cu"></div>');
-											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels, parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart3.update();
 											
 										} else {
                                              $("#element_canvas_cu").html('<div><canvas id="canvas_cu"></canvas></div><div id="chart-legends_cu"></div>');
-											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels,findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+											var myChart3 = create_chart2(create_ctx3(), create_config3(my_data, my_labels,parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data))), portionner(findArrayMax(my_data))));
 											myChart3.update();
 											
 										}

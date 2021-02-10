@@ -116,7 +116,7 @@
 							<div class="sous_titre">
 								<h4>Liste des clients hébergés</h4>
 							</div>
-							<section class=" filtre">
+							{# <section class=" filtre">
 								<div class="sous_titre_filtre">
 									<h3>Filtre</h3>
 								</div>
@@ -127,7 +127,7 @@
 										<span>Filtrer</span>
 									</button>
 								</form>
-							</section>
+							</section> #}
 							<div class="tableau tab_historique">
 								<table class="display" id="tab_client_heb" style="width:100%">
 									<thead>
@@ -528,12 +528,14 @@
 								},
 								ticks: {
 									padding: 20, // pour le marge % axe y
-									min: 0,
+									min : 0,
 									max: max_y,
 									stepSize: stepSize,
 
 									callback: function (value) {
-										return value + "M Ar"
+										var test = new Intl.NumberFormat();
+										var val = test.format(value);
+										return val + " Ar"
 									}
 								},
 								display: true,
@@ -639,23 +641,30 @@
 		// on prend le quart de ce maximum pour pas de vice
 		 // my_data_ca
 		 //alert(my_data_ca);
-		 function findArrayMax(array){
-			 var M = array[0];
-			 for(var i = 0; i< array.length; i++){
-				 if(M < array[i]){
-					 M = array[i];
-				 }
-			 }
-			 var m_quart = M ;
-			 return m_quart;
-		 }
+		function findArrayMax(array){
+			var M = array[0];
+			
+			for(var i = 0; i< array.length; i++){
+				var x = parseFloat(array[i]);
+				if(M < x){
+					M = x;
+				}
+			}
+			var m_quart = M ;
+			return m_quart;
+		}
 
 		 function portionner(val){
 			 return parseInt(val / 4) ;
 		 } 
 		var myChart1 = create_chart1(create_ctx1(), create_config1(my_data_to, my_labels, 100, 20));
 
-		var myChart2 = create_chart2(create_ctx2(), create_config2(my_data_ca, my_labels, findArrayMax(my_data_ca), portionner(findArrayMax(my_data_ca))));
+		if(findArrayMax(my_data_ca) != 0){
+			var myChart2 = create_chart2(create_ctx2(), create_config2(my_data_ca, my_labels, parseInt(findArrayMax(my_data_ca) + portionner(findArrayMax(my_data_ca))), portionner(findArrayMax(my_data_ca))));
+		}
+		else if(findArrayMax(my_data_ca) == 0){
+			var myChart2 = create_chart2(create_ctx2(), create_config2(my_data_ca, my_labels, 100, 20));
+		}
 
 		/* ajax pour loader le graph */
 
@@ -666,39 +675,39 @@
 
 		var table = $('#tab_client_heb').DataTable({
 			"language": {
-			"sEmptyTable": "Aucune donnée disponible dans le tableau",
-			"sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
-			"sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
-			"sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
-			"sInfoPostFix": "",
-			"sInfoThousands": ",",
-			"sLengthMenu": "Afficher _MENU_ éléments",
-			"sLoadingRecords": "Chargement...",
-			"sProcessing": "Traitement...",
-			"sSearch": "Rechercher :",
-			"sZeroRecords": "Aucun élément correspondant trouvé",
-			"oPaginate": {
-			"sFirst": "Premier",
-			"sLast": "Dernier",
-			"sNext": "Suivant",
-			"sPrevious": "Précédent"
-			},
-			"oAria": {
-			"sSortAscending": ": activer pour trier la colonne par ordre croissant",
-			"sSortDescending": ": activer pour trier la colonne par ordre décroissant"
-			},
-			"select": {
-			"rows": {
-			"_": "%d lignes sélectionnées",
-			"0": "Aucune ligne sélectionnée",
-			"1": "1 ligne sélectionnée"
-			}
-			}
+				"sEmptyTable": "Aucune donnée disponible dans le tableau",
+				"sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
+				"sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
+				"sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
+				"sInfoPostFix": "",
+				"sInfoThousands": ",",
+				"sLengthMenu": "Afficher _MENU_ éléments",
+				"sLoadingRecords": "Chargement...",
+				"sProcessing": "Traitement...",
+				"sSearch": "Rechercher :",
+				"sZeroRecords": "Aucun élément correspondant trouvé",
+				"oPaginate": {
+					"sFirst": "Premier",
+					"sLast": "Dernier",
+					"sNext": "Suivant",
+					"sPrevious": "Précédent"
+				},
+				"oAria": {
+					"sSortAscending": ": activer pour trier la colonne par ordre croissant",
+					"sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+				},
+				"select": {
+					"rows": {
+						"_": "%d lignes sélectionnées",
+						"0": "Aucune ligne sélectionnée",
+						"1": "1 ligne sélectionnée"
+					}
+				}
 			},
 
 			// annule le tri
 			order: [
-			[0, 'asc']
+				[0, 'asc']
 			],
 			ordering: false,
 
@@ -1095,7 +1104,16 @@
 
 							setTimeout(function () {
 
-							myChart2 = new Chart(create_ctx2(), create_config2 (my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+							var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
+							var pas = portionner(findArrayMax(my_data));
+							if(Max != 0){
+								myChart2 = new Chart(create_ctx2(), create_config2 (my_data, my_labels, Max, pas));
+							}
+							else if(Max == 0){
+								Max = 100;
+								pas = 20; 
+								myChart2 = new Chart(create_ctx2(), create_config2 (my_data, my_labels, Max, pas));
+							}
 							myChart2.update();
 
 							// pour dire qu'on va utiliser notre propre légende html fenitra
@@ -1139,8 +1157,16 @@
 						$('#element_canvas_heb_ca').html('<div><canvas id="canvas_ca"></canvas></div><div style = "opacity : 0 !important" id="chart-legends_ca"></div>');
 
 						setTimeout(function () {
-
-							myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+							var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
+							var pas = portionner(findArrayMax(my_data))
+							if(Max != 0){
+								myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, Max, pas));
+							}
+							else{
+								Max = 100;
+								pas = 20;
+								myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, Max, pas));
+							}
 							myChart2.update();
 
 							// pour dire qu'on va utiliser notre propre légende html fenitra
@@ -1215,8 +1241,17 @@
 								$('#element_canvas_heb_ca').html('<div><canvas id="canvas_ca"></canvas></div><div style = "opacity : 0 !important" id="chart-legends_ca"></div>');
 
 								setTimeout(function () {
-
-									myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
+									var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
+									var pas = portionner(findArrayMax(my_data));
+									if(Max != 0){
+										myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, Max, pas));
+									}
+									else if(Max ==0){
+										Max = 100;
+										pas = 20;
+										myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, Max, pas));
+									}
+									
 									myChart2.update();
 
 									// pour dire qu'on va utiliser notre propre légende html fenitra
@@ -1276,8 +1311,18 @@
 
 								setTimeout(function () {
 
-								myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, findArrayMax(my_data) + portionner(findArrayMax(my_data)), portionner(findArrayMax(my_data))));
-								myChart2.update();
+								var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
+									var pas = portionner(findArrayMax(my_data));
+									if(Max != 0){
+										myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, Max, pas));
+									}
+									else if(Max ==0){
+										Max = 100;
+										pas = 20;
+										myChart2 = new Chart(create_ctx2(), create_config2(my_data, my_labels, Max, pas));
+									}
+									
+									myChart2.update();
 
 								// pour dire qu'on va utiliser notre propre légende html fenitra
 								document.getElementById('chart-legends_ca').innerHTML = myChart2.generateLegend();

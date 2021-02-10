@@ -111,7 +111,9 @@ class PageController extends AbstractController
             $annee = $son_created_at->format('Y');
             array_push($tab_annee, $annee);
         }
-        array_push($tab_sans_doublant, $tab_annee[0]);
+        if (count($tab_annee) > 0) {
+            array_push($tab_sans_doublant, $tab_annee[0]);
+        }
         for ($i = 0; $i < count($tab_annee); $i++) {
 
             if (!in_array($tab_annee[$i], $tab_sans_doublant)) {
@@ -220,6 +222,7 @@ class PageController extends AbstractController
         $response = new Response();
         $data_session = $session->get('hotel');
         $data_session['current_page'] = "hebergement";
+        
         if($pseudo_hotel == 'tous'){
             $pseudo_hotel = 'royal_beach';
         }
@@ -265,7 +268,7 @@ class PageController extends AbstractController
         /** préparation des input des filtres */
         // les année existant dans les donnée de jour pour l'hotel en cours
         $all_ddj = $repoDoneeDJ->findAll();
-        //dd($all_ddj);
+        // dd($all_ddj);
         $current_hotel_ddj = [];
         //dd($current_hotel_ddj);
         $tab_annee = [];
@@ -278,14 +281,16 @@ class PageController extends AbstractController
                     array_push($current_hotel_ddj, $d);
                 }
             }
-
+            
             foreach ($current_hotel_ddj as $c) {
                 $son_created_at = $c->getCreatedAt();
                 $annee = $son_created_at->format('Y');
                 array_push($tab_annee, $annee);
             }
 
-            array_push($tab_sans_doublant, $tab_annee[0]);
+            if (count($tab_annee) > 0) {
+                array_push($tab_sans_doublant, $tab_annee[0]);
+            }
             for ($i = 0; $i < count($tab_annee); $i++) {
 
                 if (!in_array($tab_annee[$i], $tab_sans_doublant)) {
@@ -360,7 +365,8 @@ class PageController extends AbstractController
 
         
         
-        $all_ddj = $repoDoneeDJ->findAll();
+        $all_ddj = $repoDoneeDJ->findBy(['hotel' => $hotel]);
+        
         $annee_actuel = new \DateTime() ;
         $annee_actuel = $annee_actuel->format("Y");
         
@@ -486,8 +492,8 @@ class PageController extends AbstractController
                 $tab_eca[$i] = 1;
             }
             $tab_heb_ca[$i] = $tab_heb_ca[$i] / $tab_eca[$i] ; // / 10^6 car l'unité de graphe est le million
-            $tab_heb_ca[$i] = floatval(str_replace(' ', '', $tab_heb_ca[$i])) / 1000000;
-            $tab_heb_ca[$i] = number_format($tab_heb_ca[$i], 2);
+            $tab_heb_ca[$i] = floatval(str_replace(' ', '', $tab_heb_ca[$i])) ;
+            // $tab_heb_ca[$i] = number_format($tab_heb_ca[$i], 2);
         }
 
         $tab_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
@@ -589,13 +595,61 @@ class PageController extends AbstractController
            
         }
 
+        
+
         $user = $data_session['user'];
         $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
         if ($pos == "impossible") {
             return $this->render('/page/error.html.twig');
         }
        else{
-           //dd($tab_heb_ca);
+           
+            // affichage des clients qui y sont heb
+            // $date1 = new \Datetime();
+            // $date2 = date_create($date2);
+
+            $today = new \DateTime();
+
+            $hier = date_create(date("Y-m-d", strtotime("yesterday")));
+            
+            $demain = date_create(date("Y-m-d", strtotime("tomorrow"))); //demain
+
+            $all_date_asked = $services->all_date_between2_dates($hier, $demain);
+            
+
+            $tab = [];
+            
+            $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+            $current_id_hotel = $l_hotel->getId();
+            $clients = $repo->findAll();
+            foreach ($clients as $item) {
+                $son_id_hotel = $item->getHotel()->getId();
+                if ($son_id_hotel == $current_id_hotel) {
+                    array_push($tab, $item);
+                }
+            }
+            foreach ($tab as $client) {
+                // on liste tous les jour entre sa dete arrivee et date depart
+                $sa_da = $client->getDateArrivee();
+                $sa_dd = $client->getDateDepart();
+                //dd($sa_dd);
+                $his_al_dates = $services->all_date_between2_dates($sa_da, $sa_dd);
+                //dd($his_al_dates);
+                for ($i = 0;
+                    $i < count($all_date_asked);
+                    $i++
+                ) {
+                    for ($j = 0; $j < count($his_al_dates); $j++) {
+                        if ($all_date_asked[$i] == $his_al_dates[$j]) {
+                            if (!in_array($client, $tab_aff)) {
+                                array_push($tab_aff, $client);
+                            }
+                        }
+                    }
+                }
+            }
+            //dd($tab_aff);
+            
             return $this->render('page/hebergement.html.twig', [
                 "id" => "li__hebergement",
                 "tab_annee" => $tab_sans_doublant,
@@ -641,7 +695,9 @@ class PageController extends AbstractController
             $annee = $son_created_at->format('Y');
             array_push($tab_annee, $annee);
         }
-        array_push($tab_sans_doublant, $tab_annee[0]);
+        if (count($tab_annee) > 0) {
+            array_push($tab_sans_doublant, $tab_annee[0]);
+        }
         for ($i = 0; $i < count($tab_annee); $i++) {
 
             if (!in_array($tab_annee[$i], $tab_sans_doublant)) {
@@ -773,7 +829,7 @@ class PageController extends AbstractController
         $today = new \DateTime();
         $annee_actuel = $today->format('Y');
         
-        foreach ($all_ddj as $ddj) {
+        foreach ($current_hotel_ddj as $ddj) {
             $son_createdAt = $ddj->getCreatedAt();
             $son_mois_ca = $son_createdAt->format("m");
             $son_annee_ca = $son_createdAt->format("Y");
@@ -944,8 +1000,9 @@ class PageController extends AbstractController
                 $tab_eca[$i] = 1;
             }
             $tab_res_ca[$i] = $tab_res_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
-            $tab_res_ca[$i] = floatval(str_replace(' ', '', $tab_res_ca[$i])) / 1000000;
-            $tab_res_ca[$i] = number_format($tab_res_ca[$i], 2);
+            // $tab_res_ca[$i] = floatval(str_replace(' ', '', $tab_res_ca[$i])) ;
+            $tab_res_ca[$i] = floatval(str_replace(' ', '', $tab_res_ca[$i])) ;
+            // $tab_res_ca[$i] = number_format($tab_res_ca[$i], 2);
         }
 
         $tab_res_pd = [$res_pd_jan, $res_pd_fev, $res_pd_mars, $res_pd_avr, $res_pd_mai, $res_pd_juin, $res_pd_juil, $res_pd_aou, $res_pd_sep, $res_pd_oct, $res_pd_nov, $res_pd_dec];
@@ -1057,7 +1114,10 @@ class PageController extends AbstractController
             $annee = $son_created_at->format('Y');
             array_push($tab_annee, $annee);
         }
-        array_push($tab_sans_doublant, $tab_annee[0]);
+        if(count($tab_annee) > 0){
+            array_push($tab_sans_doublant, $tab_annee[0]);
+        }
+        
         for ($i = 0; $i < count($tab_annee); $i++) {
 
             if (!in_array($tab_annee[$i], $tab_sans_doublant)) {
@@ -1160,7 +1220,7 @@ class PageController extends AbstractController
         $annee_actuel = new \DateTime();
         $annee_actuel = $annee_actuel->format("Y");
         //dd($annee_actuel);
-        foreach ($all_ddj as $ddj) {
+        foreach ($current_hotel_ddj as $ddj) {
             $son_createdAt = $ddj->getCreatedAt();
             $son_mois_ca = $son_createdAt->format("m");
             $son_annee_ca = $son_createdAt->format("Y");
@@ -1304,8 +1364,8 @@ class PageController extends AbstractController
                 $tab_eca[$i] = 1;
             }
             $tab_spa_ca[$i] = $tab_spa_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
-            $tab_spa_ca[$i] = floatval(str_replace(' ', '', $tab_spa_ca[$i])) / 1000000;
-            $tab_spa_ca[$i] = number_format($tab_spa_ca[$i], 2);
+            $tab_spa_ca[$i] = floatval(str_replace(' ', '', $tab_spa_ca[$i])) ;
+            // $tab_spa_ca[$i] = number_format($tab_spa_ca[$i], 2);
         }
 
         $tab_spa_na = [$spa_na_jan, $spa_na_fev, $spa_na_mars, $spa_na_avr, $spa_na_mai, $spa_na_juin, $spa_na_juil, $spa_na_aou, $spa_na_sep, $spa_na_oct, $spa_na_nov, $spa_na_dec];
@@ -2114,9 +2174,11 @@ class PageController extends AbstractController
 
             $donnee = $request->get('data');
             $donnee_explode = explode("-", $donnee);
+            $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+            $all_ddj = $repoDoneeDJ->findBy(['hotel' => $hotel]);
             if ($donnee_explode[0] != 'tous_les_mois') {
 
-                $all_ddj = $repoDoneeDJ->findAll();
+                
 
                 // les var pour les heb_to
 
@@ -2139,9 +2201,6 @@ class PageController extends AbstractController
                 $response->setContent($data);
                 return $response;
             } else {
-                // hafa
-                $all_ddj = $repoDoneeDJ->findAll();
-                // les heb_to pour chaque mois
 
                 $heb_to_jan = 0;
                 $heb_to_fev = 0;
@@ -2233,6 +2292,7 @@ class PageController extends AbstractController
                         $tab_e[$i] = 1;
                     }
                     $tab_heb_to[$i] = number_format(($tab_heb_to[$i] / $tab_e[$i]), 2);
+                    // $tab_heb_to[$i] = floatval(($tab_heb_to[$i] / $tab_e[$i]));
                 }
 
 
@@ -2243,24 +2303,6 @@ class PageController extends AbstractController
                 return $response;
             }
         }
-
-        $donnee = '05-2020';
-        $all_ddj = $repoDoneeDJ->findAll();
-
-        // les var pour les heb_to
-
-        $tab_jour_heb_to = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-        $num = 0;
-        foreach ($all_ddj as $d) {
-            $son_mois_createdAt = $d->getCreatedAt()->format('m-Y');
-            if ($donnee == $son_mois_createdAt) {
-                $son_num_jour = $d->getCreatedAt()->format('d');
-                $num = intval($son_num_jour) - 1;
-                $tab_jour_heb_to[$num] = $d->getHebTo();
-            }
-        }
-        dd($tab_jour_heb_to);
     }
 
     
@@ -2278,9 +2320,9 @@ class PageController extends AbstractController
 
             $donnee = $request->get('data');
             $donnee_explode = explode("-", $donnee);
+            $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+            $all_ddj = $repoDoneeDJ->findBy(['hotel' => $hotel]);
             if ($donnee_explode[0] != 'tous_les_mois') {
-                
-                $all_ddj = $repoDoneeDJ->findAll();
 
                 // les var pour les heb_to
 
@@ -2296,8 +2338,8 @@ class PageController extends AbstractController
                         $num = intval($son_num_jour) - 1;
                         //$val = floatval(str_replace(" ", "", $tab_jour_heb_ca[$num]));
                         $tab_jour_heb_ca[$num] = $d->getHebCa();
-                        $tab_jour_heb_ca[$num] =  floatval(str_replace(' ', '', $tab_jour_heb_ca[$num])) / 1000000;
-                        $tab_jour_heb_ca[$num] = number_format($tab_jour_heb_ca[$num], 2);
+                        $tab_jour_heb_ca[$num] =  floatval(str_replace(' ', '', $tab_jour_heb_ca[$num])) ;
+                        // $tab_jour_heb_ca[$num] = number_format($tab_jour_heb_ca[$num], 2);
                     }
                 }
 
@@ -2307,9 +2349,6 @@ class PageController extends AbstractController
                 $response->setContent($data);
                 return $response;
             } else {
-                // hafa
-                $all_ddj = $repoDoneeDJ->findAll();
-                // les heb_to pour chaque mois
 
                 $heb_ca_jan = 0;
                 $heb_ca_fev = 0;
@@ -2402,8 +2441,8 @@ class PageController extends AbstractController
                     }
                    
                     $tab_heb_ca[$i] = $tab_heb_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
-                    $tab_heb_ca[$i] = floatval(str_replace(' ', '', $tab_heb_ca[$i])) / 1000000;
-                    $tab_heb_ca[$i] = number_format($tab_heb_ca[$i], 2);
+                    $tab_heb_ca[$i] = floatval(str_replace(' ', '', $tab_heb_ca[$i])) ;
+                    // $tab_heb_ca[$i] = number_format($tab_heb_ca[$i], 2);
                 }
 
 
@@ -2413,33 +2452,6 @@ class PageController extends AbstractController
                 $response->setContent($data);
                 return $response;
             }
-        }
-        else{
-            // url /profile/filtre/graph/heb_ca/royal_beach
-            $all_ddj = $repoDoneeDJ->findAll();
-
-            // les var pour les heb_to
-
-            $tab_jour_heb_ca = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-            $num = 0;
-            foreach ($all_ddj as $d) {
-                $son_mois_createdAt = $d->getCreatedAt()->format('m-Y');
-                //dd($donnee);
-                $donnee = "02-2021";
-                if ($donnee == $son_mois_createdAt) {
-
-                    $son_num_jour = $d->getCreatedAt()->format('d');
-                    $num = intval($son_num_jour) - 1;
-                    //$val = floatval(str_replace(" ", "", $tab_jour_heb_ca[$num]));
-                    $tab_jour_heb_ca[$num] = $d->getHebCa();
-                    //dd(floatval(str_replace(' ','', $tab_jour_heb_ca[$num])));
-                    $tab_jour_heb_ca[$num] =  floatval(str_replace(' ', '', $tab_jour_heb_ca[$num])) / 1000000;
-                    $tab_jour_heb_ca[$num] = number_format($tab_jour_heb_ca[$num], 2);
-                }
-            }
-
-            //dd($tab_jour_heb_ca);
         }
 
     }
@@ -2455,11 +2467,9 @@ class PageController extends AbstractController
 
             $donnee = $request->get('data');
             $donnee_explode = explode("-", $donnee);
+            $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+            $all_ddj = $repoDoneeDJ->findBy(['hotel' => $hotel]);
             if ($donnee_explode[0] != 'tous_les_mois') {
-
-                $all_ddj = $repoDoneeDJ->findAll();
-
-                // les var pour les heb_to
 
                 $tab_jour_res_ca = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
@@ -2472,8 +2482,8 @@ class PageController extends AbstractController
                         $son_num_jour = $d->getCreatedAt()->format('d');
                         $num = intval($son_num_jour) - 1;
                         $tab_jour_res_ca[$num] = $d->getResCa();
-                        $tab_jour_res_ca[$num] =  floatval(str_replace(' ', '', $tab_jour_res_ca[$num])) / 1000000;
-                        $tab_jour_res_ca[$num] = number_format($tab_jour_res_ca[$num], 2);
+                        $tab_jour_res_ca[$num] =  floatval(str_replace(' ', '', $tab_jour_res_ca[$num])) ;
+                        // $tab_jour_res_ca[$num] = number_format($tab_jour_res_ca[$num], 2);
                     }
                 }
 
@@ -2483,9 +2493,6 @@ class PageController extends AbstractController
                 $response->setContent($data);
                 return $response;
             } else {
-                // hafa
-                $all_ddj = $repoDoneeDJ->findAll();
-                // les heb_to pour chaque mois
 
                 $res_ca_jan = 0;
                 $res_ca_fev = 0;
@@ -2577,8 +2584,8 @@ class PageController extends AbstractController
                         $tab_eca[$i] = 1;
                     }
                     $tab_res_ca[$i] = $tab_res_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
-                    $tab_res_ca[$i] = floatval(str_replace(' ', '', $tab_res_ca[$i])) / 1000000;
-                    $tab_res_ca[$i] = number_format($tab_res_ca[$i], 2);
+                    $tab_res_ca[$i] = floatval(str_replace(' ', '', $tab_res_ca[$i])) ;
+                    // $tab_res_ca[$i] = number_format($tab_res_ca[$i], 2);
                 }
 
 
@@ -2604,11 +2611,10 @@ class PageController extends AbstractController
 
             $donnee = $request->get('data');
             $donnee_explode = explode("-", $donnee);
+            $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+            $all_ddj = $repoDoneeDJ->findBy(['hotel' => $hotel]);
             if ($donnee_explode[0] != 'tous_les_mois') {
 
-                $all_ddj = $repoDoneeDJ->findAll();
-
-                // les var pour les heb_to
 
                 $tab_jour_res_pd = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
                 $tab_jour_res_d = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -2639,9 +2645,7 @@ class PageController extends AbstractController
                 $response->setContent($data);
                 return $response;
             } else {
-                // hafa
-                $all_ddj = $repoDoneeDJ->findAll();
-                // les res_pd pour chaque mois
+                
 
                 $res_pd_jan = 0;
                 $res_pd_fev = 0;
@@ -2931,11 +2935,9 @@ class PageController extends AbstractController
 
             $donnee = $request->get('data');
             $donnee_explode = explode("-", $donnee);
+            $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+            $all_ddj = $repoDoneeDJ->findBy(['hotel' => $hotel]);
             if ($donnee_explode[0] != 'tous_les_mois') {
-
-                $all_ddj = $repoDoneeDJ->findAll();
-
-                // les var pour les heb_to
 
                 $tab_jour_res_ca = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
@@ -2948,8 +2950,8 @@ class PageController extends AbstractController
                         $son_num_jour = $d->getCreatedAt()->format('d');
                         $num = intval($son_num_jour) - 1;
                         $tab_jour_res_ca[$num] = $d->getSpaCa();
-                        $tab_jour_res_ca[$num] =  floatval(str_replace(' ', '', $tab_jour_res_ca[$num])) / 1000000;
-                        $tab_jour_res_ca[$num] = number_format($tab_jour_res_ca[$num], 2);
+                        $tab_jour_res_ca[$num] =  floatval(str_replace(' ', '', $tab_jour_res_ca[$num])) ;
+                        // $tab_jour_res_ca[$num] = number_format($tab_jour_res_ca[$num], 2);
                     }
                 }
 
@@ -2959,10 +2961,7 @@ class PageController extends AbstractController
                 $response->setContent($data);
                 return $response;
             } else {
-                // hafa
-                $all_ddj = $repoDoneeDJ->findAll();
-                // les heb_to pour chaque mois
-
+        
                 $res_ca_jan = 0;
                 $res_ca_fev = 0;
                 $res_ca_mars = 0;
@@ -3053,8 +3052,8 @@ class PageController extends AbstractController
                         $tab_eca[$i] = 1;
                     }
                     $tab_res_ca[$i] = $tab_res_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
-                    $tab_res_ca[$i] = floatval(str_replace(' ', '', $tab_res_ca[$i])) / 1000000;
-                    $tab_res_ca[$i] = number_format($tab_res_ca[$i], 2);
+                    $tab_res_ca[$i] = floatval(str_replace(' ', '', $tab_res_ca[$i])) ;
+                    // $tab_res_ca[$i] = number_format($tab_res_ca[$i], 2);
                 }
 
 
@@ -3082,11 +3081,9 @@ class PageController extends AbstractController
 
             $donnee = $request->get('data');
             $donnee_explode = explode("-", $donnee);
+            $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+            $all_ddj = $repoDoneeDJ->findBy(['hotel' => $hotel]);
             if ($donnee_explode[0] != 'tous_les_mois') {
-
-                $all_ddj = $repoDoneeDJ->findAll();
-
-                // les var pour les heb_to
 
                 $tab_jour_spa_cu = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
@@ -3107,9 +3104,7 @@ class PageController extends AbstractController
                 $response->setContent($data);
                 return $response;
             } else {
-                // hafa
-                $all_ddj = $repoDoneeDJ->findAll();
-                // les heb_to pour chaque mois
+                
 
                 $spa_cu_jan = 0;
                 $spa_cu_fev = 0;
@@ -3223,9 +3218,9 @@ class PageController extends AbstractController
 
             $donnee = $request->get('data');
             $donnee_explode = explode("-", $donnee);
+            $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+            $all_ddj = $repoDoneeDJ->findBy(['hotel' => $hotel]);
             if ($donnee_explode[0] != 'tous_les_mois') {
-
-                $all_ddj = $repoDoneeDJ->findAll();
 
                 // les var pour les heb_to
 
@@ -3248,8 +3243,7 @@ class PageController extends AbstractController
                 $response->setContent($data);
                 return $response;
             } else {
-                // hafa
-                $all_ddj = $repoDoneeDJ->findAll();
+              
                 // les heb_to pour chaque mois
 
                 $spa_cu_jan = 0;

@@ -69,11 +69,11 @@ class CostController extends AbstractController
                     $son_annee = $tab_explode[1];
                     if ($son_annee == $annee) {
                         $son_numero_mois                = intVal($tab_explode[0]) - 1;
-                        $tab_resto_value[$son_numero_mois]    = $resto / 1000000;
-                        $tab_elec_value[$son_numero_mois]     = $elec / 1000000;
-                        $tab_eau_value[$son_numero_mois]      = $eau / 1000000;
-                        $tab_gasoil_value[$son_numero_mois]   = $gasoil / 1000000;
-                        $tab_salaire_value[$son_numero_mois]  = $salaire / 1000000;
+                        $tab_resto_value[$son_numero_mois]    = $resto ;
+                        $tab_elec_value[$son_numero_mois]     = $elec ;
+                        $tab_eau_value[$son_numero_mois]      = $eau ;
+                        $tab_gasoil_value[$son_numero_mois]   = $gasoil ;
+                        $tab_salaire_value[$son_numero_mois]  = $salaire ;
 
                         $tab_resto_p[$son_numero_mois]    = $restoP;
                         $tab_elec_p[$son_numero_mois]     = $elecP;
@@ -175,11 +175,11 @@ class CostController extends AbstractController
                     $son_annee = $tab_explode[1];
                     if ($son_annee == $annee) {
                         $son_numero_mois                      = intVal($tab_explode[0]) - 1;
-                        $tab_resto_value[$son_numero_mois]    = $resto / 1000000;
-                        $tab_elec_value[$son_numero_mois]     = $elec / 1000000;
-                        $tab_eau_value[$son_numero_mois]      = $eau / 1000000;
-                        $tab_gasoil_value[$son_numero_mois]   = $gasoil / 1000000;
-                        $tab_salaire_value[$son_numero_mois]  = $salaire / 1000000;
+                        $tab_resto_value[$son_numero_mois]    = $resto ;
+                        $tab_elec_value[$son_numero_mois]     = $elec ;
+                        $tab_eau_value[$son_numero_mois]      = $eau ;
+                        $tab_gasoil_value[$son_numero_mois]   = $gasoil ;
+                        $tab_salaire_value[$son_numero_mois]  = $salaire ;
                     }
                 }
             }

@@ -178,7 +178,9 @@
                                             max: my_max,
                                             stepSize: my_stepSize,
                                             callback: function (value) {
-                                                return value + "M Ar"
+                                                var test = new Intl.NumberFormat();
+                                                var val = test.format(value);
+                                                return val + " Ar"
                                             }
                                         },
                                             display: true,
@@ -249,6 +251,14 @@
 
                 // draw chart
 
+                function findArrayMax(array){
+                    return Math.max(...array);
+                }
+
+                function portionner(val){
+                    return parseInt(val / 4) ;
+                } 
+
                 var my_data_stock = [
                     {% for s in tab_stock %}
                         {{ s }},
@@ -280,9 +290,15 @@
                 var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Sept","Oct","Nov","Dec"];
 
                 
+                if(findArrayMax(souche2) != 0){
+                    var myChart1 = create_chart1(create_ctx1(), create_config1(souche2, my_labels, parseInt(findArrayMax(souche2) + portionner(findArrayMax(souche2))), portionner(findArrayMax(souche2))));
 
-                var myChart1 = create_chart1(create_ctx1(), create_config1(souche2, my_labels, 100, 20));
+                }
+                else if(findArrayMax(souche2) == 0){
+                    var myChart1 = create_chart1(create_ctx1(), create_config1(souche2, my_labels, 100, 20));
 
+                }
+                
 
 					$('#annee_stock').on('change', function(){
 						$("#element_canvas_stock").empty();
@@ -323,12 +339,26 @@
                                 if (w <= 768) {
                                     // $("#element_canvas_stock").html('<div><canvas id="canvas_cas"></canvas></div><div id="chart-legends_cas"></div>');
                                     $("#element_canvas_stock").html('<div><canvas id="canvas_stock"></canvas></div><div id="chart-legends_stock"></div>');
-                                        var myChart1 = create_chart1(create_ctx1(), create_config1(souche2, my_labels, 100, 20));
+                                        if(findArrayMax(souche2) != 0){
+                                            var myChart1 = create_chart1(create_ctx1(), create_config1(souche2, my_labels, parseInt(findArrayMax(souche2) + portionner(findArrayMax(souche2))), portionner(findArrayMax(souche2))));
+
+                                        }
+                                        else if(findArrayMax(souche2) == 0){
+                                            var myChart1 = create_chart1(create_ctx1(), create_config1(souche2, my_labels, 100, 20));
+
+                                        }
                                     myChart1.update();
                                     //add_resp_heb(myChart1, myChart2);
                                 } else {
-                                        $("#element_canvas_stock").html('<div><canvas id="canvas_stock"></canvas></div><div id="chart-legends_stock"></div>');
-                                    var myChart1 = create_chart1(create_ctx1(), create_config1(souche2, my_labels, 100, 20));
+                                    $("#element_canvas_stock").html('<div><canvas id="canvas_stock"></canvas></div><div id="chart-legends_stock"></div>');
+                                   if(findArrayMax(souche2) != 0){
+                                            var myChart1 = create_chart1(create_ctx1(), create_config1(souche2, my_labels, parseInt(findArrayMax(souche2) + portionner(findArrayMax(souche2))), portionner(findArrayMax(souche2))));
+
+                                        }
+                                        else if(findArrayMax(souche2) == 0){
+                                            var myChart1 = create_chart1(create_ctx1(), create_config1(souche2, my_labels, 100, 20));
+
+                                        }
                                     myChart1.update();
                                     //add_resp_heb(myChart1, myChart2);
                                 }

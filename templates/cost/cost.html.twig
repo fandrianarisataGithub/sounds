@@ -299,8 +299,10 @@
                                                 max: my_max,
                                                 stepSize : my_stepSize,
                                                 callback: function (value) {
-                                                    return value + " Ar"
-                                                }
+                                                   var test = new Intl.NumberFormat();
+                                                    var val = test.format(value);
+                                                    return val + " Ar"
+                                                    }
                                             },
                                             display: true,
                                             scaleLabel: {
@@ -905,7 +907,7 @@
                         {% endfor %}
                     ];
                     
-                    my_data_elec_value = merge_data(my_data_elec_value);
+                    my_data_eau_value = merge_data(my_data_eau_value);
 
                     var my_data_gasoil_value = [
                         {% for t in tab_gasoil_value %}
@@ -992,17 +994,47 @@
 
 					var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 
+                    function findArrayMax(array){
+                        return Math.max(...array);
+                    }
 
+                    function portionner(val){
+                        return parseInt(val / 4) ;
+                    } 
 
-                
+                    function max_for_arrays(ar1, ar2, ar3, ar4, ar5){
+                        var m1 = findArrayMax(ar1);
+                        var m2 = findArrayMax(ar2);
+                        var m3 = findArrayMax(ar3);
+                        var m4 = findArrayMax(ar4);
+                        var m5 = findArrayMax(ar5);
+                        var array = [m1, m2, m3, m4, m5];
+                        
+                        return Math.max(...array);
+                    }
+
+                   var Max = max_for_arrays(my_data_resto_value, my_data_elec_value, my_data_eau_value, my_data_gasoil_value, my_data_salaire_value);
+                   
                     var w = $(window).width();
                     if (w <= 768) {
                         
-                        var myChart1 = draw_chart1(my_data_resto_value, my_data_elec_value, my_data_eau_value, my_data_gasoil_value, my_data_salaire_value, my_labels, 100, 10);
+                        if(Max != 0){
+                            var myChart1 = draw_chart1(my_data_resto_value, my_data_elec_value, my_data_eau_value, my_data_gasoil_value, my_data_salaire_value, my_labels,Max, portionner(Max));
+                        }
+                        else if(Max == 0){
+                            Max = 100;
+                            var myChart1 = draw_chart1(my_data_resto_value, my_data_elec_value, my_data_eau_value, my_data_gasoil_value, my_data_salaire_value, my_labels,Max, portionner(Max));
+                        }
                         var myChart2 = draw_chart2(my_data_resto_p, my_data_elec_p, my_data_eau_p, my_data_gasoil_p, my_data_salaire_p, my_labels, 100, 10);
                         add_resp_heb(myChart1, myChart2);
                     } else {
-                        var myChart1 = draw_chart1(my_data_resto_p, my_data_elec_value, my_data_eau_value, my_data_gasoil_value, my_data_salaire_value, my_labels, 100, 10);
+                        if(Max != 0){
+                            var myChart1 = draw_chart1(my_data_resto_value, my_data_elec_value, my_data_eau_value, my_data_gasoil_value, my_data_salaire_value, my_labels,Max, portionner(Max));
+                        }
+                        else if(Max == 0){
+                            Max = 100;
+                            var myChart1 = draw_chart1(my_data_resto_value, my_data_elec_value, my_data_eau_value, my_data_gasoil_value, my_data_salaire_value, my_labels,Max, portionner(Max));
+                        }
                         var myChart2 = draw_chart2(my_data_resto_p, my_data_elec_p, my_data_eau_p, my_data_gasoil_p, my_data_salaire_p, my_labels, 100, 10);
                     }
                 
@@ -1033,14 +1065,27 @@
                                 my_data_salaire_value = merge_data(my_data_salaire_value);
                                 var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
                                 var w = $(window).width();
+                                var Max = max_for_arrays(my_data_resto_value, my_data_elec_value, my_data_eau_value, my_data_gasoil_value, my_data_salaire_value);
+                   
+                                var w = $(window).width();
                                 if (w <= 768) {
-                                    $('#element_canvas_cost').html('<div><canvas id="canvas_cost"></canvas></div><div id="chart-legends_cost"></div>');
-                                    var myChart1 = draw_chart1(my_data_resto_value, my_data_elec_value, my_data_eau_value, my_data_gasoil_value, my_data_salaire_value, my_labels, 100, 10);
-                                    myChart1.update();
+                                    
+                                    if(Max != 0){
+                                        var myChart1 = draw_chart1(my_data_resto_value, my_data_elec_value, my_data_eau_value, my_data_gasoil_value, my_data_salaire_value, my_labels,Max, portionner(Max));
+                                    }
+                                    else if(Max == 0){
+                                        Max = 100;
+                                        var myChart1 = draw_chart1(my_data_resto_value, my_data_elec_value, my_data_eau_value, my_data_gasoil_value, my_data_salaire_value, my_labels,Max, portionner(Max));
+                                    }
+                
                                 } else {
-                                    $('#element_canvas_cost').html('<div><canvas id="canvas_cost"></canvas></div><div id="chart-legends_cost"></div>');
-                                    var myChart1 = draw_chart1(my_data_resto_value, my_data_elec_value, my_data_eau_value, my_data_gasoil_value, my_data_salaire_value, my_labels, 100, 10);
-                                    myChart1.update();
+                                    if(Max != 0){
+                                        var myChart1 = draw_chart1(my_data_resto_value, my_data_elec_value, my_data_eau_value, my_data_gasoil_value, my_data_salaire_value, my_labels,Max, portionner(Max));
+                                    }
+                                    else if(Max == 0){
+                                        Max = 100;
+                                        var myChart1 = draw_chart1(my_data_resto_value, my_data_elec_value, my_data_eau_value, my_data_gasoil_value, my_data_salaire_value, my_labels,Max, portionner(Max));
+                                    }
                                 }
 							}, 
 							error : function(error){

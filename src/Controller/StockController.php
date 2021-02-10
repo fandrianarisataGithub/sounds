@@ -47,7 +47,7 @@ class StockController extends AbstractController
                     $son_annee = $tab_explode[1];
                     if ($son_annee == $annee) {
                         $son_numero_mois = intVal($tab_explode[0]) - 1;
-                        $tab[$son_numero_mois] = $stock / 1000000;
+                        $tab[$son_numero_mois] = $stock;
                     }
                 }
             }
@@ -87,7 +87,7 @@ class StockController extends AbstractController
                     $son_annee = $tab_explode[1];
                     if ($son_annee == $annee) {
                         $son_numero_mois = intVal($tab_explode[0]) - 1;
-                        $tab[$son_numero_mois] = $stock / 1000000;
+                        $tab[$son_numero_mois] = $stock;
                     }
                 }
             }

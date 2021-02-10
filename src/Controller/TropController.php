@@ -235,15 +235,15 @@ class TropController extends AbstractController
                     $dataTrop->setEntreprise($entreprise);
                     $dataTrop->setDetail($detail);
                     $dataTrop->setEtatProduction($etat_production);
-                    $dataTrop->setMontantTotal($montant_total);
-                    $dataTrop->setReste($reste);
+                    $dataTrop->setMontantTotal(intval($montant_total));
+                    $dataTrop->setReste(intval($reste));
                     $dataTrop->setDateFacture($date_facture);
                     $etape_production = floatVal(trim(str_replace("%",
                         "",
                         $etape_production
                     )));
                     $dataTrop->setEtapeProduction($etape_production);
-                    $dataTrop->setTotalReglement($montant_avance);
+                    $dataTrop->setTotalReglement(intval($montant_avance));
                     $dataTrop->setDateConfirmation($date_confirmation);
                     
                     
@@ -256,12 +256,12 @@ class TropController extends AbstractController
                         $data_new->setEntreprise($entreprise);
                         $data_new->setDetail($detail);
                         $data_new->setEtatProduction($etat_production);
-                        $data_new->setMontantTotal($montant_total);
-                        $data_new->setReste($reste);
+                        $data_new->setMontantTotal(intval($montant_total));
+                        $data_new->setReste(intval($reste));
                         $data_new->setDateFacture($date_facture);
                         $etape_production = floatVal(trim(str_replace("%", "", $etape_production)));
                         $data_new->setEtapeProduction($etape_production);
-                        $data_new->setTotalReglement($montant_avance);
+                        $data_new->setTotalReglement(intval($montant_avance));
                         $data_new->setDateConfirmation($date_confirmation);
                         $manager->persist($data_new);
                     }

@@ -4617,10 +4617,12 @@ input[maxlength] {
 }
 
 #btn_add_donnee_mensuelle:hover {
-    background: #8b612c;
-    border-color: #8b612c;
+    background: transparent;
+    border-color: #323232;
 }
-
+#btn_add_donnee_mensuelle:hover span{
+    color: #323232;
+}
 .btn-list>ul>li>a.btn {
     height: 30px;
     padding-top: 5px;
@@ -5014,7 +5016,9 @@ form.tri {
 /* /spa
 
 /* donnee mens */
-
+.block_month{
+    margin-bottom: 25px;
+}
 .block_month select {
     width: 120px;
     height: 30px;
