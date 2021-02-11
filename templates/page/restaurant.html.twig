@@ -706,7 +706,16 @@
 
                     var w = $(window).width();
                     if (w <= 768) {
-                        var myChart1 = draw_chart1(my_data_ca, my_labels, parseInt(findArrayMax(my_data_ca) + portionner(findArrayMax(my_data_ca))), portionner(findArrayMax(my_data_ca)));
+                        var Max2 = parseInt(findArrayMax(my_data_ca) + portionner(findArrayMax(my_data_ca)));
+                        var pas2 = portionner(findArrayMax(my_data_ca));
+                        if(Max2 !=0){
+                            var myChart1 = draw_chart1(my_data_ca, my_labels, Max2, pas2);
+                        }
+                        else if(Max2==0){
+                            Max2 = 100;
+                            pas2 = 20;
+                            var myChart1 = draw_chart1(my_data_ca, my_labels, Max2, pas2);
+                        }
                         var Max = parseInt(findArrayMax(my_data_total) + portionner(findArrayMax(my_data_total)));
                         if(Max!=0){
                             var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, Max, portionner(findArrayMax(my_data_total)));
@@ -719,7 +728,16 @@
 
                         add_resp_heb(myChart1, myChart2);
                     } else {
-                        var myChart1 = draw_chart1(my_data_ca, my_labels, parseInt(findArrayMax(my_data_ca) + portionner(findArrayMax(my_data_ca))), portionner(findArrayMax(my_data_ca)));
+                        var Max2 = parseInt(findArrayMax(my_data_ca) + portionner(findArrayMax(my_data_ca)));
+                        var pas2 = portionner(findArrayMax(my_data_ca));
+                        if(Max2 !=0){
+                            var myChart1 = draw_chart1(my_data_ca, my_labels, Max2, pas2);
+                        }
+                        else if(Max2==0){
+                            Max2 = 100;
+                            pas2 = 20;
+                            var myChart1 = draw_chart1(my_data_ca, my_labels, Max2, pas2);
+                        }
                         var Max = parseInt(findArrayMax(my_data_total) + portionner(findArrayMax(my_data_total)));
                         if(Max!=0){
                             var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, Max, portionner(findArrayMax(my_data_total)));

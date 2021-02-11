@@ -41,7 +41,10 @@ class TropController extends AbstractController
     /**
      * @Route("/tropical_wood/home_tropical_wood", name="tropical_wood")
     */
-    public function tropical_wood(CacheInterface $cache_init_tw, SessionInterface $session, Request $request, Services $services, EntityManagerInterface $manager, DataTropicalWoodRepository $repoTrop, EntrepriseTWRepository $repoEntre)
+    public function tropical_wood(CacheInterface $cache_init_tw, SessionInterface $session, 
+                                Request $request, Services $services, EntityManagerInterface $manager, 
+                                DataTropicalWoodRepository $repoTrop, EntrepriseTWRepository $repoEntre,
+                                IntervalChangePFRepository $repoInterval)
     {
         // $test = $repoTrop->findAllGroupedByEntreprise();
         // dd($test);
@@ -52,7 +55,6 @@ class TropController extends AbstractController
         $today = new \Datetime();
         $today = $today->format("Y-m-d");
         $today = date_create($today);
-        $all_entreprises = $repoEntre->findAllNomEntreprise();
         $d = $repoTrop->findAll();
         $last_insert = $repoTrop->findLastinsert();
         $last_date_insertion = $last_insert[0]->getCreatedAt();
@@ -101,7 +103,7 @@ class TropController extends AbstractController
             //dd($d_aff);
             // on listes selectiopnne toutes les entreprise dans la base entrepriseTW
 
-            //dd($all_entreprises);
+           
             $Total_data_updated = [];
             for ($i = 0; $i < count($d_aff); $i++) {
                 $data_tw = new DataTropicalWood();
@@ -117,6 +119,13 @@ class TropController extends AbstractController
                 $montant_total = $services->no_space(str_replace(",", " ", $d_aff[$i][10]));
                 $reste =  $services->no_space(str_replace(",", " ", $d_aff[$i][7])); // reste
                 $montant_avance = $services->no_space(str_replace(",", " ", $d_aff[$i][9]));
+                // on enlève les chiffre apres la virgule
+                $t_mt = explode('.', $montant_total);
+                $t_reste = explode('.', $reste);
+                $t_ma = explode('.', $montant_avance);
+                $montant_total = $t_mt[0];
+                $reste = $t_reste[0];
+                $montant_avance = $t_ma[0];
                 $date_confirmation = null;
                 $date_facture = null;
                 $etape_production = $d_aff[$i][11];
@@ -152,7 +161,7 @@ class TropController extends AbstractController
                 // préparation de l'objet
                 // on teste l'unicité de idPro
                 $dataTrop = $repoTrop->findOneByIdPro($idPro);
-                // dd($dataTrop);
+                
                 
                 if($dataTrop != null){
                     // s'il ya un ou des changements
@@ -229,23 +238,23 @@ class TropController extends AbstractController
                         array_push($Total_data_updated, $synthese);
                     }
                     // on met à jour
+                   
                     $dataTrop->setIdPro($idPro);
                     $dataTrop->setCreatedAt($today);
                     $dataTrop->setTypeTransaction($type_transaction);
                     $dataTrop->setEntreprise($entreprise);
                     $dataTrop->setDetail($detail);
                     $dataTrop->setEtatProduction($etat_production);
-                    $dataTrop->setMontantTotal(intval($montant_total));
-                    $dataTrop->setReste(intval($reste));
+                    $dataTrop->setMontantTotal($montant_total);
+                    $dataTrop->setReste($reste);
                     $dataTrop->setDateFacture($date_facture);
                     $etape_production = floatVal(trim(str_replace("%",
                         "",
                         $etape_production
                     )));
                     $dataTrop->setEtapeProduction($etape_production);
-                    $dataTrop->setTotalReglement(intval($montant_avance));
+                    $dataTrop->setTotalReglement($montant_avance);
                     $dataTrop->setDateConfirmation($date_confirmation);
-                    
                     
                 }else if($dataTrop == null){
                     $data_new = new DataTropicalWood();
@@ -272,29 +281,39 @@ class TropController extends AbstractController
             }
             //dd($Total_data_updated);
             // insertion de l'interval de changement
-            $interval = new IntervalChangePF();
-            $interval->setDateLast($last_date_insertion);
-            $interval->setDateNext($today);
             $date_last_text = $last_date_insertion->format('d-m-Y');
             $date_next_text = $today->format('d-m-Y');
             $intervalle_date = $date_last_text . " - " . $date_next_text;
-            $interval->setIntervalle($intervalle_date);
-            $repoInterval = $this->getDoctrine()->getRepository(IntervalChangePF::class);
-            $test_interval = $repoInterval->findBy(['intervalle' => $intervalle_date]);
-            // dd($intervalle_date);
-            if(count($test_interval) > 0){
-                $interval = $test_interval[0];
-            }
-            else if(count($test_interval) == 0){
-                $manager->persist($interval);
-            }
+            $l_interval = $repoInterval->findOneByIntervalle($intervalle_date);
+            $interval = new IntervalChangePF();
+            if(!$l_interval){
+                
+                $interval->setDateLast($last_date_insertion);
+                $interval->setDateNext($today);
+                $interval->setIntervalle($intervalle_date);
+                $repoInterval = $this->getDoctrine()->getRepository(IntervalChangePF::class);
+                $test_interval = $repoInterval->findBy(['intervalle' => $intervalle_date]);
+                // dd($intervalle_date);
+                if (count($test_interval) > 0) {
+                    $interval = $test_interval[0];
+                } else if (count($test_interval) == 0){
+                    $manager->persist($interval);
+                }
+            }  
             // les entreprises 
-           
+           //dd($Total_data_updated);
             foreach($Total_data_updated as $Item){
                 $nom_entreprise = $Item['entreprise'];
+                // s'il y a déjà un nom d'entreprise identique dans cet interval
+                
                 $le_client = new ClientUpdated();
                 $le_client->setNom($nom_entreprise);
-                $le_client->addIntervalchangePF($interval);
+                if($l_interval){
+                    $le_client->addIntervalchangePF($l_interval);
+                }
+                else if($l_interval == null){
+                    $le_client->addIntervalchangePF($interval);
+                }
                 // insertion de ListePFUpdated tokony- unitePFUpdated
                 $unite_pf = new ListePFUpdated();
                 $unite_pf->setIdPro($Item['id_pro']);
@@ -307,7 +326,13 @@ class TropController extends AbstractController
                     $type_data = gettype($item_change['last_data']);
                     if($type_data != "object"){
                         $changement->setLastData($item_change['last_data']);
-                        $changement->setNextData($item_change['next_data']);
+                        if(gettype($item_change['next_data']) == "object"){
+                            $data_string3 = $item_change['next_data']->format('d-m-Y');
+                            $changement->setNextData($data_string3);
+                        }
+                        else{
+                            $changement->setNextData($item_change['next_data']);
+                        }
                     }else{
                         if($item_change['last_data'] != null){
                             $data_string1 = $item_change['last_data']->format('d-m-Y');

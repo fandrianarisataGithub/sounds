@@ -1138,15 +1138,15 @@
 									ev_click2 = ! ev_click2;
 									// alert(ev_click2) ;
 									} else {
-									$(".ul_2 li span[data_leg=0]").removeClass("legende_click");
-									for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) {
-										myChart2.data.datasets[0].data[i] = tab_temp2[i];
+										$(".ul_2 li span[data_leg=0]").removeClass("legende_click");
+										for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) {
+											myChart2.data.datasets[0].data[i] = tab_temp2[i];
+										}
+
+										myChart2.update();
+										ev_click2 = ! ev_click2;
+
 									}
-
-									myChart2.update();
-									ev_click2 = ! ev_click2;
-
-								}
 							});
 						}, 1000)
 					} else {
@@ -1198,7 +1198,6 @@
 
 									myChart2.update();
 									ev_click2 = ! ev_click2;
-
 								}
 							});
 
@@ -1206,11 +1205,11 @@
 					}
 				}
 			},
-			error: function (error) {
-				alert('erreur server au niveau de triage chart heb_to ' + pseudo_hotel)
-			}
+				error: function (error) {
+					alert('erreur server au niveau de triage chart heb_to ' + pseudo_hotel)
+				}
+			})
 		})
-	})
 
 				$('#annee_heb_ca').on('change', function () {
 
