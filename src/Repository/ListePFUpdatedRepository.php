@@ -3,8 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\ListePFUpdated;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method ListePFUpdated|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,22 +19,30 @@ class ListePFUpdatedRepository extends ServiceEntityRepository
         parent::__construct($registry, ListePFUpdated::class);
     }
 
-    // /**
-    //  * @return ListePFUpdated[] Returns an array of ListePFUpdated objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return ListePFUpdated[] Returns an array of ListePFUpdated objects
+     */
+    public function allChangeByPf($value)
     {
         return $this->createQueryBuilder('l')
-            ->andWhere('l.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('l.id', 'ASC')
-            ->setMaxResults(10)
+            ->select('l')
+            ->innerJoin('l.changementAfterImports', 'c',
+                'WITH', 'c.listePFUpdated = :listePFUpdated')
+            ->setParameter('listePFUpdated', $value)
+            ->orderBy('l.id', 'DESC')
             ->getQuery()
             ->getResult()
         ;
     }
+
+    /**
+     * @return ListePFUpdated[] Returns an array of ListePFUpdated objects
     */
+    public function listePfInIntervalByNomClient($nom_client)
+    {
+        
+    }
+
 
     /*
     public function findOneBySomeField($value): ?ListePFUpdated

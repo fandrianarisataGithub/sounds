@@ -1036,18 +1036,14 @@ class TropController extends AbstractController
     {   
         $all_interval = $repoInterval->findAll();
         $Tableau_recap_changement = [];
+       
         foreach($all_interval as $Item){
             $tab_interval = [
                 "date_interval" => $Item->getIntervalle(),
                 "liste_client"  => []
             ];
             $ses_clients = $Item->getClientUpdateds();
-            // $x = [];
-            // foreach ($ses_clients as $item_client) {
-            //     array_push($x, $item_client);
-            // }
-            // dd($x);
-            // les pf changés pour chaque clients
+            
             foreach($ses_clients as $item_client){
                 $tab_client = [
                     "nom_client" => $item_client->getNom(),
@@ -1078,12 +1074,36 @@ class TropController extends AbstractController
             }
            array_push($Tableau_recap_changement, $tab_interval);
         }
+        
         //dd($Tableau_recap_changement);
+        // rassemblement des données via le même entreprise
+        
         $data_session = $session->get('hotel');
         $data_session['pseudo_hotel'] = "tropical_wood";
-        // préparation des listes
-       
-        
+
+        foreach ($all_interval as $Item) {
+            $tab_interval = [
+                "date_interval" => $Item->getIntervalle(),
+                "liste_client"  => []
+            ];
+            $ses_clients = $Item->getClientUpdateds();
+            $clients = [];
+            $noms = [];
+            /*  
+                // tous les clients distincts dans  
+                SELECT DISTINCT nom FROM `client_updated` AS client 
+                INNER JOIN `client_updated_interval_change_pf` AS intermediaire
+                ON intermediaire.client_updated_id = client.id
+                INNER JOIN interval_change_pf as intervalle on intervalle.intervalle = "11-02-2021 - 11-02-2021"
+            */
+            foreach($ses_clients as $client){
+                if(!in_array($client->getNom(), $noms)){
+                    array_push($noms, $client->getNom());
+                    
+                }
+            }
+            dd($noms);
+        }
         
         return $this->render('page/liste_changement.html.twig', [
             "hotel"             => $data_session['pseudo_hotel'],

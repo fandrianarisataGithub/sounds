@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\ClientUpdated;
+use App\Entity\ListePFUpdated;
 use App\Entity\IntervalChangePF;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -24,29 +26,14 @@ class IntervalChangePFRepository extends ServiceEntityRepository
     public function findAll()
     {
         return $this->createQueryBuilder('i')
-            
+           
             ->orderBy('i.id', 'DESC')
            
             ->getQuery()
             ->getResult()
         ;
     }
-    // /**
-    //  * @return IntervalChangePF[] Returns an array of IntervalChangePF objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('i.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+    
 
     /*
     public function findOneBySomeField($value): ?IntervalChangePF
