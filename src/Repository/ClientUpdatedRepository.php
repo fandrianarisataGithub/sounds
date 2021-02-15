@@ -3,8 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\ClientUpdated;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method ClientUpdated|null find($id, $lockMode = null, $lockVersion = null)
@@ -35,6 +35,19 @@ class ClientUpdatedRepository extends ServiceEntityRepository
         ;
     }
     */
+    /**
+     * @return ClientUpdated[] Returns an array of ClientUpdated objects
+     */
+    public function findClientByInterval($value)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.intervalchangePF = :val')
+            ->setParameter('val', $value)
+            ->orderBy('c.id', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
     /*
     public function findOneBySomeField($value): ?ClientUpdated

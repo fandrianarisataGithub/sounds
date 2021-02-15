@@ -2286,6 +2286,9 @@ span.fa-calendar {
     background-color: #fff;
     margin-top: 0!important;
 }
+.graph_content{
+    border-radius: 25px;
+}
 
 .margin_tab:not(:first-child) {
     margin-top: 50px !important;

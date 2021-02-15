@@ -308,9 +308,14 @@ class DonneeDuJourController extends AbstractController
             $id = $request->get('ddj_id');
             $ddj = $repoDdj->find($id);
             $html = '';
-            $html.='
+            $html.= '
             
                 <form action="">
+                    <div class="form-group">
+                        <label for="n_date_depart">Date de création :
+                        </label>
+                        <input type="date" id = "modal_modif_created_at" class="form-control" value = "' . $ddj->getCreatedAt()->format("Y-m-d") . '">
+                    </div>
                     <div class="form-group">
                         <label for="n_date_depart">
                             Taux d occupation (%) :
@@ -348,6 +353,11 @@ class DonneeDuJourController extends AbstractController
             $html .= '
             
                <form action="">
+                    <div class="form-group">
+                        <label for="n_date_depart">Date de création :
+                        </label>
+                        <input type="date" id = "modal_modif_created_at" class="form-control" value = "' . $ddj->getCreatedAt()->format("Y-m-d") . '">
+                    </div>
                     <div class="form-group">
                         <label>Chiffre d\'affaire (Ariary) :
                         </label>
@@ -395,6 +405,11 @@ class DonneeDuJourController extends AbstractController
             
                <form>
                     <div class="form-group">
+                        <label for="n_date_depart">Date de création :
+                        </label>
+                        <input type="date" id = "modal_modif_created_at" class="form-control" value = "' . $ddj->getCreatedAt()->format("Y-m-d") . '">
+                    </div>
+                    <div class="form-group">
                         <label>Chiffre d\'affaire (Ariary) :
                         </label>
                         <input type="text" value="'. $ddj->getSpaCa() . '" id = "modal_modif_spa_ca" class="form-control ca">
@@ -437,7 +452,7 @@ class DonneeDuJourController extends AbstractController
             $ddj = $repoDdj->find($id);
             $ddj->setHebCa($heb_ca);
             $ddj->setHebTo($heb_to);
-
+            $ddj->setCreatedAt($created_at);
             $manager->flush();
 
             $data = json_encode("ok");
@@ -458,13 +473,14 @@ class DonneeDuJourController extends AbstractController
             $res_ca = $request->get('res_ca');
             $res_p_dej = $request->get('res_p_dej');
             $res_dej = $request->get('res_dej');
+            $created_at = date_create($request->get('created_at'));
             $res_dinner = $request->get('res_dinner');
             $ddj = $repoDdj->find($id);
            $ddj->setResCa($res_ca);
            $ddj->setResPDej($res_p_dej);
            $ddj->setResDej($res_dej);
            $ddj->setResDinner($res_dinner);
-
+            $ddj->setCreatedAt($created_at);
             $manager->flush();
 
 
@@ -487,11 +503,12 @@ class DonneeDuJourController extends AbstractController
             $spa_ca = $request->get('spa_ca');
             $spa_n_abonne = $request->get('spa_n_abonne');
             $spa_c_unique = $request->get('spa_c_unique');
-            
+            $created_at = date_create($request->get('created_at'));
             $ddj = $repoDdj->find($id);
             $ddj->setSpaCa($spa_ca);
             $ddj->setSpaNAbonne($spa_n_abonne);
             $ddj->setSpaCUnique($spa_c_unique);
+            $ddj->setCreatedAt($created_at);
             $manager->flush();
 
 

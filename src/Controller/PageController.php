@@ -491,7 +491,7 @@ class PageController extends AbstractController
             if ($tab_eca[$i] == 0) {
                 $tab_eca[$i] = 1;
             }
-            $tab_heb_ca[$i] = $tab_heb_ca[$i] / $tab_eca[$i] ; // / 10^6 car l'unité de graphe est le million
+            //$tab_heb_ca[$i] = $tab_heb_ca[$i] / $tab_eca[$i] ; 
             $tab_heb_ca[$i] = floatval(str_replace(' ', '', $tab_heb_ca[$i])) ;
             // $tab_heb_ca[$i] = number_format($tab_heb_ca[$i], 2);
         }
@@ -999,7 +999,7 @@ class PageController extends AbstractController
             if ($tab_eca[$i] == 0) {
                 $tab_eca[$i] = 1;
             }
-            $tab_res_ca[$i] = $tab_res_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
+            //$tab_res_ca[$i] = $tab_res_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
             // $tab_res_ca[$i] = floatval(str_replace(' ', '', $tab_res_ca[$i])) ;
             $tab_res_ca[$i] = floatval(str_replace(' ', '', $tab_res_ca[$i])) ;
             // $tab_res_ca[$i] = number_format($tab_res_ca[$i], 2);
@@ -1011,7 +1011,7 @@ class PageController extends AbstractController
             if ($tab_epd[$i] == 0) {
                 $tab_epd[$i] = 1;
             }
-            $tab_res_pd[$i] = number_format(($tab_res_pd[$i] / $tab_epd[$i]), 2);
+            $tab_res_pd[$i] = intval(($tab_res_pd[$i] / $tab_epd[$i]));
         }
 
         //dd($tab_res_d);
@@ -1022,7 +1022,7 @@ class PageController extends AbstractController
             if ($tab_ed[$i] == 0) {
                 $tab_ed[$i] = 1;
             }
-            $tab_res_d[$i] = number_format(($tab_res_d[$i] / $tab_ed[$i]), 2);
+            $tab_res_d[$i] = intval(($tab_res_d[$i] / $tab_ed[$i]));
         }
 
         //dd($tab_res_d);
@@ -1034,7 +1034,7 @@ class PageController extends AbstractController
             if ($tab_edi[$i] == 0) {
                 $tab_edi[$i] = 1;
             }
-            $tab_res_di[$i] = number_format(($tab_res_di[$i] / $tab_edi[$i]), 2);
+            $tab_res_di[$i] = intval(($tab_res_di[$i] / $tab_edi[$i]));
         }
 
         //dd($tab_res_di);
@@ -1363,7 +1363,7 @@ class PageController extends AbstractController
             if ($tab_eca[$i] == 0) {
                 $tab_eca[$i] = 1;
             }
-            $tab_spa_ca[$i] = $tab_spa_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
+            //$tab_spa_ca[$i] = $tab_spa_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
             $tab_spa_ca[$i] = floatval(str_replace(' ', '', $tab_spa_ca[$i])) ;
             // $tab_spa_ca[$i] = number_format($tab_spa_ca[$i], 2);
         }
@@ -1374,7 +1374,8 @@ class PageController extends AbstractController
             if ($tab_ena[$i] == 0) {
                 $tab_ena[$i] = 1;
             }
-            $tab_spa_na[$i] = number_format(($tab_spa_na[$i] / $tab_ena[$i]), 2);
+            //$tab_spa_na[$i] = number_format(($tab_spa_na[$i] / $tab_ena[$i]), 2);
+            $tab_spa_na[$i] = intval($tab_spa_na[$i]);
         }
 
         $tab_spa_cu = [$spa_cu_jan, $spa_cu_fev, $spa_cu_mars, $spa_cu_avr, $spa_cu_mai, $spa_cu_juin, $spa_cu_juil, $spa_cu_aou, $spa_cu_sep, $spa_cu_oct, $spa_cu_nov, $spa_cu_dec];
@@ -1383,7 +1384,8 @@ class PageController extends AbstractController
             if ($tab_ecu[$i] == 0) {
                 $tab_ecu[$i] = 1;
             }
-            $tab_spa_cu[$i] = number_format(($tab_spa_cu[$i] / $tab_ecu[$i]), 2);
+            // $tab_spa_cu[$i] = number_format(($tab_spa_cu[$i] / $tab_ecu[$i]), 2);
+            $tab_spa_cu[$i] = intval($tab_spa_cu[$i]);
         }
 
         //dd($tab_spa_cu);
@@ -2440,7 +2442,7 @@ class PageController extends AbstractController
                         $tab_eca[$i] = 1;
                     }
                    
-                    $tab_heb_ca[$i] = $tab_heb_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
+                    //$tab_heb_ca[$i] = $tab_heb_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
                     $tab_heb_ca[$i] = floatval(str_replace(' ', '', $tab_heb_ca[$i])) ;
                     // $tab_heb_ca[$i] = number_format($tab_heb_ca[$i], 2);
                 }
@@ -2583,7 +2585,7 @@ class PageController extends AbstractController
                     if ($tab_eca[$i] == 0) {
                         $tab_eca[$i] = 1;
                     }
-                    $tab_res_ca[$i] = $tab_res_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
+                    //$tab_res_ca[$i] = $tab_res_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
                     $tab_res_ca[$i] = floatval(str_replace(' ', '', $tab_res_ca[$i])) ;
                     // $tab_res_ca[$i] = number_format($tab_res_ca[$i], 2);
                 }
@@ -2872,7 +2874,7 @@ class PageController extends AbstractController
                     if ($tab_epd[$i] == 0) {
                         $tab_epd[$i] = 1;
                     }
-                    $tab_res_pd[$i] = number_format(($tab_res_pd[$i] / $tab_epd[$i]), 2);
+                    $tab_res_pd[$i] = intval(($tab_res_pd[$i] / $tab_epd[$i]));
                 }
 
                 //dd($tab_res_d);
@@ -2883,7 +2885,7 @@ class PageController extends AbstractController
                     if ($tab_ed[$i] == 0) {
                         $tab_ed[$i] = 1;
                     }
-                    $tab_res_d[$i] = number_format(($tab_res_d[$i] / $tab_ed[$i]), 2);
+                    $tab_res_d[$i] = intval(($tab_res_d[$i] / $tab_ed[$i]));
                 }
 
                 //dd($tab_res_d);
@@ -2895,7 +2897,7 @@ class PageController extends AbstractController
                     if ($tab_edi[$i] == 0) {
                         $tab_edi[$i] = 1;
                     }
-                    $tab_res_di[$i] = number_format(($tab_res_di[$i] / $tab_edi[$i]), 2);
+                    $tab_res_di[$i] = intval(($tab_res_di[$i] / $tab_edi[$i]));
                 }
 
                 //dd($tab_res_di);
@@ -3051,7 +3053,7 @@ class PageController extends AbstractController
                     if ($tab_eca[$i] == 0) {
                         $tab_eca[$i] = 1;
                     }
-                    $tab_res_ca[$i] = $tab_res_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
+                    //$tab_res_ca[$i] = $tab_res_ca[$i] / $tab_eca[$i]; // / 10^6 car l'unité de graphe est le million
                     $tab_res_ca[$i] = floatval(str_replace(' ', '', $tab_res_ca[$i])) ;
                     // $tab_res_ca[$i] = number_format($tab_res_ca[$i], 2);
                 }
@@ -3195,7 +3197,8 @@ class PageController extends AbstractController
                     if ($tab_ecu[$i] == 0) {
                         $tab_ecu[$i] = 1;
                     }
-                    $tab_spa_cu[$i] = number_format(($tab_spa_cu[$i] / $tab_ecu[$i]), 2);
+                    // $tab_spa_cu[$i] = number_format(($tab_spa_cu[$i] / $tab_ecu[$i]), 2);
+                    $tab_spa_cu[$i] = intval($tab_spa_cu[$i]);
                 }
 
 
@@ -3335,7 +3338,8 @@ class PageController extends AbstractController
                     if ($tab_ecu[$i] == 0) {
                         $tab_ecu[$i] = 1;
                     }
-                    $tab_spa_cu[$i] = number_format(($tab_spa_cu[$i] / $tab_ecu[$i]), 2);
+                    // $tab_spa_cu[$i] = number_format(($tab_spa_cu[$i] / $tab_ecu[$i]), 2);
+                    $tab_spa_cu[$i] = intval($tab_spa_cu[$i]);
                 }
 
                 $data = json_encode($tab_spa_cu);

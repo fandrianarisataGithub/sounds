@@ -1042,6 +1042,11 @@ class TropController extends AbstractController
                 "liste_client"  => []
             ];
             $ses_clients = $Item->getClientUpdateds();
+            // $x = [];
+            // foreach ($ses_clients as $item_client) {
+            //     array_push($x, $item_client);
+            // }
+            // dd($x);
             // les pf changés pour chaque clients
             foreach($ses_clients as $item_client){
                 $tab_client = [

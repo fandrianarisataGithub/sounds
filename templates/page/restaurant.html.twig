@@ -28,7 +28,7 @@
 				<div
 					class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 					<!-- debut chart 1 -->
-					<section class="section_part tab_content margin_tab">
+					<section class="section_part tab_content margin_tab graph_content">
 						<div class="chart_title">
 							<div class="chart_title-part" id="div__1">
 								<h4>Chiffre d'affaire</h4>
@@ -69,7 +69,7 @@
 					<!-- fin chart 1 -->
 
 					<!-- debut chart 2 -->
-					<section class="section_part tab_content margin_tab">
+					<section class="section_part tab_content margin_tab graph_content">
 						<div class="chart_title">
 							<div class="chart_title-part" id="div__3">
 								<h4>Nombre de couvert</h4>
@@ -265,7 +265,7 @@
 
                         var ev_click = false;
                         var tab_temp = [];
-                        for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) { // myChart1.data.datasets[0].data[i]= -10;
+                        for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) { // myChart1.data.datasets[0].data[i]= 0;
                             tab_temp[i] = myChart1.data.datasets[0].data[i];
                         }
                         $("#chart-legends_nc").on('click', "li span[data_leg=0]", function () {
@@ -273,7 +273,7 @@
                             if (ev_click == false) {
                                 $(".ul_1 li span[data_leg=0]").addClass("legende_click");
                                 for (var i = 0; i < myChart1.data.datasets[0].data.length; i++) {
-                                    myChart1.data.datasets[0].data[i] = -10;
+                                    myChart1.data.datasets[0].data[i] = 0;
                                     }
                                 myChart1.update();
                                 ev_click = ! ev_click;
@@ -505,7 +505,7 @@
 
                     var ev_click = false;
                     var tab_temp = [];
-                    for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) { // myChart2.data.datasets[0].data[i]= -10;
+                    for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) { // myChart2.data.datasets[0].data[i]= 0;
                         tab_temp[i] = myChart2.data.datasets[0].data[i];
                     }
                     $("#chart-legends_car").on('click', "li span[data_leg=0]", function () {
@@ -513,7 +513,7 @@
                         if (ev_click == false) {
                                 $(".ul_2 li span[data_leg=0]").addClass("legende_click");
                                 for (var i = 0; i < myChart2.data.datasets[0].data.length; i++) {
-                                    myChart2.data.datasets[0].data[i] = -10;
+                                    myChart2.data.datasets[0].data[i] = 0;
                                 }
                                 myChart2.update();
                                 ev_click = ! ev_click;
@@ -535,7 +535,7 @@
 
                     var ev_click2 = false;
                     var tab_temp2 = [];
-                    for (var i = 0; i < myChart2.data.datasets[1].data.length; i++) { // myChart2.data.datasets[0].data[i]= -10;
+                    for (var i = 0; i < myChart2.data.datasets[1].data.length; i++) { // myChart2.data.datasets[0].data[i]= 0;
                         tab_temp2[i] = myChart2.data.datasets[1].data[i];
                     }
                     $("#chart-legends_car").on('click', "li span[data_leg=1]", function () {
@@ -543,7 +543,7 @@
                         if (ev_click2 == false) {
                             $(".ul_2 li span[data_leg=1]").addClass("legende_click");
                             for (var i = 0; i < myChart2.data.datasets[1].data.length; i++) {
-                                myChart2.data.datasets[1].data[i] = -10;
+                                myChart2.data.datasets[1].data[i] = 0;
                             }
                             myChart2.update();
                             ev_click2 = ! ev_click2;
@@ -565,7 +565,7 @@
 
                     var ev_click3 = false;
                     var tab_temp3 = [];
-                    for (var i = 0; i < myChart2.data.datasets[2].data.length; i++) { // myChart2.data.datasets[0].data[i]= -10;
+                    for (var i = 0; i < myChart2.data.datasets[2].data.length; i++) { // myChart2.data.datasets[0].data[i]= 0;
                         tab_temp3[i] = myChart2.data.datasets[2].data[i];
                     }
                     $("#chart-legends_car").on('click', "li span[data_leg=2]", function () {
@@ -573,7 +573,7 @@
                         if (ev_click3 == false) {
                             $(".ul_2 li span[data_leg=2]").addClass("legende_click");
                             for (var i = 0; i < myChart2.data.datasets[2].data.length; i++) {
-                                myChart2.data.datasets[2].data[i] = -10;
+                                myChart2.data.datasets[2].data[i] = 0;
                             }
                             myChart2.update();
                             ev_click3 = ! ev_click3;
@@ -595,7 +595,7 @@
 
                     var ev_click4 = false;
                     var tab_temp4 = [];
-                    for (var i = 0; i < myChart2.data.datasets[3].data.length; i++) { // myChart2.data.datasets[0].data[i]= -10;
+                    for (var i = 0; i < myChart2.data.datasets[3].data.length; i++) { // myChart2.data.datasets[0].data[i]= 0;
                         tab_temp4[i] = myChart2.data.datasets[3].data[i];
                     }
                     $("#chart-legends_car").on('click', "li span[data_leg=3]", function () {
@@ -603,7 +603,7 @@
                         if (ev_click4 == false) {
                             $(".ul_2 li span[data_leg=3]").addClass("legende_click");
                             for (var i = 0; i < myChart2.data.datasets[3].data.length; i++) {
-                                myChart2.data.datasets[3].data[i] = -10;
+                                myChart2.data.datasets[3].data[i] = 0;
                             }
                             myChart2.update();
                             ev_click4 = ! ev_click4;
