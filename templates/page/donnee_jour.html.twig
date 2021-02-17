@@ -23,6 +23,7 @@
                                 {# <input type="date" name = "donnee_du_jour[createdAt]" class="createdAt" id = "donnee_du_jour_createdAt" value = "{{ today }}"> #}
                                 <input type="date" name = "createdAt" class="createdAt" id = "donnee_du_jour_createdAt" value = "{{ today }}">
                         </div>
+                        {# <div id="test"></div> #}
                     </section>
                 </div>
                 <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
@@ -538,7 +539,10 @@ new Cleave('.input_pourcent', {blocks: [4]});
                     "ajax" : {
                         url : "/profile/select_current_client", // any am Clientcontroller
                         type : 'POST', 
-                        data : {'pseudo_hotel' : pseudo_hotel},
+                        data : {
+                            'pseudo_hotel' : pseudo_hotel,
+                            'date'  : $("#donnee_du_jour_createdAt").val()
+                            },
                         // success : function(response){
                         //     alert(response);
                         // }, 
@@ -572,11 +576,13 @@ new Cleave('.input_pourcent', {blocks: [4]});
                 var prenom = $('#prenom_client').val();
                 var date_arrivee = $('#date_arrivee').val();
                 var date_depart = $('#date_depart').val();
+                var createdAt = $('#donnee_du_jour_createdAt').val();
                 var data = {
-                    "nom_client" : nom,
+                    "nom_client"    : nom,
                     "prenom_client" : prenom,
-                    "date_arrivee" : date_arrivee,
-                    "date_depart" : date_depart
+                    "date_arrivee"  : date_arrivee,
+                    "date_depart"   : date_depart,
+                    "createdAt"     : createdAt,    
                 };
 
                 // test
@@ -657,6 +663,7 @@ new Cleave('.input_pourcent', {blocks: [4]});
                      url : "/admin/check_client",
                      data : {
                          "client_id" : id,
+                         "action" : "modification",
                      },
                      type : "POST",
                     
@@ -707,6 +714,28 @@ new Cleave('.input_pourcent', {blocks: [4]});
                 })
             })
             
+            // modif data 
+
+            $('#donnee_du_jour_createdAt').on("change", function(){
+                //alert('dhb')
+                var date = $(this).val();
+                $.ajax({
+                    url : "/profile/check_ddj/" + pseudo_hotel,
+                    type : "POST",
+                    data : {
+                        "date" : date,
+                    }, 
+                    success : function(response){
+                        //alert(response);
+                        if(response != ""){
+                            window.location.href = "/profile/" + pseudo_hotel + "/donnee_jour/" + response;
+                        }
+                    }, 
+                    error : function(){
+                        alert('erreur au niveau de check _ data ddj');
+                    }
+                })
+            })
 
 
             

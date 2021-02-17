@@ -321,7 +321,7 @@
 									</li>
 									<div class="liste_dj_dm">
 										<div class="liste_dj_dm_item" {% if id is defined and id is not null and id == "li__donnee_du_jour" %} id="{{ id }}" {% endif %}>
-											<a href="{{ path('donnee_jour', {'pseudo_hotel' : hotel}) }}">
+											<a href="{{ path('donnee_jour', {'pseudo_hotel' : hotel, 'id' : "vide"}) }}">
 												<span class="fa fa-plus"></span>
 												<span>Données journalières</span>
 											</a>

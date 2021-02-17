@@ -37,7 +37,7 @@ class ClientUpdatedRepository extends ServiceEntityRepository
     */
     /**
      * @return ClientUpdated[] Returns an array of ClientUpdated objects
-     */
+    */
     public function findClientByInterval($value)
     {
         return $this->createQueryBuilder('c')

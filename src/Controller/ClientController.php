@@ -85,43 +85,62 @@ class ClientController extends AbstractController
     {
         $response = new Response();
         if ($request->isXmlHttpRequest()) {
+            
+            $date = $request->get('date');
+            $last = date_create($date . "00:01");
+            $next = date_create($date . "23:59");
             $pseudo_hotel = $request->get('pseudo_hotel');
             $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
-            $clients = $repoClient->findAll();
-            $clients_current = [];
-            $today = new \DateTime();
+            // $clients = $repoClient->findAll();
+            // $clients_current = [];
+            // $today = date_create($date);
 
-            $today_s = $today->format('d-m-Y');
-            $today = date_create($today_s);
+            // $t = [];
+            // $x = 0;
+            // foreach ($clients as $c) {
+            //     $son_hotel = $c->getHotel();
+            //     $son_pseudo_hotel = $son_hotel->getPseudo();
+            //     if ($son_pseudo_hotel == $pseudo_hotel) {
+            //         $sa_date_arrivee = $c->getDateArrivee();
+            //         $sa_date_arrivee = $sa_date_arrivee->format("d-m-Y");
+            //         $sa_date_arrivee = date_create($sa_date_arrivee);
+            //         $sa_date_depart = $c->getDateDepart();
+            //         $sa_date_depart = $sa_date_depart->format("d-m-Y");
+            //         $sa_date_depart = date_create($sa_date_depart);
+            //         if (($sa_date_arrivee <= $today) && ($today <= $sa_date_depart)) {
+            //             array_push($clients_current, $c);
+            //         } else {
+            //             $x = $x;
+            //         }
+            //     }
+            // }
            
             $t = [];
-            $x = 0;
-            foreach ($clients as $c) {
-                $son_hotel = $c->getHotel();
-                $son_pseudo_hotel = $son_hotel->getPseudo();
-                if ($son_pseudo_hotel == $pseudo_hotel) {
-                    $sa_date_arrivee = $c->getDateArrivee();
-                    $sa_date_arrivee = $sa_date_arrivee->format("d-m-Y");
-                    $sa_date_arrivee = date_create($sa_date_arrivee);
-                    $sa_date_depart = $c->getDateDepart();
-                    $sa_date_depart = $sa_date_depart->format("d-m-Y");
-                    $sa_date_depart = date_create($sa_date_depart);
-                    if (($sa_date_arrivee <= $today) && ($today <= $sa_date_depart)) {
-                        array_push($clients_current, $c);
-                    } else {
-                        $x = $x;
-                    }
+            $clients_current_h = $repoClient->findBy([
+                "hotel" => $hotel
+            ]);
+            $clients_current = [];
+            foreach($clients_current_h as $c){
+                $cre = $c->getCreatedAt();
+                if($cre <= $next && $cre >= $last){
+                    array_push($clients_current, $c);
                 }
             }
             foreach ($clients_current as $item) {
 
-                array_push($t, ['<div>' . $item->getNom() . '</div><div>' . $item->getPrenom() . '</div><div>' . $item->getCreatedAt()->format("d-m-Y") . '</div>', $item->getDateArrivee()->format('d-m-Y'), $item->getDateDepart()->format('d-m-Y'), $item->getDureeSejour(), '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_diso" data-id = "' . $item->getId() . '" class="btn btn_client_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a><a href="#" data-toggle="modal" data-target="#modal_form_confirme" data-id = "' . $item->getId() . '" class="btn btn_client_suppr btn-danger btn-xs"><span class="fa fa-trash-o"></span></a></div>']);
+                array_push($t, ['<div>' . $item->getNom() . '</div><div>' . $item->getPrenom() . '</div><div><span>Ajouté le : </span>' . $item->getCreatedAt()->format("d-m-Y") . '</div>', $item->getDateArrivee()->format('d-m-Y'), $item->getDateDepart()->format('d-m-Y'), $item->getDureeSejour(), '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_diso" data-id = "' . $item->getId() . '" class="btn btn_client_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a><a href="#" data-toggle="modal" data-target="#modal_form_confirme" data-id = "' . $item->getId() . '" class="btn btn_client_suppr btn-danger btn-xs"><span class="fa fa-trash-o"></span></a></div>']);
             }
             $data = json_encode($t);
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent($data);
             return $response;
         }
+        $date = "2021-02-17";
+        // $next = date('Y-m-d', strtotime('+1 day', strtotime($date)));
+        // $last = date('Y-m-d', strtotime('-1 day', strtotime($date)));
+        $last = date_create($date . "00:01");
+        $next = date_create($date . "23:59");
+        dd($next);
         //$pseudo_hotel = $request->request->get('pseudo_hotel');
         $pseudo_hotel = "royal_beach";
         $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
@@ -223,7 +242,7 @@ class ClientController extends AbstractController
                             <input type="date" id="modif_date_depart" class="form-control" value = "' . $client->getDateDepart()->format("Y-m-d") . '" name = "date_depart">
                         </div>
                         <div class="form-group">
-                           <button type = "submit" class="form-control btn btn-warning"><span>Enregistrer</span></button>
+                           <button type = "submit" class="form-control btn btn-warning" id="a_modal_modif_client" data-id="'. $client->getId() .'"><span>Enregistrer</span></button>
                         </div>
                     </form>';
             }

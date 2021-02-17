@@ -234,6 +234,7 @@ class PageController extends AbstractController
             $prenom_client = (empty($request->get('prenom_client'))) ? "" : $request->get('prenom_client');
             $date_arrivee = $request->get('date_arrivee');
             $date_depart = $request->get('date_depart');
+            $createdAt = date_create($request->get('createdAt'));
             $date_arrivee = date_create($date_arrivee);
             $date_depart = date_create($date_depart);
             $diff = $date_arrivee->diff($date_depart);
@@ -247,7 +248,7 @@ class PageController extends AbstractController
                 $client->setDateArrivee($date_arrivee);
                 $client->setDateDepart($date_depart);
                 $client->setDureeSejour($days);
-                $client->setCreatedAt(new \DateTime());
+                $client->setCreatedAt($createdAt);
                 $hotel->addClient($client);
                 $manager->persist($client);
                 $manager->persist($hotel);
@@ -1960,47 +1961,53 @@ class PageController extends AbstractController
 
     /**
      * @Route("/profile/{pseudo_hotel}/donnee_jour", name="donnee_jour")
+     * @Route("/profile/{pseudo_hotel}/donnee_jour/{id}", name="donnee_jour_modif")
      */
-    public function donnee_jour(Request $request, $pseudo_hotel, EntityManagerInterface $manager, SessionInterface $session, HotelRepository $reposHotel)
+    public function donnee_jour(DonneeDuJour $ddj = null, Request $request, $pseudo_hotel, EntityManagerInterface $manager, SessionInterface $session, HotelRepository $reposHotel)
     {
-        $ddj = new DonneeDuJour();
-        $data_session = $session->get('hotel');
-        $data_session['current_page'] = "donnee_jour";
-        $data_session['pseudo_hotel'] = $pseudo_hotel;
-        $form = $this->createForm(DonneeDuJourType::class, $ddj);
-        $today = new \DateTime();
-        // si le formulaire est soumis 
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
-            $ddj = $form->getData();
-            $createdAt  = $request->request->get('createdAt');
-            $createdAt = date_create($createdAt);
-            $ddj->setCreatedAt($createdAt);
-            //dd($ddj);
-            $hotel = $reposHotel->findOneByPseudo($pseudo_hotel);
-            $hotel->addDonneeDuJour($ddj);
-            $manager->persist($ddj);
-            $manager->persist($hotel);
-            $manager->flush();
-            return $this->redirectToRoute('donnee_jour', ['pseudo_hotel' => $pseudo_hotel]);
-        }
-        // HotelRepository $repoHotel
-        $user = $data_session['user'];
-        $pos = $this->services->tester_droit($pseudo_hotel, $user, $reposHotel);
-        if ($pos == "impossible") {
-            return $this->render('/page/error.html.twig');
-        }
-
-       else{
-            return $this->render('page/donnee_jour.html.twig', [
-                "id" => "li__donnee_du_jour",
-                "tropical_wood"     => false,
-                "form" => $form->createView(),
-                "hotel" => $data_session['pseudo_hotel'],
-                "current_page" => $data_session['current_page'],
-                "today" => $today->format("Y-m-d"),
-            ]);
-       }
+            
+            $data_session = $session->get('hotel');
+            $data_session['current_page'] = "donnee_jour";
+            $data_session['pseudo_hotel'] = $pseudo_hotel;
+            $today = new \DateTime();
+            if(!$ddj){
+                    $ddj = new DonneeDuJour();
+            }
+            else if($ddj){
+                $today = $ddj->getCreatedAt();
+            }
+            $form = $this->createForm(DonneeDuJourType::class, $ddj);
+            
+            // si le formulaire est soumis 
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {           
+                $ddj = $form->getData();
+                $createdAt  = $request->request->get('createdAt');
+                $createdAt = date_create($createdAt);
+                $ddj->setCreatedAt($createdAt);
+                //dd($ddj);
+                $hotel = $reposHotel->findOneByPseudo($pseudo_hotel);
+                $hotel->addDonneeDuJour($ddj);
+                $manager->persist($ddj);
+                $manager->persist($hotel);
+                $manager->flush();
+                return $this->redirectToRoute('donnee_jour', ['pseudo_hotel' => $pseudo_hotel]);
+            }
+            // HotelRepository $repoHotel
+            $user = $data_session['user'];
+            $pos = $this->services->tester_droit($pseudo_hotel, $user, $reposHotel);
+            if ($pos == "impossible") {
+                return $this->render('/page/error.html.twig');
+            } else {
+                return $this->render('page/donnee_jour.html.twig', [
+                    "id" => "li__donnee_du_jour",
+                    "tropical_wood"     => false,
+                    "form" => $form->createView(),
+                    "hotel" => $data_session['pseudo_hotel'],
+                    "current_page" => $data_session['current_page'],
+                    "today" => $today->format("Y-m-d"),
+                ]);
+            }
     }
 
     /**

@@ -519,4 +519,29 @@ class DonneeDuJourController extends AbstractController
             return $response;
         }
     }
+
+    /**
+     * @Route("/profile/check_ddj/{pseudo_hotel}", name ="check_data_ddj")
+     */
+    public function check_data_ddj(Request $request, $pseudo_hotel, DonneeDuJourRepository $repoDdj, HotelRepository $repoHotel)
+    {
+        $response = new Response();
+        if($request->isXmlHttpRequest()){
+
+            $hotel = $repoHotel->findByPseudo($pseudo_hotel);
+            $date = date_create($request->get('date'));
+            $datas = $repoDdj->findBy([
+                "hotel"         => $hotel,
+                "createdAt"     => $date
+            ]);
+            $data = "";
+            if($datas){
+               $data = $datas[0]->getId();
+            }
+            $data = json_encode($data);
+            $response->headers->set('Contentt-type', 'application/json');
+            $response->setContent($data);
+            return $response;
+        }
+    }
 }
