@@ -19,6 +19,28 @@ class ChangementAfterImportRepository extends ServiceEntityRepository
         parent::__construct($registry, ChangementAfterImport::class);
     }
 
+    public function findChangeByInterval($interval, $id_pro)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = '
+                SELECT id_pro, nom, last_data, next_data FROM `changement_after_import` 
+                LEFT JOIN `liste_pfupdated`
+                ON changement_after_import.liste_pfupdated_id = liste_pfupdated.id
+                INNER JOIN interval_change_pf as intervalle
+                WHERE liste_pfupdated.id_pro = :id_pro 
+                AND intervalle.intervalle = :interval
+        ';
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([
+            'interval'  => $interval,
+            'id_pro' => $id_pro
+        ]);
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAll();
+    }
+
     // /**
     //  * @return ChangementAfterImport[] Returns an array of ChangementAfterImport objects
     //  */

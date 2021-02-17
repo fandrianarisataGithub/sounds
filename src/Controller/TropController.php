@@ -1037,7 +1037,7 @@ class TropController extends AbstractController
         $all_interval = $repoInterval->findAll();
         $Tableau_recap_changement = [];
        
-        foreach($all_interval as $Item){
+        /*foreach($all_interval as $Item){
             $tab_interval = [
                 "date_interval" => $Item->getIntervalle(),
                 "liste_client"  => []
@@ -1073,7 +1073,7 @@ class TropController extends AbstractController
                 array_push($tab_interval['liste_client'], $tab_client);
             }
            array_push($Tableau_recap_changement, $tab_interval);
-        }
+        }*/
         
         //dd($Tableau_recap_changement);
         // rassemblement des données via le même entreprise
@@ -1086,23 +1086,45 @@ class TropController extends AbstractController
                 "date_interval" => $Item->getIntervalle(),
                 "liste_client"  => []
             ];
-            $ses_clients = $Item->getClientUpdateds();
-            $clients = [];
-            $noms = [];
-            /*  
-                // tous les clients distincts dans  
-                SELECT DISTINCT nom FROM `client_updated` AS client 
-                INNER JOIN `client_updated_interval_change_pf` AS intermediaire
-                ON intermediaire.client_updated_id = client.id
-                INNER JOIN interval_change_pf as intervalle on intervalle.intervalle = "11-02-2021 - 11-02-2021"
-            */
-            foreach($ses_clients as $client){
-                if(!in_array($client->getNom(), $noms)){
-                    array_push($noms, $client->getNom());
-                    
+
+            // tous les clients de cet intervalle
+
+            $clients = $repoClientUp->findDistinctClientByInterval($Item->getIntervalle());
+            //dd($clients);
+
+            // tous les listes pf 
+           
+            foreach($clients as $client){
+                $listePFUpdateds = $repoListePF->findDistinctListePFUpByInterval($Item->getIntervalle(), $client['nom']);
+
+                //array_push($tab_interval['liste_client'], $tab_client);
+                $tab_client = [
+                    "nom_client" => $client['nom'],
+                    "liste_pf" => []
+                ];
+                foreach ($listePFUpdateds as $pf) {
+                    $changes = $repoChangement->findChangeByInterval($Item->getIntervalle(), $pf['id_pro']);
+                    // array_push($changements, $changes);
+                    $tab_pf = [
+                        "id_pro"    => $pf['id_pro'],
+                        "liste_changement"  => []
+                    ];
+                    foreach($changes as $change){
+                        $tab_changement = [
+                            "nom"   => $change["nom"],
+                            "last_data" => $change["last_data"],
+                            "next_data" => $change["next_data"]
+                        ];
+                        array_push($tab_pf["liste_changement"], $tab_changement);
+                    }
+                    array_push($tab_client['liste_pf'], $tab_pf);
                 }
+                array_push($tab_interval['liste_client'], $tab_client);
+                
             }
-            dd($noms);
+
+            array_push($Tableau_recap_changement, $tab_interval);
+            
         }
         
         return $this->render('page/liste_changement.html.twig', [

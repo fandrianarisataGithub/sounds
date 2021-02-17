@@ -35,12 +35,25 @@ class ListePFUpdatedRepository extends ServiceEntityRepository
         ;
     }
 
-    /**
-     * @return ListePFUpdated[] Returns an array of ListePFUpdated objects
-    */
-    public function listePfInIntervalByNomClient($nom_client)
+    public function findDistinctListePFUpByInterval($interval, $nomClient)
     {
-        
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = '
+                SELECT DISTINCT id_pro FROM `liste_pfupdated` LEFT JOIN client_updated 
+                ON liste_pfupdated.client_updated_id = client_updated.id 
+                INNER JOIN interval_change_pf as intervalle 
+                WHERE intervalle.intervalle = :interval
+                AND client_updated.nom = :nomClient
+        ';
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([
+                        'interval'  => $interval,
+                        'nomClient' => $nomClient
+                        ]);
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAll();
     }
 
 

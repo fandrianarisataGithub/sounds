@@ -2172,7 +2172,24 @@ margin-top: 0 !important;
 .table_content div>span {
     font-size: 12px;
 }
+.inner_date span{
+    color: rgba(70,69,68,1);
+    font-weight: bold;
+    
+}
 
+.div_change span{
+    color: rgba(70,69,68,1);
+    font-weight: 500;
+}
+.unite_client_entreprise span{
+    color: #d29e00;
+    font-weight: bolder;
+}
+.entete_pf span{
+    color: rgba(70,69,68,1);
+    font-weight: 500 !important;
+}
 .sous_tab_body {
     border-bottom: 1px solid rgba(204, 204, 204, 0.2);
 }
@@ -6333,7 +6350,6 @@ tr td.t_concerne_rem {
 }
 .date_changement{
     width: 100% !important;
-    border-bottom: 1px solid rgba(204, 204, 204, 0.8);
     display: flex;
     height: 35px;
     justify-content: start;
@@ -6350,11 +6366,13 @@ tr td.t_concerne_rem {
 }
 .unite_client_tw{
    width: 100% !important;
-    border-bottom: 1px solid rgba(204, 204, 204, 0.4);
     display: flex;
     height: 35px;
     justify-content: start;
     align-items: center;
+}
+.unite_date_changement .loop_client{
+    border-top: 1px solid rgba(204, 204, 204, 0.4);
 }
 .unite_client_entreprise{
     width: 225px;
@@ -6385,7 +6403,7 @@ tr td.t_concerne_rem {
 .loop_pf{
     display: flex;
     height: 35px;
-    border-bottom: 1px solid rgba(204, 204, 204, 0.2);
+    border-top: 1px solid rgba(204, 204, 204, 0.2);
 }
 .table_body .unite_date_changement:last-child .loop_client:last-child .loop_liste_pf .loop_pf:last-child{
     border-bottom: none !important;

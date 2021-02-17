@@ -159,6 +159,9 @@
     "phpoffice/phpspreadsheet": {
         "version": "1.15.0"
     },
+    "phpspec/prophecy": {
+        "version": "1.12.2"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
@@ -182,6 +185,18 @@
     },
     "psr/simple-cache": {
         "version": "1.0.1"
+    },
+    "sebastian/comparator": {
+        "version": "4.0.6"
+    },
+    "sebastian/diff": {
+        "version": "4.0.4"
+    },
+    "sebastian/exporter": {
+        "version": "4.0.3"
+    },
+    "sebastian/recursion-context": {
+        "version": "4.0.4"
     },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
