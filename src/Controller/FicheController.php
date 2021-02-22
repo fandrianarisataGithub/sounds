@@ -18,10 +18,10 @@ class FicheController extends AbstractController
     public function modif_fiche($pseudo_hotel, Request $request, FicheHotelRepository $repoFiche, EntityManagerInterface $manager, HotelRepository $repoHotel)
     {
         $response = new Response();
-        if($request->isXmlHttpRequest()){
+        if ($request->isXmlHttpRequest()) {
 
             $option = $request->get('option');
-            if($option == "chambre"){
+            if ($option == "chambre") {
 
                 $cp = $request->get('cp');
                 $sf = $request->get('sf');
@@ -35,11 +35,16 @@ class FicheController extends AbstractController
                     $son_hotel = $fiche->getHotel();
                     $son_id_hotel = $son_hotel->getId();
                     if ($id == $son_id_hotel) {
-                        $fiche->setCPrestige($cp);
+                        if($cp ==""){
+                            $fiche->setCPrestige(0);
+                        }
+                        else if($cp != ""){
+                            $fiche->setCPrestige($cp);
+                        }
                         $fiche->setSFamilliale($sf);
                         $fiche->setCDeluxe($cd);
                         $fiche->setSVip($sv);
-                        
+
                         $manager->flush();
                     }
                 }
@@ -48,7 +53,6 @@ class FicheController extends AbstractController
                 $response->headers->set('Content-Type', 'application/json');
                 $response->setContent($data);
                 return $response;
-
             }
             if ($option == "no-chambre") {
 
@@ -77,18 +81,17 @@ class FicheController extends AbstractController
                 $response->setContent($data);
                 return $response;
             }
-
         }
 
         $fiches = $repoFiche->findAll();
         $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
         $id = $hotel->getId();
-        foreach($fiches as $fiche){
+        foreach ($fiches as $fiche) {
             $son_hotel = $fiche->getHotel();
-           $son_id_hotel = $son_hotel->getId();
-           if($id == $son_id_hotel){
-               dd('eo');
-           }
+            $son_id_hotel = $son_hotel->getId();
+            if ($id == $son_id_hotel) {
+                dd('eo');
+            }
         }
 
         return $this->render('fiche/index.html.twig');
@@ -101,13 +104,13 @@ class FicheController extends AbstractController
         $response = new Response();
         if ($request->isXmlHttpRequest()) {
 
-            $fiches = $repoFiche->findAll();
+
             $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
-            $id = $hotel->getId();
-            foreach ($fiches as $fiche) {
-                $son_hotel = $fiche->getHotel();
-                $son_id_hotel = $son_hotel->getId();
-                if ($id == $son_id_hotel) {
+            $fiches = $repoFiche->findBy(["hotel" => $hotel]);
+            $html = "";
+            if(count($fiches) > 0){
+                foreach ($fiches as $fiche) {
+
                     $cp = $fiche->getCPrestige();
                     $sf = $fiche->getSFamilliale();
                     $cd = $fiche->getCDeluxe();
@@ -120,8 +123,6 @@ class FicheController extends AbstractController
                     $t += $sf;
                     $t += $cd;
                     $t += $sv;
-                    
-                    $html = '';
                     $html .= '
                         <section class="n_form">
 							<div class="h4_titre">
@@ -133,22 +134,22 @@ class FicheController extends AbstractController
 							</div>
 							<div class="data_form">
 								<div class="form-group">
-									<span class="val_data" id = "scp"> '. $cp .' </span>
-									<label>Chambres Préstiges</label>
+									<span class="val_data" id = "scp"> ' . $cp . ' </span>
+									<label>Chambres Préstiges </label>
 								</div>
 								<div class="form-group">
-									<span class="val_data" id = "ssf">'. $sf .'</span>
-									<label>Suites Familiales</label>
+									<span class="val_data" id = "ssf">' . $sf . '</span>
+									<label>Suites Familiales </label>
 								</div>
 							</div>
 							<div class="data_form">
 								<div class="form-group">
-									<span class="val_data" id = "scd">'. $cd .'</span>
+									<span class="val_data" id = "scd">' . $cd . '</span>
 									<label>Chambres Deluxes</label>
 								</div>
 								<div class="form-group">
-									<span class="val_data" id = "ssv">'. $sv .'</span>
-									<label>Suites VIP</label>
+									<span class="val_data" id = "ssv">' . $sv . '</span>
+									<label>Suites VIP </label>
 								</div>
 							</div>
 							<div class="data_form">
@@ -156,9 +157,9 @@ class FicheController extends AbstractController
 									<label>Nombre total des chambres :
 									</label>
 									<span class="val_data">
-										'. $t .'
+										' . $t . '
 									</span>
-									<span>Chambres</span>
+									<span>Chambres </span>
 								</div>
 
 							</div>
@@ -173,16 +174,16 @@ class FicheController extends AbstractController
 							</div>
 							<div class="data_form">
 								<div class="form-group">
-									<label class="label_first">Le Nautile</label>
+									<label class="label_first">Le Nautile : </label>
 									<span class="val_data" id="sln">' . $ln . '</span>
 									<span class="span__ar">Couverts Maximum</span>
 								</div>
 							</div>
 							<div class="data_form">
 								<div class="form-group">
-									<label class="label_first">Sunset View
+									<label class="label_first">Sunset View : 
 									</label>
-									<span class="val_data" id = "ssview">'. $sview .'</span>
+									<span class="val_data" id = "ssview">' . $sview . '</span>
 									<span class="span__ar">Couvert Maximum</span>
 								</div>
 							</div>
@@ -191,13 +192,79 @@ class FicheController extends AbstractController
                     ';
                 }
             }
+            else{
+                $html .= '
+                        <section class="n_form">
+							<div class="h4_titre">
+								<h4>Chambres</h4>
+								<button class="btn btn-default" data-toggle="modal" data-target="#modal_form_fh_1">
+									<span class="fa fa-plus"></span>
+									<span class="text">Modifier</span>
+								</button>
+							</div>
+							<div class="data_form">
+								<div class="form-group">
+									<span class="val_data" id = "scp">  </span>
+									<label>Chambres Préstiges</label>
+								</div>
+								<div class="form-group">
+									<span class="val_data" id = "ssf">  </span>
+									<label>Suites Familiales</label>
+								</div>
+							</div>
+							<div class="data_form">
+								<div class="form-group">
+									<span class="val_data" id = "scd"> </span>
+									<label>Chambres Deluxes</label>
+								</div>
+								<div class="form-group">
+									<span class="val_data" id = "ssv"> </span>
+									<label>Suites VIP</label>
+								</div>
+							</div>
+							<div class="data_form">
+								<div class="form-group total_chambre">
+									<label>Nombre total des chambres :
+									</label>
+									<span class="val_data">
+										 
+									</span>
+									<span>Chambres </span>
+								</div>
 
+							</div>
+						</section>
+						<section class="n_form">
+							<div class="h4_titre">
+								<h4>Restaurant</h4>
+								<button class="btn btn-default" data-toggle="modal" data-target="#modal_form_fh_2">
+									<span class="fa fa-plus"></span>
+									<span class="text">Modifier</span>
+								</button>
+							</div>
+							<div class="data_form">
+								<div class="form-group">
+									<label class="label_first">Le Nautile : </label>
+									<span class="val_data" id="sln"> </span>
+									<span class="span__ar">Couverts Maximum</span>
+								</div>
+							</div>
+							<div class="data_form">
+								<div class="form-group">
+									<label class="label_first">Sunset View : 
+									</label>
+									<span class="val_data" id = "ssview"> </span>
+									<span class="span__ar">Couvert Maximum</span>
+								</div>
+							</div>
+
+						</section>
+                    ';
+            }
             $data = json_encode($html);
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent($data);
             return $response;
-            
         }
-
     }
 }

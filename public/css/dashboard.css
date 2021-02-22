@@ -461,7 +461,7 @@ ul {
 #modal_form_fh_1 .modal-body .form-group input.input_n_modal {
     width: 50px;
     border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, .2);
+    border-bottom: 1px solid rgba(0, 0, 0, .2) !important;
 }
 
 #modal_form_fh_2 .modal-body .form-group input.input_n_modal {
@@ -2328,12 +2328,9 @@ span.fa-calendar {
 }
 
 .cacher {
-    -webkit-box-pack: end;
-    -ms-flex-pack: end;
-    justify-content: end;
+    display: block;
     padding-right: 10px;
 }
-
 .dataTables_paginate {
     margin-bottom: 15px;
     margin-top: 20px;
@@ -2440,6 +2437,7 @@ span.fa-calendar {
 .filtre form {
     display: block;
     text-align: end !important;
+    vertical-align: middle;
 }
 
 .filtre form input {
@@ -4263,6 +4261,9 @@ li.li_legende div span:first-child {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 @media all and (max-width: 480px) {
@@ -4299,17 +4300,17 @@ li.li_legende div span:first-child {
     -webkit-box-shadow: 0px 0px 3px #d29e00;
     box-shadow: 0px 0px 3px #d29e00;
 }
-
-#data_days section.n_form .data_form .form-group {
+#data_days section.n_form .data_form{
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    padding-left: 50px;
+    justify-content: space-between;
+}
+#data_days section.n_form .data_form .form-group {
+    width: 50%;
 }
 
-.total_chambre {
-    padding-left: 35px !important;
-}
+
 
 .total_chambre label {
     font-weight: 550 !important;
@@ -4402,7 +4403,7 @@ form .form-group span.span__ar {
 
 #data_days section.n_form .data_form .form-group label {
     color: rgba(0, 0, 0, 0.6) !important;
-    margin-left: 15px;
+    
     font-weight: 500;
 }
 
@@ -6410,4 +6411,10 @@ tr td.t_concerne_rem {
 }
 .li_tw{
     padding-left: 55px !important;
+}
+.btn_group .btn-dore{
+ background: #d29e00 !important;  
+}
+.btn_group .btn-gris{
+    background: rgba(210, 210, 210, 1) !important;
 }
