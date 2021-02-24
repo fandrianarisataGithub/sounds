@@ -25,6 +25,9 @@ class DonneeMensuelleController extends AbstractController
         $donnee_mensuelle = new DonneeMensuelle();
         $form = $this->createForm(DonneeMensuelleType::class, $donnee_mensuelle);
         $data_session = $session->get('hotel');
+        if ($data_session == null) {
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['current_page'] = "donnee_mensuelle";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         $user = $data_session['user'];

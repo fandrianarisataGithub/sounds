@@ -49,6 +49,9 @@ class TropController extends AbstractController
         // $test = $repoTrop->findAllGroupedByEntreprise();
         // dd($test);
         $data_session = $session->get('hotel');
+        if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['pseudo_hotel'] = "tropical_wood";
         $form_add = $this->createForm(FournisseurFileType::class);
         $form_add->handleRequest($request);
@@ -436,6 +439,9 @@ class TropController extends AbstractController
     {
         $response = new Response();
         $data_session = $session->get('hotel');
+        if ($data_session == null) {
+            return $this->redirectToRoute("app_logout");
+        }
         $user = $data_session['user'];
         $profile_user = $user->getProfile();
         if($request->isXmlHttpRequest()){
@@ -928,6 +934,9 @@ class TropController extends AbstractController
     public function tri_date_confirmation(SessionInterface $session, Request $request, Services $services, EntityManagerInterface $manager, DataTropicalWoodRepository $repoTrop)
     {
         $data_session = $session->get('hotel');
+        if ($data_session == null) {
+            return $this->redirectToRoute("app_logout");
+        }
         $form_add = $this->createForm(FournisseurFileType::class);
         $form_add->handleRequest($request);
         $les_datas = [];
@@ -994,6 +1003,9 @@ class TropController extends AbstractController
     public function liste_client_tw(CacheInterface $cache_demande, SessionInterface $session, Request $request, Services $services, EntityManagerInterface $manager, DataTropicalWoodRepository $repoTrop)
     {
         $data_session = $session->get('hotel');
+        if ($data_session == null) {
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['pseudo_hotel'] = "tropical_wood";
         $datasAsc = $repoTrop->findAllGroupedAsc();
         $Liste = [];
@@ -1079,6 +1091,12 @@ class TropController extends AbstractController
         // rassemblement des données via le même entreprise
         
         $data_session = $session->get('hotel');
+        if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
+        if ($data_session == null) {
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['pseudo_hotel'] = "tropical_wood";
 
         foreach ($all_interval as $Item) {
@@ -1144,6 +1162,9 @@ class TropController extends AbstractController
     {   
         //dd($nom_entreprise);
         $data_session = $session->get('hotel');
+        if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['pseudo_hotel'] = "tropical_wood";
 
         $nom_entreprise = $repoEntre->find($id_entreprise)->getNom();
@@ -2479,6 +2500,33 @@ class TropController extends AbstractController
             return $response;
         }
     }
-    
+
+    /**
+     * @Route("/admin/check_up_impaye", name = "check_up_impaye")
+     */
+    public function check_up_impaye(Request $request) :Response
+    {   
+        // on cherche les clients avec etat_prod = facturé, etape % 100%, reste > 0 groupé par nom de client
+
+        // demarche : il faut qu'on fait 2 requete 
+        // 1 : pour le tri par ordre desc de total_reste avec group by entreprise
+        /*
+            SELECT entreprise,id_pro, etat_production, etape_production, reste, SUM(reste)as total_reste 
+            FROM `data_tropical_wood` 
+            WHERE etat_production ="Facturé" and reste > 0 and etape_production = 100 
+            GROUP BY entreprise 
+            ORDER BY total_reste DESC
+        */
+        // 2 : pour les liste des pf avec entreprise ayant les conditions nécessaires
+        /*
+            SELECT entreprise,id_pro
+            FROM `data_tropical_wood`
+            WHERE etat_production ="Facturé" and reste > 0 and etape_production = 100
+
+         */
+        // 3 on combine les données de ces 2 tableaux 
+
+        return $this->render("page/check_up_impaye.html.twig");
+    }
 
 }

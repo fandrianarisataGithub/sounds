@@ -21,6 +21,9 @@ class SqnController extends AbstractController
         $allAnnee = $this->tab_annee($pseudo_hotel);
         $taille_allAnnee = count($allAnnee);
         $data_session = $session->get('hotel');
+        if ($data_session == null) {
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['current_page'] = "sqn";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         $user = $data_session['user'];

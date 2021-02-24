@@ -24,6 +24,9 @@ class TriController extends AbstractController
         if($request->isXmlHttpRequest()){
             
             $data_session = $session->get('hotel');
+            if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
             $data_session['current_page'] = "crj";
             $data_session['pseudo_hotel'] = $pseudo_hotel;
             $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
@@ -82,6 +85,9 @@ class TriController extends AbstractController
         }
 
         $data_session = $session->get('hotel');
+        if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['current_page'] = "crj";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);

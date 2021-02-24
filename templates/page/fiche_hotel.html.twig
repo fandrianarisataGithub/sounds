@@ -24,7 +24,7 @@
 				</section>
 			</div>
 			<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
-				<div class="tab_content" id="data_days">
+				<div class="tab_content fiche_content" id="data_days">
 
 					<div class="h2_titre">
 						<h2>Royal Beach Hotel & Spa</h2>
@@ -48,27 +48,23 @@
 							<div class="form-group">
 								<span class="icone_fh">
                                     <img src="{{ asset('images/piscine.png') }}" alt="piscine">
-
 								</span>
-								<span class="text_fh">2 Piscines</span>
-
+								<span class="text_fh"><span class="val_data">2</span> Piscines</span>
 							</div>
 						</div>
 						<div class="data_form">
 							<div class="form-group">
 								<span class="icone_fh">
                                     <img src="{{ asset('images/lounge.png') }}" alt=" lounge.png">
-
 								</span>
 								<span class="text_fh" data-span="lb">Lounge Bar</span>
-
 							</div>
 							<div class="form-group">
 								<span class="icone_fh">
                                     <img src="{{ asset('images/kids.png') }}" alt="kids">
 
 								</span>
-								<span class="text_fh" data-span="p">2 Piscines</span>
+								<span class="text_fh" data-span="p"><span class="val_data">2</span> Piscines</span>
 							</div>
 						</div>
 						<div class="data_form">
@@ -100,15 +96,14 @@
 				<div class="modal-body">
 					<form action="">
 						<section>
-
 							<div class="form-group">
 								<label for="">Chambre prestige :</label>
-								<input type="number" class="input_n_modal" id ="mon_cp">
+								<input type="number" class="input_n_modal" id = "mon_cp1">
 							</div>
 							<div class="form-group">
 								<label for="">Suite Familiales :
 								</label>
-								<input type="number" class="input_n_modal " id = "sf">
+								<input type="number" class="input_n_modal" id = "sf">
 							</div>
 						</section>
 						<section>
@@ -197,10 +192,10 @@
 				var s_cd = $("#scd").text();
 				var s_sv = $("#ssv").text();
 
-				var sf = $('#sf').val(s_sf);
-				var cd = $('#cd').val(s_cd);
-				var sv = $('#sv').val(s_sv);
-				var cp = $('#mon_cp').val(s_cp);
+				$('#sf').val(s_sf);
+				$('#cd').val(s_cd);
+				$('#sv').val(s_sv);
+				$('#mon_cp1').val(s_cp);
 
 
             } else if (tar == "#modal_form_fh_2") {
@@ -234,7 +229,7 @@
 
 		$('#modif_suite').on('click', function(ev){
 			ev.preventDefault();
-			var cp = $('#mon_cp').val();
+			var cp = $('#mon_cp1').val();
 			var sf = $('#sf').val();
 			var cd = $('#cd').val();
 			var sv = $('#sv').val();

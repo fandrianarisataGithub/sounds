@@ -4468,7 +4468,9 @@ form .form-group span.span__ar {
     -ms-flex-pack: justify;
     justify-content: space-between;
 }
-
+.h4_titre h4{
+    font-size: 15px;
+}
 .h4_titre button {
     background-color: #fff;
     border: solid 1px rgba(204, 204, 204, 0.5);
@@ -6417,4 +6419,16 @@ tr td.t_concerne_rem {
 }
 .btn_group .btn-gris{
     background: rgba(210, 210, 210, 1) !important;
+}
+.fiche_content{
+    margin-top: 25px !important;
+    border-radius: 25px;
+}
+.val_data{
+    font-weight: 600 !important;
+    color: rgba(0,0,0,0.5) !important;
+}
+.check{
+   text-align: end;
+    margin-top: 25px;
 }

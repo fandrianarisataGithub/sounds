@@ -62,6 +62,9 @@ class PageController extends AbstractController
        
         $tab_user = $repoUser->findAll();
         $data_session = $session->get('hotel');
+        if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         $tropical_wood = null;
         if($data_session['pseudo_hotel'] == "tropical_wood"){
@@ -89,6 +92,9 @@ class PageController extends AbstractController
     public function crj(Request $request, PaginatorInterface $paginator, SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel, DonneeDuJourRepository $repoDoneeDJ)
     {
         $data_session = $session->get('hotel');
+        if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['current_page'] = "crj";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
@@ -221,6 +227,9 @@ class PageController extends AbstractController
     {
         $response = new Response();
         $data_session = $session->get('hotel');
+        if ($data_session == null) {
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['current_page'] = "hebergement";
         
         if($pseudo_hotel == 'tous'){
@@ -675,6 +684,9 @@ class PageController extends AbstractController
     public function restaurant(SessionInterface $session, $pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
+        if ($data_session == null) {
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['current_page'] = "restaurant";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
 
@@ -1094,6 +1106,9 @@ class PageController extends AbstractController
     public function spa(SessionInterface $session, $pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
+        if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['current_page'] = "spa";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
 
@@ -1416,6 +1431,9 @@ class PageController extends AbstractController
     public function fournisseur(FournisseurRepository $repoFour, EntityManagerInterface $manager, Services $services, Request $request, SessionInterface $session, $pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
+        if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['current_page'] = "fournisseur";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         $form_add = $this->createform(FournisseurFileType::class);
@@ -1467,6 +1485,7 @@ class PageController extends AbstractController
                     $date_pmtData = $data[$i][8];
 
                     $numero_facture = $data[$i][1];
+                    
                     $type = "";
                     if ($data[$i][2] != null) {
                         $type = $data[$i][2];
@@ -1475,7 +1494,7 @@ class PageController extends AbstractController
                     $nom_fournisseur = $data[$i][3];
                     $montant = 0;
                     if ($data[$i][4] != null) {
-                        $montant = $this->parse_money($data[$i][4]);
+                        $montant = trim(intval($data[$i][4]));
                     }
 
                     $mode_pmt = "";
@@ -1486,7 +1505,7 @@ class PageController extends AbstractController
                     $montant_paye = 0;
                     $reste = $montant;
                     if ($data[$i][7] != null) {
-                        $montant_paye = $this->parse_money($data[$i][7]);
+                        $montant_paye =trim(intval($data[$i][7]));
                     }
 
                     $remarque = "";
@@ -1514,19 +1533,65 @@ class PageController extends AbstractController
                         if ($createdAtData != "") {
                             $createdAt_s = $services->parseMyDate($createdAtData);
                             $createdAt = date_create($createdAt_s);
-                            $fournisseur->setCreatedAt($createdAt);
+                            if($createdAt){
+                                $fournisseur->setCreatedAt($createdAt);
+                            }
+                            else{
+                                $error_fichier = $i;
+                                return $this->render('page/fournisseur.html.twig', [
+                                    "test" => $text,
+                                    "id"            => "li__fournisseur",
+                                    "hotel"         => $data_session['pseudo_hotel'],
+                                    "current_page"  => $data_session['current_page'],
+                                    "form_add"      => $form_add->createView(),
+                                    'date1' => $request->request->get('date1'),
+                                    'date2' => $request->request->get('date2'),
+                                    "tropical_wood"     => false,
+                                    "message" => "le format de date à la ligne " . ($error_fichier + 1) . " du fichier n'est pas valide <br> Seuls les formats comme 01/05/20 et 01/05/2020 sont acceptés",
+                                ]);
+                            }
                         }
 
                         if ($echeanceData != "") {
                             $echeance_s = $services->parseMyDate($echeanceData);
                             $echeance = date_create($echeance_s);
-                            $fournisseur->setEcheance($echeance);
+                            if($echeance){
+                                $fournisseur->setEcheance($echeance);
+                            } else {
+                                $error_fichier = $i;
+                                return $this->render('page/fournisseur.html.twig', [
+                                    "test" => $text,
+                                    "id"            => "li__fournisseur",
+                                    "hotel"         => $data_session['pseudo_hotel'],
+                                    "current_page"  => $data_session['current_page'],
+                                    "form_add"      => $form_add->createView(),
+                                    'date1' => $request->request->get('date1'),
+                                    'date2' => $request->request->get('date2'),
+                                    "tropical_wood"     => false,
+                                    "message" => "le format de date à la ligne " . ($error_fichier + 1) . " du fichier n'est pas valide <br> Seuls les formats comme 01/05/20 et 01/05/2020 sont acceptés",
+                                ]);
+                            }
                         }
 
                         if ($date_pmtData != "") {
                             $date_pmt_s = $services->parseMyDate($date_pmtData);
                             $date_pmt = date_create($date_pmt_s);
-                            $fournisseur->setDatePmt($date_pmt);
+                            if($date_pmt){
+                                $fournisseur->setDatePmt($date_pmt);
+                            } else {
+                                $error_fichier = $i;
+                                return $this->render('page/fournisseur.html.twig', [
+                                    "test" => $text,
+                                    "id"            => "li__fournisseur",
+                                    "hotel"         => $data_session['pseudo_hotel'],
+                                    "current_page"  => $data_session['current_page'],
+                                    "form_add"      => $form_add->createView(),
+                                    'date1' => $request->request->get('date1'),
+                                    'date2' => $request->request->get('date2'),
+                                    "tropical_wood"     => false,
+                                    "message" => "le format de date à la ligne " . ($error_fichier + 1) . " du fichier n'est pas valide <br> Seuls les formats comme 01/05/20 et 01/05/2020 sont acceptés",
+                                ]);
+                            }
                         }
 
                         $fours = $repoFour->findAll();
@@ -1631,8 +1696,13 @@ class PageController extends AbstractController
     public function recap_fournisseur(FournisseurRepository $repoFour, EntityManagerInterface $manager, Services $services, Request $request, SessionInterface $session, $pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
+        if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
+        //dd($data_session);
         $data_session['current_page'] = "client_upload";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
+        
         $fours = $repoFour->findAll();
         $tab_fours_recap_p_av = [];
         $tab_fours_recap_p_ret = [];
@@ -1640,8 +1710,8 @@ class PageController extends AbstractController
         $today = date_create($today->format("d-m-Y"));
         $tab_echeance = [];
         $tab_par_echeance = [];
-       foreach($fours as $four){
-           foreach($four->getHotel() as $item){
+        foreach($fours as $four){
+            foreach($four->getHotel() as $item){
                 if($item->getPseudo() == $pseudo_hotel){
                     //array_push($tab_fours_recap, $four);
                     $son_echeance = $four->getEcheance();
@@ -1704,6 +1774,9 @@ class PageController extends AbstractController
     public function client_upload(ClientUploadRepository $repoCup, EntityManagerInterface $manager, Services $services, Request $request, SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
+        if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['current_page'] = "client_upload";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         $form_add = $this->createform(FournisseurFileType::class);
@@ -1916,6 +1989,9 @@ class PageController extends AbstractController
     public function fiche_hotel(SessionInterface $session, $pseudo_hotel, FicheHotelRepository $repoFiche, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
+        if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['current_page'] = "fiche_hotel";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
@@ -1967,6 +2043,9 @@ class PageController extends AbstractController
     {
             
             $data_session = $session->get('hotel');
+            if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
             $data_session['current_page'] = "donnee_jour";
             $data_session['pseudo_hotel'] = $pseudo_hotel;
             $today = new \DateTime();
@@ -2016,6 +2095,9 @@ class PageController extends AbstractController
     public function h_hebergement(Request $request, SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
+        if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['current_page'] = "h_hebergement";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         $value_date1 = "";
@@ -2050,6 +2132,9 @@ class PageController extends AbstractController
     public function h_restaurant(Request $request, SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
+        if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['current_page'] = "h_restaurant";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         // HotelRepository $repoHotel
@@ -2084,6 +2169,9 @@ class PageController extends AbstractController
     public function h_spa(Request $request, SessionInterface $session, $pseudo_hotel, HotelRepository $repoHotel)
     {
         $data_session = $session->get('hotel');
+        if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['current_page'] = "h_spa";
         $data_session['pseudo_hotel'] = $pseudo_hotel;
         // HotelRepository $repoHotel
@@ -2122,6 +2210,9 @@ class PageController extends AbstractController
     public function royal_beach($current_page, SessionInterface $session)
     {
         $data_session = $session->get('hotel');
+        if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['pseudo_hotel'] = "royal_beach";
         $data_session['current_page'] = $current_page;
 
@@ -2136,6 +2227,9 @@ class PageController extends AbstractController
     public function calypso($current_page, SessionInterface $session)
     {
         $data_session = $session->get('hotel');
+        if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['pseudo_hotel'] = "calypso";
         $data_session['current_page'] = $current_page;
 
@@ -2150,6 +2244,9 @@ class PageController extends AbstractController
     public function baobab_tree($current_page, SessionInterface $session)
     {
         $data_session = $session->get('hotel');
+        if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['pseudo_hotel'] = "baobab_tree";
         $data_session['current_page'] = $current_page;
 
@@ -2164,6 +2261,9 @@ class PageController extends AbstractController
     public function vanila_hotel($current_page, SessionInterface $session)
     {
         $data_session = $session->get('hotel');
+        if($data_session == null){
+            return $this->redirectToRoute("app_logout");
+        }
         $data_session['pseudo_hotel'] = "vanila_hotel";
         $data_session['current_page'] = $current_page;
 
