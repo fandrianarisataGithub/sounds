@@ -1643,6 +1643,7 @@ class TropController extends AbstractController
         if($request->isXmlHttpRequest()){
 
             $id_client = $request->get('id_client');
+            $nom_client = $request->get('client');
             $id_contact = $request->get('id_contact');
             $nom_en_contact = $request->get('nom_en_contact');
             // $type = $request->get('type');
@@ -1655,7 +1656,13 @@ class TropController extends AbstractController
                 // $ce->setType($type);
                 $ce->setEmail($email);
                 $ce->setTelephone($telephone);
-                $entrepriseO = $repoEntre->find($id_client);
+                $entrepriseO = null;
+                if($id_client != null){
+                    $entrepriseO = $repoEntre->find($id_client);
+                }
+                if ($nom_client != null) {
+                    $entrepriseO = $repoEntre->findOneByNom($nom_client);
+                }
                 $ce->setEntreprise($entrepriseO);
                 $manager->persist($ce);
                 $manager->flush();
@@ -1957,8 +1964,15 @@ class TropController extends AbstractController
         
         if($request->isXmlHttpRequest()){
 
-            $id_client = $request->get('id_client');           
-            $entreprise = $repoEntre->find($id_client);
+            $id_client = $request->get('id_client'); 
+            $nom_client =  $request->get('client'); 
+            $entreprise = null;         
+            if($id_client != null){
+                $entreprise = $repoEntre->find($id_client);
+            }
+            if ($nom_client != null) {
+                $entreprise = $repoEntre->findOneByNom($nom_client);
+            }
             $html = "";
            
             $contacts = $entreprise->getContactEntrepriseTWs();
@@ -2504,16 +2518,18 @@ class TropController extends AbstractController
     /**
      * @Route("/admin/check_up_impaye", name = "check_up_impaye")
      */
-    public function check_up_impaye(Request $request) :Response
-    {   
+    public function check_up_impaye(Request $request, 
+                                    SessionInterface $session,
+                                    DataTropicalWoodRepository $repoTrop) :Response
+    {
         // on cherche les clients avec etat_prod = facturé, etape % 100%, reste > 0 groupé par nom de client
 
         // demarche : il faut qu'on fait 2 requete 
         // 1 : pour le tri par ordre desc de total_reste avec group by entreprise
         /*
-            SELECT entreprise,id_pro, etat_production, etape_production, reste, SUM(reste)as total_reste 
+            SELECT entreprise,id_pro, SUM(reste)as total_reste 
             FROM `data_tropical_wood` 
-            WHERE etat_production ="Facturé" and reste > 0 and etape_production = 100 
+            WHERE etat_production ="Facturé" and reste > 0 and etape_production = 100
             GROUP BY entreprise 
             ORDER BY total_reste DESC
         */
@@ -2526,7 +2542,19 @@ class TropController extends AbstractController
          */
         // 3 on combine les données de ces 2 tableaux 
 
-        return $this->render("page/check_up_impaye.html.twig");
+        $res = $repoTrop->listeResultOfCheckupByEntreprise();
+        $date = new \Datetime();
+        $today = $date->format('Y-m-d');
+        $data_session = $session->get('hotel');
+        return $this->render("page/check_up_impaye.html.twig",[
+            "hotel"             => $data_session['pseudo_hotel'],
+            "current_page"      => $data_session['current_page'],
+            'tri'               => false,
+            'tropical_wood'     => true,
+            "today"             => $today,
+            "id_page"           => "li_entreprise_contact",
+            "resultat"          => $res
+        ]);
     }
 
 }

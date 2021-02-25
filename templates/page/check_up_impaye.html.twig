@@ -1,38 +1,398 @@
 {% extends "base.html.twig" %}
 {% block title %}
-	Tropical wood
+	Afficher entreprise / contact
 {% endblock %}
 
 {% block stylesheets %}
 	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
 {% endblock %}
-
 {% block body %}
-
 	<section
 		id="contents" class="content_tropical container-fluid">
 		<!-- entete content -->
 		{% include "nav2.html.twig" %}
-		<!-- / entete content -->
-		<!-- contenue  -->
-			<div id="hrs_content"> <div>
-				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
-					<div class="entete_tresor">
-						<div class="titre_tresor">
-							<h4>
-								<strong>Trésorerie</strong>
-							</h4>
+		<div id="hrs_content" class="hrs_content">
+			<div class="slick_direction_slide">
+				<div class="dir_prev">
+					<button class="btn btn-default" id="slick_left">
+						<span class="fa fa-long-arrow-left"></span>
+					</button>
+				</div>
+				<div class="dir_next">
+					<button class="btn btn-default" id="slick_right">
+						<span class="fa fa-long-arrow-right"></span>
+					</button>
+				</div>
+			</div>
+			<div class="your-class">
+				{% for item in resultat %}
+					<div class="item_slide">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+							<section class="section_part" id="section_part_top">
+								<div class="sous_titre sous_titre_tw sous_titre_show_client">
+									<h3>{{ item['entreprise'] }}</h3>
+								</div>
+								<div class="liste_chiffre_daf">
+									<div class="unite_chiffre chiffre_daf">
+										<div class="titre_ca">
+											<h4>Chiffre d'affaires</h4>
+										</div>
+										<div
+											class="montant_value">
+											{# chiffre d'aff item #}
+											<span class="montant">
+												{{ item["total_montant_total"] }}
+											</span>
+											<span>Ar</span>
+										</div>
+									</div>
+									<div class="unite_chiffre chiffre_daf_enc">
+										<div class="titre_ca">
+											<h4>Chiffre d'affaires encaissé</h4>
+										</div>
+										<div
+											class="montant_value">
+											{# ca enc #}
+											<span class="montant">
+												{{ item["total_total_reglement"] }}
+											</span>
+											<span>Ar</span>
+										</div>
+									</div>
+									<div class="unite_chiffre chiffre_daf_a_enc">
+										<div class="titre_ca">
+											<h4>Chiffre d'affaires à encaissé</h4>
+										</div>
+										<div
+											class="montant_value">
+											{# ca a enc #}
+											<span class="montant">{{ item["total_reste"] }}</span>
+											<span>Ar</span>
+										</div>
+									</div>
+								</div>
+							</section>
 						</div>
-						<div class="btn_form_tresor">
-							<a href="#" class="btn btn-default btn_gris">
-								<span class="fa fa-plus">Formulaires</span>
-							</a>
+						<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+							<h3 class="small_tittle">Contact</h3>
+							<div class="add_contact">
+								<a href="#" class="btn btn-default" data-target="#modal_add_contact" data-client="{{ item['entreprise'] }}">
+									<span class="fa fa-plus"></span>
+								</a>
+							</div>
+							<div class="tab_small_content">
+								<table class="table small_tab">
+									<thead>
+										<tr>
+											<th>
+												<span>Contact</span>
+											</th>
+											<th>
+												<span>Email</span>
+											</th>
+											<th>
+												<span>N° de tél</span>
+											</th>
+											<th>
+												<span>Actions</span>
+											</th>
+										</tr>
+									</thead>
+									<tbody id="liste_tab_contact" data-client="{{ item['entreprise'] }}"></tbody>
+								</table>
+
+							</div>
+						</div>
+
+						{# debut tab #}
+						<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+							<div class="tw_sous_titre">
+								<h3>Transaction en cours</h3>
+							</div>
+							<div class="tableau_tropical tableau_scroll">
+								<div class="table_content">
+									<div class="table_header">
+										<div class="t_header_row t_header_trans">
+											<div class="tw_client_trans">
+												<span>Références</span>
+											</div>
+											<div class="tw_details_trans">
+												<span>Détails</span>
+											</div>
+											<div class="tw_type_trans_trans">
+												<span>Type de transaction</span>
+											</div>
+											<div class="tw_etat_prod_trans">
+												<span>Etat de production</span>
+											</div>
+											<div
+												class="tw_etape_prod_trans">
+												{# % production #}
+												<span>% production</span>
+											</div>
+											<div class="tw_paiement_trans">
+												<span>Paiement</span>
+												<span class="span_tri">
+													<a href="#" class="a_tri" data-type="total_reglement" data-data="ASC">
+														<small class="fa fa-sort-asc"></small>
+													</a>
+													<a href="#" class="a_tri" data-type="total_reglement" data-data="DESC">
+														<small class="fa fa-sort-desc"></small>
+													</a>
+												</span>
+											</div>
+											<div class="tw_reste_trans">
+												<span>Reste à payé</span>
+												<span class="span_tri">
+													<a href="#" class="a_tri" data-type="reste" data-data="ASC">
+														<small class="fa fa-sort-asc"></small>
+													</a>
+													<a href="#" class="a_tri" data-type="reste" data-data="DESC">
+														<small class="fa fa-sort-desc"></small>
+													</a>
+												</span>
+											</div>
+											<div class="tw_montant_total_trans">
+												<span>Montant total</span>
+												<span class="span_tri">
+													<a href="#" class="a_tri" data-type="montant_total" data-data="ASC">
+														<small class="fa fa-sort-asc"></small>
+													</a>
+													<a href="#" class="a_tri" data-type="montant_total" data-data="DESC">
+														<small class="fa fa-sort-desc"></small>
+													</a>
+												</span>
+											</div>
+											<div class="tw_date_conf_trans">
+												<span>Date de confirmation</span>
+											</div>
+											<div class="tw_date_facture_trans">
+												<span>Date de facture</span>
+											</div>
+										</div>
+									</div>
+									<div class="table_body liste_pf">
+										<div class="dr_tab_trans">
+											<div {% if item["liste_client"]|length > 11 %} class="block_all_tr block_tr_scroll" {% else %} class="block_all_tr block_tr_scroll block_tr_scroll_other" {% endif %}>
+												{% for item_client in item["liste_client"] %}
+													<div class="t_body_row sous_tab_body">
+														<div class="tw_client_trans">
+															<span>{{ item_client.getIdPro() }}</span>
+														</div>
+														<div class="tw_details_trans">
+															<span>{{ item_client.getDetail() }}</span>
+														</div>
+														<div class="tw_type_trans_trans">
+															<span class="value">{{ item_client.getTypeTransaction() }}</span>
+														</div>
+														<div class="tw_etat_prod_trans">
+															<span class="value">{{ item_client.getEtatProduction() }}</span>
+														</div>
+														<div class="tw_etape_prod_trans">
+															<span class="value">{{ item_client.getEtapeProduction() }}%</span>
+														</div>
+														<div class="tw_paiement_trans">
+															<span class="montant value">{{ item_client.getTotalReglement() }}</span>
+														</div>
+														<div class="tw_reste_trans">
+															<span class="montant">
+																{{ item_client.getReste() }}
+															</span>
+														</div>
+														<div class="tw_montant_total_trans">
+															<span class="montant">{{ item_client.getMontantTotal() }}</span>
+														</div>
+														<div class="tw_date_conf_trans">
+															<span>
+																{{ item_client.getDateConfirmation() | date('d-m-Y') }}
+															</span>
+														</div>
+														<div class="tw_date_conf_trans">
+															<span>
+																{{ item_client.getDateFacture() | date('d-m-Y') }}
+															</span>
+														</div>
+													</div>
+												{% endfor %}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						{# fin tab #}
+						<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+							<div class="titre_remarque">
+								<h4>Remarque</h4>
+							</div>
+							<div class="form_remarque1">
+								<form action="" class="form-inline" id="form_remarque">
+									<div
+										class="form-group">
+										{# par defaut date du jour #}
+										<label for="">Date:
+										</label>
+										<input type="date" id="date_remarque" class="form-control" value="{{ today }}">
+									</div>
+									<div class="form-group">
+										<label for="">Concerne:
+										</label>
+										<select name="" class="form-control id_pro">
+											{% for item_client in item['liste_client'] %}
+												<option value="{{ item_client.getIdPro() }}">{{ item_client.getIdPro() }}</option>
+											{% endfor %} 
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="">Observation:
+										</label>
+										<input type="text" id="observation" class="form-control observation">
+									</div>
+									<div class="form-group">
+										<input type="submit" class="btn btn-xs btn-default" value="Valider" id="valider_remarque" data-client="{{ item['entreprise'] }}">
+									</div>
+								</form>
+								<div class="liste_pf_selected"></div>
+							</div>
+						</div>
+						<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+							<div class="tab_small_content">
+								<table class="table small_tab">
+									<thead>
+										<tr class="trh_remarque_a_ter">
+											<th class="t_date_rem">
+												<span>Date</span>
+											</th>
+											<th class="t_concerne_rem">
+												<span>Concerne</span>
+											</th>
+											<th class="thh_remarque_a_ter t_obs_rem">
+												<span>Observation</span>
+											</th>
+											<th class="t_action_rem">
+												<span>Terminer</span>
+											</th>
+										</tr>
+									</thead>
+									<tbody id="tbody__liste_rem_non" data-client="{{ item['entreprise'] }}"></tbody>
+								</table>
+							</div>
 						</div>
 					</div>
+				{% endfor %}
+			</div>
+
+		</div>
+	</section>
+
+	{# modal nouveau contact #}
+	<div class="modal fade" id="modal_add_contact" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Ajouter un nouveau contact</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body" id="modal_form_add_contact">
+					<h4 class="text-center h4_text_client_modal" >sdkdkjbkjkj</h4>
+					<form action="">
+						<div class="form-group">
+							<label for="">Contact</label>
+							<input type="text" placeholder="Contact" id="contact" class="form-control">
+						</div>
+						<div class="form-group">
+							<label for="">Email</label>
+							<input type="text" id="email" placeholder="Adresse@mail...." class="form-control">
+						</div>
+						<div class="form-group">
+							<label for="">N° Téléphone</label>
+							<input type="text" id="telephone" placeholder="03x xxx" class="form-control">
+						</div>
+						<div class="form-group">
+							<button class="btn btn-default" type="submit" id="button_add_contact" data-id="">
+								<span>Enregistrer</span>
+							</button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>
-		<!-- / contenue  -->
-	</section>
-{% endblock %}
+	</div>
+	{# fin modal contact #}
 
+{% endblock %}
+{% block javascripts %}
+	<script>
+		$(document).ready(function () {
+			$('.your-class').slick({
+				infinite: true,
+				slidesToShow: 1,
+				slidesToScroll: 1,
+				nextArrow: '.dir_next button',
+				prevArrow: '.dir_prev button'
+			});
+			$(".add_contact a").on("click", function(env){
+				env.preventDefault();
+				$("#modal_add_contact").modal("hide");
+				var client = $(this).attr("data-client");
+				$(".h4_text_client_modal").text(client);
+				$("#modal_add_contact").modal("show");
+			})
+
+			// lister contact
+
+			function liter_contact_entreprise(){
+                var client = $("#liste_tab_contact").attr("data-client");
+                    var data = {
+                    "client"    : client
+                }
+                $.ajax({
+                    url         : "/tropical_wood/entreprise/listercontact",
+                    type        : "POST",
+                    data        : data,
+                    success     : function(response){
+                        $("#liste_tab_contact").html(response);
+                    },
+                    error       : function () {
+                        alert('Erreur dans lister contact');
+                    }
+                })
+            }
+            liter_contact_entreprise();
+
+			// add_contact
+			$(document).on("click", "#button_add_contact", function(ev){
+				ev.preventDefault();
+				var contact = $("#contact").val();
+				// var type_contact = $("#type_contact").val();
+				var email = $("#email").val(); 
+				var telephone = $("#telephone").val();
+				var id_contact = $(this).attr("data-id");
+				var client = $(".h4_text_client_modal").text();
+				var data = {
+					"nom_en_contact"        : contact,               
+					// "type"                  : type_contact,
+					"email"                 : email,
+					"telephone"             : telephone,
+					"client"            : client,
+					"id_contact"            : id_contact,
+				}
+
+				$.ajax({
+					url         :  "/tropical_wood/add_contact",
+					type        : "POST",
+					data        : data,
+					success     : function(response){
+						liter_contact_entreprise();
+						$("#modal_add_contact").modal('hide');
+					},
+					error       : function(){
+						alert("erreur add contact");
+					}
+				})
+			})
+		});
+	</script>
+{% endblock %}

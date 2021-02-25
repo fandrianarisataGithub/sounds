@@ -5237,6 +5237,9 @@ div.block_all_tr .t_body_row {
     overflow-x: hidden;
 }
 
+.block_tr_scroll_other{
+     height: auto !important;
+}
 
 /* fin scroll*/
 
@@ -5717,10 +5720,12 @@ table tbody tr td span {
 .list_action {
     position: relative;
     bottom: 5px;
+    display: block;
+    text-align: center;
 }
 
 .list_action a {
-    display: inline-block;
+    display: inline-block !important;
     width: 25px;
     text-align: center;
     margin-top: 5px;
@@ -6431,4 +6436,19 @@ tr td.t_concerne_rem {
 .check{
    text-align: end;
     margin-top: 25px;
+}
+#slick_left{
+    position: absolute;
+    left: 25px;
+    top: 15px;
+    z-index: 2;
+}
+#slick_right{
+    position: absolute;
+    right: 25px;
+    top: 15px;
+    z-index: 2;
+}
+.h4_text_client_modal{
+    color: #d29e00;
 }

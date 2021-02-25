@@ -10343,7 +10343,72 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    /**
+     * @return DataTropicalWood[] Returns an array of DataTropicalWood objects
+     */
+    public function listeAllResultCheckup()
+    {
+        return $this->createQueryBuilder('d')
+            ->addSelect("d.idPro, d.entreprise")
+            ->where("d.etat_production ='Facturé' and d.reste > 0 and d.etape_production = 100")
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @return DataTropicalWood[] 
+     */
+   /* public function findById_pro($value)
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.idPro = :val')
+            ->setParameter('val', $value)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+        ;
+    }*/
     
+    /**
+     * @return DataTropicalWood[] Returns an array of DataTropicalWood objects
+     */
+    public function listeResultOfCheckupByEntreprise()
+    {
+        $result_gb = $this->createQueryBuilder('d')
+            ->addSelect("d.entreprise, d.idPro, SUM(d.reste) AS total_reste, SUM(d.montant_total) AS total_montant_total, SUM(d.total_reglement) AS total_total_reglement")
+            ->where("d.etat_production ='Facturé' and d.reste > 0 and d.etape_production = 100")
+            ->groupBy("d.entreprise")
+            ->orderBy("total_reste", "DESC")
+            ->getQuery()
+            ->getResult()
+        ;
+        $liste_by_id_pro = $this->listeAllResultCheckup();
+        $resultat = [];
+        $i = 0;
+        foreach($result_gb as $rgb){
+            $tab = [
+                "index"         => $i++,
+                "entreprise"    => $rgb["entreprise"],
+                "total_reste"   => $rgb["total_reste"],
+                "total_montant_total"   => $rgb["total_montant_total"],
+                "total_total_reglement"   => $rgb["total_total_reglement"],
+                "liste_client"      => []
+            ];
+            foreach($liste_by_id_pro as $residp){
+                
+                if($rgb["entreprise"] == $residp["entreprise"]){
+                    // le idPro du courant $reidp
+                    $id_pro =  $residp["idPro"];
+                    $client = $this->findOneByIdPro($id_pro);
+                    array_push($tab["liste_client"], $client);
+                }
+            }
+            array_push($resultat, $tab);
+        }
+        return $resultat;
+    }
 
     /*
     public function findOneBySomeField($value): ?DataTropicalWood
