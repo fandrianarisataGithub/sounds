@@ -129,7 +129,7 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
                     $hotel = $session->get('hotel', []);
 
                     // initialisation de la variable session hotel
-
+                    $hotel['date_ddj_demande'] = "vide";
                     $hotel['pseudo_hotel'] = $hotel_cible;
                     $hotel['current_page'] = "crj";
                     $hotel['user'] = $user;

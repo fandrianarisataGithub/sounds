@@ -11,6 +11,7 @@ use App\Repository\DonneeDuJourRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DonneeDuJourController extends AbstractController 
@@ -523,25 +524,41 @@ class DonneeDuJourController extends AbstractController
     /**
      * @Route("/profile/check_ddj/{pseudo_hotel}", name ="check_data_ddj")
      */
-    public function check_data_ddj(Request $request, $pseudo_hotel, DonneeDuJourRepository $repoDdj, HotelRepository $repoHotel)
+    public function check_data_ddj(Request $request, $pseudo_hotel, DonneeDuJourRepository $repoDdj, HotelRepository $repoHotel, SessionInterface $session)
     {
         $response = new Response();
         if($request->isXmlHttpRequest()){
 
             $hotel = $repoHotel->findByPseudo($pseudo_hotel);
             $date = date_create($request->get('date'));
+            
+            $today = new \DateTime();
+            $today_s = $today->format("Y-m-d");
+            $today = date_create($today_s);
+            
+            // si il y a d'enreg pour cette date 
             $datas = $repoDdj->findBy([
                 "hotel"         => $hotel,
                 "createdAt"     => $date
             ]);
-            $data = "";
+            $data = $request->get('date');
             if($datas){
-               $data = $datas[0]->getId();
+                $data = $datas[0]->getId();
+                $data = json_encode($data);
+                $response->headers->set('Contentt-type', 'application/json');
+                $response->setContent($data);
+                return $response;
             }
-            $data = json_encode($data);
-            $response->headers->set('Contentt-type', 'application/json');
-            $response->setContent($data);
-            return $response;
+            else if (!$datas) {
+                // atao anaty session le date 
+                $data = json_encode($data);
+                $response->headers->set('Contentt-type', 'application/json');
+                $response->setContent($data);
+                return $response;
+            }
+
+           
+            
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Services\Services;
 use App\Repository\HotelRepository;
 use App\Repository\ClientRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -81,39 +82,16 @@ class ClientController extends AbstractController
     /**
      * @Route("/profile/select_current_client", name="listing_current_client")
      */
-    public function listing_current_client(Request $request, ClientRepository $repoClient, HotelRepository $repoHotel)
+    public function listing_current_client(Services $services, Request $request, ClientRepository $repoClient, HotelRepository $repoHotel)
     {
         $response = new Response();
         if ($request->isXmlHttpRequest()) {
-            
-            $date = $request->get('date');
-            $last = date_create($date . "00:01");
+
+            /*$date = $request->get('date');
+            $last = date_create($date . "00:00");
             $next = date_create($date . "23:59");
             $pseudo_hotel = $request->get('pseudo_hotel');
             $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
-            // $clients = $repoClient->findAll();
-            // $clients_current = [];
-            // $today = date_create($date);
-
-            // $t = [];
-            // $x = 0;
-            // foreach ($clients as $c) {
-            //     $son_hotel = $c->getHotel();
-            //     $son_pseudo_hotel = $son_hotel->getPseudo();
-            //     if ($son_pseudo_hotel == $pseudo_hotel) {
-            //         $sa_date_arrivee = $c->getDateArrivee();
-            //         $sa_date_arrivee = $sa_date_arrivee->format("d-m-Y");
-            //         $sa_date_arrivee = date_create($sa_date_arrivee);
-            //         $sa_date_depart = $c->getDateDepart();
-            //         $sa_date_depart = $sa_date_depart->format("d-m-Y");
-            //         $sa_date_depart = date_create($sa_date_depart);
-            //         if (($sa_date_arrivee <= $today) && ($today <= $sa_date_depart)) {
-            //             array_push($clients_current, $c);
-            //         } else {
-            //             $x = $x;
-            //         }
-            //     }
-            // }
            
             $t = [];
             $clients_current_h = $repoClient->findBy([
@@ -129,54 +107,49 @@ class ClientController extends AbstractController
             foreach ($clients_current as $item) {
 
                 array_push($t, ['<div>' . $item->getNom() . '</div><div>' . $item->getPrenom() . '</div><div><span>Ajouté le : </span>' . $item->getCreatedAt()->format("d-m-Y") . '</div>', $item->getDateArrivee()->format('d-m-Y'), $item->getDateDepart()->format('d-m-Y'), $item->getDureeSejour(), '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_diso" data-id = "' . $item->getId() . '" class="btn btn_client_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a><a href="#" data-toggle="modal" data-target="#modal_form_confirme" data-id = "' . $item->getId() . '" class="btn btn_client_suppr btn-danger btn-xs"><span class="fa fa-trash-o"></span></a></div>']);
+            }*/
+            $pseudo_hotel = $request->get('pseudo_hotel');
+            $hotel = $repoHotel->findOneByPseudo(['pseudo' => $pseudo_hotel]);
+            $date = $request->get('date');
+            $today = date_create($date);
+            $tab = $repoClient->findBy(['hotel' => $hotel]);
+            $tab_aff = [];
+            foreach ($tab as $client) {
+                // on liste tous les jour entre sa dete arrivee et date depart
+                $sa_da = $client->getDateArrivee();
+                $sa_dd = $client->getDateDepart();
+                if ($today <= $sa_dd && $today >= $sa_da
+                ) {
+                    array_push($tab_aff, $client);
+                }
             }
+            $t = [];
+            foreach ($tab_aff as $item) {
+
+                array_push($t, ['<div>' . $item->getNom() . '</div><div>' . $item->getPrenom() . '</div><div><span>Ajouté le : </span>' . $item->getCreatedAt()->format("d-m-Y") . '</div>', $item->getDateArrivee()->format('d-m-Y'), $item->getDateDepart()->format('d-m-Y'), $item->getDureeSejour(), '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_diso" data-id = "' . $item->getId() . '" class="btn btn_client_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a><a href="#" data-toggle="modal" data-target="#modal_form_confirme" data-id = "' . $item->getId() . '" class="btn btn_client_suppr btn-danger btn-xs"><span class="fa fa-trash-o"></span></a></div>']);
+            }
+
             $data = json_encode($t);
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent($data);
             return $response;
         }
-        $date = "2021-02-17";
-        // $next = date('Y-m-d', strtotime('+1 day', strtotime($date)));
-        // $last = date('Y-m-d', strtotime('-1 day', strtotime($date)));
-        $last = date_create($date . "00:01");
-        $next = date_create($date . "23:59");
-        dd($next);
-        //$pseudo_hotel = $request->request->get('pseudo_hotel');
-        $pseudo_hotel = "royal_beach";
-        $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
-        $id_hotel = $hotel->getId();
-        $clients = $repoClient->findAll();
-        $clients_today = [];
-        $today = new \DateTime();
         
-        $today_s = $today->format('d-m-Y');
-        $today = date_create($today_s);
-        //dd($today);
-        $t = [];
-        $x = 0;
-        foreach ($clients as $c) {
-            $son_hotel = $c->getHotel();
-            $son_pseudo_hotel = $son_hotel->getPseudo();
-            if($son_pseudo_hotel == $pseudo_hotel){
-                $sa_date_arrivee = $c->getDateArrivee();
-                $sa_date_arrivee = $sa_date_arrivee->format("d-m-Y");
-                $sa_date_arrivee = date_create($sa_date_arrivee);
-                $sa_date_depart = $c->getDateDepart();
-                $sa_date_depart = $sa_date_depart->format("d-m-Y");
-                $sa_date_depart = date_create($sa_date_depart);
-                if (($sa_date_arrivee <= $today) && ($today <= $sa_date_depart)) {
-                    array_push($clients_today, $c);
-                } else {
-                    $x = $x;
-                }
+        $pseudo_hotel = "royal_beach";
+        $hotel = $repoHotel->findOneByPseudo(['pseudo' => $pseudo_hotel]);
+        $today = "2021-02-10";
+        $today = date_create($today);
+        $tab = $repoClient->findBy(['hotel' => $hotel]);
+        $tab_aff = [];
+        foreach ($tab as $client) {
+            // on liste tous les jour entre sa dete arrivee et date depart
+            $sa_da = $client->getDateArrivee();
+            $sa_dd = $client->getDateDepart();
+            if($today <= $sa_dd && $today >= $sa_da){
+                array_push($tab_aff, $client);
             }
-            
         }
-        foreach ($clients_today as $item) {
-
-            array_push($t, ['<div>' . $item->getNom() . '</div><div>' . $item->getPrenom() . '</div><div>' . $item->getCreatedAt()->format("d-m-Y") . '</div>', $item->getDateArrivee()->format('d-m-Y'), $item->getDateDepart()->format('d-m-Y'), $item->getDureeSejour(), '<div class="text-start"><a href="#" data-id = "' . $item->getId() . '" class="btn btn_client_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a><a href="#" data-id = "' . $item->getId() . '" class="btn btn_client_suppr btn-danger btn-xs"><span class="fa fa-trash-o"></span></a></div>']);
-        }
-        dd($clients_today);
+        dd($tab_aff);
     }
 
     /**

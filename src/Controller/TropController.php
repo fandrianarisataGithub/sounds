@@ -1757,6 +1757,7 @@ class TropController extends AbstractController
             
             $date_remarque = $request->get('date_remarque');
             $id_pro = $request->get('id_pro');
+            $nom_client = $request->get('client');
             $observation = $request->get('observation');
             $id_client = $request->get('id_client'); 
             $remarque = new RemarqueEntrepriseTW();
@@ -1765,7 +1766,13 @@ class TropController extends AbstractController
             $date_remarque = date_create($date_remarque);
             $remarque->setDateRemarque($date_remarque);
             $remarque->setObservation($observation);
-            $entreprise = $repoEntre->find($id_client);
+            $entreprise = null;
+            if($id_client != null){
+                $entreprise = $repoEntre->find($id_client);
+            }
+            if($nom_client != null){
+                $entreprise = $repoEntre->findOneByNom($nom_client);
+            }
             $remarque->setEntreprise($entreprise);
             $remarque->setEtatResultat("0");
             $manager->persist($remarque);
@@ -2543,6 +2550,9 @@ class TropController extends AbstractController
         // 3 on combine les données de ces 2 tableaux 
 
         $res = $repoTrop->listeResultOfCheckupByEntreprise();
+        dd($res);
+        //$test = $repoTrop->find_all_contact();
+        //dd($res);
         $date = new \Datetime();
         $today = $date->format('Y-m-d');
         $data_session = $session->get('hotel');

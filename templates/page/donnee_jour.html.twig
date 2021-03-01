@@ -93,7 +93,7 @@
 
                             <div class="tableau" id="tab_client_present">
                                 <div class="sous_titre">
-                                    <h4 class="label__titre">Client présent</h4>
+                                    <h4 class="label__titre">Client présent le : <span id="data_text_date"></span></h4>
                                 </div>
                                 {# <section class=" filtre">
                                     <div class="sous_titre_filtre">
@@ -715,9 +715,12 @@ new Cleave('.input_pourcent', {blocks: [4]});
             })
             
             // modif data 
-
+            var date_text = $('#donnee_du_jour_createdAt').val();
+            var date_aff = toDateText(date_text);
+             $("#data_text_date").text(date_aff);
             $('#donnee_du_jour_createdAt').on("change", function(){
                 //alert('dhb')
+                table.ajax.reload(null, false);
                 var date = $(this).val();
                 $.ajax({
                     url : "/profile/check_ddj/" + pseudo_hotel,
@@ -726,10 +729,19 @@ new Cleave('.input_pourcent', {blocks: [4]});
                         "date" : date,
                     }, 
                     success : function(response){
-                        //alert(response);
-                        if(response != ""){
+                        var date_text = $('#donnee_du_jour_createdAt').val();
+                        var date_aff = toDateText(date_text);
+                        $("#data_text_date").text(date_aff);
+                        var res = response.split('-');
+                        if(res.length > 1){
+                            
+                            window.location.href = "/profile/" + pseudo_hotel + "/add/donnee_jour/" + response;
+                        }
+                        else{
+                            
                             window.location.href = "/profile/" + pseudo_hotel + "/donnee_jour/" + response;
                         }
+                       
                     }, 
                     error : function(){
                         alert('erreur au niveau de check _ data ddj');
@@ -737,8 +749,25 @@ new Cleave('.input_pourcent', {blocks: [4]});
                 })
             })
 
-
-            
+            function toDateText(date){
+                var tab = date.split('-');
+                var mois = {
+                    "01"    : "Janvier",
+                    "02"    : "Février",
+                    "03"    : "Mars",
+                    "04"    : "Avril",
+                    "05"    : "Mai",
+                    "06"    : "Juin",
+                    "07"    : "Juillet",
+                    "08"    : "Août",
+                    "09"    : "Septembre",
+                    "10"    : "Octobre",
+                    "11"    : "Novembre",
+                    "12"    : "Décembre"
+                }
+                return tab[2] + " " + mois[tab[1]] + " " + tab[0]; 
+            }
+           
         })
 
 

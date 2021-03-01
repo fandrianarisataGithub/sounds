@@ -2038,23 +2038,31 @@ class PageController extends AbstractController
     /**
      * @Route("/profile/{pseudo_hotel}/donnee_jour", name="donnee_jour")
      * @Route("/profile/{pseudo_hotel}/donnee_jour/{id}", name="donnee_jour_modif")
+     * @Route("/profile/{pseudo_hotel}/add/donnee_jour/{val}", name="donnee_jour_add")
+     * 
      */
-    public function donnee_jour(DonneeDuJour $ddj = null, Request $request, $pseudo_hotel, EntityManagerInterface $manager, SessionInterface $session, HotelRepository $reposHotel)
+    public function donnee_jour($val = null, DonneeDuJour $ddj = null, Request $request, $pseudo_hotel, EntityManagerInterface $manager, SessionInterface $session, HotelRepository $reposHotel)
     {
-            
             $data_session = $session->get('hotel');
+            //dd($data_session);
             if($data_session == null){
-            return $this->redirectToRoute("app_logout");
-        }
+                return $this->redirectToRoute("app_logout");
+            }
             $data_session['current_page'] = "donnee_jour";
             $data_session['pseudo_hotel'] = $pseudo_hotel;
             $today = new \DateTime();
+            if($val != null){
+                $val = explode('"', $val);
+                $today = date_create($val[1]);
+                //dd($today);
+            }
             if(!$ddj){
-                    $ddj = new DonneeDuJour();
+                $ddj = new DonneeDuJour();
             }
             else if($ddj){
                 $today = $ddj->getCreatedAt();
             }
+            
             $form = $this->createForm(DonneeDuJourType::class, $ddj);
             
             // si le formulaire est soumis 

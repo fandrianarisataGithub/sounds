@@ -98,7 +98,38 @@
 											</th>
 										</tr>
 									</thead>
-									<tbody id="liste_tab_contact" data-client="{{ item['entreprise'] }}"></tbody>
+									<tbody class="liste_tab_contact" id="{{ 'liste_tab_contact' ~ item['index'] }}"  data-client="{{ item['entreprise'] }}" data-index = "{{ item['index'] }}">
+										<tr>
+											<td></td>
+											<td></td>
+											<td></td>
+											<td></td>
+										</tr>
+										{% for contact in item['liste_contact'] %}
+											<tr>
+												<td>
+													<span>{{ contact['nom_en_contact'] }}</span>
+												</td>
+												<td>
+													<span>{{ contact['email'] }}</span>
+												</td>
+												<td>
+													<span>{{ contact['telephone'] }}</span>
+												</td>
+												<td>
+													<div class="list_action">
+														<a href="#" class="edit_contact" data-id="{{ contact['id'] }}">
+															<span class="fa fa-edit"></span>
+														</a>
+														<a href="#" class="delete_contact" data-id="{{ contact['id'] }}">
+															<span class="fa fa-trash-o"></span>
+														</a>
+													</div>
+												</td>
+											</tr>
+
+										{% endfor %}
+									</tbody>
 								</table>
 
 							</div>
@@ -226,7 +257,7 @@
 								<h4>Remarque</h4>
 							</div>
 							<div class="form_remarque1">
-								<form action="" class="form-inline" id="form_remarque">
+								<form action="" class="form-inline form_remarque">
 									<div
 										class="form-group">
 										{# par defaut date du jour #}
@@ -237,7 +268,7 @@
 									<div class="form-group">
 										<label for="">Concerne:
 										</label>
-										<select name="" class="form-control id_pro">
+										<select name="" class="form-control id_pro" data-client="{{ item['entreprise'] }}">
 											{% for item_client in item['liste_client'] %}
 												<option value="{{ item_client.getIdPro() }}">{{ item_client.getIdPro() }}</option>
 											{% endfor %} 
@@ -249,10 +280,10 @@
 										<input type="text" id="observation" class="form-control observation">
 									</div>
 									<div class="form-group">
-										<input type="submit" class="btn btn-xs btn-default" value="Valider" id="valider_remarque" data-client="{{ item['entreprise'] }}">
+										<input type="submit" class="valider_remarque btn btn-xs btn-default" value="Valider"  data-client="{{ item['entreprise'] }}">
 									</div>
 								</form>
-								<div class="liste_pf_selected"></div>
+								<div class="liste_pf_selected" id="{{ "liste_pf_selected" ~ item['index'] }}" data-client="{{ item['entreprise'] }}" data-index="{{ item['index'] }}"></div>
 							</div>
 						</div>
 						<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
@@ -274,7 +305,37 @@
 											</th>
 										</tr>
 									</thead>
-									<tbody id="tbody__liste_rem_non" data-client="{{ item['entreprise'] }}"></tbody>
+									<tbody class="tbody__liste_rem_non" data-client="{{ item['entreprise'] }}">
+										<tr>
+											<td></td>
+											<td></td>
+											<td></td>
+											<td></td>
+										</tr>
+										{% for remarque in item['liste_remarque']  %}
+											<tr class="trb_remarque_a_ter">
+												<td class="t_date_rem">
+													<span>{{ remarque['date_remarque'] }}</span>
+												</td>
+												<td class="t_concerne_rem">
+													<span>{{ remarque['concerne'] }}</span>
+												</td>
+												<td class="tbd_remarque_a_ter t_obs_rem">
+													<p class="observation">
+														{{ remarque['observation'] }}
+													</p>
+												</td>
+												<td class="t_action_rem">
+													<div class="liste_action">
+														<a href="#" data-id="{{ remarque['id'] }}" class="edit_remarque">
+															<span class=" fa fa-check"></span>
+														</a>
+													</div>
+												</td>
+											</tr>
+
+										{% endfor %}
+									</tbody>
 								</table>
 							</div>
 						</div>
@@ -333,6 +394,7 @@
 				nextArrow: '.dir_next button',
 				prevArrow: '.dir_prev button'
 			});
+
 			$(".add_contact a").on("click", function(env){
 				env.preventDefault();
 				$("#modal_add_contact").modal("hide");
@@ -343,8 +405,8 @@
 
 			// lister contact
 
-			function liter_contact_entreprise(){
-                var client = $("#liste_tab_contact").attr("data-client");
+			function lister_contact_entreprise(){
+                var client = $(".liste_tab_contact").attr("data-client");
                     var data = {
                     "client"    : client
                 }
@@ -353,14 +415,14 @@
                     type        : "POST",
                     data        : data,
                     success     : function(response){
-                        $("#liste_tab_contact").html(response);
+                       // $(".liste_tab_contact").html(response);
                     },
                     error       : function () {
                         alert('Erreur dans lister contact');
                     }
                 })
             }
-            liter_contact_entreprise();
+            lister_contact_entreprise();
 
 			// add_contact
 			$(document).on("click", "#button_add_contact", function(ev){
@@ -385,7 +447,7 @@
 					type        : "POST",
 					data        : data,
 					success     : function(response){
-						liter_contact_entreprise();
+						lister_contact_entreprise();
 						$("#modal_add_contact").modal('hide');
 					},
 					error       : function(){
@@ -393,6 +455,136 @@
 					}
 				})
 			})
+
+			// remarque
+
+			var liste_pf = [];
+
+                $(".id_pro").on('change', function(){
+					// on enregistre le select du client concerné
+					var client = $(this).attr("data-client");
+					var client_liste = $(".liste_pf_selected_change").attr("data-client");
+					if(client != client_liste){
+						liste_pf = [];
+					}
+					$(".liste_pf_selected").removeClass("liste_pf_selected_change");
+					if(!$(this).parent().parent().siblings(".liste_pf_selected").hasClass("liste_pf_selected_change")){
+						$(this).parent().parent().siblings(".liste_pf_selected").addClass("liste_pf_selected_change");
+					}
+					$(".id_pro").removeClass("change");
+					$(this).addClass("change");
+                    var choice = $(this).val();
+					var client = $(this).attr("data-client");
+                    var test = false;
+                    for(var i=0; i< liste_pf.length; i++){
+                        if(choice == liste_pf[i]){
+                            test = true;
+                        }
+                    }
+                    
+                    if(test == false){
+                        liste_pf.push(choice);
+                    }
+                    lister_choice_pf()
+                })
+
+                function lister_choice_pf(){
+                    var html = "<ul>";
+                    for(var i = 0; i<liste_pf.length; i++){
+                        html += `
+                                <li class="li_unite_selected_pf">
+                                    <div>
+                                        <p class="p_pf_value">`+ liste_pf[i] +`</p>
+                                        <span class="fa fa-times exit_pf" data-pf = "`+ liste_pf[i] +`"></span>
+                                    </div>
+                                </li>
+                        `;
+                    }
+                    html += "</ul>";
+                    $(".liste_pf_selected_change").html(html);
+
+                }
+
+                $(document).on("click", ".exit_pf", function(){
+                    var text = $(this).attr("data-pf");
+                    const index = liste_pf.indexOf(text);
+				    if (index > -1) {
+					    liste_pf.splice(index, 1);
+                    }
+                    // console.log(liste_pf);
+                    lister_choice_pf();
+                })
+
+
+			$(".valider_remarque").on("click", function(ev){
+                ev.preventDefault();
+				var client = $(this).attr("data-client");
+                if(liste_pf.length == 0){
+                    var data = {
+                        "date_remarque" : $("#date_remarque").val(),
+                        "id_pro"        : $(".change").val(),
+                        "observation"   : $("#observation").val(),
+                        "client"     	: client,
+                    }
+                    add_remarque_pf(data);
+                }
+               
+                if(liste_pf.length > 0){
+                    var mult_pf = "";
+                    for(var i = 0; i< liste_pf.length; i++){
+                        if(i < liste_pf.length - 1){
+                            mult_pf += liste_pf[i] + ", ";
+                        }
+                        else{
+                            mult_pf += liste_pf[i];
+                        }
+                        
+                    }
+                    var data = {
+                        "date_remarque" : $("#date_remarque").val(),
+                        "id_pro"        : mult_pf,
+                        "observation"   : $("#observation").val(),
+                        "client"     	: client,
+                    }
+                    add_remarque_pf(data);
+                }
+            })
+
+            function add_remarque_pf(data){
+                 $.ajax({
+                    url     : "/tropical_wood/add_remarque", 
+                    type    : "POST",
+                    data    : data, 
+                    success : function(response){
+                        $("#form_remarque")[0].reset();
+                        lister_rem_non_terminer();
+                        // fafana daholo le liste_pf
+                        liste_pf = [];
+                        lister_choice_pf();
+                    },
+                    error   : function(){
+                        alert('erreur dans valider remarque');
+                    }
+                })
+            }
+
+            // lister remarque non terminé
+
+            function lister_rem_non_terminer(){
+                 $.ajax({
+                    url     : "/tropical_wood/lister_remarque_non", 
+                    type    : "POST",
+                    data    : {
+                        "id_client" : id_client,
+                    }, 
+                    success : function(response){
+                        $(".tbody__liste_rem_non").html(response);
+                    },
+                    error   : function(){
+                        alert('erreur dans liste remarque non terminer');
+                    }
+                })
+            }
 		});
 	</script>
 {% endblock %}

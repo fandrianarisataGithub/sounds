@@ -10373,7 +10373,7 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
     
     /**
      * @return DataTropicalWood[] Returns an array of DataTropicalWood objects
-     */
+    */
     public function listeResultOfCheckupByEntreprise()
     {
         $result_gb = $this->createQueryBuilder('d')
@@ -10388,13 +10388,25 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
         $resultat = [];
         $i = 0;
         foreach($result_gb as $rgb){
+            // on cherche entreprise_id
+            $conn = $this->getEntityManager()->getConnection();
+            $sql = '
+                SELECT id FROM entreprise_tw WHERE nom = :val
+            ';
+            $stmt = $conn->prepare($sql);
+            $stmt->execute(['val' => $rgb["entreprise"]]);
+
+            $entreprise_id = $stmt->fetch();
+
             $tab = [
-                "index"         => $i++,
-                "entreprise"    => $rgb["entreprise"],
-                "total_reste"   => $rgb["total_reste"],
-                "total_montant_total"   => $rgb["total_montant_total"],
-                "total_total_reglement"   => $rgb["total_total_reglement"],
-                "liste_client"      => []
+                "index"                     => $i++,
+                "entreprise"                => $rgb["entreprise"],
+                "total_reste"               => $rgb["total_reste"],
+                "total_montant_total"       => $rgb["total_montant_total"],
+                "total_total_reglement"     => $rgb["total_total_reglement"],
+                "liste_client"              => [],
+                "liste_contact"             => $this->find_all_contact($entreprise_id),
+                "liste_remarque"            => $this->find_all_remarque($entreprise_id),
             ];
             foreach($liste_by_id_pro as $residp){
                 
@@ -10408,6 +10420,28 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
             array_push($resultat, $tab);
         }
         return $resultat;
+    }
+
+    public function find_all_contact($entreprise_id){
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = '
+            SELECT * FROM contact_entreprise_tw WHERE entreprise_id = :val
+        ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['val' => $entreprise_id['id']]);
+        return $stmt->fetchAll();
+        
+    }
+
+    public function find_all_remarque($entreprise_id)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = '
+            SELECT * FROM `remarque_entreprise_tw` WHERE entreprise_id = :val
+        ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['val' => $entreprise_id['id']]);
+        return $stmt->fetchAll();
     }
 
     /*
