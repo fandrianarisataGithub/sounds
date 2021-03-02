@@ -114,7 +114,12 @@
 					<section class="section_part tab_content margin_tab tab_liste_client">
 						<div class="tableau">
 							<div class="sous_titre">
-								<h4>Liste des clients hébergés</h4>
+								{% if date_text_month is defined %}
+									<h4>Liste des clients hébergés le : <span id="date_text_heb">{{ date_text_month }}</span></h4>
+								{% endif %}
+								{% if interval_text_date is defined  %}
+									<h4>Liste des clients hébergés entre <span>{{ interval_text_date }}</span></h4>
+								{% endif %}
 							</div>
 							<section class=" filtre">
 								<div class="sous_titre_filtre">

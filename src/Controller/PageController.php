@@ -547,12 +547,15 @@ class PageController extends AbstractController
             //dd($request->request);
             $date1 = $request->request->get('date1');
             $date2 = $request->request->get('date2');
-            //dd($date1);
-            //dd(gettype($date1)."  ".$date2);
+            
+            $datte_text_1 = $services->toMonthText($date1);
+            $datte_text_2 = $services->toMonthText($date2);
 
             $date1 = date_create($date1);
             $date2 = date_create($date2);
 
+            $datte_text_1 = $services->toMonthText($date1->format('d-m-Y'));
+            $datte_text_2 = $services->toMonthText($date2->format('d-m-Y'));
 
             $all_date_asked = $services->all_date_between2_dates($date1, $date2);
             //dd($all_date_asked);
@@ -589,18 +592,20 @@ class PageController extends AbstractController
             }
 
             return $this->render('page/hebergement.html.twig', [
-                "id" => "li__hebergement",
-                "tab_annee" => $tab_sans_doublant,
-                "hotel" => $data_session['pseudo_hotel'],
-                "current_page" => $data_session['current_page'],
-                "tab_heb_to" => $tab_heb_to,
-                "tab_heb_ca" => $tab_heb_ca,
-                "tab_labels" => $tab_labels,
-                "type_affichage" => "annee",
-                'items' => $tab_aff,
-                'date1' => $date1->format('Y-m-d'),
-                'date2' => $date2->format('Y-m-d'),
-                "tropical_wood"     => false,
+                "id"                    => "li__hebergement",
+                "tab_annee"             => $tab_sans_doublant,
+                "hotel"                 => $data_session['pseudo_hotel'],
+                "current_page"          => $data_session['current_page'],
+                "tab_heb_to"            => $tab_heb_to,
+                "tab_heb_ca"            => $tab_heb_ca,
+                "tab_labels"            => $tab_labels,
+                "type_affichage"        => "annee",
+                'items'                 => $tab_aff,
+                'date1'                 => $date1->format('Y-m-d'),
+                'date2'                 => $date2->format('Y-m-d'),
+                "tropical_wood"         => false,
+                "interval_text_date"    => $datte_text_1 . " et " . $datte_text_2,
+
             ]);
            
         }
@@ -626,7 +631,9 @@ class PageController extends AbstractController
 
             $all_date_asked = $services->all_date_between2_dates($hier, $demain);
             
-
+            $date_text_aff = $today->format("d-m-Y");
+            $date_text_aff = $services->toMonthText($date_text_aff);
+            //dd($date_text_aff);
             $tab = [];
             
             $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
@@ -661,16 +668,17 @@ class PageController extends AbstractController
             //dd($tab_aff);
             
             return $this->render('page/hebergement.html.twig', [
-                "id" => "li__hebergement",
-                "tab_annee" => $tab_sans_doublant,
-                "hotel" => $data_session['pseudo_hotel'],
-                "current_page" => $data_session['current_page'],
-                "tab_heb_to" => $tab_heb_to,
-                "tab_heb_ca" => $tab_heb_ca,
-                "tab_labels" => $tab_labels,
-                "type_affichage" => "annee",
-                'items' => $tab_aff,
-                "tropical_wood"     => false,
+                "id"                    => "li__hebergement",
+                "tab_annee"             => $tab_sans_doublant,
+                "hotel"                 => $data_session['pseudo_hotel'],
+                "current_page"          => $data_session['current_page'],
+                "tab_heb_to"            => $tab_heb_to,
+                "tab_heb_ca"            => $tab_heb_ca,
+                "tab_labels"            => $tab_labels,
+                "type_affichage"        => "annee",
+                'items'                 => $tab_aff,
+                "tropical_wood"         => false,
+                "date_text_month"       => $date_text_aff 
             ]);
        }
     }

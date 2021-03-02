@@ -10401,12 +10401,14 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
             $tab = [
                 "index"                     => $i++,
                 "entreprise"                => $rgb["entreprise"],
+                "liste_trans_ter"           => $this->findAllListeTransTer($rgb["entreprise"]),
                 "total_reste"               => $rgb["total_reste"],
                 "total_montant_total"       => $rgb["total_montant_total"],
                 "total_total_reglement"     => $rgb["total_total_reglement"],
                 "liste_client"              => [],
                 "liste_contact"             => $this->find_all_contact($entreprise_id),
-                "liste_remarque"            => $this->find_all_remarque($entreprise_id),
+                "liste_remarque_enc"        => $this->find_all_remarque_enc($entreprise_id),
+                "liste_remarque_ter"        => $this->find_all_remarque_ter($entreprise_id),
             ];
             foreach($liste_by_id_pro as $residp){
                 
@@ -10422,6 +10424,16 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
         return $resultat;
     }
 
+    public function findAllListeTransTer($nom_client){
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.entreprise = :val')
+            ->andWhere('d.reste = :val2')
+            ->setParameter('val', $nom_client)
+            ->setParameter('val2', '0.0')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function find_all_contact($entreprise_id){
         $conn = $this->getEntityManager()->getConnection();
         $sql = '
@@ -10433,14 +10445,31 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
         
     }
 
-    public function find_all_remarque($entreprise_id)
+    public function find_all_remarque_enc($entreprise_id)
     {
         $conn = $this->getEntityManager()->getConnection();
         $sql = '
-            SELECT * FROM `remarque_entreprise_tw` WHERE entreprise_id = :val
+            SELECT * FROM `remarque_entreprise_tw` WHERE entreprise_id = :val AND etat_resultat = :etat
         ';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['val' => $entreprise_id['id']]);
+        $stmt->execute([
+                        'val'   => $entreprise_id['id'],
+                        'etat'  => '0'
+                        ]);
+        return $stmt->fetchAll();
+    }
+
+    public function find_all_remarque_ter($entreprise_id)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = '
+            SELECT * FROM `remarque_entreprise_tw` WHERE entreprise_id = :val AND etat_resultat = :etat
+        ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([
+                        'val'   => $entreprise_id['id'],
+                        'etat'  => '1'
+                        ]);
         return $stmt->fetchAll();
     }
 

@@ -1714,13 +1714,15 @@ class TropController extends AbstractController
         if ($request->isXmlHttpRequest()) {
             $id_contact = $request->get('id_contact');
             $id_client = $request->get('id_client');
-            $contact = $repoContact->find($id_contact);
-            $html = '
+            $nom_client = $request->get('nom_client');
+            if($id_client != null){
+                $contact = $repoContact->find($id_contact);
+                $html = '
 
                 <form action="">
                     <div class="form-group">
                         <label for="">Contact</label>
-                        <input type="text" placeholder="Contact" value="'. $contact->getNomEnContact() . '" id="contact" class="form-control">
+                        <input type="text" placeholder="Contact" value="' . $contact->getNomEnContact() . '" id="contact" class="form-control">
                     </div>
                     <div class="form-group">
                         <label for="">Email</label>
@@ -1731,18 +1733,51 @@ class TropController extends AbstractController
                         <input type="text" id="telephone" value="' . $contact->getTelephone() . '" placeholder="03x xxx" class="form-control">
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-default" type="submit" id="button_add_contact" data-id = "'. $contact->getId() .'">
+                        <button class="btn btn-default" type="submit" id="button_add_contact" data-id = "' . $contact->getId() . '">
                             <span>Enregistrer</span>
                         </button>
                     </div>
                 </form>
             
             ';
+
+                $data = json_encode($html);
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+                return $response;
+            }
+            if ($nom_client != null) {
+                $contact = $repoContact->find($id_contact);
+                $index = $request->get('index');
+                $html = '
+
+                <form action="">
+                    <div class="form-group">
+                        <label for="">Contact</label>
+                        <input type="text" placeholder="Contact" value="' . $contact->getNomEnContact() . '" id="contact" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Email</label>
+                        <input type="text" id="email" value="' . $contact->getEmail() . '" placeholder="Adresse@mail...." class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="">N° Téléphone</label>
+                        <input type="text" id="telephone" value="' . $contact->getTelephone() . '" placeholder="03x xxx" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-default" type="submit" id="button_add_contact" data-id = "' . $contact->getId() . '" data-index = "'. intval($index) .'">
+                            <span>Enregistrer</span>
+                        </button>
+                    </div>
+                </form>
             
-            $data = json_encode($html);
-            $response->headers->set('Content-Type', 'application/json');
-            $response->setContent($data);
-            return $response;
+            ';
+
+                $data = json_encode($html);
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+                return $response;
+            }
         }
     }
 
@@ -2523,34 +2558,16 @@ class TropController extends AbstractController
     }
 
     /**
-     * @Route("/admin/check_up_impaye", name = "check_up_impaye")
+     * @Route("/admin/check_up_impaye/{index}", name = "check_up_impaye")
      */
-    public function check_up_impaye(Request $request, 
+    public function check_up_impaye($index, Request $request, 
                                     SessionInterface $session,
-                                    DataTropicalWoodRepository $repoTrop) :Response
+                                    DataTropicalWoodRepository $repoTrop,
+                                    ContactEntrepriseTWRepository $repoEntre) :Response
     {
-        // on cherche les clients avec etat_prod = facturé, etape % 100%, reste > 0 groupé par nom de client
-
-        // demarche : il faut qu'on fait 2 requete 
-        // 1 : pour le tri par ordre desc de total_reste avec group by entreprise
-        /*
-            SELECT entreprise,id_pro, SUM(reste)as total_reste 
-            FROM `data_tropical_wood` 
-            WHERE etat_production ="Facturé" and reste > 0 and etape_production = 100
-            GROUP BY entreprise 
-            ORDER BY total_reste DESC
-        */
-        // 2 : pour les liste des pf avec entreprise ayant les conditions nécessaires
-        /*
-            SELECT entreprise,id_pro
-            FROM `data_tropical_wood`
-            WHERE etat_production ="Facturé" and reste > 0 and etape_production = 100
-
-         */
-        // 3 on combine les données de ces 2 tableaux 
 
         $res = $repoTrop->listeResultOfCheckupByEntreprise();
-        dd($res);
+        //dd($res);
         //$test = $repoTrop->find_all_contact();
         //dd($res);
         $date = new \Datetime();
@@ -2563,7 +2580,8 @@ class TropController extends AbstractController
             'tropical_wood'     => true,
             "today"             => $today,
             "id_page"           => "li_entreprise_contact",
-            "resultat"          => $res
+            "resultat"          => $res,
+            "index"             => $index,
         ]);
     }
 

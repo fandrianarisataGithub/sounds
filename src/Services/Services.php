@@ -121,5 +121,26 @@ class Services
             
             return $result;
         }
+
+        public function toMonthText($date) :string
+        {
+            $tab = explode("-", $date);
+            $mois = [
+                    "01"    => "Janvier",
+                    "02"    => "Février",
+                    "03"    => "Mars",
+                    "04"    => "Avril",
+                    "05"    => "Mai",
+                    "06"    => "Juin",
+                    "07"    => "Juillet",
+                    "08"    => "Août",
+                    "09"    => "Septembre",
+                    "10"    => "Octobre",
+                    "11"    => "Novembre",
+                    "12"    => "Décembre"
+            ];
+            return $tab[0] . " " . $mois[$tab[1]] . " " . $tab[2];
+            
+        }
         
     } 
