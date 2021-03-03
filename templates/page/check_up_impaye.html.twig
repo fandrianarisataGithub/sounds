@@ -207,7 +207,16 @@
 									<div class="table_body liste_pf">
 										<div class="dr_tab_trans">
 											<div {% if item["liste_client"]|length > 11 %} class="block_all_tr block_tr_scroll" {% else %} class="block_all_tr block_tr_scroll block_tr_scroll_other" {% endif %}>
+													{% set total_total_reglement_enc = 0 %}
+													{% set total_reste_enc = 0 %}
+													{% set total_montant_total_enc = 0 %}
+
 												{% for item_client in item["liste_client"] %}
+
+													{% set total_total_reglement_enc = total_total_reglement_enc + item_client.getTotalReglement() %}
+													{% set 	total_reste_enc = total_reste_enc + item_client.getReste() %}
+													{% set	total_montant_total_enc= total_montant_total_enc + item_client.getMontantTotal() %}
+
 													<div class="t_body_row sous_tab_body">
 														<div class="tw_client_trans">
 															<span>{{ item_client.getIdPro() }}</span>
@@ -249,6 +258,45 @@
 												{% endfor %}
 											</div>
 										</div>
+										<div class="t_footer_row sous_tab_body total_content t_footer_trans">
+											<div class="tw_client_trans">
+												<span>Total</span>
+											</div>
+											<div class="tw_details_trans">
+												<span></span>
+											</div>
+											<div class="tw_type_trans_trans">
+												<span></span>
+											</div>
+											<div class="tw_etat_prod_trans">
+												<span></span>
+											</div>
+											<div class="tw_etape_prod_trans">
+												<span></span>
+											</div>
+											<div class="tw_paiement_trans">
+												<span class="montant value" id="total_paiement">
+													{{ total_total_reglement_enc }}
+												</span>
+											</div>
+											<div class="tw_reste_trans">
+												<span class="montant value" id="total_reste">
+													{{ total_reste_enc }}
+												</span>
+											</div>
+											<div class="tw_montant_total_trans">
+												<span class="montant value" id="total_montant">
+													{{ total_montant_total_enc }}
+												</span>
+											</div>
+											<div class="tw_date_conf_trans">
+												<span></span>
+											</div>
+											<div class="tw_date_facture_trans">
+												<span></span>
+											</div>
+										</div>
+
 									</div>
 								</div>
 							</div>
@@ -409,7 +457,16 @@
 									<div class="table_body" id="div__table_trans_terminer">
 										<div class="dr_tab_trans">
 											<div {% if item["liste_trans_ter"]|length > 11 %} class="block_all_tr block_tr_scroll" {% else %} class="block_all_tr block_tr_scroll block_tr_scroll_other" {% endif %}>
-												{% for item_trans_ter in item["liste_trans_ter"] %}
+													{% set total_total_reglement_ter = 0 %}
+													{% set total_reste_ter = 0 %}
+													{% set total_montant_total_ter = 0 %}
+													{% for item_trans_ter in item["liste_trans_ter"] %}
+													{% set
+														total_total_reglement_ter = total_total_reglement_ter + item_trans_ter.getTotalReglement() %}
+													{% set 	total_reste_ter = total_reste_ter + item_trans_ter.getReste() %}
+													{% set	total_montant_total_ter= total_montant_total_ter + item_trans_ter.getMontantTotal() %}
+													
+													
 													<div class="t_body_row sous_tab_body">
 														<div class="tw_client_trans">
 															<span>{{ item_trans_ter.getIdPro() }}</span>
@@ -449,6 +506,44 @@
 														</div>
 													</div>
 												{% endfor %}
+											</div>
+										</div>
+										<div class="t_footer_row sous_tab_body total_content t_footer_trans">
+											<div class="tw_client_trans">
+												<span>Total</span>
+											</div>
+											<div class="tw_details_trans">
+												<span></span>
+											</div>
+											<div class="tw_type_trans_trans">
+												<span></span>
+											</div>
+											<div class="tw_etat_prod_trans">
+												<span></span>
+											</div>
+											<div class="tw_etape_prod_trans">
+												<span></span>
+											</div>
+											<div class="tw_paiement_trans">
+												<span class="montant value" id="total_paiement">
+													{{ total_total_reglement_ter }}
+												</span>
+											</div>
+											<div class="tw_reste_trans">
+												<span class="montant value" id="total_reste">
+													{{ total_reste_ter }}
+												</span>
+											</div>
+											<div class="tw_montant_total_trans">
+												<span class="montant value" id="total_montant">
+													{{ total_montant_total_ter }}
+												</span>
+											</div>
+											<div class="tw_date_conf_trans">
+												<span></span>
+											</div>
+											<div class="tw_date_facture_trans">
+												<span></span>
 											</div>
 										</div>
 

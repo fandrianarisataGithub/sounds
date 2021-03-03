@@ -13,9 +13,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class TresorerieController extends AbstractController
 {
     /**
-     * @Route("/tresorerie", name="tresorerie")
+     * @Route("/profile/tresorerie/recette", name="tresorerie_recette")
     */
-    public function tresorerie(
+    public function tresorerie_recette(
         SessionInterface $session,
         Request $request,
         Services $services,
@@ -23,12 +23,51 @@ class TresorerieController extends AbstractController
     ): Response
     {
         $data_session = $session->get('hotel');
-        return $this->render('tresorerie/tresorerie.html.twig', [
+        return $this->render('tresorerie/tresorerie_recette.html.twig', [
             "hotel"             => $data_session['pseudo_hotel'],
             "current_page"      => $data_session['current_page'],
             'tri'               => false,
             'tropical_wood'     => true,
-            "id_page"                   => "li_tresoreriet"
+            "id_page"           => "li_tresoreriet"
+        ]);
+    }
+    /**
+     * @Route("/profile/tresorerie/depense", name="tresorerie_depense")
+     */
+    public function tresorerie_depense(
+        SessionInterface $session,
+        Request $request,
+        Services $services,
+        EntityManagerInterface $manager
+    ): Response {
+        $data_session = $session->get('hotel');
+        return $this->render('tresorerie/tresorerie_depense.html.twig', [
+            "hotel"             => $data_session['pseudo_hotel'],
+            "current_page"      => $data_session['current_page'],
+            'tri'               => false,
+            'tropical_wood'     => true,
+            "id_page"           => "li_tresoreriet"
+        ]);
+    }
+
+    /**
+     * @Route("/profile/tresorerie/formulaire/{type}", name="formulaire_tres")
+     */
+    public function tresorerie_form(
+        $type,
+        SessionInterface $session,
+        Request $request,
+        Services $services,
+        EntityManagerInterface $manager
+    ): Response {
+        $data_session = $session->get('hotel');
+        return $this->render('tresorerie/formulaire_tres.html.twig', [
+            "hotel"             => $data_session['pseudo_hotel'],
+            "current_page"      => $data_session['current_page'],
+            'tri'               => false,
+            'tropical_wood'     => true,
+            "id_page"           => "li_tresoreriet",
+            "type"              => $type,
         ]);
     }
 }

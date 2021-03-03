@@ -352,9 +352,7 @@ ul {
     padding: 0px;
     margin: 0px;
 }
-.li_tw{
-    
-}
+
 @media all and (max-width:767px) {
     .loader-wrapper .loader {
         display: block;
@@ -1471,9 +1469,11 @@ li#li_historique>a:hover span:last-child {
     font-size: 11px;
     padding: 5px;
 }
-.form_tri_services .select_radius{
+
+.form_tri_services .select_radius {
     margin-bottom: 15px;
 }
+
 #tri_annee {
     display: inline-block;
     padding: 0;
@@ -1530,8 +1530,6 @@ li#li_historique>a:hover span:last-child {
     -ms-flex-pack: justify;
     justify-content: space-between;
 }
-
-
 
 .service .data-service>div {
     padding-bottom: 15px;
@@ -1644,17 +1642,19 @@ li#li_historique>a:hover span:last-child {
 
 .import_trop {
     margin-bottom: 20px !important;
-    
     position: absolute;
     top: 0px;
     padding: 0!important;
 }
-.import_trop h3{
+
+.import_trop h3 {
     display: none;
 }
-.import_trop form{
-margin-top: 0 !important;
+
+.import_trop form {
+    margin-top: 0 !important;
 }
+
 .div__form_upload_excel h3 {
     font-size: 15px;
     text-align: center;
@@ -1815,7 +1815,6 @@ margin-top: 0 !important;
     border-color: transparent;
     margin-top: 15px;
 }
-
 
 .btn_black:hover {
     background: transparent !important;
@@ -2172,24 +2171,27 @@ margin-top: 0 !important;
 .table_content div>span {
     font-size: 12px;
 }
-.inner_date span{
-    color: rgba(70,69,68,1);
+
+.inner_date span {
+    color: rgba(70, 69, 68, 1);
     font-weight: bold;
-    
 }
 
-.div_change span{
-    color: rgba(70,69,68,1);
+.div_change span {
+    color: rgba(70, 69, 68, 1);
     font-weight: 500;
 }
-.unite_client_entreprise span{
+
+.unite_client_entreprise span {
     color: #d29e00;
     font-weight: bolder;
 }
-.entete_pf span{
-    color: rgba(70,69,68,1);
+
+.entete_pf span {
+    color: rgba(70, 69, 68, 1);
     font-weight: 500 !important;
 }
+
 .sous_tab_body {
     border-bottom: 1px solid rgba(204, 204, 204, 0.2);
 }
@@ -2303,7 +2305,8 @@ span.fa-calendar {
     background-color: #fff;
     margin-top: 0!important;
 }
-.graph_content{
+
+.graph_content {
     border-radius: 25px;
 }
 
@@ -2331,6 +2334,7 @@ span.fa-calendar {
     display: block;
     padding-right: 10px;
 }
+
 .dataTables_paginate {
     margin-bottom: 15px;
     margin-top: 20px;
@@ -2437,7 +2441,6 @@ span.fa-calendar {
 .filtre form {
     display: block;
     text-align: end !important;
-    vertical-align: middle;
 }
 
 .filtre form input {
@@ -4300,17 +4303,17 @@ li.li_legende div span:first-child {
     -webkit-box-shadow: 0px 0px 3px #d29e00;
     box-shadow: 0px 0px 3px #d29e00;
 }
-#data_days section.n_form .data_form{
+
+#data_days section.n_form .data_form {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
     justify-content: space-between;
 }
+
 #data_days section.n_form .data_form .form-group {
     width: 50%;
 }
-
-
 
 .total_chambre label {
     font-weight: 550 !important;
@@ -4403,7 +4406,6 @@ form .form-group span.span__ar {
 
 #data_days section.n_form .data_form .form-group label {
     color: rgba(0, 0, 0, 0.6) !important;
-    
     font-weight: 500;
 }
 
@@ -4436,19 +4438,21 @@ form .form-group span.span__ar {
     color: rgba(0, 0, 0, 0.6) !important;
     font-weight: 500;
 }
-#li_submit_add_ddj{
+
+#li_submit_add_ddj {
     margin-left: 0;
-   
 }
 
-#btn_add_donnee_dj:hover{
-   border-color: #323232;
+#btn_add_donnee_dj:hover {
+    border-color: #323232;
     background: transparent !important;
     transition: all 2s linear ease-in-out;
 }
-#btn_add_donnee_dj:hover span{
+
+#btn_add_donnee_dj:hover span {
     color: #323232;
 }
+
 .h2_titre {
     border-bottom: 1px solid rgba(200, 200, 200, .3);
     margin-bottom: 15px;
@@ -4468,9 +4472,11 @@ form .form-group span.span__ar {
     -ms-flex-pack: justify;
     justify-content: space-between;
 }
-.h4_titre h4{
+
+.h4_titre h4 {
     font-size: 15px;
 }
+
 .h4_titre button {
     background-color: #fff;
     border: solid 1px rgba(204, 204, 204, 0.5);
@@ -4643,9 +4649,11 @@ input[maxlength] {
     background: transparent;
     border-color: #323232;
 }
-#btn_add_donnee_mensuelle:hover span{
+
+#btn_add_donnee_mensuelle:hover span {
     color: #323232;
 }
+
 .btn-list>ul>li>a.btn {
     height: 30px;
     padding-top: 5px;
@@ -5039,9 +5047,11 @@ form.tri {
 /* /spa
 
 /* donnee mens */
-.block_month{
+
+.block_month {
     margin-bottom: 25px;
 }
+
 .block_month select {
     width: 120px;
     height: 30px;
@@ -5237,9 +5247,10 @@ div.block_all_tr .t_body_row {
     overflow-x: hidden;
 }
 
-.block_tr_scroll_other{
-     height: auto !important;
+.block_tr_scroll_other {
+    height: auto !important;
 }
+
 
 /* fin scroll*/
 
@@ -5484,6 +5495,7 @@ thead.thead_adresse {
 .small_tab tbody tr:not(:first-child) td {
     background: #fff;
 }
+
 .small_tab tbody tr td:last-child a {
     text-align: center;
     display: block;
@@ -6095,6 +6107,7 @@ table.small_tab tbody tr td {
     margin-left: 0!important;
     text-align: start;
 }
+
 .t_header_row>div.tw_paiement_trans,
 .t_header_row>div.tw_reste_trans,
 .t_header_row>div.tw_montant_total_trans,
@@ -6103,15 +6116,17 @@ table.small_tab tbody tr td {
 .t_header_row>div.tw_type_trans_trans,
 .t_header_row>div.tw_etape_prod_trans,
 .t_header_row>div.tw_etat_prod_trans,
-.t_header_row>div.tw_date_conf_trans{
+.t_header_row>div.tw_date_conf_trans {
     display: block !important;
     text-align: center!important;
-    border-right: 1px solid rgba(255,255,255,0.2);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
 }
-.t_header_row>div.tw_date_facture_trans{
+
+.t_header_row>div.tw_date_facture_trans {
     display: block !important;
     text-align: center!important;
 }
+
 .div_for_droping>div {
     margin-left: 0!important;
 }
@@ -6244,6 +6259,7 @@ table.small_tab tbody tr td {
     display: block;
     text-align: center;
 }
+
 .t_header_row>div.tw_paiement,
 .t_header_row>div.tw_reste,
 .t_header_row>div.tw_montant_total,
@@ -6252,12 +6268,13 @@ table.small_tab tbody tr td {
 .t_header_row>div.tw_type_trans,
 .t_header_row>div.tw_etat_prod,
 .t_header_row>div.tw_etape_prod,
-.t_header_row>div.tw_date_conf{
+.t_header_row>div.tw_date_conf {
     display: block;
     text-align: center!important;
-    border-right: 1px solid rgba(255,255,255,0.2);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
 }
-.t_header_row>div.tw_date_facture{
+
+.t_header_row>div.tw_date_facture {
     display: block;
     text-align: center!important;
 }
@@ -6351,56 +6368,57 @@ tr td.t_concerne_rem {
     padding-top: 35px;
 }
 
+
 /* tableau liste changement */
 
-.unite_date_changement{
-    
-}
-.date_changement{
+.date_changement {
     width: 100% !important;
     display: flex;
     height: 35px;
     justify-content: start;
     align-items: center;
 }
-.date_changement div.inner_date{
-    
+
+.date_changement div.inner_date {
     width: 250px;
     text-align: center;
 }
-.loop_client{
-   
+
+.loop_client {
     width: 100% !important;
 }
-.unite_client_tw{
-   width: 100% !important;
+
+.unite_client_tw {
+    width: 100% !important;
     display: flex;
     height: 35px;
     justify-content: start;
     align-items: center;
 }
-.unite_date_changement .loop_client{
+
+.unite_date_changement .loop_client {
     border-top: 1px solid rgba(204, 204, 204, 0.4);
 }
-.unite_client_entreprise{
+
+.unite_client_entreprise {
     width: 225px;
     height: auto !important;
-    text-align: center; 
+    text-align: center;
     text-align: start;
     padding-left: 15px;
 }
-.entete_pf{
-     width: 200px !important;
+
+.entete_pf {
+    width: 200px !important;
 }
-.unite_pf{
+
+.unite_pf {
     display: flex;
     border-bottom: 1px solid rgba(204, 204, 204, 0.2);
     height: 35px;
-    
 }
 
-.div_change{
-   
+.div_change {
     min-height: 10px;
     width: calc(100% / 4) !important;
     flex-shrink: 0 !important;
@@ -6408,47 +6426,360 @@ tr td.t_concerne_rem {
     display: flex;
     align-items: center;
 }
-.loop_pf{
+
+.loop_pf {
     display: flex;
     height: 35px;
     border-top: 1px solid rgba(204, 204, 204, 0.2);
 }
-.table_body .unite_date_changement:last-child .loop_client:last-child .loop_liste_pf .loop_pf:last-child{
+
+.table_body .unite_date_changement:last-child .loop_client:last-child .loop_liste_pf .loop_pf:last-child {
     border-bottom: none !important;
 }
-.li_tw{
+
+.li_tw {
     padding-left: 55px !important;
 }
-.btn_group .btn-dore{
- background: #d29e00 !important;  
+
+.btn_group .btn-dore {
+    background: #d29e00 !important;
 }
-.btn_group .btn-gris{
+
+.btn_group .btn-gris {
     background: rgba(210, 210, 210, 1) !important;
 }
-.fiche_content{
+
+.fiche_content {
     margin-top: 25px !important;
     border-radius: 25px;
 }
-.val_data{
+
+.val_data {
     font-weight: 600 !important;
-    color: rgba(0,0,0,0.5) !important;
+    color: rgba(0, 0, 0, 0.5) !important;
 }
-.check{
-   text-align: end;
+
+.check {
+    text-align: end;
     margin-top: 25px;
 }
-#slick_left{
+
+#slick_left {
     position: absolute;
     left: 25px;
     top: 15px;
     z-index: 2;
 }
-#slick_right{
+
+#slick_right {
     position: absolute;
     right: 25px;
     top: 15px;
     z-index: 2;
 }
-.h4_text_client_modal{
+
+.h4_text_client_modal {
     color: #d29e00;
 }
+
+
+/* tresorerie en gen*/
+
+.entete_tresor {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+    border-bottom: 1px solid rgba(200, 200, 200, 0.5);
+}
+
+.titre_tresor h4 {
+    font-size: 25px;
+    color: #c79c67;
+}
+
+.btn_form_tresor a.btn {
+    background: #323232;
+    border-radius: 5px;
+    border-color: transparent;
+}
+
+.btn_form_tresor a.btn span.fa {
+    margin-right: 10px;
+}
+
+.btn_form_tresor a.btn:hover {
+    background: transparent !important;
+    border-color: #323232 !important;
+}
+
+.btn_form_tresor a.btn:hover span {
+    color: #323232 !important;
+}
+
+.entete_2 {
+    flex-direction: column;
+}
+
+.type_banque {
+    margin-bottom: 25px;
+}
+
+.type_banque h4 {
+    color: #323232 !important;
+    font-size: 20px;
+    color: #c79c67 !important;
+}
+
+.liste_comptes {
+    display: flex;
+    margin-bottom: 25px;
+}
+
+.unite_banque {
+    width: 200px;
+}
+
+.liste_comptes .unite_banque:not(:first-child) {
+    margin-left: 25px;
+}
+
+.unite_banque p {
+    text-align: center;
+}
+
+.unite_banque p.nom_banque {
+    margin-top: 0px;
+    color: #fff !important;
+    border-radius: 25px;
+    padding: 5px;
+    background: #c79c67
+}
+
+.unite_banque p.montant_banque {
+    margin-bottom: 15px;
+    color: #323232 !important;
+    font-weight: 550;
+}
+
+.liste_button_tres {
+    display: flex;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.button_banque {
+    width: 150px;
+}
+
+.button_banque a {
+    border-radius: 0;
+    display: block;
+}
+
+.button_banque a.btn:hover {
+    background: transparent !important;
+    border-color: #c79c67 !important;
+}
+
+.filtre_tresor {
+    display: flex;
+    justify-content: space-between;
+}
+
+.part_filter {
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.filtre_tresor .part_filter:last-child {
+    text-align: end;
+    justify-content: end;
+}
+
+.btn_black_tres {
+    background: #323232;
+    border-color: transparent;
+    border-radius: 5px;
+    width: 50px;
+    height: 30px;
+}
+
+.filtre_tresor input,
+.filtre_tresor select {
+    height: 30px;
+    border-radius: 5px;
+    border-color: rgba(200, 200, 200, 0.5) !important;
+    box-shadow: none !important;
+    border-width: 1px;
+    color: #585656;
+}
+
+.btn_black_tres span {
+    color: #fff;
+}
+
+.btn_black_tres:hover {
+    background: #5f5f5f;
+}
+
+.filtre_tresor .form_search span.fa {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    width: 25px;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    bottom: 0.5px;
+    left: 25px;
+    color: rgba(200, 200, 200);
+}
+
+.form_search input#serch_tresorerie {
+    border-radius: 0px !important;
+    box-shadow: none !important;
+    border: 1px solid rgba(200, 200, 200, 0.5) !important;
+    border-radius: 25px !important;
+    width: 200px;
+    padding-left: 26px;
+}
+
+.form_search #serch_tresorerie:focus {
+    border: 1px solid #c79c67 !important;
+}
+
+.sans_border {
+    border: none !important;
+}
+
+.t_header_tres>div:not(:last-child) {
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.t_header_tres {
+    padding-left: 0px !important;
+}
+
+.t_header_tres>div {
+    text-align: center;
+    margin: 0!important;
+}
+
+.tres_des {
+    width: 200px !important;
+}
+
+.tres_date {
+    width: 150px !important;
+}
+
+.tres_idPro {
+    width: 150px !important;
+}
+
+.tres_sage {
+    width: 150px !important;
+}
+
+.tres_client {
+    width: 200px !important;
+}
+
+.t_body_tres .tres_date {
+    width: 150px !important;
+    -ms-flex-negative: 0 !important;
+    flex-shrink: 0 !important;
+    text-align: start !important;
+    padding-left: 16px;
+}
+
+.t_body_tres .tres_des {
+    width: 200px !important;
+    -ms-flex-negative: 0 !important;
+    flex-shrink: 0 !important;
+    text-align: start !important;
+    padding-left: 16px;
+}
+
+.t_body_tres .tres_idPro {
+    width: 150px !important;
+    -ms-flex-negative: 0 !important;
+    flex-shrink: 0 !important;
+    text-align: start !important;
+    padding-left: 16px;
+}
+
+.t_body_tres .tres_sage {
+    width: 150px !important;
+    -ms-flex-negative: 0 !important;
+    flex-shrink: 0 !important;
+    text-align: start !important;
+    padding-left: 16px;
+}
+
+.t_body_tres .tres_client {
+    width: 200px !important;
+    -ms-flex-negative: 0 !important;
+    flex-shrink: 0 !important;
+    text-align: start !important;
+    padding-left: 16px;
+}
+
+/* formulaire recette */
+
+.form_rec_dep{
+    
+}
+.form_rec_dep .form-group:first-child{
+    margin-top: 25px;
+}
+
+.form_rec_dep select{
+    height: 30px;
+    width: 200px;
+    text-align: center;
+}
+.form_rec_dep .form-group:first-child {
+    margin-bottom: 25px;
+}
+.form_rec_dep .form-group label{
+    display: inline-block;
+    width: 200px;
+}
+.form_rec_dep .form-group input,
+.form_rec_dep .form-group select{
+    height: 30px;
+    width: 200px;
+    border: 1px solid rgba(200,200,200,0.5);
+    background: rgba(255,255,255,0.5);
+    padding-left: 3px;
+    color: #323232 !important;
+}
+.form_rec_dep .last_fg button{
+    margin-left: 203px;
+    width: 200px;
+    background: #c79c67;
+    border-color: #c79c67;
+    border-radius: 0 !important;
+}
+.form_rec_dep .last_fg button span{
+    color: #fff;
+}
+.form_rec_dep .last_fg button:hover{
+    background: transparent !important;
+}
+.form_rec_dep .last_fg button:hover span{
+    color: #323232;
+}
+
+
+
+/* fin recette form */
+
+/* tresorerie */

@@ -1,0 +1,86 @@
+{% extends "base.html.twig" %}
+{% block title %}
+	Tropical wood
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
+{% endblock %}
+
+{% block body %}
+
+	<section
+		id="contents" class="content_tropical container-fluid">
+		<!-- entete content -->
+		{% include "nav2.html.twig" %}
+		<!-- / entete content -->
+		<!-- contenue  -->
+			<div id="hrs_content"> <div>
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<div class="entete_tresor">
+						<div class="titre_tresor">
+                            <h4><strong>Trésorerie</strong></h4>
+                        </div>
+					</div>
+					<div class="form_rec_dep">
+						<form action="">
+							<div class="form-group">
+								<select name="" id="">
+									<option value="">Dépense</option>
+									<option value="">Recette</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="">Date</label>
+								<input type="date" id="date">
+							</div>
+							{# si Recette #}
+							{% if type is defined and type == 'recette' %}
+								<div class="form-group">
+									<label for="">ID pro</label>
+									<input type="text" id="fournisseur">
+								</div>
+								<div class="form-group">
+									<label for="">Client</label>
+									<input type="text" id="client">
+								</div>
+							{% endif %}
+							{# si Dépense #}
+							{% if type is defined and type == 'depense' %}
+								<div class="form-group">
+									<label for="">N° compte</label>
+									<input type="text" id="num_compte">
+								</div>
+								<div class="form-group">
+									<label for="">Fournisseur</label>
+									<input type="text" id="fournisseur">
+								</div>
+							{% endif %}
+							<div class="form-group">
+								<label for="">N° Sage</label>
+								<input type="text" id="sage">
+							</div>
+							<div class="form-group">
+								<label for="">Mode paiement</label>
+								<input type="text" id="mode_pmt">
+							</div>
+							<div class="form-group">
+								<label for="">Compte bancaire</label>
+								<input type="text" id="compte_b">
+							</div>
+							<div class="form-group">
+								<label for="">Paiement</label>
+								<input type="text" id="paiement">
+							</div>
+							<div class="form-group last_fg">
+								<button class="btn btn-default"><span>Valider</span></button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		<!-- / contenue  -->
+	</section>
+{% endblock %}
+
+

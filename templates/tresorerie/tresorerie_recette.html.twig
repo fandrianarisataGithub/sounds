@@ -1,0 +1,212 @@
+{% extends "base.html.twig" %}
+{% block title %}
+	Tropical wood
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
+{% endblock %}
+
+{% block body %}
+
+	<section
+		id="contents" class="content_tropical container-fluid">
+		<!-- entete content -->
+		{% include "nav2.html.twig" %}
+		<!-- / entete content -->
+		<!-- contenue  -->
+			<div id="hrs_content"> <div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<div class="entete_tresor">
+                        <div class="titre_tresor">
+                            <h4><strong>Trésorerie</strong></h4>
+                        </div>
+                        <div class="btn_form_tresor">
+                            <a href="{{ path('formulaire_tres', {'type' : 'recette'}) }}" class="btn btn-default btn_gris"><span class="fa fa-plus"></span><span>Formulaires</span></a>
+                        </div>
+                    </div>
+					<div class="entete_tresor entete_2">
+                        <div class="type_banque">
+                            <h4>comptes bancaires</h4>
+                        </div>
+                        <div class="liste_comptes">
+                            <div class="unite_banque">
+								<p class="nom_banque">
+									BNI <span class="unite">Ar</span>
+								</p>
+								<p class="montant_banque">
+									<span class="montant">120000000</span>
+								</p>
+							</div>
+							<div class="unite_banque">
+								<p class="nom_banque">
+									BNI <span class="unite">Ar</span>
+								</p>
+								<p class="montant_banque">
+									<span class="montant">120000000</span>
+								</p>
+							</div>
+							<div class="unite_banque">
+								<p class="nom_banque">
+									BNI <span class="unite">Ar</span>
+								</p>
+								<p class="montant_banque">
+									<span class="montant">120000000</span>
+								</p>
+							</div>
+							<div class="unite_banque">
+								<p class="nom_banque">
+									BNI <span class="unite">Ar</span>
+								</p>
+								<p class="montant_banque">
+									<span class="montant">120000000</span>
+								</p>
+							</div>
+                        </div>
+                    </div>
+				</div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<div class="liste_button_tres">
+						<aside class="button_banque">
+							<a href="{{ path('tresorerie_recette') }}" class="btn btn_dore">
+								<span>Recette</span>
+							</a>
+						</aside>
+						<aside class="button_banque">
+							<a href="{{ path('tresorerie_depense') }}" class="btn btn_gris">
+								<span>Dépense</span>
+							</a>
+						</aside>
+					</div>
+					<div class="filtre_tresor">
+						<aside class="part_filter">
+							<div class="form_date">
+								<form action="" class="form-inline">
+									<div class="form-group">
+										<label for="">Date</label>
+										<input type="date" >
+									</div>
+									<div class="form-group">
+										<input type="date" >
+									</div>
+									<div class="form-group">
+										<button class="btn_black_tres" id="trier_by_btn_ok"><span>OK</span></button>
+									</div>
+								</form>
+							</div>
+							<div class="form_search">
+								<span class="fa fa-search"></span><input type="text" id="serch_tresorerie">
+							</div>
+						</aside>
+						<aside class="part_filter">
+							<div class="form_select">
+								<form action="" class="form-inline">
+									<div class="form-group">
+										<select name="" id="" class="form-control">
+											<option value="">Mode de paiement</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<select name="" id="" class="form-control">
+											<option value="">Compte bancaire</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<select name="" id="" class="form-control">
+											<option value="">Monnaie</option>
+										</select>
+									</div>
+								</form>
+							</div>
+						</aside>
+					</div>
+					<div class="tableau_tropical tableau_scroll">
+						<div class="table_content">
+							<div class="table_header">
+								<div class="t_header_row t_header_trans t_header_tres">
+									<div class="tres_date">
+										<span>Date</span>
+									</div>
+									<div class="tres_des">
+										<span>Désignation</span>
+									</div>
+									<div class="tres_idPro">
+										<span>ID Pro</span>
+									</div>
+									<div class="tres_sage">
+										<span>N° Sage</span>
+									</div>
+									<div
+										class=" tres_client">
+										
+										<span>Client</span>
+									</div>
+									<div class="tres_mode_p">
+										<span>Mode de paiement</span>
+									</div>
+									<div class="tres_compte_b">
+										<span>Compte bancaire</span>
+									</div>
+									<div class="tres_monnaie">
+										<span>Monnaie</span>
+									</div>
+									<div class="tres_paiement sans_border">
+										<span>Paiement</span>
+										<span class="span_tri">
+											<a href="#" class="a_tri" data-type="paiement" data-data="ASC">
+												<small class="fa fa-sort-asc"></small>
+											</a>
+											<a href="#" class="a_tri" data-type="paiement" data-data="DESC">
+												<small class="fa fa-sort-desc"></small>
+											</a>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="table_body liste_pf">
+								<div class="dr_tab_trans">
+									<div class="block_all_tr block_tr_scroll">
+										<div class="t_body_row sous_tab_body t_body_tres">
+											<div class="tres_date">
+												<span>Date</span>
+											</div>
+											<div class="tres_des">
+												<span>Désignation</span>
+											</div>
+											<div class="tres_idPro">
+												<span>ID Pro</span>
+											</div>
+											<div class="tres_sage">
+												<span>N° Sage</span>
+											</div>
+											<div class=" tres_client">
+
+												<span>Client</span>
+											</div>
+											<div class="tres_mode_p">
+												<span>Mode de paiement</span>
+											</div>
+											<div class="tres_compte_b">
+												<span>Compte bancaire</span>
+											</div>
+											<div class="tres_monnaie">
+												<span>Monnaie</span>
+											</div>
+											<div class="tres_paiement sans_border">
+												<span class="montant">1221546515</span>
+											</div>
+
+										</div>
+										
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>				
+				</div>
+			</div>
+		<!-- / contenue  -->
+	</section>
+{% endblock %}
+
+
