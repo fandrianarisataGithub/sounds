@@ -128,6 +128,14 @@ class AdminController extends AbstractController
                             $user->addHotel($hotels);
                         }
 
+                        else if ($role == "receptionniste") {
+                            $user->setRoles(array('ROLE_USER'));
+                            $user->setProfile("admin_hotel"); // hotel unique
+                            $user->setReceptionniste('oui'); // stria tsy tadidiko tsoony ze moimba anle profile tany
+                            $hotels = $reposHotel->findOneByNom($hotel);
+                            $user->addHotel($hotels);
+                        }
+
                         $user->setHotel($hotel);
                         
                         // on persist 
@@ -173,6 +181,7 @@ class AdminController extends AbstractController
                
                 $son_role = "";
                 $son_profile = $elm->getProfile();
+                $son_recep = $elm->getReceptionniste();
                 $son_nom_hotel = "";
                 // les admin : super admin et admin all hotels
                
@@ -184,8 +193,12 @@ class AdminController extends AbstractController
                     $son_role = 'Admin hôtels';
                     $son_nom_hotel = "Accès à tous les hôtels";
                 }
-                else if($son_profile == "admin_hotel"){
+                else if($son_profile == "admin_hotel" && $son_recep != "oui"){
                     $son_role = 'Admin '. $elm->getHotel();
+                    $son_nom_hotel = "Accès simple";
+                } 
+                else if($son_profile == "admin_hotel" && $son_recep == "oui"){
+                    $son_role = 'Receptionniste '. $elm->getHotel();
                     $son_nom_hotel = "Accès simple";
                 } 
                 else if ($son_profile == "admin_tropical_wood") {

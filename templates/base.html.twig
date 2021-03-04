@@ -172,19 +172,21 @@
 						{# debut menu sounds #}
 							{% if groupe == "sounds" %}
 								<ul class="categories">
-									<li {% if id is defined and id is not null and id == "li__compte_rendu" %} id="{{ id }}" {% endif %}>
-										<a href="{{ path('crj', {'pseudo_hotel' : hotel}) }}">
-											<i aria-hidden="true" id="crj">
-												{% if id is defined and id is not null and id == "li__compte_rendu"  %}
-													<img src="{{ asset('images/crj_2.png') }}" alt="icone crj 1" class="img-responsive nav_icone" width="40">
-												{% else %}
-													<img src="{{ asset('images/crj.png') }}" alt="icone crj 1" class="img-responsive nav_icone" width="40">
-												{% endif %}
-												<img src="{{ asset('images/crj_2.png') }}" alt="icone crj 2" class="img-responsive nav_icone_hover" width="40">
-											</i>
-											<span>Compte rendu journalier</span>
-										</a>
-									</li>
+									{% if app.user.receptionniste != "oui" %}
+										<li {% if id is defined and id is not null and id == "li__compte_rendu" %} id="{{ id }}" {% endif %}>
+											<a href="{{ path('crj', {'pseudo_hotel' : hotel}) }}">
+												<i aria-hidden="true" id="crj">
+													{% if id is defined and id is not null and id == "li__compte_rendu"  %}
+														<img src="{{ asset('images/crj_2.png') }}" alt="icone crj 1" class="img-responsive nav_icone" width="40">
+													{% else %}
+														<img src="{{ asset('images/crj.png') }}" alt="icone crj 1" class="img-responsive nav_icone" width="40">
+													{% endif %}
+													<img src="{{ asset('images/crj_2.png') }}" alt="icone crj 2" class="img-responsive nav_icone_hover" width="40">
+												</i>
+												<span>Compte rendu journalier</span>
+											</a>
+										</li>
+									{% endif %}
 									<li {% if id is defined and id is not null and id == "li__hebergement" %} id="{{ id }}" {% endif %}>
 										<a href="{{ path('hebergement', {'pseudo_hotel' : hotel}) }}">
 											<i aria-hidden="true" id="bed">
@@ -200,6 +202,7 @@
 											<span>Hébergement</span>
 										</a>
 									</li>
+									{% if app.user.receptionniste != "oui" %}
 									<li {% if id is defined and id is not null and id == "li__restaurant" %} id="{{ id }}" {% endif %}>
 										<a href="{{ path('restaurant', {'pseudo_hotel' : hotel}) }}">
 											<i aria-hidden="true" id="restaurant">
@@ -217,6 +220,8 @@
 												Restaurant</span>
 										</a>
 									</li>
+									{% endif %}
+									{% if app.user.receptionniste != "oui" %}
 									<li {% if id is defined and id is not null and id == "li__spa" %} id="{{ id }}" {% endif %}>
 										<a href="{{ path('spa', {'pseudo_hotel' : hotel}) }}">
 											<i aria-hidden="true" id="spa">
@@ -233,7 +238,9 @@
 											<span>Spa</span>
 										</a>
 									</li>
-
+									{% endif %}
+									
+									{% if app.user.receptionniste != "oui" %}
 									<li {% if id is defined and id is not null and id == "li__fournisseur" %} id="{{ id }}" {% endif %}>
 										<a href="{{ path('fournisseur', {'pseudo_hotel' : hotel}) }}">
 											<i aria-hidden="true" id="fournisseur">
@@ -248,6 +255,8 @@
 											<span>Fournisseur</span>
 										</a>
 									</li>
+									{% endif %}
+									{% if app.user.receptionniste != "oui" %}
 									<li {% if id is defined and id is not null and id == "li__client_upload" %} id="{{ id }}" {% endif %}>
 										<a href="{{ path('client_upload', {'pseudo_hotel' : hotel}) }}">
 											<i aria-hidden="true" id="client">
@@ -262,6 +271,8 @@
 											<span>Client</span>
 										</a>
 									</li>
+									{% endif %}
+									{% if app.user.receptionniste != "oui" %}
 									<li {% if id is defined and id is not null and id == "fiche_hotel" %} id="{{ id }}" {% endif %}>
 										<a href="{{ path('fiche_hotel', {'pseudo_hotel' : hotel}) }}">
 											<i aria-hidden="true" id="edit">
@@ -278,6 +289,8 @@
 											<span>Fiche hôtel</span>
 										</a>
 									</li>
+									{% endif %}
+									{% if app.user.receptionniste != "oui" %}
 									<li {% if id is defined and id is not null and id == "li__stock" %} id="{{ id }}" {% endif %}>
 										<a href="{{ path('stock', {'pseudo_hotel' : hotel}) }}">
 											<small class="fa fa-archive" {% if id is defined and id is not null and id == "li__stock" %} style="color:#d29e00 !important" {% endif %}></small>
@@ -320,6 +333,8 @@
 											</li>
 										</ul>
 									</li>
+									{% endif %}
+									
 									<div class="liste_dj_dm">
 										<div class="liste_dj_dm_item" {% if id is defined and id is not null and id == "li__donnee_du_jour" %} id="{{ id }}" {% endif %}>
 											<a href="{{ path('donnee_jour', {'pseudo_hotel' : hotel, 'id' : "vide"}) }}">
@@ -327,12 +342,15 @@
 												<span>Données journalières</span>
 											</a>
 										</div>
+										{% if app.user.receptionniste != "oui" %}
 										<div class="liste_dj_dm_item" {% if id is defined and id is not null and id == "li__donnee_mensuelle" %} id="{{ id }}" {% endif %}>
 											<a href="{{ path('donnee_mensuelle', {'pseudo_hotel' : hotel}) }}">
 												<span class="fa fa-plus"></span>
 												<span>Données mensuelles</span>
 											</a>
 										</div>
+										{% endif %}
+										
 									</div>
 
 								</ul>

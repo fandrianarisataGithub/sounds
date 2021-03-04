@@ -131,7 +131,7 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
                     // initialisation de la variable session hotel
                     $hotel['date_ddj_demande'] = "vide";
                     $hotel['pseudo_hotel'] = $hotel_cible;
-                    $hotel['current_page'] = "crj";
+                    $hotel['current_page'] = "hebergement";
                     $hotel['user'] = $user;
                     // Ca ne changera pas tant l'utilisateur est connecté
                     $hotel['groupe'] = $groupe;
@@ -160,7 +160,7 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
                     // initialisation de la variable session hotel
 
                     $hotel['pseudo_hotel'] = $hotel_cible;
-                    $hotel['current_page'] = "crj";
+                    $hotel['current_page'] = "hebergement";
                     $hotel['user'] = $user;
                     // Ca ne changera pas tant l'utilisateur est connecté
                     $hotel['groupe'] = $groupe;
@@ -182,7 +182,7 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
                     $hotel = $session->get('hotel', []);
                     // initialisation de la variable session hotel
                     $hotel['pseudo_hotel'] = $hotel_cible;
-                    $hotel['current_page'] = "crj";
+                    $hotel['current_page'] = "hebergement";
                     $hotel['user'] = $user;
                     $hotel['groupe'] = $groupe;
                     //dd($hotel['pseudo_hotel']);
@@ -206,7 +206,7 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
                     // initialisation de la variable session hotel
 
                     $hotel['pseudo_hotel'] = $hotel_cible;
-                    $hotel['current_page'] = "crj";
+                    $hotel['current_page'] = "hebergement";
                     $hotel['user'] = $user;
                     // Ca ne changera pas tant l'utilisateur est connecté
                     $hotel['groupe'] = $groupe;
@@ -229,7 +229,7 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
                 // initialisation de la variable session hotel
 
                 $hotel['pseudo_hotel'] = $hotel_cible;
-                $hotel['current_page'] = "crj";
+                $hotel['current_page'] = "hebergement";
                 $hotel['user'] = $user;
                 // Ca ne changera pas tant l'utilisateur est connecté
                 $hotel['groupe'] = $groupe;

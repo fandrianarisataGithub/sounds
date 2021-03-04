@@ -104,6 +104,7 @@ class TresorerieController extends AbstractController
             $id_pro = $request->get('id_pro');
             $client = $request->get('client');
             $designation = $request->get('designation');
+            $monnaie = $request->get('monnaie');
             
             if($choix == "depense"){
                 $depense = new TresorerieDepense();
@@ -115,6 +116,7 @@ class TresorerieController extends AbstractController
                 $depense->setModePaiement($mode_pmt);
                 $depense->setCompteBancaire($compte_b);
                 $depense->setPaiement($paiement);
+                $depense->setMonnaie($monnaie);
                 $manager->persist($depense);
                 //dd($depense);
             }
@@ -127,6 +129,7 @@ class TresorerieController extends AbstractController
                 $recette->setNumSage($sage);
                 $recette->setModePaiement($mode_pmt);
                 $recette->setCompteBancaire($compte_b);
+                $recette->setMonnaie($monnaie);
                 $recette->setPaiement($paiement);
                 $manager->persist($recette);
                 //dd($recette);

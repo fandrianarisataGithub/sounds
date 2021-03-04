@@ -79,6 +79,11 @@ class User implements UserInterface
      */
     private $image;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $receptionniste;
+
     public function __construct()
     {
         $this->hotels = new ArrayCollection();
@@ -105,10 +110,23 @@ class User implements UserInterface
     {
         return $this->profile;
     }
+    
 
     public function setProfile(?string $profile): self
     {
         $this->profile = $profile;
+
+        return $this;
+    }
+
+    public function getReceptionniste(): ?string
+    {
+        return $this->receptionniste;
+    }
+
+    public function setReceptionniste(?string $receptionniste): self
+    {
+        $this->receptionniste = $receptionniste;
 
         return $this;
     }

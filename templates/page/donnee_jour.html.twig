@@ -41,26 +41,54 @@
                                 <div class="form-group">
                                     <label for="t_o">Taux d'occupation :
                                     </label>
-                                     {{ form_widget(form.heb_to, {
-                                        'attr' : {
-                                            'class' : 'input_pourcent',
-                                           
-                                            'max' : '100',
-                                        }
-                                    }) }}
+                                     {% if app.user.receptionniste == "oui" %}
+                                        {{ form_widget(form.heb_to, {
+                                                'attr' : {
+                                                    'class' : 'input_pourcent',
+                                                
+                                                    'max' : '100',
+                                                    'value' : ""
+                                                }
+                                            }) 
+                                        }}
+                                     {% else %}
+                                        {{ form_widget(form.heb_to, {
+                                                'attr' : {
+                                                    'class' : 'input_pourcent',
+                                                
+                                                    'max' : '100',
+                                                   
+                                                }
+                                            }) 
+                                        }}
+                                     {% endif %}
                                     <span class="span__pourcent">%</span>
                                 </div>
                                 <div class="form-group">
                                     <label for="c_a">Chiffre d'affaire :
                                     </label>
                                     {# <input type="text" maxlength="23" class="input_nombre" id="heb_ca"> #}
-                                    {{ form_widget(form.heb_ca, {
-                                        'attr' : {
-                                            'class' : 'input_nombre',
-                                            
-                                            'maxlength' : '23',
-                                        }
-                                    }) }}
+                                    {% if app.user.receptionniste == "oui" %}
+                                        {{ form_widget(form.heb_ca ,{
+                                                'attr' : {
+                                                    'class' : 'input_pourcent',
+                                                    'max' : '100',
+                                                    'value' : '',
+                                                }
+                                            }) 
+                                        }}
+                                    {% else %}
+                                        {{ form_widget(form.heb_ca ,{
+                                                'attr' : {
+                                                    'class' : 'input_pourcent',
+                                                
+                                                    'max' : '100',
+                                                
+                                                }
+                                            }) 
+                                        }}
+                                    {% endif %}
+
                                     <span class="span__ar">Ar</span>
                                 </div>
                             </div>
@@ -141,21 +169,33 @@
                                 <div class="form-group">
                                     <label for="n_couvert">Nombre de couvert :
                                     </label>
-                                    {# <input type="text" max="100" maxlength="18" class="input_nombre" id="res_n_couvert"> #}
-                                     {{ form_widget(form.res_n_couvert, {
-                                        'attr' : {
-                                            'class' : 'input_nombre',
-                                            
-                                            'maxlength' : '23',
-                                            'max' : '100',
-                                        }
-                                    }) }}
+                                     {% if app.user.receptionniste != "oui" %}
+                                        {{ form_widget(form.res_n_couvert, {
+                                            'attr' : {
+                                                'class' : 'input_nombre',
+                                                
+                                                'maxlength' : '23',
+                                                'max' : '100',
+                                            }
+                                        }) }}
+                                     {% else %}
+                                         {{ form_widget(form.res_n_couvert, {
+                                            'attr' : {
+                                                'class' : 'input_nombre',
+                                                
+                                                'maxlength' : '23',
+                                                'max' : '100',
+                                                'value' : ''
+                                            }
+                                        }) }}
+                                    {% endif %}
                                 </div>
                                 <div class="form-group">
                                     <label for="c_a_rest">Chiffre d'affaire :
                                     </label>
                                     {# <input type="text" maxlength="23" class="input_nombre" id = "res_ca"> #}
-                                    {{ form_widget(form.res_ca, {
+                                    {% if app.user.receptionniste != "oui" %}
+                                        {{ form_widget(form.res_ca, {
                                         'attr' : {
                                             'class' : 'input_nombre',
                                         
@@ -163,6 +203,17 @@
                                             'max' : '100',
                                         }
                                     }) }}
+                                    {% else %}
+                                        {{ form_widget(form.res_ca, {
+                                        'attr' : {
+                                            'class' : 'input_nombre',
+                                        
+                                            'maxlength' : '23',
+                                            'max' : '100',
+                                            'value' : '',
+                                        }
+                                    }) }}
+                                    {% endif %}
                                     <span class="span__ar">Ar</span>
                                 </div>
                             </div>
@@ -171,7 +222,8 @@
                                     <label for="p_dejeuner">Petit déjeuner :
                                     </label>
                                     {# <input type="text" max="100" maxlength="18" class="input_nombre" id="res_p_dej"> #}
-                                     {{ form_widget(form.res_p_dej, {
+                                     {% if app.user.receptionniste != "oui" %}
+                                         {{ form_widget(form.res_p_dej, {
                                         'attr' : {
                                             'class' : 'input_nombre',
                                         
@@ -179,12 +231,24 @@
                                             'max' : '100',
                                         }
                                     }) }}
+                                     {% else %}
+                                         {{ form_widget(form.res_p_dej, {
+                                        'attr' : {
+                                            'class' : 'input_nombre',
+                                        
+                                            'maxlength' : '23',
+                                            'max' : '100',
+                                            'value' : ''
+                                        }
+                                    }) }}
+                                     {% endif %}
                                 </div>
                                 <div class="form-group">
                                     <label for="dejeuner">Déjeuner :
                                     </label>
                                     {# <input type="text" max="100" maxlength="18" class="input_nombre" id = "res_dej"> #}
-                                    {{ form_widget(form.res_dej, {
+                                   {% if app.user.receptionniste != "oui" %}
+                                        {{ form_widget(form.res_dej, {
                                         'attr' : {
                                             'class' : 'input_nombre',
                                         
@@ -192,6 +256,17 @@
                                             'max' : '100',
                                         }
                                     }) }}
+                                   {% else %}
+                                        {{ form_widget(form.res_dej, {
+                                        'attr' : {
+                                            'class' : 'input_nombre',
+                                        
+                                            'maxlength' : '18',
+                                            'max' : '100',
+                                            'value' : ''
+                                        }
+                                    }) }}
+                                   {% endif %}
                                 </div>
                             </div>
                             <div class="data_form">
@@ -199,7 +274,8 @@
                                     <label for="dinner">Dinner :
                                     </label>
                                     {# <input type="text" max="100" maxlength="18" class="input_nombre" id = "res_dinner"> #}
-                                    {{ form_widget(form.res_dinner, {
+                                    {% if app.user.receptionniste != 'oui' %}
+                                        {{ form_widget(form.res_dinner, {
                                         'attr' : {
                                             'class' : 'input_nombre',
                                         
@@ -207,6 +283,17 @@
                                             'max' : '100',
                                         }
                                     }) }}
+                                    {% else %}
+                                        {{ form_widget(form.res_dinner, {
+                                        'attr' : {
+                                            'class' : 'input_nombre',
+                                        
+                                            'maxlength' : '18',
+                                            'max' : '100',
+                                            'value' : ''
+                                        }
+                                    }) }}
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="h4_titre">
@@ -217,20 +304,32 @@
                                     <label for="c_a_spa">Chiffre d'affaire :
                                     </label>
                                     {# <input type="text" maxlength="23" class="input_nombre" id = "spa_ca"> #}
-                                    {{ form_widget(form.spa_ca, {
+                                    {% if app.user.receptionniste != "oui" %}
+                                        {{ form_widget(form.spa_ca, {
                                         'attr' : {
                                             'class' : 'input_nombre',
                                         
                                             'maxlength' : '23',
                                         }
                                     }) }}
+                                    {% else %}
+                                        {{ form_widget(form.spa_ca, {
+                                        'attr' : {
+                                            'class' : 'input_nombre',
+                                        
+                                            'maxlength' : '23',
+                                            'value' : ''
+                                        }
+                                    }) }}
+                                    {% endif %}
                                     <span class="span__ar">Ar</span>
                                 </div>
                                 <div class="form-group">
                                     <label for="n_abonne">Nombre d'abonné :
                                     </label>
                                     {# <input type="text" max="100" maxlength="18" class="input_nombre" id = "spa_n_abonne"> #}
-                                     {{ form_widget(form.spa_n_abonne, {
+                                     {% if app.user.receptionniste != "oui" %}
+                                         {{ form_widget(form.spa_n_abonne, {
                                         'attr' : {
                                             'class' : 'input_nombre',
                                         
@@ -238,6 +337,17 @@
                                             'max' : '100',
                                         }
                                     }) }}
+                                     {% else %}
+                                         {{ form_widget(form.spa_n_abonne, {
+                                        'attr' : {
+                                            'class' : 'input_nombre',
+                                        
+                                            'maxlength' : '18',
+                                            'max' : '100',
+                                            'value' : ""
+                                        }
+                                    }) }}
+                                     {% endif %}
                                 </div>
                             </div>
                             <div class="data_form">
@@ -246,7 +356,8 @@
                                     <label for="c_unique">Client unique :
                                     </label>
                                     {# <input type="text" max="100" maxlength="18" class="input_nombre" id = "spa_c_unique"> #}
-                                     {{ form_widget(form.spa_c_unique, {
+                                     {% if app.user.receptionniste != "oui" %}
+                                         {{ form_widget(form.spa_c_unique, {
                                         'attr' : {
                                             'class' : 'input_nombre',
                                         
@@ -254,6 +365,17 @@
                                             'max' : '100',
                                         }
                                     }) }}
+                                     {% else %}
+                                         {{ form_widget(form.spa_c_unique, {
+                                        'attr' : {
+                                            'class' : 'input_nombre',
+                                        
+                                            'maxlength' : '18',
+                                            'max' : '100',
+                                            'value' : ''
+                                        }
+                                    }) }}
+                                     {% endif %}
                                 </div>
                             </div>
 
@@ -266,21 +388,39 @@
                                     <label for="c_a_spa">Direction :
                                     </label>
                                     {# <textarea class="form-control" id = "crj_direction"></textarea> #}
-                                     {{ form_widget(form.crj_direction, {
+                                    {% if app.user.receptionniste != "oui" %}
+                                         {{ form_widget(form.crj_direction, {
                                         'attr' : {
                                             'class' : 'form-control',
                                         }
                                     }) }}
+                                    {% else %}
+                                         {{ form_widget(form.crj_direction, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                            'value' : '',
+                                        }
+                                    }) }}
+                                    {% endif %}
                                 </div>
                                 <div class="form-group">
                                     <label for="c_a_spa">Service RH :
                                     </label>
                                     {# <textarea class="form-control" id = "crj_service_rh"></textarea> #}
-                                    {{ form_widget(form.crj_service_rh, {
+                                    {% if app.user.receptionniste != "oui" %}
+                                        {{ form_widget(form.crj_service_rh, {
                                         'attr' : {
                                             'class' : 'form-control',
                                         }
                                     }) }}
+                                    {% else %}
+                                        {{ form_widget(form.crj_service_rh, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                            'value' : ''
+                                        }
+                                    }) }}
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="data_form crj">
@@ -288,21 +428,39 @@
                                     <label for="c_a_spa">Commercial :
                                     </label>
                                     {# <textarea class="form-control" id ="crj_commercial"></textarea> #}
-                                    {{ form_widget(form.crj_commercial, {
+                                    {% if app.user.receptionniste != "oui" %}
+                                        {{ form_widget(form.crj_commercial, {
                                         'attr' : {
                                             'class' : 'form-control',
                                         }
                                     }) }}
+                                    {% else %}
+                                        {{ form_widget(form.crj_commercial, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                            'value' : ''
+                                        }
+                                    }) }}
+                                    {% endif %}
                                 </div>
                                 <div class="form-group">
                                     <label for="c_a_spa">Compatble :
                                     </label>
                                     {# <textarea class="form-control" id = "crj_comptable"></textarea> #}
-                                     {{ form_widget(form.crj_comptable, {
+                                    {% if app.user.receptionniste != "oui" %}
+                                        {{ form_widget(form.crj_comptable, {
                                         'attr' : {
                                             'class' : 'form-control',
                                         }
                                     }) }}
+                                    {% else %}
+                                        {{ form_widget(form.crj_comptable, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                            'value' : ''
+                                        }
+                                    }) }}
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="data_form crj">
@@ -310,21 +468,39 @@
                                     <label for="c_a_spa">Réception :
                                     </label>
                                     {# <textarea class="form-control" id ="crj_reception"></textarea> #}
-                                     {{ form_widget(form.crj_reception, {
+                                     {% if app.user.receptionniste != "oui" %}
+                                         {{ form_widget(form.crj_reception, {
                                         'attr' : {
                                             'class' : 'form-control',
                                         }
                                     }) }}
+                                     {% else %}
+                                         {{ form_widget(form.crj_reception, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                            'value' : ''
+                                        }
+                                    }) }}
+                                     {% endif %}
                                 </div>
                                 <div class="form-group">
                                     <label for="c_a_spa">Restaurant :
                                     </label>
                                     {# <textarea class="form-control" id ="crj_restaurant"></textarea> #}
-                                    {{ form_widget(form.crj_restaurant, {
+                                   {% if app.user.receptionniste != "oui" %}
+                                        {{ form_widget(form.crj_restaurant, {
                                         'attr' : {
                                             'class' : 'form-control',
                                         }
                                     }) }}
+                                   {% else %}
+                                        {{ form_widget(form.crj_restaurant, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                            'value' : ''
+                                        }
+                                    }) }}
+                                   {% endif %}
                                 </div>
                             </div>
                             <div class="data_form crj">
@@ -332,21 +508,39 @@
                                     <label for="c_a_spa">Spa :
                                     </label>
                                     {# <textarea class="form-control" id ="crj_spa"></textarea> #}
-                                    {{ form_widget(form.crj_spa, {
+                                    {% if app.user.receptionniste != "oui" %}
+                                        {{ form_widget(form.crj_spa, {
                                         'attr' : {
                                             'class' : 'form-control',
                                         }
                                     }) }}
+                                    {% else %}
+                                        {{ form_widget(form.crj_spa, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                            'value' : ''
+                                        }
+                                    }) }}
+                                    {% endif %}
                                 </div>
                                 <div class="form-group">
                                     <label for="c_a_spa">Service techniques :
                                     </label>
                                     {# <textarea class="form-control" id ="crj_s_technique"></textarea> #}
-                                    {{ form_widget(form.crj_s_technique, {
+                                    {% if app.user.receptionniste != "oui" %}
+                                        {{ form_widget(form.crj_s_technique, {
                                         'attr' : {
                                             'class' : 'form-control',
                                         }
                                     }) }}
+                                    {% else %}
+                                        {{ form_widget(form.crj_s_technique, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                            'value' : ''
+                                        }
+                                    }) }}
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="data_form crj">
@@ -354,21 +548,39 @@
                                     <label for="">Litiges :
                                     </label>
                                     {# <textarea class="form-control" id ="crj_litiges"></textarea> #}
-                                     {{ form_widget(form.crj_litiges, {
+                                    {% if app.user.receptionniste != 'oui' %}
+                                         {{ form_widget(form.crj_litiges, {
                                         'attr' : {
                                             'class' : 'form-control',
                                         }
                                     }) }}
+                                    {% else %}
+                                         {{ form_widget(form.crj_litiges, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                            'value' : '',
+                                        }
+                                    }) }}
+                                    {% endif %}
                                 </div>
                                 <div class="form-group">
                                     <label for="">Hébergement :
                                     </label>
                                     {# <textarea class="form-control" id ="crj_restaurant"></textarea> #}
-                                    {{ form_widget(form.crj_hebergement, {
+                                    {% if app.user.receptionniste != "oui" %}
+                                        {{ form_widget(form.crj_hebergement, {
                                         'attr' : {
                                             'class' : 'form-control',
                                         }
                                     }) }}
+                                    {% else %}
+                                        {{ form_widget(form.crj_hebergement, {
+                                        'attr' : {
+                                            'class' : 'form-control',
+                                            'value' : ''
+                                        }
+                                    }) }}
+                                    {% endif %}
                                 </div>
                             </div>
 
