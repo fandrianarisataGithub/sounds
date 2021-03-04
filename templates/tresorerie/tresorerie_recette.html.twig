@@ -95,7 +95,7 @@
 								</form>
 							</div>
 							<div class="form_search">
-								<span class="fa fa-search"></span><input type="text" id="serch_tresorerie">
+								<span class="fa fa-search"></span><input type="text" id="serch_tresorerie" placeholder="Rechercher">
 							</div>
 						</aside>
 						<aside class="part_filter">
@@ -165,38 +165,49 @@
 							</div>
 							<div class="table_body liste_pf">
 								<div class="dr_tab_trans">
-									<div class="block_all_tr block_tr_scroll">
-										<div class="t_body_row sous_tab_body t_body_tres">
-											<div class="tres_date">
-												<span>Date</span>
-											</div>
-											<div class="tres_des">
-												<span>Désignation</span>
-											</div>
-											<div class="tres_idPro">
-												<span>ID Pro</span>
-											</div>
-											<div class="tres_sage">
-												<span>N° Sage</span>
-											</div>
-											<div class=" tres_client">
+									<div
+										{% if recettes|length > 11 %}
+											class="block_all_tr block_tr_scroll"
+										{% else %}
+											class="block_all_tr"
+										{% endif %}
 
-												<span>Client</span>
-											</div>
-											<div class="tres_mode_p">
-												<span>Mode de paiement</span>
-											</div>
-											<div class="tres_compte_b">
-												<span>Compte bancaire</span>
-											</div>
-											<div class="tres_monnaie">
-												<span>Monnaie</span>
-											</div>
-											<div class="tres_paiement sans_border">
-												<span class="montant">1221546515</span>
+									>
+										{% for recette  in recettes %}
+											<div class="t_body_row sous_tab_body t_body_tres">
+												<div class="tres_date">
+													<span>{{ recette.getDate() | date("d-m-Y") }}</span>
+												</div>
+												<div class="tres_des">
+													<span>{{ recette.getDesignation() }}</span>
+												</div>
+												<div class="tres_idPro">
+													<span>{{ recette.getIdPro() }}</span>
+												</div>
+												<div class="tres_sage">
+													<span>{{ recette.getNumSage() }}</span>
+												</div>
+												<div class=" tres_client">
+
+													<span>{{ recette.getNomClient() }}</span>
+												</div>
+												<div class="tres_mode_p">
+													<span>{{ recette.getModePaiement() }}</span>
+												</div>
+												<div class="tres_compte_b">
+													<span>{{ recette.getCompteBancaire() }}</span>
+												</div>
+												<div class="tres_monnaie">
+													<span>{{ recette.getMonnaie() }}</span>
+												</div>
+												<div class="tres_paiement sans_border">
+													<span class="montant">{{ recette.getPaiement() }}</span>
+												</div>
+
 											</div>
 
-										</div>
+										{% endfor %}
+
 										
 									</div>
 								</div>

@@ -16,6 +16,20 @@
 		<!-- / entete content -->
 		<!-- contenue  -->
 			<div id="hrs_content"> <div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+					<div class=" div_revenir">
+						<a {% if type is defined %}
+							{% if type == "depense" %}
+								href="{{ path('tresorerie_depense') }}"
+							{% else %}
+								href="{{ path('tresorerie_recette') }}"
+							{% endif %}
+						{% endif %} class="btn btn-default">
+							<span class="fa fa-arrow-left"></span>
+							<span class="revenir_liste"></span>
+						</a>
+					</div>
+				</div>
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 					<div class="entete_tresor">
 						<div class="titre_tresor">
@@ -25,37 +39,80 @@
 					<div class="form_rec_dep">
 						<form action="">
 							<div class="form-group">
-								<select name="" id="">
-									<option value="">Dépense</option>
-									<option value="">Recette</option>
+								<select name="" id="select_tres">
+									<option value="depense"
+										{% if type is defined and type == 'depense' %}
+											selected = "selected"
+										{% endif %}
+									>Dépense</option>
+									<option value="recette"
+
+										{% if type is defined and type == 'recette' %}
+											selected = "selected"
+										{% endif %}
+
+									
+									>Recette</option>
 								</select>
 							</div>
 							<div class="form-group">
 								<label for="">Date</label>
 								<input type="date" id="date">
 							</div>
+							<div class="form-group">
+								<label for="">Désignation</label>
+								<input type="designation" id="designation">
+							</div>
 							{# si Recette #}
-							{% if type is defined and type == 'recette' %}
-								<div class="form-group">
-									<label for="">ID pro</label>
-									<input type="text" id="fournisseur">
-								</div>
-								<div class="form-group">
-									<label for="">Client</label>
-									<input type="text" id="client">
-								</div>
-							{% endif %}
+		
+							<div class="form-group form_recette" 
+								{% if type is defined and type == 'recette' %}
+									style = "display:block"
+								{% else %}
+									style = "display : none"
+								{% endif %}
+							>
+								<label for="">ID pro</label>
+								<input type="text" id="id_pro">
+							</div>
+							<div class="form-group form_recette"
+								{% if type is defined and type == 'recette' %}
+									style = "display:block"
+								{% else %}
+									style = "display : none"
+								{% endif %}
+
+							>
+								<label for="">Client</label>
+								<input type="text" id="client">
+							</div>
+							
 							{# si Dépense #}
-							{% if type is defined and type == 'depense' %}
-								<div class="form-group">
-									<label for="">N° compte</label>
-									<input type="text" id="num_compte">
-								</div>
-								<div class="form-group">
-									<label for="">Fournisseur</label>
-									<input type="text" id="fournisseur">
-								</div>
-							{% endif %}
+							
+							<div class="form-group form_depense" 
+								{% if type is defined and type == 'depense' %}
+									style = "display:block"
+								{% else %}
+									style = "display : none"
+								{% endif %}
+							
+							>
+								<label for="">N° compte</label>
+								<input type="text" id="num_compte">
+							</div>
+							<div class="form-group form_depense"
+								{% if type is defined and type == 'depense' %}
+									style = "display:block"
+								{% else %}
+									style = "display : none"
+								{% endif %}
+
+							>
+								<label for="">Fournisseur</label>
+								<input type="text" id="fournisseur">
+							</div>
+
+
 							<div class="form-group">
 								<label for="">N° Sage</label>
 								<input type="text" id="sage">
@@ -70,17 +127,91 @@
 							</div>
 							<div class="form-group">
 								<label for="">Paiement</label>
-								<input type="text" id="paiement">
+								<input type="text" id="paiement" class="input_nombre">
 							</div>
 							<div class="form-group last_fg">
-								<button class="btn btn-default"><span>Valider</span></button>
+								<button class="btn btn-default" id = "ajout_tres"><span>Enregistrer</span></button>
 							</div>
 						</form>
+						{# <div id="test"></div> #}
 					</div>
 				</div>
 			</div>
 		<!-- / contenue  -->
 	</section>
+{% endblock %}
+{% block javascripts %}
+<script src="{{ asset('js/cleave.min.js') }}"></script>
+	<script>
+		
+
+		$(document).ready(function(){
+			// formater_form
+			function formater_form() {
+				if($('#select_tres').val() == 'depense'){
+					$('.form_recette').fadeOut();
+					$('.form_depense').fadeIn();
+				}
+				else if($('#select_tres').val() == 'recette'){
+					$('.form_depense').fadeOut();
+					$('.form_recette').fadeIn();
+				}
+			}
+			formater_form();
+			$('#select_tres').on('change', function(){
+				var val = $(this).val();
+				if(val == 'depense'){
+					$('.form_recette').fadeOut();
+					$('.form_depense').fadeIn();
+				}
+				else if(val == 'recette'){
+					$('.form_depense').fadeOut();
+					$('.form_recette').fadeIn();
+				}
+			})
+
+			$('#ajout_tres').on('click', function(ev){
+				ev.preventDefault();
+				
+				var data = {
+					"choix" 		: $('#select_tres').val(),
+					"date"			: $("#date").val(),
+					"designation"	: $("#designation").val(),
+					"num_compte"	: $('#num_compte').val(),
+					"fournisseur"	: $('#fournisseur').val(),
+					"sage"			: $('#sage').val(),
+					"mode_pmt"		: $('#mode_pmt').val(),
+					"compte_b"		: $("#compte_b").val(),
+					"paiement"		: $('#paiement').val(),
+					"id_pro"		: $("#id_pro").val(),
+					"client"		: $('#client').val()
+
+				}
+				// ajax
+				var jqxhr = $.post("/profile/add_tres", data, function(data){
+					
+				})
+
+				jqxhr.done(function(data){
+					$('.form_rec_dep form')[0].reset();
+				})
+				jqxhr.fail(function(){
+					alert('erreur au niveau de add tres')
+				})
+				// jqxhr.always(function(data){
+				// 	alert(data + "always")
+				// })
+			})
+			var n = document.querySelector("#paiement");
+				new Cleave(n, { // prefix: 'Ar ',
+					numeral: true,
+					delimiter: [' '],
+					numeralThousandsGroupStyle: 'thousand',
+					numericOnly: true
+				});
+			new Cleave('#paiement', {blocks: null});
+		})
+	</script>
 {% endblock %}
 
 

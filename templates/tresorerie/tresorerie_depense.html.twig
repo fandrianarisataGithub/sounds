@@ -95,7 +95,7 @@
 								</form>
 							</div>
 							<div class="form_search">
-								<span class="fa fa-search"></span><input type="text" id="serch_tresorerie">
+								<span class="fa fa-search"></span><input type="text" id="serch_tresorerie" placeholder = "Rechercher">
 							</div>
 						</aside>
 						<aside class="part_filter">
@@ -165,40 +165,46 @@
 							</div>
 							<div class="table_body liste_pf">
 								<div class="dr_tab_trans">
-									<div class="block_all_tr block_tr_scroll">
+									<div {% if depenses|length > 11 %}
+										class="block_all_tr block_tr_scroll"
+										{% else %}
+										class="block_all_tr"
+									{% endif %}>
+									{% for depense  in depenses %}
 										<div class="t_body_row sous_tab_body t_body_tres">
 											<div class="tres_date">
-												<span>Date</span>
+												<span>{{ depense.getDate() | date("d-m-Y") }}</span>
 											</div>
 											<div class="tres_des">
-												<span>Désignation</span>
+												<span>{{ depense.getDesignation() }}</span>
 											</div>
 											<div class="tres_idPro">
-												<span>ID Pro</span>
+												<span>{{ depense.getNumcompte() }}</span>
 											</div>
 											<div class="tres_sage">
-												<span>N° Sage</span>
+												<span>{{ depense.getNumSage() }}</span>
 											</div>
 											<div class=" tres_client">
 
-												<span>Client</span>
+												<span>{{ depense.getNomFournisseur() }}</span>
 											</div>
 											<div class="tres_mode_p">
-												<span>Mode de paiement</span>
+												<span>{{ depense.getModePaiement() }}</span>
 											</div>
 											<div class="tres_compte_b">
-												<span>Compte bancaire</span>
+												<span>{{ depense.getCompteBancaire() }}</span>
 											</div>
 											<div class="tres_monnaie">
-												<span>Monnaie</span>
+												<span>{{ depense.getMonnaie() }}</span>
 											</div>
 											<div class="tres_paiement sans_border">
-												<span class="montant">1221546515</span>
+												<span class="montant">{{ depense.getPaiement() }}</span>
 											</div>
 
 										</div>
-										
-									</div>
+
+									{% endfor %}
+									</>
 								</div>
 							</div>
 						</div>

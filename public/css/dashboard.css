@@ -6588,14 +6588,15 @@ tr td.t_concerne_rem {
 
 .part_filter {
     width: 50%;
-    display: flex;
-    justify-content: space-between;
+    display: inline-block;
     padding-top: 10px;
     padding-bottom: 10px;
     align-items: center;
     margin-bottom: 25px;
 }
-
+.filtre_tresor .part_filter:first-child > div{
+    display: inline-block;
+}
 .filtre_tresor .part_filter:last-child {
     text-align: end;
     justify-content: end;
@@ -6731,6 +6732,13 @@ tr td.t_concerne_rem {
     padding-left: 16px;
 }
 
+.form_date{
+    display: inline-block !important;
+}
+.form_search{
+    display: inline-block !important;
+}
+
 /* formulaire recette */
 
 .form_rec_dep{
@@ -6761,25 +6769,52 @@ tr td.t_concerne_rem {
     padding-left: 3px;
     color: #323232 !important;
 }
-.form_rec_dep .last_fg button{
-    margin-left: 203px;
+
+.form_search{
+   
+   display : flex !important;
+   width : auto !important;
+}
+.form_date{
+    
+    display : flex !important;
+    flex-wrap : nowrap !important;
+    width : 400px;
+}
+.filtre_tresor .part_filter:first-child{
+   
+    width : auto;
+    display : flex;
+}
+.filtre_tresor .part_filter:last-child{
+    width : auto;
+    display : flex ;
+}
+.filtre_tresor .part_filter:last-child select,
+.filtre_tresor .part_filter:first-child input{
+    font-size : 12px;
+}
+.last_fg button, .last_fg button:focus{
+   margin-left: 203px;
     width: 200px;
+    height: 30px;
     background: #c79c67;
-    border-color: #c79c67;
-    border-radius: 0 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-color: transparent;
+    border-radius: 0px;
 }
-.form_rec_dep .last_fg button span{
-    color: #fff;
+.last_fg button span{
+    color: #fff ;
 }
-.form_rec_dep .last_fg button:hover{
+.last_fg button:hover{
+     border-color: #c79c67;
     background: transparent !important;
 }
-.form_rec_dep .last_fg button:hover span{
-    color: #323232;
+.last_fg button:hover span{
+    color: #c79c67;
 }
-
-
-
 /* fin recette form */
 
 /* tresorerie */
