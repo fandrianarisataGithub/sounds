@@ -364,7 +364,7 @@
 										{% for remarque in item['liste_remarque_enc']  %}
 											<tr class="trb_remarque_a_ter">
 												<td class="t_date_rem">
-													<span>{{ remarque['date_remarque'] }}</span>
+													<span>{{ remarque['date_remarque'] | date("d-m-Y") }}</span>
 												</td>
 												<td class="t_concerne_rem">
 													<span>{{ remarque['concerne'] }}</span>
@@ -584,7 +584,7 @@
 										{% for remarque_ter in item['liste_remarque_ter']  %}
 											<tr class="trb_remarque_a_ter">
 												<td class="t_date_rem">
-													<span>{{ remarque_ter['date_remarque'] }}</span>
+													<span>{{ remarque_ter['date_remarque'] | date("d-m-Y") }}</span>
 												</td>
 												<td class="t_concerne_rem">
 													<span>{{ remarque_ter['concerne'] }}</span>
