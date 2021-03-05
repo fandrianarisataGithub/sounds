@@ -397,8 +397,9 @@
                                     {% else %}
                                          {{ form_widget(form.crj_direction, {
                                         'attr' : {
-                                            'class' : 'form-control',
+                                            'class' : 'form-control form_vide',
                                             'value' : '',
+                                            
                                         }
                                     }) }}
                                     {% endif %}
@@ -416,8 +417,9 @@
                                     {% else %}
                                         {{ form_widget(form.crj_service_rh, {
                                         'attr' : {
-                                            'class' : 'form-control',
-                                            'value' : ''
+                                            'class' : 'form-control form_vide',
+                                            'value' : '',
+                                            
                                         }
                                     }) }}
                                     {% endif %}
@@ -437,8 +439,9 @@
                                     {% else %}
                                         {{ form_widget(form.crj_commercial, {
                                         'attr' : {
-                                            'class' : 'form-control',
-                                            'value' : ''
+                                            'class' : 'form-control form_vide',
+                                            'value' : '',
+                                            
                                         }
                                     }) }}
                                     {% endif %}
@@ -456,7 +459,7 @@
                                     {% else %}
                                         {{ form_widget(form.crj_comptable, {
                                         'attr' : {
-                                            'class' : 'form-control',
+                                            'class' : 'form-control form_vide',
                                             'value' : ''
                                         }
                                     }) }}
@@ -477,7 +480,7 @@
                                      {% else %}
                                          {{ form_widget(form.crj_reception, {
                                         'attr' : {
-                                            'class' : 'form-control',
+                                            'class' : 'form-control form_vide',
                                             'value' : ''
                                         }
                                     }) }}
@@ -496,7 +499,7 @@
                                    {% else %}
                                         {{ form_widget(form.crj_restaurant, {
                                         'attr' : {
-                                            'class' : 'form-control',
+                                            'class' : 'form-control form_vide',
                                             'value' : ''
                                         }
                                     }) }}
@@ -517,7 +520,7 @@
                                     {% else %}
                                         {{ form_widget(form.crj_spa, {
                                         'attr' : {
-                                            'class' : 'form-control',
+                                            'class' : 'form-control form_vide',
                                             'value' : ''
                                         }
                                     }) }}
@@ -536,7 +539,7 @@
                                     {% else %}
                                         {{ form_widget(form.crj_s_technique, {
                                         'attr' : {
-                                            'class' : 'form-control',
+                                            'class' : 'form-control form_vide',
                                             'value' : ''
                                         }
                                     }) }}
@@ -557,7 +560,7 @@
                                     {% else %}
                                          {{ form_widget(form.crj_litiges, {
                                         'attr' : {
-                                            'class' : 'form-control',
+                                            'class' : 'form-control form_vide',
                                             'value' : '',
                                         }
                                     }) }}
@@ -576,7 +579,7 @@
                                     {% else %}
                                         {{ form_widget(form.crj_hebergement, {
                                         'attr' : {
-                                            'class' : 'form-control',
+                                            'class' : 'form-control form_vide',
                                             'value' : ''
                                         }
                                     }) }}
@@ -713,6 +716,9 @@ new Cleave('.input_pourcent', {blocks: [4]});
         // ajout de client 
 
         $(document).ready(function(){
+            // vider le formulaire des recep
+
+            $('.form_vide').val('');
             /* table */
                 var pseudo_hotel = $('#hide_pseudo_hotel').val();
         //alert(pseudo_hotel);
