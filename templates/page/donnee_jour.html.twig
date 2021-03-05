@@ -37,7 +37,13 @@
                             <div class="h4_titre">
                                 <h4>Hébergement</h4>
                             </div>
-                            <div class="data_form">
+                            <div class="data_form" 
+                                 {% if app.user.receptionniste == "oui" %}
+                                    style="display: none !important"
+                                 {% endif %}
+                                 
+                            
+                            >
                                 <div class="form-group">
                                     <label for="t_o">Taux d'occupation :
                                     </label>
@@ -123,17 +129,6 @@
                                 <div class="sous_titre">
                                     <h4 class="label__titre">Client présent le : <span id="data_text_date"></span></h4>
                                 </div>
-                                {# <section class=" filtre">
-                                    <div class="sous_titre_filtre">
-                                        <h3>Filtre</h3>
-                                    </div>
-
-                                    <div>
-                                        <input type="date">
-                                        <input type="date">
-                                    </div>
-
-                                </section> #}
                                 <div>
                                     <table class="display" style="width: 100%" id="tableau_client_donnee_jour">
                                         <thead>
@@ -162,10 +157,20 @@
                                 </div>
                             </div>
 
-                            <div class="h4_titre">
+                            <div class="h4_titre" 
+                                {% if app.user.receptionniste == "oui" %}
+                                    style="display: none !important"
+                                {% endif %}
+
+                            >
                                 <h4>Restaurant</h4>
                             </div>
-                            <div class="data_form">
+                            <div class="data_form"
+                            
+                                 {% if app.user.receptionniste == "oui" %}
+                                    style="display: none !important"
+                                 {% endif %}
+                            >
                                 <div class="form-group">
                                     <label for="n_couvert">Nombre de couvert :
                                     </label>
@@ -217,7 +222,12 @@
                                     <span class="span__ar">Ar</span>
                                 </div>
                             </div>
-                            <div class="data_form">
+                            <div class="data_form" 
+                            
+                                 {% if app.user.receptionniste == "oui" %}
+                                    style="display: none !important"
+                                 {% endif %}
+                            >
                                 <div class="form-group">
                                     <label for="p_dejeuner">Petit déjeuner :
                                     </label>
@@ -269,7 +279,11 @@
                                    {% endif %}
                                 </div>
                             </div>
-                            <div class="data_form">
+                            <div class="data_form"
+                                 {% if app.user.receptionniste == "oui" %}
+                                    style="display: none !important"
+                                 {% endif %}
+                            >
                                 <div class="form-group">
                                     <label for="dinner">Dinner :
                                     </label>
@@ -296,10 +310,19 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <div class="h4_titre">
+                            <div class="h4_titre"
+                            
+                                 {% if app.user.receptionniste == "oui" %}
+                                    style="display: none !important"
+                                 {% endif %}
+                            >
                                 <h4>Spa</h4>
                             </div>
-                            <div class="data_form">
+                            <div class="data_form"
+                                 {% if app.user.receptionniste == "oui" %}
+                                    style="display: none !important"
+                                 {% endif %}
+                            >
                                 <div class="form-group">
                                     <label for="c_a_spa">Chiffre d'affaire :
                                     </label>
@@ -350,7 +373,11 @@
                                      {% endif %}
                                 </div>
                             </div>
-                            <div class="data_form">
+                            <div class="data_form"
+                                 {% if app.user.receptionniste == "oui" %}
+                                    style="display: none !important"
+                                 {% endif %}
+                            >
 
                                 <div class="form-group">
                                     <label for="c_unique">Client unique :
@@ -380,10 +407,20 @@
                             </div>
 
                             <!-- text area  -->
-                            <div class="h4_titre">
+                            <div class="h4_titre" 
+                            
+                                 {% if app.user.receptionniste == "oui" %}
+                                    style="display: none !important"
+                                 {% endif %}
+                            >
                                 <h4>Compte rendu journalier</h4>
                             </div>
-                            <div class="data_form crj">
+                            <div class="data_form crj"
+                                 {% if app.user.receptionniste == "oui" %}
+                                    style="display: none !important"
+                                 {% endif %}
+                            
+                            >
                                 <div class="form-group">
                                     <label for="c_a_spa">Direction :
                                     </label>
@@ -425,7 +462,12 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <div class="data_form crj">
+                            <div class="data_form crj"
+                            
+                                 {% if app.user.receptionniste == "oui" %}
+                                    style="display: none !important"
+                                 {% endif %}
+                            >
                                 <div class="form-group">
                                     <label for="c_a_spa">Commercial :
                                     </label>
@@ -466,7 +508,12 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <div class="data_form crj">
+                            <div class="data_form crj"
+                            
+                                 {% if app.user.receptionniste == "oui" %}
+                                    style="display: none !important"
+                                 {% endif %}
+                            >
                                 <div class="form-group">
                                     <label for="c_a_spa">Réception :
                                     </label>
@@ -506,7 +553,12 @@
                                    {% endif %}
                                 </div>
                             </div>
-                            <div class="data_form crj">
+                            <div class="data_form crj"
+                            
+                                 {% if app.user.receptionniste == "oui" %}
+                                    style="display: none !important"
+                                 {% endif %}
+                            >
                                 <div class="form-group">
                                     <label for="c_a_spa">Spa :
                                     </label>
@@ -546,7 +598,12 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <div class="data_form crj">
+                            <div class="data_form crj"
+                            
+                                 {% if app.user.receptionniste == "oui" %}
+                                    style="display: none !important"
+                                 {% endif %}
+                            >
                                 <div class="form-group">
                                     <label for="">Litiges :
                                     </label>
@@ -589,7 +646,11 @@
 
                             <!-- / textarea -->
 
-                            <div class="btn-list">
+                            <div class="btn-list"
+                                 {% if app.user.receptionniste == "oui" %}
+                                    style="display: none !important"
+                                 {% endif %}
+                            >
                                 <ul>
                                     <li id="li_submit_add_ddj"><button type="submit" id = "btn_add_donnee_dj" class="btn btn-warning"><span>Enregistrer</span></button></li>
                                 </ul>
