@@ -1047,48 +1047,10 @@ class TropController extends AbstractController
                                         )
     {   
         $all_interval = $repoInterval->findAll();
-        $Tableau_recap_changement = [];
-       
-        /*foreach($all_interval as $Item){
-            $tab_interval = [
-                "date_interval" => $Item->getIntervalle(),
-                "liste_client"  => []
-            ];
-            $ses_clients = $Item->getClientUpdateds();
-            
-            foreach($ses_clients as $item_client){
-                $tab_client = [
-                    "nom_client" => $item_client->getNom(),
-                    "liste_pf" => []
-                ];
-
-                $ses_pf = $item_client->getListePFUpdateds();
-                foreach($ses_pf as $item_pf){
-                   $tab_pf = [
-                       "id_pro" => $item_pf->getIdPro(),
-                       "liste_changement" => []
-                   ];
-                   $changements = $item_pf->getChangementAfterImports();
-                    foreach($changements as $item_changement){
-                       $last_data = $item_changement->getLastData();
-                       $next_data = $item_changement->getNextData();
-                       $nom_changement = $item_changement->getNom();
-                       $tab_changement = [
-                           "nom" => $nom_changement,
-                           "last_data" => $last_data,
-                           "next_data" => $next_data
-                       ];
-                       array_push($tab_pf['liste_changement'], $tab_changement);
-                    }
-                   array_push($tab_client['liste_pf'], $tab_pf);
-                }
-                array_push($tab_interval['liste_client'], $tab_client);
-            }
-           array_push($Tableau_recap_changement, $tab_interval);
-        }*/
+        // $clientsUp = $all_interval[0]->getClientUpdateds();
+        // dd($clientsUp[0]->getId());
         
-        //dd($Tableau_recap_changement);
-        // rassemblement des données via le même entreprise
+        $Tableau_recap_changement = [];
         
         $data_session = $session->get('hotel');
         if($data_session == null){
@@ -1107,31 +1069,42 @@ class TropController extends AbstractController
 
             // tous les clients de cet intervalle
 
-            $clients = $repoClientUp->findDistinctClientByInterval($Item->getIntervalle());
-            //dd($clients);
-
+            //$clients = $repoClientUp->findDistinctClientByInterval($Item->getIntervalle());
+            $clients = $Item->getClientUpdateds();
+            
             // tous les listes pf 
            
             foreach($clients as $client){
-                $listePFUpdateds = $repoListePF->findDistinctListePFUpByInterval($Item->getIntervalle(), $client['nom']);
-
+                //$listePFUpdateds = $repoListePF->findDistinctListePFUpByInterval($Item->getIntervalle(), $client->getNom());
+               
+                $pfsUp = $client->getListePFUpdateds();
+                //dd($pfsUp[0]);
                 //array_push($tab_interval['liste_client'], $tab_client);
                 $tab_client = [
-                    "nom_client" => $client['nom'],
+                    "nom_client" => $client->getNom(),
                     "liste_pf" => []
                 ];
-                foreach ($listePFUpdateds as $pf) {
-                    $changes = $repoChangement->findChangeByInterval($Item->getIntervalle(), $pf['id_pro']);
+                foreach ($pfsUp as $pf) {
+                    //dd("tt");
+                    //$changes = $repoChangement->findChangeByInterval($Item->getIntervalle(), $pf->getIdPro());
+                    $changes = $pf->getChangementAfterImports();
                     // array_push($changements, $changes);
                     $tab_pf = [
-                        "id_pro"    => $pf['id_pro'],
+                        "id_pro"    => $pf->getIdPro(),
                         "liste_changement"  => []
                     ];
                     foreach($changes as $change){
+                        /*
+                          $tab_changement = [
+                            "nom"   => $change['nom'],
+                            "last_data" => $change['last_data'],
+                            "next_data" => $change['next_data']
+                        ];
+                         */
                         $tab_changement = [
-                            "nom"   => $change["nom"],
-                            "last_data" => $change["last_data"],
-                            "next_data" => $change["next_data"]
+                            "nom"   => $change->getNom(),
+                            "last_data" => $change->getLastData(),
+                            "next_data" => $change->getNextData()
                         ];
                         array_push($tab_pf["liste_changement"], $tab_changement);
                     }
@@ -1140,11 +1113,52 @@ class TropController extends AbstractController
                 array_push($tab_interval['liste_client'], $tab_client);
                 
             }
-
+            
             array_push($Tableau_recap_changement, $tab_interval);
             
         }
+        //dd($Tableau_recap_changement);
+        // alamina le tableau
+        if(count($Tableau_recap_changement) > 0){
+            $i = -1;
+            foreach($Tableau_recap_changement as $elt){
+                $i++;
+                $clients = [];
+                $tab_clients = [];
+                foreach($elt['liste_client'] as $client){
+                    if(!in_array($client['nom_client'], $clients)){
+                        array_push($clients, $client['nom_client']);
+                        array_push($tab_clients, $client);
+                    }else{
+                        // alaina ny liste pf-any de asitrika any @le efa mitovy 
+                        for($i = 0; $i<count($tab_clients); $i++){
+                            // if($item['nom_client'] == $client['nom_client']){
+                            //     //dd($client['liste_pf']);
+                            //      //dd($item['liste_pf']);
+                            //     array_push($item['liste_pf'], $client['liste_pf']);
+                            // }
+                            if($tab_clients[$i]['nom_client'] == $client['nom_client']){
+                                    //dd($client['liste_pf'][0]['id_pro']);
+                                    //dd($item['liste_pf']);
+                                    
+                                array_push($tab_clients[$i]['liste_pf'], [
+                                    "id_pro" => $client['liste_pf'][0]['id_pro'],
+                                    "liste_changement" => $client['liste_pf'][0]['liste_changement']
+                                ]);
+                            }
+                            
+                        }
+                    }
+                }
+                //dd($tab_clients);
+                // apetaka @le tab ngeza be sisa le tab_clients
+            }
+        }
+        else if(count($Tableau_recap_changement) == 0){
+            $Tableau_recap_changement = [];
+        }
         
+        dd($Tableau_recap_changement);
         return $this->render('page/liste_changement.html.twig', [
             "hotel"             => $data_session['pseudo_hotel'],
             "current_page"      => $data_session['current_page'],

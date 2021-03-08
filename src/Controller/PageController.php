@@ -618,55 +618,25 @@ class PageController extends AbstractController
             return $this->render('/page/error.html.twig');
         }
        else{
-           
-            // affichage des clients qui y sont heb
-            // $date1 = new \Datetime();
-            // $date2 = date_create($date2);
-
-            $today = new \DateTime();
-
-            $hier = date_create(date("Y-m-d", strtotime("yesterday")));
             
-            $demain = date_create(date("Y-m-d", strtotime("tomorrow"))); //demain
-
-            $all_date_asked = $services->all_date_between2_dates($hier, $demain);
-            
-            $date_text_aff = $today->format("d-m-Y");
+            $clients = $repo->findBy(
+                ['hotel' => $hotel],
+                ['createdAt' => "DESC"]
+            );
+            $tab_aff = [];
+            $data_repere = new \DateTime();
+            $date_repere_obj = date_create($data_repere->format('d-m-Y'));
+            $date_text_aff = $data_repere->format("d-m-Y");
             $date_text_aff = $services->toMonthText($date_text_aff);
-            //dd($date_text_aff);
-            $tab = [];
-            
-            $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
-            $current_id_hotel = $l_hotel->getId();
-            $clients = $repo->findAll();
-            foreach ($clients as $item) {
-                $son_id_hotel = $item->getHotel()->getId();
-                if ($son_id_hotel == $current_id_hotel) {
-                    array_push($tab, $item);
+           
+            foreach($clients as $client){
+                $sa_date_arr = $client->getDateArrivee();
+                $sa_date_depart = $client->getDateDepart();
+                if($sa_date_arr <= $date_repere_obj && $sa_date_depart >= $date_repere_obj){
+                    array_push($tab_aff, $client);
                 }
             }
-            foreach ($tab as $client) {
-                // on liste tous les jour entre sa dete arrivee et date depart
-                $sa_da = $client->getDateArrivee();
-                $sa_dd = $client->getDateDepart();
-                //dd($sa_dd);
-                $his_al_dates = $services->all_date_between2_dates($sa_da, $sa_dd);
-                //dd($his_al_dates);
-                for ($i = 0;
-                    $i < count($all_date_asked);
-                    $i++
-                ) {
-                    for ($j = 0; $j < count($his_al_dates); $j++) {
-                        if ($all_date_asked[$i] == $his_al_dates[$j]) {
-                            if (!in_array($client, $tab_aff)) {
-                                array_push($tab_aff, $client);
-                            }
-                        }
-                    }
-                }
-            }
-            //dd($tab_aff);
-            
+           
             return $this->render('page/hebergement.html.twig', [
                 "id"                    => "li__hebergement",
                 "tab_annee"             => $tab_sans_doublant,
