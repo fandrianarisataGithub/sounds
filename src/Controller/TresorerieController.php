@@ -26,18 +26,23 @@ class TresorerieController extends AbstractController
         SessionInterface $session,
         Request $request,
         Services $services,
-        EntityManagerInterface $manager, TresorerieRecetteRepository $repoRecette
+        EntityManagerInterface $manager, TresorerieRecetteRepository $repoRecette, TresorerieDepenseRepository $repoDepense
     ): Response
     {
         $data_session = $session->get('hotel');
+        $depenses = $repoDepense->findAll();
+        
+        $data_session = $session->get('hotel');
         $recettes = $repoRecette->findAll();
-        return $this->render('tresorerie/tresorerie_recette.html.twig', [
+     
+        return $this->render('tresorerie/tresorerie_aff.html.twig', [
             "hotel"             => $data_session['pseudo_hotel'],
             "current_page"      => $data_session['current_page'],
             'tri'               => false,
             'tropical_wood'     => true,
             "id_page"           => "li_tresoreriet",
             "recettes"          => $recettes,
+            "depenses"          => $depenses
         ]);
     }
     /**
@@ -138,6 +143,168 @@ class TresorerieController extends AbstractController
             $data = "ok";
             $data = json_encode($data);
             $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+        }
+        return $response;
+    }
+
+    /**
+     * @Route("/profile/lister_data_recette", name ="lister_data_recette")
+     */
+    public function lister_data_recette(Request $request, 
+        TresorerieRecetteRepository $repoRecette
+    ){
+        $response = new Response();
+        if($request->isXmlHttpRequest()){
+            $date1 = $request->get('date1');
+            $date2 = $request->get('date2');   
+            $html  = '';
+            $date1_o = null;
+            $date2_o = null;
+            if($date1 != "" && $date2 != ""){
+                $date1_o = date_create($date1);
+                $date2_o = date_create($date2);
+            }
+            $recettes = $repoRecette->findRecettebetween($date1_o, $date2_o);
+            $t_recettes = count($recettes);
+            if($t_recettes > 11){
+                $html .= '
+                <div class="dr_tab_trans">
+                    <div class="block_all_tr block_tr_scroll">
+                ';
+            }
+            else if($t_recettes <= 11){
+                $html .= '
+                <div class="dr_tab_trans">
+                    <div class="block_all_tr">
+                ';
+            }
+
+            foreach($recettes as $recette){
+                $html .='
+                <div class="t_body_row sous_tab_body t_body_tres">
+                    <div class="tres_date">
+                        <span>' . $recette->getDate()->format("d-m-Y") .'</span>
+                    </div>
+                    <div class="tres_des">
+                        <span>'. $recette->getDesignation() .'</span>
+                    </div>
+                    <div class="tres_idPro">
+                        <span> '. $recette->getIdPro() .'</span>
+                    </div>
+                    <div class="tres_sage">
+                        <span> '. $recette->getNumSage() . '</span>
+                    </div>
+                    <div class=" tres_client">
+
+                        <span> ' . $recette->getNomClient() .'</span>
+                    </div>
+                    <div class="tres_mode_p">
+                        <span> ' . $recette->getModePaiement() .'</span>
+                    </div>
+                    <div class="tres_compte_b">
+                        <span>' . $recette->getCompteBancaire() .'</span>
+                    </div>
+                    <div class="tres_monnaie">
+                        <span> ' . $recette->getMonnaie() .'</span>
+                    </div>
+                    <div class="tres_paiement sans_border">
+                        <span class="montant">' . $recette->getPaiement() . '</span>
+                    </div>
+
+                </div>               
+                ';
+            }
+
+            $html .= '
+                    </div>
+                </div>
+            ';
+
+            $data = $html;
+            $data = json_encode($data);
+            $response->headers->set('content-Type', 'application/json');
+            $response->setContent($data);
+        }
+        return $response;
+    }
+
+    /**
+     * @Route("/profile/lister_data_depense", name ="lister_data_depense")
+     */
+    public function lister_data_depense(Request $request, 
+        TresorerieDepenseRepository $repoDepense
+    ){
+        $response = new Response();
+        if($request->isXmlHttpRequest()){
+            $date1 = $request->get('date1');
+            $date2 = $request->get('date2');   
+            $html  = '';
+            $date1_o = null;
+            $date2_o = null;
+            if($date1 != "" && $date2 != ""){
+                $date1_o = date_create($date1);
+                $date2_o = date_create($date2);
+            }
+            $recettes = $repoDepense->findRecettebetween($date1_o, $date2_o);
+            $t_recettes = count($recettes);
+            if($t_recettes > 11){
+                $html .= '
+                <div class="dr_tab_trans">
+                    <div class="block_all_tr block_tr_scroll">
+                ';
+            }
+            else if($t_recettes <= 11){
+                $html .= '
+                <div class="dr_tab_trans">
+                    <div class="block_all_tr">
+                ';
+            }
+
+            foreach($recettes as $recette){
+                $html .='
+                <div class="t_body_row sous_tab_body t_body_tres">
+                    <div class="tres_date">
+                        <span>' . $recette->getDate()->format("d-m-Y") .'</span>
+                    </div>
+                    <div class="tres_des">
+                        <span>'. $recette->getDesignation() .'</span>
+                    </div>
+                    <div class="tres_idPro">
+                        <span> '. $recette->getNumCompte() .'</span>
+                    </div>
+                    <div class="tres_sage">
+                        <span> '. $recette->getNumSage() . '</span>
+                    </div>
+                    <div class=" tres_client">
+
+                        <span> ' . $recette->getNomFournisseur() .'</span>
+                    </div>
+                    <div class="tres_mode_p">
+                        <span> ' . $recette->getModePaiement() .'</span>
+                    </div>
+                    <div class="tres_compte_b">
+                        <span>' . $recette->getCompteBancaire() .'</span>
+                    </div>
+                    <div class="tres_monnaie">
+                        <span> ' . $recette->getMonnaie() .'</span>
+                    </div>
+                    <div class="tres_paiement sans_border">
+                        <span class="montant">' . $recette->getPaiement() . '</span>
+                    </div>
+
+                </div>               
+                ';
+            }
+
+            $html .= '
+                    </div>
+                </div>
+            ';
+
+            $data = $html;
+            $data = json_encode($data);
+            $response->headers->set('content-Type', 'application/json');
             $response->setContent($data);
         }
         return $response;

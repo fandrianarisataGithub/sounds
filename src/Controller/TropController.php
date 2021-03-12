@@ -1120,27 +1120,19 @@ class TropController extends AbstractController
         //dd($Tableau_recap_changement);
         // alamina le tableau
         if(count($Tableau_recap_changement) > 0){
-            $i = -1;
-            foreach($Tableau_recap_changement as $elt){
-                $i++;
+           
+            for($j = 0; $j<count($Tableau_recap_changement); $j++){
                 $clients = [];
                 $tab_clients = [];
-                foreach($elt['liste_client'] as $client){
+                foreach($Tableau_recap_changement[$j]['liste_client'] as $client){
                     if(!in_array($client['nom_client'], $clients)){
                         array_push($clients, $client['nom_client']);
                         array_push($tab_clients, $client);
                     }else{
                         // alaina ny liste pf-any de asitrika any @le efa mitovy 
                         for($i = 0; $i<count($tab_clients); $i++){
-                            // if($item['nom_client'] == $client['nom_client']){
-                            //     //dd($client['liste_pf']);
-                            //      //dd($item['liste_pf']);
-                            //     array_push($item['liste_pf'], $client['liste_pf']);
-                            // }
                             if($tab_clients[$i]['nom_client'] == $client['nom_client']){
-                                    //dd($client['liste_pf'][0]['id_pro']);
-                                    //dd($item['liste_pf']);
-                                    
+                                   
                                 array_push($tab_clients[$i]['liste_pf'], [
                                     "id_pro" => $client['liste_pf'][0]['id_pro'],
                                     "liste_changement" => $client['liste_pf'][0]['liste_changement']
@@ -1150,6 +1142,8 @@ class TropController extends AbstractController
                         }
                     }
                 }
+                $Tableau_recap_changement[$j]['liste_client'] = $tab_clients;
+                // dd( $Tableau_recap_changement[$j]['liste_client']);
                 //dd($tab_clients);
                 // apetaka @le tab ngeza be sisa le tab_clients
             }
@@ -1158,7 +1152,7 @@ class TropController extends AbstractController
             $Tableau_recap_changement = [];
         }
         
-        dd($Tableau_recap_changement);
+        //dd($Tableau_recap_changement);
         return $this->render('page/liste_changement.html.twig', [
             "hotel"             => $data_session['pseudo_hotel'],
             "current_page"      => $data_session['current_page'],

@@ -40,7 +40,7 @@
 							</div>
 							<div class="unite_banque">
 								<p class="nom_banque">
-									BNI <span class="unite">Ar</span>
+									BNI <span class="unite">EURO</span>
 								</p>
 								<p class="montant_banque">
 									<span class="montant">120000000</span>
@@ -48,7 +48,7 @@
 							</div>
 							<div class="unite_banque">
 								<p class="nom_banque">
-									BNI <span class="unite">Ar</span>
+									BMOI <span class="unite">Ar</span>
 								</p>
 								<p class="montant_banque">
 									<span class="montant">120000000</span>
@@ -56,7 +56,23 @@
 							</div>
 							<div class="unite_banque">
 								<p class="nom_banque">
-									BNI <span class="unite">Ar</span>
+									MCB <span class="unite">Ar</span>
+								</p>
+								<p class="montant_banque">
+									<span class="montant">120000000</span>
+								</p>
+							</div>
+							<div class="unite_banque">
+								<p class="nom_banque">
+									BFV <span class="unite">Ar</span>
+								</p>
+								<p class="montant_banque">
+									<span class="montant">120000000</span>
+								</p>
+							</div>
+							<div class="unite_banque">
+								<p class="nom_banque">
+									BOA <span class="unite">Ar</span>
 								</p>
 								<p class="montant_banque">
 									<span class="montant">120000000</span>
@@ -68,12 +84,12 @@
 				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 					<div class="liste_button_tres">
 						<aside class="button_banque">
-							<a href="{{ path('tresorerie_recette') }}" class="btn btn_dore">
+							<a href="#" class="btn btn_dore">
 								<span>Recette</span>
 							</a>
 						</aside>
 						<aside class="button_banque">
-							<a href="{{ path('tresorerie_depense') }}" class="btn btn_gris">
+							<a href="#" class="btn btn_gris">
 								<span>Dépense</span>
 							</a>
 						</aside>
@@ -84,10 +100,10 @@
 								<form action="" class="form-inline">
 									<div class="form-group">
 										<label for="">Date</label>
-										<input type="date" >
+										<input type="date" id="date1">
 									</div>
 									<div class="form-group">
-										<input type="date" >
+										<input type="date" id="date2">
 									</div>
 									<div class="form-group">
 										<button class="btn_black_tres" id="trier_by_btn_ok"><span>OK</span></button>
@@ -120,7 +136,7 @@
 							</div>
 						</aside>
 					</div>
-					<div class="tableau_tropical tableau_scroll">
+					<div class="tableau_tropical tableau_scroll" id="tableau_recette">
 						<div class="table_content">
 							<div class="table_header">
 								<div class="t_header_row t_header_trans t_header_tres">
@@ -163,61 +179,99 @@
 									</div>
 								</div>
 							</div>
-							<div class="table_body liste_pf">
-								<div class="dr_tab_trans">
+							<div class="table_body liste_pf" id="body_recette">
+								
+							</div>
+						</div>
+					</div>	
+					{# depense #}
+					<div class="tableau_tropical tableau_scroll" id="tableau_depense">
+						<div class="table_content">
+							<div class="table_header">
+								<div class="t_header_row t_header_trans t_header_tres">
+									<div class="tres_date">
+										<span>Date</span>
+									</div>
+									<div class="tres_des">
+										<span>Désignation</span>
+									</div>
+									<div class="tres_idPro">
+										<span>N° de compte</span>
+									</div>
+									<div class="tres_sage">
+										<span>N° Sage</span>
+									</div>
 									<div
-										{% if recettes|length > 11 %}
-											class="block_all_tr block_tr_scroll"
-										{% else %}
-											class="block_all_tr"
-										{% endif %}
-
-									>
-										{% for recette  in recettes %}
-											<div class="t_body_row sous_tab_body t_body_tres">
-												<div class="tres_date">
-													<span>{{ recette.getDate() | date("d-m-Y") }}</span>
-												</div>
-												<div class="tres_des">
-													<span>{{ recette.getDesignation() }}</span>
-												</div>
-												<div class="tres_idPro">
-													<span>{{ recette.getIdPro() }}</span>
-												</div>
-												<div class="tres_sage">
-													<span>{{ recette.getNumSage() }}</span>
-												</div>
-												<div class=" tres_client">
-
-													<span>{{ recette.getNomClient() }}</span>
-												</div>
-												<div class="tres_mode_p">
-													<span>{{ recette.getModePaiement() }}</span>
-												</div>
-												<div class="tres_compte_b">
-													<span>{{ recette.getCompteBancaire() }}</span>
-												</div>
-												<div class="tres_monnaie">
-													<span>{{ recette.getMonnaie() }}</span>
-												</div>
-												<div class="tres_paiement sans_border">
-													<span class="montant">{{ recette.getPaiement() }}</span>
-												</div>
-
-											</div>
-
-										{% endfor %}
-
+										class=" tres_client">
 										
+										<span>Fournisseur</span>
+									</div>
+									<div class="tres_mode_p">
+										<span>Mode de paiement</span>
+									</div>
+									<div class="tres_compte_b">
+										<span>Compte bancaire</span>
+									</div>
+									<div class="tres_monnaie">
+										<span>Monnaie</span>
+									</div>
+									<div class="tres_paiement sans_border">
+										<span>Paiement</span>
+										<span class="span_tri">
+											<a href="#" class="a_tri" data-type="paiement" data-data="ASC">
+												<small class="fa fa-sort-asc"></small>
+											</a>
+											<a href="#" class="a_tri" data-type="paiement" data-data="DESC">
+												<small class="fa fa-sort-desc"></small>
+											</a>
+										</span>
 									</div>
 								</div>
 							</div>
+							<div class="table_body liste_pf" id = "body_depense">
+								
+							</div>
 						</div>
-					</div>				
+					</div>
 				</div>
 			</div>
 		<!-- / contenue  -->
 	</section>
+{% endblock %}
+{% block javascripts %}
+	<script>
+		$(document).ready(function(){
+			function lister_data_recette(){
+				var data = {
+					"date1" : $("#date1").val(),
+					"date2" : $("#date2").val()
+				};
+				var url = "{{ path('lister_data_recette') }}";
+				var ajax = $.post(url, data, function(data){
+					$('#body_recette').html(data);
+				})
+				ajax.fail(function() {
+					alert('erreur au niveau de aff data recette')
+				})
+			}
+
+			function lister_data_depense(){
+				var data = {
+					"date1" : $("#date1").val(),
+					"date2" : $("#date2").val()
+				};
+				var url = "{{ path('lister_data_depense') }}";
+				var ajax = $.post(url, data, function(data){
+					$('#body_depense').html(data);
+				})
+				ajax.fail(function() {
+					alert('erreur au niveau de aff data depense')
+				})
+			}
+			lister_data_recette();
+			lister_data_depense();
+		})
+	</script>
 {% endblock %}
 
 

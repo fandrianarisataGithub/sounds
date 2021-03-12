@@ -5,52 +5,44 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\TresorerieRepository;
 
-/**
- * @ORM\Entity(repositoryClass=TresorerieRepository::class)
- */
+
 class Tresorerie
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $date;
+    protected $date;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $designation;
+    protected $designation;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $num_sage;
+    protected $num_sage;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $mode_paiement;
+    protected $mode_paiement;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $compte_bancaire;
+    protected $compte_bancaire;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $Monnaie;
+    protected $Monnaie;
 
     /**
      * @ORM\Column(type="float", nullable=true)
      */
-    private $paiement;
+    protected $paiement;
 
     public function getId(): ?int
     {

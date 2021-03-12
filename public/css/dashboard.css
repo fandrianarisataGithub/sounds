@@ -6673,11 +6673,14 @@ tr td.t_concerne_rem {
 }
 
 .tres_des {
-    width: 200px !important;
+    max-width: 200px !important;
+     min-width: 200px !important;
+  
 }
 
 .tres_date {
-    width: 150px !important;
+    max-width: 150px !important;
+  
 }
 
 .tres_idPro {
@@ -6685,31 +6688,65 @@ tr td.t_concerne_rem {
 }
 
 .tres_sage {
-    width: 150px !important;
+    max-width: 150px !important;
+    min-width: 150px !important;
+   
 }
 
 .tres_client {
     width: 200px !important;
+  
+    max-width: 200px !important;
+    min-width: 200px !important;
 }
 
 .t_body_tres .tres_date {
-    width: 150px !important;
     -ms-flex-negative: 0 !important;
     flex-shrink: 0 !important;
     text-align: start !important;
     padding-left: 16px;
 }
-
+.tres_idPro{
+    
+    max-width: 150px !important;
+    min-width: 150px;
+}
+.tres_mode_p{
+  
+    min-width: 150px !important;
+    max-width: 150px !important;
+}
+.tres_compte_b{
+     
+     max-width: 180px !important;
+    min-width: 180px !important;
+}
+.tres_monnaie{
+  
+    min-width: 150px !important;
+    max-width: 150px !important;
+}
+.t_body_tres .tres_monnaie {
+    -ms-flex-negative: 0 !important;
+    flex-shrink: 0 !important;
+    text-align: start !important;
+    padding-left: 16px;
+}
 .t_body_tres .tres_des {
-    width: 200px !important;
+    -ms-flex-negative: 0 !important;
+    flex-shrink: 0 !important;
+    text-align: start !important;
+    padding-left: 0px;
+}
+.t_body_tres .tres_compte_b {
+   
     -ms-flex-negative: 0 !important;
     flex-shrink: 0 !important;
     text-align: start !important;
     padding-left: 16px;
 }
-
 .t_body_tres .tres_idPro {
-    width: 150px !important;
+   
     -ms-flex-negative: 0 !important;
     flex-shrink: 0 !important;
     text-align: start !important;
@@ -6717,7 +6754,7 @@ tr td.t_concerne_rem {
 }
 
 .t_body_tres .tres_sage {
-    width: 150px !important;
+    
     -ms-flex-negative: 0 !important;
     flex-shrink: 0 !important;
     text-align: start !important;
@@ -6725,7 +6762,15 @@ tr td.t_concerne_rem {
 }
 
 .t_body_tres .tres_client {
-    width: 200px !important;
+  
+    -ms-flex-negative: 0 !important;
+    flex-shrink: 0 !important;
+    text-align: start !important;
+    padding-left: 16px;
+}
+
+.t_body_tres .tres_mode_p {
+  
     -ms-flex-negative: 0 !important;
     flex-shrink: 0 !important;
     text-align: start !important;

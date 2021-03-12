@@ -3,8 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\TresorerieDepense;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method TresorerieDepense|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,6 +17,41 @@ class TresorerieDepenseRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, TresorerieDepense::class);
+    }
+
+    /**
+     * @return TresorerieRecette[] Returns an array of TresorerieRecette objects
+     */
+    public function findRecettebetween($date1, $date2)
+    {   
+        
+        $query = $this->createQueryBuilder('t');
+        if($date1 && $date2){
+           if($date1 < $date2){
+            
+                $query->andWhere('t.date <= :date2 AND t.date >= :date1')
+                    ->setParameter('date1', $date1)
+                    ->setParameter('date2', $date2)
+                ;
+           }
+           else if($date1 > $date2){
+                $query->andWhere('t.date <= :date1 AND t.date >= :date2')
+                    ->setParameter('date1', $date1)
+                    ->setParameter('date2', $date2)
+                ;
+           }
+           else if($date1 == $date2){
+                $query->andWhere('t.date = :date2')
+                    ->setParameter('date2', $date2)
+                ;
+           }
+        }
+       
+        return $query
+        ->orderBy('t.id', 'DESC')
+        ->getQuery()
+        ->getResult();
+       
     }
 
     // /**
