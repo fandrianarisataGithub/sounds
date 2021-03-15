@@ -552,6 +552,7 @@ ul {
 
 body {
     background-color: #f0f0f7;
+    overflow-x: hidden;
 }
 
 .my_liste_legend li span {
@@ -572,6 +573,7 @@ body {
     padding-left: 15px;
     padding-right: 15px;
     background-color: #f0f0f7 !important;
+    
 }
 
 #hrs_content .dropdown-menu,
@@ -6862,4 +6864,79 @@ tr td.t_concerne_rem {
 }
 /* fin recette form */
 
+/* tableau_depense caché par défaut */
+.button_banque a,
+.button_banque a:focus{
+    display: block;
+}
+
+.t_body_row .tres_des{
+    padding-left: 16px;
+}
+#tableau_depense{
+    display: none;
+}
+
+#formulaire{
+    width: 450px;
+    position: absolute;
+    top: 0px !important;
+    right: 0;
+    background : #323232;
+    padding-left: 15px;
+    z-index: 1;
+    min-height: 100vh;
+    transition: right 0.5s ease-in-out;
+}
+.form_hide{
+    right: -470px !important;
+    transition: right 0.5s ease-in-out;
+}
+
+#formulaire form label{
+    color: #fff !important;
+}
+#formulaire form input, #formulaire form select{
+    background: rgba(255,255,255,0.8)
+}
+
+#formulaire .action button{
+    display: inline-block;
+    width: 50px;
+    position: absolute;
+    top: 5px;
+    background: rgba(255,255,255,0.8) !important;
+    border-color: rgba(255,255,255,0.8) !important;
+    box-shadow: none;
+    border: 1px solid #fff;
+    border-radius: 5px;
+}
+#formulaire .action button:hover{
+     border: 1px solid rgba(255,255,255,0.8);
+    background: transparent !important;
+}
+#formulaire .action button:hover span{
+    color: #fff;
+}
+#error_form{
+    background: rgba(255,255,255, 0.8);
+    display: none;
+    width: 80%;
+    margin: auto;
+    height: 30px;
+    align-items: center !important;
+    padding: 0 !important;
+    margin-bottom: 15px;
+     background: rgb(36,0,6);
+    background: linear-gradient(90deg, rgba(36,0,6,1) 0%, rgba(233,12,80,1) 0%, rgba(241,248,250,1) 86%, rgba(241,248,250,1) 91%); 
+}
+#error_form p{
+    vertical-align: middle;
+    height: 30px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+    color: #fff;
+}
 /* tresorerie */

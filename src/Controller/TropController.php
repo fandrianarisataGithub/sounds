@@ -180,7 +180,7 @@ class TropController extends AbstractController
                     $sa_date_fact = $dataTrop->getDateFacture();
                     $son_etape_prod = $dataTrop->getEtapeProduction();
                     $synthese = [
-                        "entreprise"        => $dataTrop->getEntreprise(),
+                        "entreprise"        => $entreprise,
                         "id_pro"            => $dataTrop->getIdPro(),
                         "date_avant"        => $dataTrop->getCreatedAt(),
                         "date_MAJ"          => $today,
@@ -188,7 +188,7 @@ class TropController extends AbstractController
                     ];
                     // ancien tab 
                     $ancien = [
-                    
+                        "entreprise"        => $son_entreprise,
                         "type_transaction"  => $son_type_trans,
                         "details"           => $son_detail,
                         "etat_production"   => $son_etat_prod,
@@ -200,7 +200,7 @@ class TropController extends AbstractController
                         "etape_production"  => $son_etape_prod
                     ];
                     $nouveau = [
-
+                        "entreprise"        => $entreprise,
                         "type_transaction"  => $type_transaction,
                         "details"           => $detail,
                         "etat_production"   => $etat_production,
