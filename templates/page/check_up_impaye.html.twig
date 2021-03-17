@@ -37,8 +37,7 @@
 										<div class="titre_ca">
 											<h4>Chiffre d'affaires</h4>
 										</div>
-										<div
-											class="montant_value">
+										<div class="montant_value" id = "div_montant_ca">
 											{# chiffre d'aff item #}
 											<span class="montant">
 												{{ item["total_montant_total"] }}
@@ -51,7 +50,7 @@
 											<h4>Chiffre d'affaires encaissé</h4>
 										</div>
 										<div
-											class="montant_value">
+											class="montant_value" id="div_montant_enc">
 											{# ca enc #}
 											<span class="montant">
 												{{ item["total_total_reglement"] }}
@@ -64,7 +63,7 @@
 											<h4>Chiffre d'affaires à encaissé</h4>
 										</div>
 										<div
-											class="montant_value">
+											class="montant_value" id="div_montant_a_enc"> 
 											{# ca a enc #}
 											<span class="montant">{{ item["total_reste"] }}</span>
 											<span>Ar</span>
@@ -275,17 +274,17 @@
 												<span></span>
 											</div>
 											<div class="tw_paiement_trans">
-												<span class="montant value" id="total_paiement">
+												<span class="montant value" id="total_paiement_enc">
 													{{ total_total_reglement_enc }}
 												</span>
 											</div>
 											<div class="tw_reste_trans">
-												<span class="montant value" id="total_reste">
+												<span class="montant value" id="total_reste_enc">
 													{{ total_reste_enc }}
 												</span>
 											</div>
 											<div class="tw_montant_total_trans">
-												<span class="montant value" id="total_montant">
+												<span class="montant value" id="total_montant_enc">
 													{{ total_montant_total_enc }}
 												</span>
 											</div>
@@ -525,17 +524,17 @@
 												<span></span>
 											</div>
 											<div class="tw_paiement_trans">
-												<span class="montant value" id="total_paiement">
+												<span class="montant value" id="total_paiement_ter">
 													{{ total_total_reglement_ter }}
 												</span>
 											</div>
 											<div class="tw_reste_trans">
-												<span class="montant value" id="total_reste">
+												<span class="montant value" id="total_reste_ter">
 													{{ total_reste_ter }}
 												</span>
 											</div>
 											<div class="tw_montant_total_trans">
-												<span class="montant value" id="total_montant">
+												<span class="montant value" id="total_montant_ter">
 													{{ total_montant_total_ter }}
 												</span>
 											</div>

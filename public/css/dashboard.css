@@ -6912,7 +6912,7 @@ tr td.t_concerne_rem {
     border-radius: 5px;
 }
 #formulaire .action button:hover{
-     border: 1px solid rgba(255,255,255,0.8);
+     border-color: transparent !important;
     background: transparent !important;
 }
 #formulaire .action button:hover span{

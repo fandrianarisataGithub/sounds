@@ -42,8 +42,8 @@
 							<form action="">
 								<div class="form-group">
 									<select name="" id="select_tres">
-										<option value="depense">Dépense</option>
 										<option value="recette">Recette</option>
+										<option value="depense">Dépense</option>
 									</select>
 								</div>
 								<div class="form-group">
@@ -57,24 +57,19 @@
 								{# si Recette #}
 			
 								<div class="form-group form_recette">
-									<label for="">ID pro</label>
+									<label for="">ID pro *</label>
 									<input type="text" id="id_pro">
 								</div>
 								<div class="form-group form_recette">
-									<label for="">Client</label>
+									<label for="">Client *</label>
 									<input type="text" id="client">
 								</div>
 								
 								{# fin si recette #}
 
 								{# si Dépense #}
-								
 								<div class="form-group form_depense">
-									<label for="">N° compte</label>
-									<input type="text" id="num_compte">
-								</div>
-								<div class="form-group form_depense">
-									<label for="">Fournisseur</label>
+									<label for="">Fournisseur *</label>
 									<input type="text" id="fournisseur">
 								</div>
 								
@@ -86,18 +81,42 @@
 								</div>
 								<div class="form-group">
 									<label for="">Mode paiement *</label>
-									<input type="text" id="mode_pmt">
+									<select name="" id="mode_pmt">
+										<option value="CCIO">CCIO</option>
+										<option value="CHEQUE">CHEQUE</option>
+										<option value="EFFET">EFFET</option>
+										<option value="ESP">ESP</option>
+										<option value="PRELEVEMENT">PRELEVEMENT</option>
+										<option value="TRAITE">TRAITE</option>
+										<option value="VERSEMENT">VERSEMENT</option>
+										<option value="VIREMENT">VIREMENT</option>
+									</select>
 								</div>
 								<div class="form-group">
-									<label for="">Compte bancaire *</label>
-									<input type="text" id="compte_b">
+									<label for="">Compte *</label>
+									<select name="" id="compte_b">
+										<option value="BNI AR" selected="selected">BNI AR</option>
+										<option value="BNI EURO">BNI EURO</option>
+										<option value="BMOI AR">BMOI AR</option>
+										<option value="MCB AR">MCB AR</option>
+										<option value="BFV AR">BFV AR</option>
+										<option value="BOA AR">BOA AR</option>
+										<option value="CAISSE AR">CAISSE AR</option>
+									</select>
+								</div>
+								<div class="form-group form_depense">
+									<label for="" id="label_num_compte">N° compte *</label>
+									<input type="text" id="num_compte">
 								</div>
 								<div class="form-group">
 									<label for="">Monnaie *</label>
-									<input type="text" id="monnaie">
+									<select name="" id="monnaie">
+										<option value="Ar">Ar</option>
+										<option value="Euro">Euro</option>
+									</select>
 								</div>
 								<div class="form-group">
-									<label for="">Paiement *</label>
+									<label for="">Montant *</label>
 									<input type="text" id="paiement" class="input_nombre">
 								</div>
 								<div class="form-group" id="error_form">
@@ -112,7 +131,7 @@
 					</div>
 					<div class="entete_tresor entete_2">
                         <div class="type_banque">
-                            <h4>comptes bancaires</h4>
+                            <h4>Comptes</h4>
                         </div>
                         <div class="liste_comptes">
                             <div class="unite_banque">
@@ -163,6 +182,14 @@
 									<span class="montant">120000000</span>
 								</p>
 							</div>
+							<div class="unite_banque">
+								<p class="nom_banque">
+									CAISSE <span class="unite">Ar</span>
+								</p>
+								<p class="montant_banque">
+									<span class="montant">120000000</span>
+								</p>
+							</div>
                         </div>
                     </div>
 				</div>
@@ -203,18 +230,35 @@
 							<div class="form_select">
 								<form action="" class="form-inline">
 									<div class="form-group">
-										<select name="" id="" class="form-control">
+										<select name="" id="select_mode_pmt_tri" class="form-control">
 											<option value="">Mode de paiement</option>
+											<option value="CCIO">CCIO</option>
+											<option value="CHEQUE">CHEQUE</option>
+											<option value="EFFET">EFFET</option>
+											<option value="ESP">ESP</option>
+											<option value="PRELEVEMENT">PRELEVEMENT</option>
+											<option value="TRAITE">TRAITE</option>
+											<option value="VERSEMENT">VERSEMENT</option>
+											<option value="VIREMENT">VIREMENT</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<select name="" id="select_comptes_tri" class="form-control">
+											<option value="comptes">Comptes</option>
+											<option value="BNI Ar">BNI Ar</option>
+											<option value="BNI Euro">BNI Euro</option>
+											<option value="BMOI Ar">BMOI Ar</option>
+											<option value="MCB Ar">MCB Ar</option>
+											<option value="BFV Ar">BFV Ar</option>
+											<option value="BOA Ar">BOA Ar</option>
+											<option value="Caisse Ar">Caisse Ar</option>
 										</select>
 									</div>
 									<div class="form-group">
 										<select name="" id="" class="form-control">
-											<option value="">Compte bancaire</option>
-										</select>
-									</div>
-									<div class="form-group">
-										<select name="" id="" class="form-control">
-											<option value="">Monnaie</option>
+											<option value="monnaie">Monnaie</option>
+											<option value="Ar">Ar</option>
+											<option value="Euro">Euro</option>
 										</select>
 									</div>
 								</form>
@@ -239,14 +283,13 @@
 									</div>
 									<div
 										class=" tres_client">
-										
 										<span>Client</span>
 									</div>
 									<div class="tres_mode_p">
 										<span>Mode de paiement</span>
 									</div>
 									<div class="tres_compte_b">
-										<span>Compte bancaire</span>
+										<span>Comptes</span>
 									</div>
 									<div class="tres_monnaie">
 										<span>Monnaie</span>
@@ -295,7 +338,7 @@
 										<span>Mode de paiement</span>
 									</div>
 									<div class="tres_compte_b">
-										<span>Compte bancaire</span>
+										<span>Comptes</span>
 									</div>
 									<div class="tres_monnaie">
 										<span>Monnaie</span>
@@ -327,6 +370,15 @@
 {% block javascripts %}
 	<script src="{{ asset('js/cleave.min.js') }}"></script>
 	<script>
+		window.onload = function(){
+			var compte_b = document.querySelector('#compte_b').value ;
+			
+			if(compte_b == "CAISSE AR"){
+				
+				document.querySelector('#num_compte').style.display = "none";
+				document.querySelector('#label_num_compte').style.display = "none";
+			}
+		}
 		$(document).ready(function(){
 			function lister_data_recette(){
 				var data = {
@@ -457,6 +509,16 @@
 					}
 				})
 
+				// si on chousi caisse hide num compte 
+				$('#compte_b').on('change', function(){
+					if($(this).val() == "CAISSE AR"){
+						$('#label_num_compte').slideUp();
+						$('#num_compte').slideUp();
+					}else{
+						$('#label_num_compte').slideDown();
+						$('#num_compte').slideDown();
+					}
+				})
 
 
 				$('#ajout_tres').on('click', function(ev){
@@ -519,7 +581,31 @@
 						numericOnly: true
 					});
 				new Cleave('#paiement', {blocks: null});
+				
 			/* fin formulaire */
+
+			/* animation mode pmt */
+				function inArray(needle, haystack) {
+					var length = haystack.length;
+					for(var i = 0; i < length; i++) {
+						if(haystack[i] == needle) return true;
+					}
+					return false;
+				}
+
+				$('#select_mode_pmt_tri').on('change', function(){
+
+					var val = $(this).val();
+					var tab = ['CCIO', 'CHEQUE', 'EFFET', 'ESP', 'PRELEVEMENT', 'TRAITE', 'VERSEMENT', 'VIREMENT'];
+					if(inArray(val, tab)){
+						var champs = $('.tres_mode_p span');
+						$.each(champs, function (indexInArray, valueOfElement) { 
+							 alert(valueOfElement.innerHTML);
+						});
+					}
+				})
+
+			/* /animation mode pmt */
 		})
 	</script>
 {% endblock %}

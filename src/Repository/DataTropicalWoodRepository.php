@@ -10351,7 +10351,8 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('d')
             ->addSelect("d.idPro, d.entreprise")
-            ->where("d.etat_production ='Facturé' and d.reste > 0 and d.etape_production = 100")
+            ->where("d.etat_production ='facturé'")
+            ->andWhere("d.reste > 0")
             ->getQuery()
             ->getResult()
         ;
@@ -10378,12 +10379,14 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
     {
         $result_gb = $this->createQueryBuilder('d')
             ->addSelect("d.entreprise, d.idPro, SUM(d.reste) AS total_reste, SUM(d.montant_total) AS total_montant_total, SUM(d.total_reglement) AS total_total_reglement")
-            ->where("d.etat_production ='Facturé' and d.reste > 0")
+            ->where("d.reste > 0")
+            ->andWhere("d.etat_production = 'facturé'")
             ->groupBy("d.entreprise")
             ->orderBy("total_reste", "DESC")
             ->getQuery()
             ->getResult()
         ;
+        //dd($result_gb);
         $liste_by_id_pro = $this->listeAllResultCheckup();
         $resultat = [];
         $i = 0;
