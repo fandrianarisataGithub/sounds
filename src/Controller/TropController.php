@@ -73,7 +73,7 @@ class TropController extends AbstractController
                     if (strpos($son_nom, "\n") !== false) {
                         $son_nom = str_replace("\n", " ", $son_nom);
                         $son_nom = trim(str_replace("  ", " ", $son_nom));
-                        $item->setEntreprise($son_nom);
+                        $item->setEntreprise(mb_strtoupper($son_nom, 'UTF-8'));
                         $manager->flush();
                     }
                     if (strpos($son_id_pro, "\n") !== false) {
@@ -109,10 +109,14 @@ class TropController extends AbstractController
            
             $Total_data_updated = [];
             for ($i = 0; $i < count($d_aff); $i++) {
+                
                 $data_tw = new DataTropicalWood();
+                
                 $idPro = $services->clean_word($d_aff[$i][0]);
                 
                 $entreprise = $services->clean_word($d_aff[$i][2]);
+
+                $entreprise = mb_strtoupper($entreprise, 'UTF-8');
                 
                 $type_transaction = $services->clean_word($d_aff[$i][1]);
                 $detail = $d_aff[$i][3];
@@ -2592,5 +2596,31 @@ class TropController extends AbstractController
             "index"             => $index,
         ]);
     }
+
+    /**
+     * @Route("/admin/maj", name = "maj")
+     */
+    public function maj(Request $request, 
+                        SessionInterface $session,
+                        DataTropicalWoodRepository $repoTrop,
+                        ContactEntrepriseTWRepository $repoEntre, EntityManagerInterface $manager,
+                        ClientUpdatedRepository $repoClientUp) :Response
+    {
+
+        $tw = $repoTrop->findAll();
+        foreach($tw as $item){
+            $item->setEntreprise(mb_strtoupper($item->getEntreprise(), 'UTF-8'));
+            $manager->flush();
+        }
+        $cu = $repoClientUp->findAll();
+        foreach($cu as $item){
+            $item->setNom(mb_strtoupper($item->getNom(), 'UTF-8'));
+            $manager->flush();
+        }
+        dd($tw);
+        return $this->render("page/check_up_impaye.html.twig");
+    }
+
+
 
 }
