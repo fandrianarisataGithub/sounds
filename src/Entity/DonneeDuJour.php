@@ -128,6 +128,16 @@ class DonneeDuJour
      */
     private $crj_hebergement;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $n_pax_heb;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $n_chambre_occupe;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -237,7 +247,7 @@ class DonneeDuJour
     public function setSpaNAbonne(string $spa_n_abonne): self
     {
         $this->spa_n_abonne = $spa_n_abonne;
-
+        
         return $this;
     }
 
@@ -393,6 +403,30 @@ class DonneeDuJour
     public function setCrjHebergement(?string $crj_hebergement): self
     {
         $this->crj_hebergement = $crj_hebergement;
+
+        return $this;
+    }
+
+    public function getNPaxHeb(): ?int
+    {
+        return $this->n_pax_heb;
+    }
+
+    public function setNPaxHeb(?int $n_pax_heb): self
+    {
+        $this->n_pax_heb = $n_pax_heb;
+
+        return $this;
+    }
+
+    public function getNChambreOccupe(): ?int
+    {
+        return $this->n_chambre_occupe;
+    }
+
+    public function setNChambreOccupe(?int $n_chambre_occupe): self
+    {
+        $this->n_chambre_occupe = $n_chambre_occupe;
 
         return $this;
     }

@@ -33,7 +33,7 @@ class DonneeDuJourType extends AbstractType
                 "attr" => [
                     "class"=> "input_nombre",
                     "max" => "100",
-                    "mawlength" => "18"
+                    "maxlength" => "18"
                 ]
             ])
             ->add('res_ca', TextType::class, [
@@ -46,21 +46,21 @@ class DonneeDuJourType extends AbstractType
                 "attr" => [
                     "class" => "input_nombre",
                     "max" => "100",
-                    "mawlength" => "18"
+                    "maxlength" => "18"
                 ]
             ])
             ->add('res_dej', TextType::class, [
                 "attr" => [
                     "class" => "input_nombre",
                     "max" => "100",
-                    "mawlength" => "18"
+                    "maxlength" => "18"
                 ]
             ])
             ->add('res_dinner', TextType::class, [
                 "attr" => [
                     "class" => "input_nombre",
                     "max" => "100",
-                    "mawlength" => "18"
+                    "maxlength" => "18"
                 ]
             ])
             ->add('spa_ca', TextType::class, [
@@ -73,14 +73,27 @@ class DonneeDuJourType extends AbstractType
                 "attr" => [
                     "class" => "input_nombre",
                     "max" => "100",
-                    "mawlength" => "18"
+                    "maxlength" => "18"
+                ]
+            ])
+
+            ->add('n_pax_heb', TextType::class, [
+                "attr" => [
+                    "class" => "input_nombre",
+                    "maxlength" => "18"
+                ]
+            ])
+            ->add('n_chambre_occupe', TextType::class, [
+                "attr" => [
+                    "class" => "input_nombre",
+                    "maxlength" => "18"
                 ]
             ])
             ->add('spa_c_unique', TextType::class, [
                 "attr" => [
                     "class" => "input_nombre",
                     "max" => "100",
-                    "mawlength" => "18"
+                    "maxlength" => "18"
                 ]
             ])
             ->add('crj_direction', TextareaType::class, [

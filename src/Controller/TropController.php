@@ -1297,13 +1297,24 @@ class TropController extends AbstractController
             // les donnée pour transaction en cours et celles qui sont terminées
             $tab_trans_enc = [];
             $tab_trans_ter = [];
+            $tab_facture_en_att = [];
             foreach ($All_data_ne as $item) {
+                
                 $ca = $ca + $item->getMontantTotal();
                 $cae = $cae + $item->getTotalReglement();
                 $r = $item->getMontantTotal() - $item->getTotalReglement();
-                if ($r > 0) {
+                $etat_production = mb_strtolower($item->getEtatProduction(), 'UTF-8');
+                
+                if ($r > 0 && $etat_production == 'facturé') {
+
+                    array_push($tab_facture_en_att, $item);
+
+                }else if($r > 0 && $etat_production != 'facturé'){
+                    
                     array_push($tab_trans_enc, $item);
-                } else {
+                    
+                }else if($r <= 0){
+                    
                     array_push($tab_trans_ter, $item);
                 }
             }
@@ -1477,13 +1488,23 @@ class TropController extends AbstractController
             // les donnée pour transaction en cours et celles qui sont terminées
             $tab_trans_enc = [];
             $tab_trans_ter = [];
+            $tab_facture_en_att = [];
             foreach ($All_data_ne as $item) {
                 $ca = $ca + $item->getMontantTotal();
                 $cae = $cae + $item->getTotalReglement();
                 $r = $item->getMontantTotal() - $item->getTotalReglement();
-                if ($r > 0) {
+                $etat_production = $item->getEtatProduction();
+                
+                if ($r > 0 && $etat_production == 'facturé') {
+
+                    array_push($tab_facture_en_att, $item);
+
+                }else if($r > 0 && $etat_production != 'facturé'){
+
                     array_push($tab_trans_enc, $item);
-                } else {
+                    
+                }else if($r <= 0){
+                    
                     array_push($tab_trans_ter, $item);
                 }
             }
@@ -1504,6 +1525,196 @@ class TropController extends AbstractController
             $total_reste = 0;
             $total_total_reglement = 0;
             foreach ($tab_trans_ter as $item) {
+                // date 
+                $date_conf = "";
+                $date_facture = "";
+                $date1 = $item->getDateConfirmation();
+                $date2 = $item->getDateFacture();
+                if ($date1) {
+                    $date_conf = $date1->format('d/m/Y');
+                }
+                if ($date2) {
+                    $date_facture = $date2->format('d/m/Y');
+                }
+
+                $total_montant = $item->getMontantTotal();
+                $total_reglement = $item->getTotalReglement();
+                $reste = $total_montant - $total_reglement;
+                // totals
+
+                $total_reste += $reste;
+                $total_total_montant += $total_montant;
+                $total_total_reglement += $total_reglement;
+                // à retenir etape en % etat text ex facturé...
+                $html .= '
+                
+                    <div class="t_body_row sous_tab_body">
+                        <div class="tw_client_trans">
+                            <span>' . $item->getIdPro() . '</span>
+                        </div>
+                        <div class="tw_details_trans">
+                            <span>' . $item->getDetail() . '</span>
+                        </div>
+                        <div class="tw_type_trans_trans">
+                            <span class="value">' . $item->getTypeTransaction() . '</span>
+                        </div>
+                        <div class="tw_etat_prod_trans">
+                            <span class="value">' . $item->getEtatProduction() . '</span>
+                        </div>
+                        <div class="tw_etape_prod_trans">
+                            <span class="value">' . $item->getEtapeProduction() . '%</span>
+                        </div>
+                        <div class="tw_paiement_trans">
+                            <span class="montant value">' . $item->getTotalReglement() . '</span>
+                        </div>
+                        <div class="tw_reste_trans">
+                            <span class="montant">
+                                ' . $reste . '
+                            </span>
+                        </div>
+                        <div class="tw_montant_total_trans">
+                            <span class="montant">' . $total_montant . '</span>
+                        </div>
+                        <div class="tw_date_conf_trans">
+                            <span>
+                                ' . $date_conf . '
+                            </span>
+                        </div>
+                        <div class="tw_date_conf_trans">
+                            <span>
+                                ' . $date_facture . '
+                            </span>
+                        </div>
+                    </div>
+                
+                ';
+            }
+
+            $html .= '
+                </div>
+            </div>
+            <div class="t_footer_row sous_tab_body total_content t_footer_trans">
+                <div class="tw_client_trans">
+                    <span>Total</span>
+                </div>
+                <div class="tw_details_trans">
+                    <span></span>
+                </div>
+                <div class="tw_type_trans_trans">
+                    <span></span>
+                </div>
+                <div class="tw_etat_prod_trans">
+                    <span></span>
+                </div>
+                <div class="tw_etape_prod_trans">
+                    <span></span>
+                </div>
+                <div class="tw_paiement_trans">
+                    <span class="montant value" id="total_paiement">
+                    ' . $total_total_reglement . '
+                    </span>
+                </div>
+                <div class="tw_reste_trans">
+                    <span class="montant value" id="total_reste">
+                        ' . $total_reste . '
+                    </span>
+                </div>
+                <div class="tw_montant_total_trans">
+                    <span class="montant value" id="total_montant">
+                        ' . $total_total_montant . '
+                    </span>
+                </div>
+                <div class="tw_date_conf_trans">
+                    <span></span>
+                </div>
+                <div class="tw_date_facture_trans">
+                    <span></span>
+                </div>
+            </div>
+            ';
+
+
+            $data = json_encode($html);
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+        }
+
+        return $response;
+    }
+
+    /**
+     * @Route("/tropical_wood/lister_facture_en_att", name = "lister_facture_en_att")
+     */
+    public function lister_facture_en_att(Request $request, Services $services, EntityManagerInterface $manager, DataTropicalWoodRepository $repoTrop, EntrepriseTWRepository $repoEntre)
+    {
+        $response = new Response();
+        if ($request->isXmlHttpRequest()) {
+
+            $id_entreprise = $request->get('id_client');
+
+            $nom_entreprise = $repoEntre->find($id_entreprise)->getNom();
+
+            //dd($nom_entreprise);
+
+            $All_data_ne = $repoTrop->findBy(
+                ['entreprise'    => $nom_entreprise],
+                ['montant_total' => 'DESC']
+
+            );
+
+            // Calcul des chiffres d'affaire
+            
+            $ca = 0;
+            $cae = 0;
+            $caae = 0;
+
+            foreach ($All_data_ne as $item) {
+                $ca = $ca + $item->getMontantTotal();
+                $cae = $cae + $item->getTotalReglement();
+                $r = $item->getMontantTotal() - $item->getTotalReglement();
+                $caae = $caae + $r;
+            }
+
+            // les donnée pour transaction en cours et celles qui sont terminées
+            $tab_trans_enc = [];
+            $tab_facture_en_att = [];
+            $tab_trans_ter = [];
+            foreach ($All_data_ne as $item) {
+                $ca = $ca + $item->getMontantTotal();
+                $cae = $cae + $item->getTotalReglement();
+                $r = $item->getMontantTotal() - $item->getTotalReglement();
+                $etat_production = $item->getEtatProduction();
+                
+                if ($r > 0 && $etat_production == 'facturé') {
+
+                    array_push($tab_facture_en_att, $item);
+
+                }else if($r > 0 && $etat_production != 'facturé'){
+
+                    array_push($tab_trans_enc, $item);
+                    
+                }else if($r <= 0){
+                    
+                    array_push($tab_trans_ter, $item);
+                }
+            }
+            $html = '';
+            if (count($tab_facture_en_att) >= 11) {
+                $html .= '
+                    <div class="dr_tab_trans">
+                    <div class="block_all_tr block_tr_scroll">
+                ';
+            } else if (count($tab_facture_en_att) < 11) {
+                $html .= '
+                    <div class="dr_tab_trans">
+                    <div class="block_all_tr">
+                ';
+            }
+
+            $total_total_montant = 0;
+            $total_reste = 0;
+            $total_total_reglement = 0;
+            foreach ($tab_facture_en_att as $item) {
                 // date 
                 $date_conf = "";
                 $date_facture = "";
@@ -1806,6 +2017,7 @@ class TropController extends AbstractController
             $id_pro = $request->get('id_pro');
             $nom_client = $request->get('client');
             $observation = $request->get('observation');
+            $contrainte = $request->get('contrainte');
             $id_client = $request->get('id_client'); 
             $remarque = new RemarqueEntrepriseTW();
             
@@ -1821,7 +2033,14 @@ class TropController extends AbstractController
                 $entreprise = $repoEntre->findOneByNom($nom_client);
             }
             $remarque->setEntreprise($entreprise);
-            $remarque->setEtatResultat("0");
+            // taloha en cours = 0 terminer = 1 en attente = facturé
+            if($contrainte == "facturé"){
+                
+                $remarque->setEtatResultat("facturé");
+            }
+            if($contrainte == "en cours"){
+                $remarque->setEtatResultat("en cours");
+            }
             $manager->persist($remarque);
             $manager->flush();
 
@@ -1843,6 +2062,8 @@ class TropController extends AbstractController
         if ($request->isXmlHttpRequest()) {
             
             $id_client = $request->get('id_client');
+            $contrainte = $request->get('contrainte');
+            // mbola tsy vita ny manasaraka anle contrainte
             $entreprise = $repoEntre->find($id_client);
             $remarques = $entreprise->getRemarqueEntrepriseTWs();
             $html = '
@@ -1854,44 +2075,83 @@ class TropController extends AbstractController
                     </tr>
             ';
             
-            foreach($remarques as $item){
-                $son_etat = $item->getEtatResultat();
-                if($son_etat == "0") { 
-                    $date = $item->getDateRemarque()->format('d/m/Y');
-                    $concerne = $item->getConcerne();
-                    $tab_concerne =explode(",", $concerne);
-                    $conc = "";
-                    $j = 0;
-                    for($i = 0; $i < count($tab_concerne); $i++){
-                        
-                        $conc .= $tab_concerne[$i].", ";
-                        $j++;
-                        if($j % 3 == 0){
-                            $conc .= "<br>";
+            if($contrainte == "en cours"){
+                foreach($remarques as $item){
+                    $son_etat = $item->getEtatResultat();
+                    if($son_etat == "en cours"){ 
+                        $date = $item->getDateRemarque()->format('d/m/Y');
+                        $concerne = $item->getConcerne();
+                        $tab_concerne =explode(",", $concerne);
+                        $conc = "";
+                        $j = 0;
+                        for($i = 0; $i < count($tab_concerne); $i++){
+                            
+                            $conc .= $tab_concerne[$i].", ";
+                            $j++;
+                            if($j % 3 == 0){
+                                $conc .= "<br>";
+                            }
                         }
-                    }
-                    $html .= '
-                        <tr class="trb_remarque_a_ter">
-                            <td class="t_date_rem"><span>'. $date .'</span></td>
-                            <td class="t_concerne_rem"><span>'. $conc . '</span></td>
-                            <td class="tbd_remarque_a_ter t_obs_rem">
-                                <p class="observation">
-                                    '. $item->getObservation() .'
-                                </p>
-                            </td>
-                            <td class="t_action_rem">
-                                <div class="liste_action">
-                                    <a href="#" data-id = "'. $item->getId() .'" class="edit_remarque">
-                                        <span class=" fa fa-check"></span>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    
-                    ';
-                } 
+                        $html .= '
+                            <tr class="trb_remarque_a_ter">
+                                <td class="t_date_rem"><span>'. $date .'</span></td>
+                                <td class="t_concerne_rem"><span>'. $conc . '</span></td>
+                                <td class="tbd_remarque_a_ter t_obs_rem">
+                                    <p class="observation">
+                                        '. $item->getObservation() .'
+                                    </p>
+                                </td>
+                                <td class="t_action_rem">
+                                    <div class="liste_action">
+                                        <a href="#" data-id = "'. $item->getId() .'" class="edit_remarque">
+                                            <span class=" fa fa-check"></span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        ';
+                    } 
+                }
             }
-            
+            if($contrainte == "facturé"){
+                foreach($remarques as $item){
+                    $son_etat = $item->getEtatResultat();
+                    if($son_etat == "facturé") { 
+                        $date = $item->getDateRemarque()->format('d/m/Y');
+                        $concerne = $item->getConcerne();
+                        $tab_concerne =explode(",", $concerne);
+                        $conc = "";
+                        $j = 0;
+                        for($i = 0; $i < count($tab_concerne); $i++){
+                            
+                            $conc .= $tab_concerne[$i].", ";
+                            $j++;
+                            if($j % 3 == 0){
+                                $conc .= "<br>";
+                            }
+                        }
+                        $html .= '
+                            <tr class="trb_remarque_a_ter">
+                                <td class="t_date_rem"><span>'. $date .'</span></td>
+                                <td class="t_concerne_rem"><span>'. $conc . '</span></td>
+                                <td class="tbd_remarque_a_ter t_obs_rem">
+                                    <p class="observation">
+                                        '. $item->getObservation() .'
+                                    </p>
+                                </td>
+                                <td class="t_action_rem">
+                                    <div class="liste_action">
+                                        <a href="#" data-id = "'. $item->getId() .'" class="edit_remarque">
+                                            <span class=" fa fa-check"></span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        ';
+                    } 
+                }
+            }
+            //dd($html);
 
             $data = json_encode($html);
             $response->headers->set('Content-Type', 'application/json');
@@ -2241,7 +2501,7 @@ class TropController extends AbstractController
                 $stringP .= '
                                 <div class="t_body_row sous_tab_body sous_total_content">
                                     <div class="div_ca div_ca_client">
-                                        <a href="/tropical_wood/show_entreprise/' . $id_entre . '" class="link_client ">
+                                        <a href="/tropical_wood/show_entreprise/' . $id_entre . '" class="link_client " target = _blanc>
                                             <span>' . $data["entreprise"] . '</span>
                                         </a>
                                     </div>
@@ -2579,8 +2839,6 @@ class TropController extends AbstractController
     {
 
         $res = $repoTrop->listeResultOfCheckupByEntreprise();
-        //dd($res);
-        //$test = $repoTrop->find_all_contact();
         //dd($res);
         $date = new \Datetime();
         $today = $date->format('Y-m-d');

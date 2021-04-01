@@ -10405,11 +10405,13 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                 "index"                     => $i++,
                 "entreprise"                => $rgb["entreprise"],
                 "liste_trans_ter"           => $this->findAllListeTransTer($rgb["entreprise"]),
+                "liste_trans_enc"           => $this->findAllListeTransEnc($rgb["entreprise"]),
                 "total_reste"               => $rgb["total_reste"],
                 "total_montant_total"       => $rgb["total_montant_total"],
                 "total_total_reglement"     => $rgb["total_total_reglement"],
-                "liste_client"              => [],
+                "liste_client_en_attente"   => [],
                 "liste_contact"             => $this->find_all_contact($entreprise_id),
+                "liste_remarque_facture"    => $this->find_all_remarque_facture($entreprise_id),
                 "liste_remarque_enc"        => $this->find_all_remarque_enc($entreprise_id),
                 "liste_remarque_ter"        => $this->find_all_remarque_ter($entreprise_id),
             ];
@@ -10419,7 +10421,7 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
                     // le idPro du courant $reidp
                     $id_pro =  $residp["idPro"];
                     $client = $this->findOneByIdPro($id_pro);
-                    array_push($tab["liste_client"], $client);
+                    array_push($tab["liste_client_en_attente"], $client);
                 }
             }
             array_push($resultat, $tab);
@@ -10433,6 +10435,16 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
             ->andWhere('d.reste = :val2')
             ->setParameter('val', $nom_client)
             ->setParameter('val2', '0.0')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findAllListeTransEnc($nom_client){
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.entreprise = :val')
+            ->andWhere('d.reste > 0')
+            ->andWhere("d.etat_production <> 'facturé'")
+            ->setParameter('val', $nom_client)
             ->getQuery()
             ->getResult();
     }
@@ -10457,7 +10469,21 @@ class DataTropicalWoodRepository extends ServiceEntityRepository
         $stmt = $conn->prepare($sql);
         $stmt->execute([
                         'val'   => $entreprise_id['id'],
-                        'etat'  => '0'
+                        'etat'  => 'en cours'
+                        ]);
+        return $stmt->fetchAll();
+    }
+
+    public function find_all_remarque_facture($entreprise_id)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = '
+            SELECT * FROM `remarque_entreprise_tw` WHERE entreprise_id = :val AND etat_resultat = :etat
+        ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([
+                        'val'   => $entreprise_id['id'],
+                        'etat'  => 'facturé'
                         ]);
         return $stmt->fetchAll();
     }

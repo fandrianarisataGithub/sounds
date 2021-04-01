@@ -4382,15 +4382,17 @@ form .data_form {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    width: 700px;
+    align-items: center;
+    width: 800px;
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
     justify-content: space-between;
     -ms-flex-line-pack: start;
-    align-content: start;
-    -webkit-box-align: start;
-    -ms-flex-align: start;
-    align-items: start;
+    align-content: center !important;
+    min-height: 100px;
+}
+.kadoany label{
+    width: auto !important;
 }
 
 form .data_form label {
@@ -5924,7 +5926,10 @@ table.small_tab tbody tr td {
     margin-left: 25px;
 }
 
-.li_unite_selected_pf>div span.exit_pf {
+.li_unite_selected_pf>div span.exit_pf,
+.li_unite_selected_pf>div span.exit_pf_enc,
+.li_unite_selected_pf>div span.exit_pf_facture,
+.li_unite_selected_pf>div span.exit_pf_en_cours{
     position: relative;
     left: 72px;
     bottom: 45px !important;
@@ -6393,7 +6398,8 @@ tr td.t_concerne_rem {
 .unite_client_tw {
     width: 100% !important;
     display: flex;
-    height: 35px;
+    min-height: 35px;
+    height: auto !important;
     justify-content: start;
     align-items: center;
 }
@@ -6939,4 +6945,21 @@ tr td.t_concerne_rem {
     padding-left: 15px;
     color: #fff;
 }
+.liste_pf_selected_facture_en_attente ul{
+    display: flex ;
+    margin-top: 25px;
+}
+
+.liste_pf_selected_transaction_en_cours ul{
+    display: flex ;
+    margin-top: 25px;
+}
+
+.liste_pf_selected_facture ul, 
+.liste_pf_selected_en_cours ul{
+    display: flex !important;
+    margin-top: 25px !important;
+}
+
+
 /* tresorerie */
