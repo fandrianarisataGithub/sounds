@@ -343,6 +343,32 @@ class PageController extends AbstractController
         $heb_ca_nov = 0;
         $heb_ca_dec = 0;
 
+        $heb_pax_jan = 0;
+        $heb_pax_fev = 0;
+        $heb_pax_mars = 0;
+        $heb_pax_avr = 0;
+        $heb_pax_mai = 0;
+        $heb_pax_juin = 0;
+        $heb_pax_juil = 0;
+        $heb_pax_aou = 0;
+        $heb_pax_sep = 0;
+        $heb_pax_oct = 0;
+        $heb_pax_nov = 0;
+        $heb_pax_dec = 0;
+
+        $heb_occ_jan = 0;
+        $heb_occ_fev = 0;
+        $heb_occ_mars = 0;
+        $heb_occ_avr = 0;
+        $heb_occ_mai = 0;
+        $heb_occ_juin = 0;
+        $heb_occ_juil = 0;
+        $heb_occ_aou = 0;
+        $heb_occ_sep = 0;
+        $heb_occ_oct = 0;
+        $heb_occ_nov = 0;
+        $heb_occ_dec = 0;
+
         // effectif pour la moyen 
 
         $e_jan = 0;
@@ -373,6 +399,32 @@ class PageController extends AbstractController
         $eca_nov = 0;
         $eca_dec = 0;
 
+        $pax_jan = 0;
+        $pax_fev = 0;
+        $pax_mars = 0;
+        $pax_avr = 0;
+        $pax_mai = 0;
+        $pax_juin = 0;
+        $pax_juil = 0;
+        $pax_aou = 0;
+        $pax_sep = 0;
+        $pax_oct = 0;
+        $pax_nov = 0;
+        $pax_dec = 0;
+
+        $occ_jan = 0;
+        $occ_fev = 0;
+        $occ_mars = 0;
+        $occ_avr = 0;
+        $occ_mai = 0;
+        $occ_juin = 0;
+        $occ_juil = 0;
+        $occ_aou = 0;
+        $occ_sep = 0;
+        $occ_oct = 0;
+        $occ_nov = 0;
+        $occ_dec = 0;
+
         
         
         $all_ddj = $repoDoneeDJ->findBy(['hotel' => $hotel]);
@@ -393,6 +445,12 @@ class PageController extends AbstractController
 
                     $e_jan++;
                     $heb_to_jan += $ddj->getHebTo();
+
+                    $pax_jan++;
+                    $heb_pax_jan += intval($ddj->getNPaxHeb());
+
+                    $occ_jan++;
+                    $heb_occ_jan += intval($ddj->getNChambreOccupe());
                 }
                 if ($son_mois_ca == "02") {
                     $eca_fev++;
@@ -401,6 +459,12 @@ class PageController extends AbstractController
 
                     $e_fev++;
                     $heb_to_fev += $ddj->getHebTo();
+
+                    $pax_fev++;
+                    $heb_pax_fev += intval($ddj->getNPaxHeb());
+
+                    $occ_fev++;
+                    $heb_occ_fev += intval($ddj->getNChambreOccupe());
                 }
                 if ($son_mois_ca == "03") {
                     $eca_mars++;
@@ -409,6 +473,12 @@ class PageController extends AbstractController
 
                     $e_mars++;
                     $heb_to_mars += $ddj->getHebTo();
+
+                    $pax_mars++;
+                    $heb_pax_mars += intval($ddj->getNPaxHeb());
+
+                    $occ_mars++;
+                    $heb_occ_mars += intval($ddj->getNChambreOccupe());
                 }
                 if ($son_mois_ca == "04") {
                     $eca_avr++;
@@ -417,6 +487,12 @@ class PageController extends AbstractController
 
                     $e_avr++;
                     $heb_to_avr += $ddj->getHebTo();
+
+                    $pax_avr++;
+                    $heb_pax_avr += intval($ddj->getNPaxHeb());
+
+                    $occ_avr++;
+                    $heb_occ_avr += intval($ddj->getNChambreOccupe());
                 }
                 if ($son_mois_ca == "05") {
                     $eca_mai++;
@@ -425,6 +501,12 @@ class PageController extends AbstractController
 
                     $e_mai++;
                     $heb_to_mai += $ddj->getHebTo();
+
+                    $pax_mai++;
+                    $heb_pax_mai += intval($ddj->getNPaxHeb());
+
+                    $occ_mai++;
+                    $heb_occ_mai += intval($ddj->getNChambreOccupe());
                 }
                 if ($son_mois_ca == "06") {
                     $eca_juin++;
@@ -433,6 +515,12 @@ class PageController extends AbstractController
 
                     $e_juin++;
                     $heb_to_juin += $ddj->getHebTo();
+
+                    $pax_juin++;
+                    $heb_pax_juin += intval($ddj->getNPaxHeb());
+
+                    $occ_juin++;
+                    $heb_occ_juin += intval($ddj->getNChambreOccupe());
                 }
                 if ($son_mois_ca == "07") {
                     $eca_juil++;
@@ -441,6 +529,12 @@ class PageController extends AbstractController
 
                     $e_juil++;
                     $heb_to_juil += $ddj->getHebTo();
+
+                    $pax_juil++;
+                    $heb_pax_juil += intval($ddj->getNPaxHeb());
+
+                    $occ_juil++;
+                    $heb_occ_juil += intval($ddj->getNChambreOccupe());
                 }
                 if ($son_mois_ca == "08") {
                     $eca_aou++;
@@ -449,6 +543,12 @@ class PageController extends AbstractController
 
                     $e_aou++;
                     $heb_to_aou += $ddj->getHebTo();
+
+                    $pax_aou++;
+                    $heb_pax_aou += intval($ddj->getNPaxHeb());
+
+                    $occ_aou++;
+                    $heb_occ_aou += intval($ddj->getNChambreOccupe());
                 }
                 if ($son_mois_ca == "09") {
                     $eca_sep++;
@@ -457,6 +557,12 @@ class PageController extends AbstractController
 
                     $e_sep++;
                     $heb_to_sep += $ddj->getHebTo();
+
+                    $pax_sep++;
+                    $heb_pax_sep += intval($ddj->getNPaxHeb());
+
+                    $occ_sep++;
+                    $heb_occ_sep += intval($ddj->getNChambreOccupe());
                 }
                 if ($son_mois_ca == "10") {
                     $eca_oct++;
@@ -466,28 +572,49 @@ class PageController extends AbstractController
 
                     $e_oct++;
                     $heb_to_oct += $ddj->getHebTo();
+
+                    $pax_oct++;
+                    $heb_pax_oct += intval($ddj->getNPaxHeb());
+
+                    $occ_oct++;
+                    $heb_occ_oct += intval($ddj->getNChambreOccupe());
                 }
                 if ($son_mois_ca == "11") {
+                    
                     $eca_nov++;
                     $x = floatval(str_replace(' ', '', $ddj->getHebCa()));
                     $heb_ca_nov += $x;
 
                     $e_nov++;
                     $heb_to_nov += $ddj->getHebTo();
+
+                    $pax_nov++;
+                    $heb_pax_nov += intval($ddj->getNPaxHeb());
+
+                    $occ_nov++;
+                    $heb_occ_nov += intval($ddj->getNChambreOccupe());
                 }
                 if ($son_mois_ca == "12") {
+                    
                     $eca_dec++;
                     $x = floatval(str_replace(' ', '', $ddj->getHebCa()));
                     $heb_ca_dec += $x;
 
                     $e_dec++;
                     $heb_to_dec += $ddj->getHebTo();
+
+                    $pax_dec++;
+                    $heb_pax_dec += intval($ddj->getNPaxHeb());
+
+                    $occ_dec++;
+                    $heb_occ_dec += intval($ddj->getNChambreOccupe());
                 }
             }
         }
 
         $tab_heb_to = [$heb_to_jan, $heb_to_fev, $heb_to_mars, $heb_to_avr, $heb_to_mai, $heb_to_juin, $heb_to_juil, $heb_to_aou, $heb_to_sep, $heb_to_oct, $heb_to_nov, $heb_to_dec];
         $tab_e = [$e_jan, $e_fev, $e_mars, $e_avr, $e_mai, $e_juin, $e_juil, $e_aou, $e_sep, $e_oct, $e_nov, $e_dec];
+        
         for($i = 0; $i < count($tab_e); $i++){
             if($tab_e[$i] == 0){
                 $tab_e[$i] = 1;
@@ -501,11 +628,15 @@ class PageController extends AbstractController
             if ($tab_eca[$i] == 0) {
                 $tab_eca[$i] = 1;
             }
-            //$tab_heb_ca[$i] = $tab_heb_ca[$i] / $tab_eca[$i] ; 
+           
             $tab_heb_ca[$i] = floatval(str_replace(' ', '', $tab_heb_ca[$i])) ;
-            // $tab_heb_ca[$i] = number_format($tab_heb_ca[$i], 2);
+            
         }
 
+        $tab_heb_pax = [$heb_pax_jan, $heb_pax_fev, $heb_pax_mars, $heb_pax_avr, $heb_pax_mai, $heb_pax_juin, $heb_pax_juil, $heb_pax_aou, $heb_pax_sep, $heb_pax_oct, $heb_pax_nov, $heb_pax_dec];
+
+        $tab_heb_occ = [$heb_occ_jan, $heb_occ_fev, $heb_occ_mars, $heb_occ_avr, $heb_occ_mai, $heb_occ_juin, $heb_occ_juil, $heb_occ_aou, $heb_occ_sep, $heb_occ_oct, $heb_occ_nov, $heb_occ_dec];
+        
         $tab_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
         $tab_aff = [];
         if ($request->request->count() > 0) {
@@ -644,6 +775,8 @@ class PageController extends AbstractController
                 "current_page"          => $data_session['current_page'],
                 "tab_heb_to"            => $tab_heb_to,
                 "tab_heb_ca"            => $tab_heb_ca,
+                "tab_heb_pax"           => $tab_heb_pax,
+                "tab_heb_occ"           => $tab_heb_occ,
                 "tab_labels"            => $tab_labels,
                 "type_affichage"        => "annee",
                 'items'                 => $tab_aff,
