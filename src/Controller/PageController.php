@@ -2545,7 +2545,6 @@ class PageController extends AbstractController
         $response = new Response();
         if ($request->isXmlHttpRequest()) {
 
-
             $donnee = $request->get('data');
             $donnee_explode = explode("-", $donnee);
             $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
@@ -2675,6 +2674,232 @@ class PageController extends AbstractController
 
 
                 $data = json_encode($tab_heb_ca);
+
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+                return $response;
+            }
+        }
+
+    }
+
+    /**
+     * @Route("/profile/filtre/graph/pax/{pseudo_hotel}", name = "filtre_graph_pax")
+     */
+    public function filtre_graph_pax($pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ, 
+        Request $request, EntityManagerInterface $manager, 
+        ClientRepository $repo, SessionInterface $session, 
+        HotelRepository $repoHotel)
+    {
+        $response = new Response();
+        if ($request->isXmlHttpRequest()) {
+
+            $donnee = $request->get('data');
+            $donnee_explode = explode("-", $donnee);
+            $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+            $all_ddj = $repoDoneeDJ->findBy(['hotel' => $hotel]);
+            if ($donnee_explode[0] != 'tous_les_mois') {
+
+                // les var pour les heb_to
+
+                $tab_jour_n_pax = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                $tab_jour_n_chambre = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+                $num = 0;
+                foreach ($all_ddj as $d) {
+                    $son_mois_createdAt = $d->getCreatedAt()->format('m-Y');
+                    //dd($donnee);
+                    if ($donnee == $son_mois_createdAt) {
+
+                        $son_num_jour = $d->getCreatedAt()->format('d');
+                        $num = intval($son_num_jour) - 1;
+                        //$val = floatval(str_replace(" ", "", $tab_jour_pax[$num]));
+                        $tab_jour_n_pax[$num] = $d->getNPaxHeb();
+                        $tab_jour_n_chambre[$num] = $d->getNChambreOccupe();
+                        $tab_jour_n_pax[$num] =  floatval(str_replace(' ', '', $tab_jour_n_pax[$num])) ;
+                        $tab_jour_n_chambre[$num] =  floatval(str_replace(' ', '', $tab_jour_n_chambre[$num])) ;
+                        
+                    }
+                }
+                $retour = [
+                    'tab_jour_n_pax' => $tab_jour_n_pax,
+                    'tab_jour_n_chambre'=> $tab_jour_n_chambre
+                ];
+
+                $data = json_encode($retour);
+               
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+                return $response;
+            } else {
+
+                $heb_n_pax_jan = 0;
+                $heb_n_pax_fev = 0;
+                $heb_n_pax_mars = 0;
+                $heb_n_pax_avr = 0;
+                $heb_n_pax_mai = 0;
+                $heb_n_pax_juin = 0;
+                $heb_n_pax_juil = 0;
+                $heb_n_pax_aou = 0;
+                $heb_n_pax_sep = 0;
+                $heb_n_pax_oct = 0;
+                $heb_n_pax_nov = 0;
+                $heb_n_pax_dec = 0;
+
+                // effectif pour la moyen 
+
+                $en_pax_jan = 0;
+                $en_pax_fev = 0;
+                $en_pax_mars = 0;
+                $en_pax_avr = 0;
+                $en_pax_mai = 0;
+                $en_pax_juin = 0;
+                $en_pax_juil = 0;
+                $en_pax_aou = 0;
+                $en_pax_sep = 0;
+                $en_pax_oct = 0;
+                $en_pax_nov = 0;
+                $en_pax_dec = 0;
+
+                $heb_n_chambre_jan = 0;
+                $heb_n_chambre_fev = 0;
+                $heb_n_chambre_mars = 0;
+                $heb_n_chambre_avr = 0;
+                $heb_n_chambre_mai = 0;
+                $heb_n_chambre_juin = 0;
+                $heb_n_chambre_juil = 0;
+                $heb_n_chambre_aou = 0;
+                $heb_n_chambre_sep = 0;
+                $heb_n_chambre_oct = 0;
+                $heb_n_chambre_nov = 0;
+                $heb_n_chambre_dec = 0;
+
+                // effectif pour la moyen 
+
+                $en_chambre_jan = 0;
+                $en_chambre_fev = 0;
+                $en_chambre_mars = 0;
+                $en_chambre_avr = 0;
+                $en_chambre_mai = 0;
+                $en_chambre_juin = 0;
+                $en_chambre_juil = 0;
+                $en_chambre_aou = 0;
+                $en_chambre_sep = 0;
+                $en_chambre_oct = 0;
+                $en_chambre_nov = 0;
+                $en_chambre_dec = 0;
+
+                $annee_actuel = $donnee_explode[1];
+                foreach ($all_ddj as $ddj) {
+                    $son_createdAt = $ddj->getCreatedAt();
+                    $son_mois_pax = $son_createdAt->format("m");
+                    $son_annee_pax = $son_createdAt->format("Y");
+                    if ($son_annee_pax == $annee_actuel) {
+                        if ($son_mois_pax == "01") {
+                            $en_pax_jan++;
+                            $en_chambre_jan++;
+                            $heb_n_pax_jan += $ddj->getNPaxHeb();
+                            $heb_n_chambre_jan += $ddj->getNChambreOccupe();
+                        }
+                        if ($son_mois_pax == "02") {
+                            $en_pax_fev++;
+                            $en_chambre_fev++;
+                            $heb_n_pax_fev += $ddj->getNPaxHeb();
+                            $heb_n_chambre_fev += $ddj->getNChambreOccupe();
+                        }
+                        if ($son_mois_pax == "03") {
+                            $en_pax_mars++;
+                            $en_chambre_mars++;
+                            $heb_n_pax_mars += $ddj->getNPaxHeb();
+                            $heb_n_chambre_mars += $ddj->getNChambreOccupe();
+                        }
+                        if ($son_mois_pax == "04") {
+                            $en_pax_avr++;
+                            $en_chambre_avr++;
+                            $heb_n_pax_avr += $ddj->getNPaxHeb();
+                            $heb_n_chambre_avr += $ddj->getNChambreOccupe();
+                        }
+                        if ($son_mois_pax == "05") {
+                            $en_pax_mai++;
+                            $en_chambre_mai++;
+                            $heb_n_pax_mai += $ddj->getNPaxHeb();
+                            $heb_n_chambre_mai += $ddj->getNChambreOccupe();
+                        }
+                        if ($son_mois_pax == "06") {
+                            $en_pax_juin++;
+                            $en_chambre_juin++;
+                            $heb_n_pax_juin += $ddj->getNPaxHeb();
+                            $heb_n_chambre_juin += $ddj->getNChambreOccupe();
+                        }
+                        if ($son_mois_pax == "07") {
+                            $en_pax_juil++;
+                            $en_chambre_juil++;
+                            $heb_n_pax_juil += $ddj->getNPaxHeb();
+                            $heb_n_chambre_juil += $ddj->getNChambreOccupe();
+                        }
+                        if ($son_mois_pax == "08") {
+                            $en_pax_aou++;
+                            $en_chambre_aou++;
+                            $heb_n_pax_aou += $ddj->getNPaxHeb();
+                            $heb_n_chambre_aou += $ddj->getNChambreOccupe();
+                        }
+                        if ($son_mois_pax == "09") {
+                            $en_pax_sep++;
+                            $en_chambre_sep++;
+                            $heb_n_pax_sep += $ddj->getNPaxHeb();
+                            $heb_n_chambre_sep += $ddj->getNChambreOccupe();
+                        }
+                        if ($son_mois_pax == "10") {
+                            $en_pax_oct++;
+                            $en_chambre_oct++;
+                            $heb_n_pax_oct += $ddj->getNPaxHeb();
+                            $heb_n_chambre_oct += $ddj->getNChambreOccupe();
+                        }
+                        if ($son_mois_pax == "11") {
+                            $en_pax_nov++;
+                            $en_chambre_nov++;
+                            $heb_n_pax_nov += $ddj->getNPaxHeb();
+                            $heb_n_chambre_nov += $ddj->getNChambreOccupe();
+                        }
+                        if ($son_mois_pax == "12") {
+                            $en_pax_dec++;
+                            $en_chambre_dec++;
+                            $heb_n_pax_dec += $ddj->getNPaxHeb();
+                            $heb_n_chambre_dec += $ddj->getNChambreOccupe();
+                        }
+                    }
+                }
+
+                $tab_heb_n_pax = [$heb_n_pax_jan, $heb_n_pax_fev, $heb_n_pax_mars, $heb_n_pax_avr, $heb_n_pax_mai, $heb_n_pax_juin, $heb_n_pax_juil, $heb_n_pax_aou, $heb_n_pax_sep, $heb_n_pax_oct, $heb_n_pax_nov, $heb_n_pax_dec];
+                $tab_e_n_pax = [$en_pax_jan, $en_pax_fev, $en_pax_mars, $en_pax_avr, $en_pax_mai, $en_pax_juin, $en_pax_juil, $en_pax_aou, $en_pax_sep, $en_pax_oct, $en_pax_nov, $en_pax_dec];
+                
+                $tab_heb_n_chambre = [$heb_n_chambre_jan, $heb_n_chambre_fev, $heb_n_chambre_mars, $heb_n_chambre_avr, $heb_n_chambre_mai, $heb_n_chambre_juin, $heb_n_chambre_juil, $heb_n_chambre_aou, $heb_n_chambre_sep, $heb_n_chambre_oct, $heb_n_chambre_nov, $heb_n_chambre_dec];
+                $tab_e_n_chambre = [$en_chambre_jan, $en_chambre_fev, $en_chambre_mars, $en_chambre_avr, $en_chambre_mai, $en_chambre_juin, $en_chambre_juil, $en_chambre_aou, $en_chambre_sep, $en_chambre_oct, $en_chambre_nov, $en_chambre_dec];
+ 
+                for ($i = 0; $i < count($tab_e_n_pax); $i++) {
+                    if ($tab_e_n_pax[$i] == 0) {
+                        $tab_e_n_pax[$i] = 1;
+                    }
+                   
+                    $tab_heb_n_pax[$i] = $tab_heb_n_pax[$i] ;
+                    
+                }
+
+                for ($i = 0; $i < count($tab_e_n_chambre); $i++) {
+                    if ($tab_e_n_chambre[$i] == 0) {
+                        $tab_e_n_chambre[$i] = 1;
+                    }
+                   
+                    $tab_heb_n_chambre[$i] = $tab_heb_n_chambre[$i] ;
+                    
+                }
+
+                $retour = [
+                    'tab_heb_n_pax' => $tab_heb_n_pax,
+                    'tab_heb_n_chambre' => $tab_heb_n_chambre
+                ];
+
+                $data = json_encode($retour);
 
                 $response->headers->set('Content-Type', 'application/json');
                 $response->setContent($data);
