@@ -721,7 +721,7 @@ class PageController extends AbstractController
                     }
                 }
             }
-
+            
             return $this->render('page/hebergement.html.twig', [
                 "id"                    => "li__hebergement",
                 "tab_annee"             => $tab_sans_doublant,

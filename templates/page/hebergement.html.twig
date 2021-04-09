@@ -954,7 +954,7 @@
 		var ex = [max_pax, max_occ];
 		var max_pax_occ = findArrayMax(ex);
 		if(max_pax_occ != 0){
-			var myChart3 = create_chart3(create_ctx3(), create_config3(my_data_pax, my_data_occ, my_labels,  parseInt(max_pax_occ) + portionner(max_pax_occ) , portionner(max_pax_occ)));
+			var myChart3 = create_chart3(create_ctx3(), create_config3(my_data_pax, my_data_occ, my_labels,  5*parseInt(portionner(max_pax_occ)) , portionner(max_pax_occ)));
 		}
 		else if(max_pax_occ == 0){
 			var myChart3 = create_chart3(create_ctx3(), create_config3(my_data_pax, my_data_occ, my_labels, 100, 20));
@@ -1682,7 +1682,199 @@
 										var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
 
 
-										$('#element_canvas_heb_pax').html('<div><canvas id="canvas_pax"></canvas></div><div id="chart-legends_pax"></div>');
+										$('#element_canvas_pax').html('<div><canvas id="canvas_pax"></canvas></div><div id="chart-legends_pax"></div>');
+
+										setTimeout(function () {
+
+											var Max1 = Math.max(...my_data.tab_jour_n_pax);
+											var Max2 = Math.max(...my_data.tab_jour_n_chambre);
+											var Max = Math.max(Max1, Max2);
+											
+											if(Max != 0){
+												// fenitra
+												var myChart3 = create_chart3(create_ctx3(), create_config3(my_data.tab_jour_n_pax, my_data.tab_jour_n_chambre, my_labels,  5*parseInt(portionner(Max)) , portionner(Max)));
+											}
+											else if(Max == 0){
+												Max = 100;
+												pas = 20; 
+												var myChart3 = create_chart3(create_ctx3(), create_config3(my_data.tab_heb_n_pax, my_data.tab_heb_n_chambre, my_labels, 100, 20));
+											}
+											myChart3.update();
+
+											// pour dire qu'on va utiliser notre propre légende html fenitra
+											document.getElementById('chart-legends_pax').innerHTML = myChart3.generateLegend();
+
+
+											// legende 2
+
+											var ev_click1 = false;
+											var tab_temp1 = [];
+											var ev_click2 = false;
+											var tab_temp2 = [];
+											for (var i = 0; i < myChart3.data.datasets[0].data.length; i++) { 
+												tab_temp1[i] = myChart3.data.datasets[0].data[i];
+											}
+
+											for (var i = 0; i < myChart3.data.datasets[1].data.length; i++) { 
+												tab_temp2[i] = myChart3.data.datasets[1].data[i];
+											}
+											$("#chart-legends_pax").on('click', "li span[data_leg=0]", function () {
+
+												if (ev_click1 == false) {
+													$(".ul_2 li span[data_leg=0]").addClass("legende_click");
+													for (var i = 0; i < myChart3.data.datasets[0].data.length; i++) {
+														myChart3.data.datasets[0].data[i] = 0;
+													}
+													myChart3.update();
+													ev_click1 = ! ev_click1;
+													// alert(ev_click2) ;
+													} else {
+														$(".ul_2 li span[data_leg=0]").removeClass("legende_click");
+														for (var i = 0; i < myChart3.data.datasets[0].data.length; i++) {
+															myChart3.data.datasets[0].data[i] = tab_temp1[i];
+														}
+
+													myChart3.update();
+													ev_click1 = ! ev_click1;
+
+												}
+											});
+											$("#chart-legends_pax").on('click', "li span[data_leg=1]", function () {
+
+												if (ev_click2 == false) {
+													$(".ul_2 li span[data_leg=1]").addClass("legende_click");
+													for (var i = 0; i < myChart3.data.datasets[1].data.length; i++) {
+														myChart3.data.datasets[1].data[i] = 0;
+													}
+													myChart3.update();
+													ev_click2 = ! ev_click2;
+													// alert(ev_click2) ;
+													} else {
+														$(".ul_2 li span[data_leg=1]").removeClass("legende_click");
+														for (var i = 0; i < myChart3.data.datasets[1].data.length; i++) {
+															myChart3.data.datasets[1].data[i] = tab_temp2[i];
+														}
+
+													myChart3.update();
+													ev_click2 = ! ev_click2;
+
+												}
+											});
+										}, 1000)
+									} else {
+										// eto zao
+										var my_data = response;
+										console.log(my_data);
+										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+										
+										$('#element_canvas_pax').html('<div><canvas id="canvas_pax"></canvas></div><div id="chart-legends_pax"></div>');
+
+										setTimeout(function () {
+											var Max1 = Math.max(...my_data.tab_heb_n_pax);
+											var Max2 = Math.max(...my_data.tab_heb_n_chambre);
+											var Max = Math.max(Max1, Max2);
+											if(Max != 0){
+												
+												var myChart3 = create_chart3(create_ctx3(), create_config3(my_data.tab_heb_n_pax, my_data.tab_heb_n_chambre, my_labels, 5*parseInt(portionner(Max)) , portionner(Max)));
+											}
+											else if(Max == 0){
+												Max = 100;
+												pas = 20; 
+												var myChart3 = create_chart3(create_ctx3(), create_config3(my_data.tab_heb_n_pax, my_data.tab_heb_n_chambre, my_labels, 100, 20));
+											}
+											myChart3.update();
+
+											// pour dire qu'on va utiliser notre propre légende html fenitra
+											document.getElementById('chart-legends_pax').innerHTML = myChart3.generateLegend();
+
+
+											// legende 2
+
+											var ev_click1 = false;
+											var tab_temp1 = [];
+											var ev_click2 = false;
+											var tab_temp2 = [];
+											for (var i = 0; i < myChart3.data.datasets[0].data.length; i++) { 
+												tab_temp1[i] = myChart3.data.datasets[0].data[i];
+											}
+
+											for (var i = 0; i < myChart3.data.datasets[1].data.length; i++) { 
+												tab_temp2[i] = myChart3.data.datasets[1].data[i];
+											}
+											$("#chart-legends_pax").on('click', "li span[data_leg=0]", function () {
+
+												if (ev_click1 == false) {
+													$(".ul_2 li span[data_leg=0]").addClass("legende_click");
+													for (var i = 0; i < myChart3.data.datasets[0].data.length; i++) {
+														myChart3.data.datasets[0].data[i] = 0;
+													}
+													myChart3.update();
+													ev_click1 = ! ev_click1;
+													// alert(ev_click2) ;
+													} else {
+														$(".ul_2 li span[data_leg=0]").removeClass("legende_click");
+														for (var i = 0; i < myChart3.data.datasets[0].data.length; i++) {
+															myChart3.data.datasets[0].data[i] = tab_temp1[i];
+														}
+
+													myChart3.update();
+													ev_click1 = ! ev_click1;
+
+												}
+											});
+											$("#chart-legends_pax").on('click', "li span[data_leg=1]", function () {
+
+												if (ev_click2 == false) {
+													$(".ul_2 li span[data_leg=1]").addClass("legende_click");
+													for (var i = 0; i < myChart3.data.datasets[1].data.length; i++) {
+														myChart3.data.datasets[1].data[i] = 0;
+													}
+													myChart3.update();
+													ev_click2 = ! ev_click2;
+													// alert(ev_click2) ;
+													} else {
+														$(".ul_2 li span[data_leg=1]").removeClass("legende_click");
+														for (var i = 0; i < myChart3.data.datasets[1].data.length; i++) {
+															myChart3.data.datasets[1].data[i] = tab_temp2[i];
+														}
+
+													myChart3.update();
+													ev_click2 = ! ev_click2;
+
+												}
+											});
+
+										}, 1000)
+									}
+								}
+							},
+							error: function (error) {
+								alert('erreur server au niveau de triage chart heb_to ' + pseudo_hotel)
+							}
+						})
+				})
+
+				$('#annee_pax').on("change", function(){
+					$('#element_canvas_pax').empty();
+
+						var mois = $('#mois_pax').val();
+						var annee = $('#annee_pax').val();
+						var data = {
+							'data': mois + "-" + annee
+						};
+						$.ajax({
+							url: "/profile/filtre/graph/pax/" + pseudo_hotel,
+							type: "POST",
+							data: data,
+							success: function (response) {
+								if (response) {
+									if (mois != 'tous_les_mois') {
+										var my_data = response;
+										console.log(my_data);
+										var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
+
+
+										$('#element_canvas_pax').html('<div><canvas id="canvas_pax"></canvas></div><div id="chart-legends_pax"></div>');
 
 										setTimeout(function () {
 
@@ -1767,7 +1959,7 @@
 										console.log(my_data);
 										var my_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 										
-										$('#element_canvas_heb_pax').html('<div><canvas id="canvas_pax"></canvas></div><div id="chart-legends_pax"></div>');
+										$('#element_canvas_pax').html('<div><canvas id="canvas_pax"></canvas></div><div id="chart-legends_pax"></div>');
 
 										setTimeout(function () {
 											var Max1 = Math.max(...my_data.tab_heb_n_pax);
@@ -1853,8 +2045,6 @@
 							}
 						})
 				})
-
-
 		})
 	</script>
 
