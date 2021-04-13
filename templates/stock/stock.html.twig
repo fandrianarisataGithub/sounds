@@ -35,8 +35,11 @@
 						<form action="" class="tri">
 							<select name="" class="annee" id = "annee_stock">
 								{% for a in tab_annee %}
-									<option value="{{ a }}"
-                                    >{{ a }}</option>
+									{% if annee == a %}
+                                        <option value="{{ a }}" selected >{{ a }}</option>
+                                    {% else %}
+                                        <option value="{{ a }}">{{ a }}</option>
+                                    {% endif %} 
 								{% endfor %}
 							</select>
 						</form>

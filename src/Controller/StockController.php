@@ -64,6 +64,7 @@ class StockController extends AbstractController
                 "hotel"             => $data_session['pseudo_hotel'],
                 "current_page"      => $data_session['current_page'],
                 'tab_annee'         =>  $allAnnee,
+                "annee"             =>  $annee,
                 'tab_stock'         => $tab,
                 'current_year'      => $annee,
                 "tropical_wood"     => false,

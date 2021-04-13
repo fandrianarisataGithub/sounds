@@ -97,6 +97,16 @@ class DonneeMensuelle
      */
     private $hotel;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $kpi_adr;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $kpi_revp;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -290,6 +300,30 @@ class DonneeMensuelle
     public function setHotel(?Hotel $hotel): self
     {
         $this->hotel = $hotel;
+
+        return $this;
+    }
+
+    public function getKpiAdr(): ?string
+    {
+        return $this->kpi_adr;
+    }
+
+    public function setKpiAdr(?string $kpi_adr): self
+    {
+        $this->kpi_adr = $kpi_adr;
+
+        return $this;
+    }
+
+    public function getKpiRevp(): ?string
+    {
+        return $this->kpi_revp;
+    }
+
+    public function setKpiRevp(?string $kpi_revp): self
+    {
+        $this->kpi_revp = $kpi_revp;
 
         return $this;
     }

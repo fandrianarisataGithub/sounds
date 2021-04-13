@@ -104,6 +104,7 @@ class CostController extends AbstractController
                 "hotel"             => $data_session['pseudo_hotel'],
                 "current_page"      => $data_session['current_page'],
                 'tab_annee'         => $allAnnee,
+                "annee"             => $annee,
                 'tab_resto_value'         => $tab_resto_value,
                 'tab_elec_value'          => $tab_elec_value,
                 'tab_eau_value'           => $tab_eau_value,

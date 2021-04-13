@@ -639,6 +639,47 @@ class PageController extends AbstractController
         
         $tab_labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
         $tab_aff = [];
+
+        // affichage des KPI
+
+        $allAnnee = $this->tab_annee($pseudo_hotel);
+        $taille_allAnnee = count($allAnnee);
+
+        $today = new \DateTime();
+        $annee = $today->format("Y");
+        if ($taille_allAnnee > 0) {
+            $annee = $allAnnee[$taille_allAnnee - 1];
+        }
+        $tab_adr = [];
+        $tab_revp = [];
+        
+       
+        $repoDM = $this->getDoctrine()->getRepository(DonneeMensuelle::class);
+        $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+        $all_dm = $repoDM->findBy(['hotel' => $hotel]);
+        //dd($all_dm);
+        $year_mens = [];
+        if (count($all_dm) > 0) {
+            foreach ($all_dm as $item) {
+                $adr = str_replace(' ','', $item->getKpiAdr());
+                $revp = str_replace(' ', '', $item->getKpiRevP());
+                $son_mois = $item->getMois();
+                $tab_explode = explode("-", $son_mois);
+                $son_annee = $tab_explode[1];
+                if(!in_array($son_annee, $year_mens)){
+                    array_push($year_mens ,$son_annee);
+                }
+                if ($son_annee == $annee) {
+                    $son_numero_mois = intVal($tab_explode[0]) - 1;
+                    $tab_adr[$son_numero_mois] = $adr;
+                    $tab_revp[$son_numero_mois] = $revp;
+                }
+            }
+        }
+        sort($year_mens);
+        ksort($tab_adr);
+        ksort($tab_revp);
+        
         if ($request->request->count() > 0) {
                 
             if($request->request->get('action')){
@@ -736,6 +777,10 @@ class PageController extends AbstractController
                 'date2'                 => $date2->format('Y-m-d'),
                 "tropical_wood"         => false,
                 "interval_text_date"    => $datte_text_1 . " et " . $datte_text_2,
+                "tab_adr"               => $tab_adr,
+                "tab_revp"              => $tab_revp,
+                "annee"                 => $annee,
+                "year_mens"             => $year_mens
 
             ]);
            
@@ -748,7 +793,7 @@ class PageController extends AbstractController
         if ($pos == "impossible") {
             return $this->render('/page/error.html.twig');
         }
-       else{
+       else if ($pos != "impossible"){
             
             $clients = $repo->findBy(
                 ['hotel' => $hotel],
@@ -781,11 +826,34 @@ class PageController extends AbstractController
                 "type_affichage"        => "annee",
                 'items'                 => $tab_aff,
                 "tropical_wood"         => false,
-                "date_text_month"       => $date_text_aff 
+                "date_text_month"       => $date_text_aff,
+                "tab_adr"               => $tab_adr,
+                "tab_revp"              => $tab_revp,
+                "annee"                 => $annee,
+                "year_mens"             => $year_mens
             ]);
        }
     }
 
+    public function tab_annee($pseudo_hotel): array
+    {
+
+        $repoDm = $this->getDoctrine()->getRepository(DonneeMensuelle::class);
+        $allDm = $repoDm->findAll();
+        $allAnnee = [];
+        foreach ($allDm as $item) {
+            $son_pseudo_hotel = $item->getHotel()->getPseudo();
+            if ($pseudo_hotel == $son_pseudo_hotel) {
+                $t = explode("-", $item->getMois());
+                $son_annee = $t[1];
+                if (!in_array($son_annee, $allAnnee)) {
+                    array_push($allAnnee, $son_annee);
+                }
+            }
+        }
+        sort($allAnnee);
+        return $allAnnee;
+    }
     
 
 

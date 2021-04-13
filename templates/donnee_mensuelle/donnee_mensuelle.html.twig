@@ -21,18 +21,67 @@
                             <h2>Donnée mensuelle</h2>
                             <div class="block_month">
                                 <select name="donnee_mensuelle_mois" id="donnee_mensuelle_mois">
-                                    <option value="01">JANVIER</option>
-                                    <option value="02">FEVRIER</option>
-                                    <option value="03">MARS</option>
-                                    <option value="04">AVRIL</option>
-                                    <option value="05">MAI</option>
-                                    <option value="06">JUIN</option>
-                                    <option value="07">JUILLET</option>
-                                    <option value="08">AOUT</option>
-                                    <option value="09">SEPTEMBRE</option>
-                                    <option value="10">OCTOBRE</option>
-                                    <option value="11">NOVEMBRE</option>
-                                    <option value="12">DECEMBRE</option>
+                                    <option value="01"
+                                        {% if mois_num == "01" %}
+                                            selected
+                                        {% endif %}
+                                    >JANVIER</option>
+                                    <option value="02"
+                                         {% if mois_num == "02" %}
+                                            selected
+                                        {% endif %}
+                                    >FEVRIER</option>
+                                    <option value="03"
+                                         {% if mois_num == "03" %}
+                                            selected
+                                        {% endif %}
+                                    >MARS</option>
+                                    <option value="04"
+                                         {% if mois_num == "04" %}
+                                            selected
+                                        {% endif %}
+                                    >AVRIL</option>
+                                    <option value="05"
+                                        {% if mois_num == "05" %}
+                                            selected
+                                        {% endif %}
+                                    >MAI</option>
+                                    <option value="06"
+                                         {% if mois_num == "06" %}
+                                            selected
+                                        {% endif %}
+                                    
+                                    >JUIN</option>
+                                    <option value="07"
+                                         {% if mois_num == "07" %}
+                                            selected
+                                        {% endif %}
+                                    >JUILLET</option>
+                                    <option value="08"
+                                         {% if mois_num == "08" %}
+                                            selected
+                                        {% endif %}
+                                    >AOUT</option>
+                                    <option value="09"
+                                         {% if mois_num == "09" %}
+                                            selected
+                                        {% endif %}
+                                    >SEPTEMBRE</option>
+                                    <option value="10"
+                                         {% if mois_num == "10" %}
+                                            selected
+                                        {% endif %}
+                                    >OCTOBRE</option>
+                                    <option value="11"
+                                         {% if mois_num == "11" %}
+                                            selected
+                                        {% endif %}
+                                    >NOVEMBRE</option>
+                                    <option value="12"
+                                         {% if mois_num == "12" %}
+                                            selected
+                                        {% endif %}
+                                    >DECEMBRE</option>
                                 </select>
                                 <select name="donnee_mensuelle_annee" id="donnee_mensuelle_annee">
                                 </select>
@@ -58,6 +107,39 @@
                                                                 }
                                                             }) }}
                                 <span class="span__ar">Ar</span>
+                            </div>
+                        </div>
+                        <div class="h4_titre">
+                            <h4>KPI</h4>
+                        </div>
+                        <div class="data_form">
+                            <div class="form-group">
+                                <label for="n_couvert">ADR :
+                                </label>
+                                {# <input type="text" max="100" maxlength="18" class="input_nombre" id="restaurant_value"> #}
+                                {{ form_widget(form.kpi_adr, {
+                                                                'attr' : {
+                                                                    'class' : 'input_nombre',
+                                                                    
+                                                                    'maxlength' : '23',
+                                                                    'max' : '100',
+                                                                }
+                                                            }) }}
+                                <span class="span__ar">Ar</span>
+                            </div>
+                            <div class="form-group">
+                                    <label for=""> RevPAR : 
+                                    </label>
+                                     {{ form_widget(form.kpi_revp, {
+                                         'attr' : {
+                                                        'class' : 'input_nombre',
+                                                        
+                                                        'maxlength' : '23',
+                                                        'max' : '100',
+                                                    }
+                                    }) }}
+                                    {# <input type="text" class="input_pourcent" max="100"> #}
+                                    <span class="span__ar">Ar</span>
                             </div>
                         </div>
                         <div class="h4_titre">
@@ -131,7 +213,6 @@
                                                                     'class' : 'input_nombre',
                                                                     
                                                                     'maxlength' : '23',
-                                                                    'max' : '100',
                                                                 }
                                                             }) }}
                                 <span class="span__ar">Ar</span>
@@ -142,7 +223,6 @@
                                      {{ form_widget(form.cost_eau_pourcent, {
                                         'attr' : {
                                             'class' : 'input_pourcent',
-                                           
                                             'max' : '100',
                                         }
                                     }) }}
@@ -283,9 +363,16 @@
 
 <script>
 
-    document.querySelector(".input_pourcent").onkeyup = function(){
-        handleChange(this);
-       // alert('kjh')
+    var inputs = document.querySelectorAll('form input');
+    for (let index = 0; index < inputs.length; index++) {
+        inputs[index].value = "";
+    }
+
+    var t =  document.querySelectorAll(".input_pourcent");
+    for (let index = 0; index < t.length; index++) {
+        t[index].onkeyup = function(){
+            handleChange(this);
+        }
     }
 
 	function handleChange(input) {
@@ -305,21 +392,17 @@
 
 <script>
 
-	/* utilisation de cleave.js pour les input */
-
-    // style des % et Ar
-    var n = document.querySelectorAll(".input_nombre");
-    for (var i = n.length - 1; i >= 0; i--) {
-    new Cleave(n[i], { // prefix: 'Ar ',
-    numeral: true,
-    delimiter: [' '],
-    numeralThousandsGroupStyle: 'thousand',
-    numericOnly: true
-    });
-    }
-
-
-new Cleave('.input_pourcent', {blocks: [4]});
+	 /* utilisation de cleave.js pour les input */
+            // style des % et Ar
+            var n = document.querySelectorAll(".input_nombre");
+            for (var i = n.length - 1; i >= 0; i--) {
+            new Cleave(n[i], { // prefix: 'Ar ',
+            numeral: true,
+            delimiter: [' '],
+            numeralThousandsGroupStyle: 'thousand',
+            numericOnly: true
+            });
+            }
 
 
 /* fin utilisation de cleave.js pour les input */
@@ -328,6 +411,7 @@ new Cleave('.input_pourcent', {blocks: [4]});
 <script>
 
 	$(document).ready(function () {
+        
         var pseudo_hotel = '{{ hotel }}';
 
         // liste annee idonnee mensuelle
@@ -355,10 +439,12 @@ new Cleave('.input_pourcent', {blocks: [4]});
                         if(response == "non vide"){
                             var choice = confirm("Ce mois admet déja un enregistrement.\nVoulez-vous emporter ce changement?");
                             if(choice == true){
-                               $('form[name=donnee_mensuelle]').submit();
+                               
+                                $('form[name=donnee_mensuelle]').submit();
                             }
                         }
                         else{
+                            
                             $('form[name=donnee_mensuelle]').submit();
                         }
                     },

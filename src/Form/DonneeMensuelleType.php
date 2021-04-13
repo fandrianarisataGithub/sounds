@@ -19,6 +19,12 @@ class DonneeMensuelleType extends AbstractType
             ->add('cost_restaurant_value', TextType::class, [
                 'required' => false,
             ])
+            ->add('kpi_adr', TextType::class, [
+                'required' => false,
+            ])
+            ->add('kpi_revp', TextType::class, [
+                'required' => false,
+            ])
             ->add('cost_restaurant_pourcent', TextType::class, [
                 'required' => false,
             ])
@@ -62,6 +68,7 @@ class DonneeMensuelleType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => DonneeMensuelle::class,
+            'attr' => ['id' => 'form_mensuelle']
         ]);
     }
 }

@@ -22,6 +22,7 @@ class DonneeMensuelleController extends AbstractController
     public function donnee_mensuelle(Services $services, Request $request, $pseudo_hotel, EntityManagerInterface $manager, SessionInterface $session, HotelRepository $reposHotel)
     {
         $today = new \DateTime();
+        $mois_num = $today->format('m');
         $donnee_mensuelle = new DonneeMensuelle();
         $form = $this->createForm(DonneeMensuelleType::class, $donnee_mensuelle);
         $data_session = $session->get('hotel');
@@ -45,8 +46,10 @@ class DonneeMensuelleController extends AbstractController
                 $mois = $request->request->get('donnee_mensuelle_mois');
                 $annee = $request->request->get('donnee_mensuelle_annee');
                 $s = $mois . "-" . $annee;
+                
                 $repoDM = $this->getDoctrine()->getRepository(DonneeMensuelle::class);
                 $un_repo_mois_hotel = $repoDM->findBy(['mois' => $s, 'hotel' => $hotel[0]]);
+               
                 if ($un_repo_mois_hotel) {
                     // on l'efface pour garder la derniere
                     $manager->remove($un_repo_mois_hotel[0]);
@@ -72,6 +75,7 @@ class DonneeMensuelleController extends AbstractController
                 "today"         => 2,
                 'form'          => $form->createView(),
                 'tropical_wood' => false,
+                "mois_num"      => $mois_num,
             ]);
         }
     }

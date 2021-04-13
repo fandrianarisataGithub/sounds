@@ -67,6 +67,7 @@ class SqnController extends AbstractController
                 "hotel"                 => $data_session['pseudo_hotel'],
                 "current_page"          => $data_session['current_page'],
                 'tab_annee'             =>  $allAnnee,
+                "annee"                 =>  $annee,
                 'tab_interne'           => $tab_interne,
                 'tab_booking'           => $tab_booking,
                 'tab_tripadvisor'       => $tab_tripadvisor,
