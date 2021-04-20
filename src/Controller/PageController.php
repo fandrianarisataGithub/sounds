@@ -673,9 +673,11 @@ class PageController extends AbstractController
                     $son_numero_mois = intVal($tab_explode[0]) - 1;
                     $tab_adr[$son_numero_mois] = $adr;
                     $tab_revp[$son_numero_mois] = $revp;
+                    
                 }
             }
         }
+        
         sort($year_mens);
         ksort($tab_adr);
         ksort($tab_revp);

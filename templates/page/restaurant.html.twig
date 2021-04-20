@@ -709,7 +709,7 @@
                         var Max2 = parseInt(findArrayMax(my_data_ca) + portionner(findArrayMax(my_data_ca)));
                         var pas2 = portionner(findArrayMax(my_data_ca));
                         if(Max2 !=0){
-                            var myChart1 = draw_chart1(my_data_ca, my_labels, Max2, pas2);
+                            var myChart1 = draw_chart1(my_data_ca, my_labels, 5*pas2, pas2);
                         }
                         else if(Max2==0){
                             Max2 = 100;
@@ -718,7 +718,7 @@
                         }
                         var Max = parseInt(findArrayMax(my_data_total) + portionner(findArrayMax(my_data_total)));
                         if(Max!=0){
-                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, Max, portionner(findArrayMax(my_data_total)));
+                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 5 * parseInt(portionner(findArrayMax(my_data_total))), portionner(findArrayMax(my_data_total)));
                         }
                         else if(Max == 0){
                             Max = 100;
@@ -731,7 +731,7 @@
                         var Max2 = parseInt(findArrayMax(my_data_ca) + portionner(findArrayMax(my_data_ca)));
                         var pas2 = portionner(findArrayMax(my_data_ca));
                         if(Max2 !=0){
-                            var myChart1 = draw_chart1(my_data_ca, my_labels, Max2, pas2);
+                            var myChart1 = draw_chart1(my_data_ca, my_labels, 5 * pas2, pas2);
                         }
                         else if(Max2==0){
                             Max2 = 100;
@@ -740,7 +740,7 @@
                         }
                         var Max = parseInt(findArrayMax(my_data_total) + portionner(findArrayMax(my_data_total)));
                         if(Max!=0){
-                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, Max, portionner(findArrayMax(my_data_total)));
+                            var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 5 * parseInt(portionner(findArrayMax(my_data_total))), portionner(findArrayMax(my_data_total)));
                         }
                         else if(Max == 0){
                             Max = 100;
@@ -794,7 +794,7 @@
 											var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
                                             var pas = portionner(findArrayMax(my_data));
                                             if(Max != 0){
-                                                var myChart1 = draw_chart1(my_data, my_labels, Max, pas);
+                                                var myChart1 = draw_chart1(my_data, my_labels, 5*pas, pas);
                                             }
                                             else if(Max==0){
                                                 Max = 100;
@@ -816,7 +816,7 @@
 											var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
                                             var pas = portionner(findArrayMax(my_data));
                                             if(Max != 0){
-                                                var myChart1 = draw_chart1(my_data, my_labels, Max, pas);
+                                                var myChart1 = draw_chart1(my_data, my_labels, 5 * pas, pas);
                                             }
                                             else if(Max==0){
                                                 Max = 100;
@@ -830,7 +830,7 @@
 											var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
                                             var pas = portionner(findArrayMax(my_data));
                                             if(Max != 0){
-                                                var myChart1 = draw_chart1(my_data, my_labels, Max, pas);
+                                                var myChart1 = draw_chart1(my_data, my_labels, 5*pas, pas);
                                             }
                                             else if(Max==0){
                                                 Max = 100;
@@ -875,7 +875,7 @@
 											var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
                                             var pas = portionner(findArrayMax(my_data));
                                             if(Max != 0){
-                                                var myChart1 = draw_chart1(my_data, my_labels, Max, pas);
+                                                var myChart1 = draw_chart1(my_data, my_labels, 5*pas, pas);
                                             }
                                             else if(Max==0){
                                                 Max = 100;
@@ -889,7 +889,7 @@
 											var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
                                             var pas = portionner(findArrayMax(my_data));
                                             if(Max != 0){
-                                                var myChart1 = draw_chart1(my_data, my_labels, Max, pas);
+                                                var myChart1 = draw_chart1(my_data, my_labels, 5*pas, pas);
                                             }
                                             else if(Max==0){
                                                 Max = 100;
@@ -910,7 +910,7 @@
 											var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
                                             var pas = portionner(findArrayMax(my_data));
                                             if(Max != 0){
-                                                var myChart1 = draw_chart1(my_data, my_labels, Max, pas);
+                                                var myChart1 = draw_chart1(my_data, my_labels, 5*pas, pas);
                                             }
                                             else if(Max==0){
                                                 Max = 100;
@@ -924,7 +924,7 @@
 											var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
                                             var pas = portionner(findArrayMax(my_data));
                                             if(Max != 0){
-                                                var myChart1 = draw_chart1(my_data, my_labels, Max, pas);
+                                                var myChart1 = draw_chart1(my_data, my_labels, 5*pas, pas);
                                             }
                                             else if(Max==0){
                                                 Max = 100;
@@ -972,7 +972,7 @@
                                             $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
                                             var Max = parseInt(findArrayMax(my_data_total) + portionner(findArrayMax(my_data_total)));
                                             if(Max!=0){
-                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, Max, portionner(findArrayMax(my_data_total)));
+                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 5 * parseInt(portionner(findArrayMax(my_data_total))), portionner(findArrayMax(my_data_total)));
                                             }
                                             else if(Max == 0){
                                                 Max = 100;
@@ -986,7 +986,7 @@
                                              $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
                                             var Max = parseInt(findArrayMax(my_data_total) + portionner(findArrayMax(my_data_total)));
                                             if(Max!=0){
-                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, Max, portionner(findArrayMax(my_data_total)));
+                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 5 * parseInt(portionner(findArrayMax(my_data_total))), portionner(findArrayMax(my_data_total)));
                                             }
                                             else if(Max == 0){
                                                 Max = 100;
@@ -1011,7 +1011,7 @@
                                             $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
                                             var Max = parseInt(findArrayMax(my_data_total) + portionner(findArrayMax(my_data_total)));
                                             if(Max!=0){
-                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, Max, portionner(findArrayMax(my_data_total)));
+                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 5 * parseInt(portionner(findArrayMax(my_data_total))), portionner(findArrayMax(my_data_total)));
                                             }
                                             else if(Max == 0){
                                                 Max = 100;
@@ -1025,7 +1025,7 @@
                                             $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
                                             var Max = parseInt(findArrayMax(my_data_total) + portionner(findArrayMax(my_data_total)));
                                             if(Max!=0){
-                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, Max, portionner(findArrayMax(my_data_total)));
+                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 5 * parseInt(portionner(findArrayMax(my_data_total))), portionner(findArrayMax(my_data_total)));
                                             }
                                             else if(Max == 0){
                                                 Max = 100;
@@ -1072,7 +1072,7 @@
                                             $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
                                             var Max = parseInt(findArrayMax(my_data_total) + portionner(findArrayMax(my_data_total)));
                                             if(Max!=0){
-                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, Max, portionner(findArrayMax(my_data_total)));
+                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 5 * parseInt(portionner(findArrayMax(my_data_total))), portionner(findArrayMax(my_data_total)));
                                             }
                                             else if(Max == 0){
                                                 Max = 100;
@@ -1085,7 +1085,7 @@
                                             $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
                                             var Max = parseInt(findArrayMax(my_data_total) + portionner(findArrayMax(my_data_total)));
                                             if(Max!=0){
-                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, Max, portionner(findArrayMax(my_data_total)));
+                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 5 * parseInt(portionner(findArrayMax(my_data_total))), portionner(findArrayMax(my_data_total)));
                                             }
                                             else if(Max == 0){
                                                 Max = 100;
@@ -1111,7 +1111,7 @@
                                             $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
                                             var Max = parseInt(findArrayMax(my_data_total) + portionner(findArrayMax(my_data_total)));
                                             if(Max!=0){
-                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, Max, portionner(findArrayMax(my_data_total)));
+                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 5 * parseInt(portionner(findArrayMax(my_data_total))), portionner(findArrayMax(my_data_total)));
                                             }
                                             else if(Max == 0){
                                                 Max = 100;
@@ -1125,7 +1125,7 @@
                                             $('#element_canvas_car').html('<div><canvas id="canvas_car"></canvas></div><div id="chart-legends_car"></div>');
                                             var Max = parseInt(findArrayMax(my_data_total) + portionner(findArrayMax(my_data_total)));
                                             if(Max!=0){
-                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, Max, portionner(findArrayMax(my_data_total)));
+                                                var myChart2 = draw_chart2(my_data_pd, my_data_d, my_data_di, my_data_total, my_labels, 5 * parseInt(portionner(findArrayMax(my_data_total))), portionner(findArrayMax(my_data_total)));
                                             }
                                             else if(Max == 0){
                                                 Max = 100;

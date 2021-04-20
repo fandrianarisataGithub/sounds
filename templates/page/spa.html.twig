@@ -743,7 +743,7 @@
                 var Max1 = parseInt(findArrayMax(my_data_spa_ca) + portionner(findArrayMax(my_data_spa_ca)));
                 var pas1 = portionner(findArrayMax(my_data_spa_ca));
                 if(Max1 != 0){
-                    var myChart1 = create_chart1(create_ctx1(), create_config1(my_data_spa_ca, my_labels, Max1, pas1));
+                    var myChart1 = create_chart1(create_ctx1(), create_config1(my_data_spa_ca, my_labels, 5*pas1, pas1));
                 }
                 else if(Max1 == 0){
                     Max1 = 100;
@@ -753,7 +753,7 @@
                 var Max2 = parseInt(findArrayMax(my_data_spa_na) + portionner(findArrayMax(my_data_spa_na)));
                 var pas2 = portionner(findArrayMax(my_data_spa_na));
                 if(Max2 != 0){
-                    var myChart2 = create_chart2(create_ctx2(), create_config2(my_data_spa_na, my_labels, Max2, pas2));
+                    var myChart2 = create_chart2(create_ctx2(), create_config2(my_data_spa_na, my_labels, 5*pas2, pas2));
                 }
                 else if(Max2 == 0){
                     Max2 = 100;
@@ -763,7 +763,7 @@
                 var Max3 = parseInt(findArrayMax(my_data_spa_cu) + portionner(findArrayMax(my_data_spa_cu)));
                 var pas3 = portionner(findArrayMax(my_data_spa_cu));
                 if(Max3 != 0){
-                    var myChart3 = create_chart2(create_ctx3(), create_config3(my_data_spa_cu, my_labels, Max3, pas3));
+                    var myChart3 = create_chart2(create_ctx3(), create_config3(my_data_spa_cu, my_labels, 5*pas3, pas3));
                 }
                 else if(Max3 == 0){
                     Max3 = 100;
@@ -799,7 +799,7 @@
                                                 var pas = portionner(findArrayMax(my_data));
 
                                                 if(Max!=0){
-                                                    var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, Max, pas));
+                                                    var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 5*pas, pas));
                                                 }
                                                 else if(Max == 0){
                                                     Max = 100;
@@ -814,7 +814,7 @@
                                             var pas = portionner(findArrayMax(my_data));
 
                                             if(Max!=0){
-                                                var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, Max, pas));
+                                                var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 5*pas, pas));
                                             }
                                             else if(Max == 0){
                                                 Max = 100;
@@ -836,7 +836,7 @@
 											var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
                                             var pas = portionner(findArrayMax(my_data));
                                             if(Max != 0){
-                                                var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, Max, pas));
+                                                var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 5*pas, pas));
                                             }
                                             else if(Max == 0){
                                                 Max = 100;
@@ -850,7 +850,7 @@
 											var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
                                             var pas = portionner(findArrayMax(my_data));
                                             if(Max != 0){
-                                                var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, Max, pas));
+                                                var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 5*pas, pas));
                                             }
                                             else if(Max == 0){
                                                 Max = 100;
@@ -896,7 +896,7 @@
 											var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
                                             var pas = portionner(findArrayMax(my_data));
                                             if(Max != 0){
-                                                var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, Max, pas));
+                                                var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 5*pas, pas));
                                             }
                                             else if(Max == 0){
                                                 Max = 100;
@@ -910,7 +910,7 @@
 											var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
                                             var pas = portionner(findArrayMax(my_data));
                                             if(Max != 0){
-                                                var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, Max, pas));
+                                                var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 5*pas, pas));
                                             }
                                             else if(Max == 0){
                                                 Max = 100;
@@ -932,7 +932,7 @@
 											 var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
                                              var pas = portionner(findArrayMax(my_data));
                                              if(Max != 0){
-                                                 var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, Max, pas));
+                                                 var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 5*pas, pas));
                                              }
                                              else if(Max == 0){
                                                  Max = 100;
@@ -946,7 +946,7 @@
 											var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
                                             var pas = portionner(findArrayMax(my_data));
                                             if(Max != 0){
-                                                var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, Max, pas));
+                                                var myChart1 = create_chart1(create_ctx1(), create_config1(my_data, my_labels, 5*pas, pas));
                                             }
                                             else if(Max == 0){
                                                 Max = 100;
@@ -994,7 +994,7 @@
                                             var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
 
 											if(Max != 0){
-                                                var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, Max, pas));
+                                                var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, 5*pas, pas));
                                             }
                                             else if(Max==0){
                                                 Max = 100;
@@ -1009,7 +1009,7 @@
                                             var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
 
 											if(Max != 0){
-                                                var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, Max, pas));
+                                                var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, 5*pas, pas));
                                             }
                                             else if(Max==0){
                                                 Max = 100;
@@ -1030,7 +1030,7 @@
                                             var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
 
 											if(Max != 0){
-                                                var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, Max, pas));
+                                                var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, 5*pas, pas));
                                             }
                                             else if(Max==0){
                                                 Max = 100;
@@ -1045,7 +1045,7 @@
                                             var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
 
 											if(Max != 0){
-                                                var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, Max, pas));
+                                                var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, 5*pas, pas));
                                             }
                                             else if(Max==0){
                                                 Max = 100;
@@ -1087,7 +1087,7 @@
                                              var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
 
 											 if(Max != 0){
-                                                 var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, Max, pas));
+                                                 var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, 5*pas, pas));
                                              }
                                              else if(Max==0){
                                                  Max = 100;
@@ -1102,7 +1102,7 @@
                                             var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
 
 											if(Max != 0){
-                                                var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, Max, pas));
+                                                var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, 5*pas, pas));
                                             }
                                             else if(Max==0){
                                                 Max = 100;
@@ -1122,7 +1122,7 @@
                                             var pas = portionner(findArrayMax(my_data))
                                             var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
 											if(Max != 0){
-                                                var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, Max, pas));
+                                                var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, 5*pas, pas));
 
                                             }
                                             else if(Max==0){
@@ -1138,7 +1138,7 @@
                                             var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
 
 											if(Max != 0){
-                                                var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, Max, pas));
+                                                var myChart2 = create_chart2(create_ctx2(), create_config2(my_data, my_labels, 5*pas, pas));
 
                                             }
                                             else if(Max==0){
@@ -1187,7 +1187,7 @@
                                             var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
 
 											if(Max != 0){
-                                                var myChart3 = create_chart3(create_ctx3(), create_config3(my_data, my_labels, Max, pas));
+                                                var myChart3 = create_chart3(create_ctx3(), create_config3(my_data, my_labels, 5*pas, pas));
                                                 
                                             }
                                             else if(Max==0){
@@ -1203,7 +1203,7 @@
                                             var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
 
 											if(Max != 0){
-                                                var myChart3 = create_chart3(create_ctx3(), create_config3(my_data, my_labels, Max, pas));
+                                                var myChart3 = create_chart3(create_ctx3(), create_config3(my_data, my_labels, 5*pas, pas));
                                                 
                                             }
                                             else if(Max==0){
@@ -1226,7 +1226,7 @@
                                             var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
 
 											if(Max != 0){
-                                                var myChart3 = create_chart3(create_ctx3(), create_config3(my_data, my_labels, Max, pas));
+                                                var myChart3 = create_chart3(create_ctx3(), create_config3(my_data, my_labels, 5*pas, pas));
                                                 
                                             }
                                             else if(Max==0){
@@ -1243,7 +1243,7 @@
                                             var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
 
 											if(Max != 0){
-                                                var myChart3 = create_chart3(create_ctx3(), create_config3(my_data, my_labels, Max, pas));
+                                                var myChart3 = create_chart3(create_ctx3(), create_config3(my_data, my_labels, 5*pas, pas));
                                                 
                                             }
                                             else if(Max==0){
@@ -1280,7 +1280,7 @@
 										var my_data = response;
 
 										var my_labels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
-
+                                        
 										var w = $(window).width();
 										if (w <= 768) {
                                             $("#element_canvas_cu").html('<div><canvas id="canvas_cu"></canvas></div><div id="chart-legends_cu"></div>');
@@ -1288,7 +1288,7 @@
                                             var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
 
 											if(Max != 0){
-                                                var myChart3 = create_chart3(create_ctx3(), create_config3(my_data, my_labels, Max, pas));
+                                                var myChart3 = create_chart3(create_ctx3(), create_config3(my_data, my_labels, 5*pas, pas));
                                                 
                                             }
                                             else if(Max==0){
@@ -1305,7 +1305,7 @@
                                             var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
 
 											if(Max != 0){
-                                                var myChart3 = create_chart3(create_ctx3(), create_config3(my_data, my_labels, Max, pas));
+                                                var myChart3 = create_chart3(create_ctx3(), create_config3(my_data, my_labels, 5*pas, pas));
                                                 
                                             }
                                             else if(Max==0){
@@ -1329,7 +1329,7 @@
                                             var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
 
 											if(Max != 0){
-                                                var myChart3 = create_chart3(create_ctx3(), create_config3(my_data, my_labels, Max, pas));
+                                                var myChart3 = create_chart3(create_ctx3(), create_config3(my_data, my_labels, 5*pas, pas));
                                                 
                                             }
                                             else if(Max==0){
@@ -1346,7 +1346,7 @@
                                             var Max = parseInt(findArrayMax(my_data) + portionner(findArrayMax(my_data)));
 
 											if(Max != 0){
-                                                var myChart3 = create_chart3(create_ctx3(), create_config3(my_data, my_labels, Max, pas));
+                                                var myChart3 = create_chart3(create_ctx3(), create_config3(my_data, my_labels, 5*pas, pas));
                                                 
                                             }
                                             else if(Max==0){
@@ -1366,7 +1366,6 @@
 							}
 						})
 					})
-
     })
 
 

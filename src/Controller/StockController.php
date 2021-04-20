@@ -32,7 +32,6 @@ class StockController extends AbstractController
         if ($taille_allAnnee > 0) {
             $annee = $allAnnee[$taille_allAnnee - 1];
         }
-       
         $tab = [];
         $pos = $services->tester_droit($pseudo_hotel, $user, $reposHotel);
         if ($pos == "impossible") {

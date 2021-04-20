@@ -89,6 +89,15 @@
                         </div>
                     </section>
                 </div>
+
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success">
+                        <p>
+                            {{ message }}
+                        </p>
+                    </div>
+                {% endfor %}
+
                 <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
                     <div class="tab_content" id="data_days">
                         <div class="h4_titre">
@@ -298,13 +307,12 @@
                                  {# <input type="text" class="input_pourcent" max="100"> #}
                                 {{ form_widget(form.sqn_interne, {
                                                                 'attr' : {
-                                                                    'class' : 'input_nombre',
+                                                                    'class' : 'span_inf10',
                                                                     
-                                                                    'maxlength' : '23',
-                                                                    'max' : '100',
+                                                                    'max' : '10',
                                                                 }
                                                             }) }}
-                                <span class="span__ar"> / 10</span>
+                                <span class="span__ar "> / 10</span>
                             </div>
                         </div>
                         <div class="data_form">
@@ -314,13 +322,11 @@
                                  {# <input type="text" class="input_pourcent" max="100"> #}
                                 {{ form_widget(form.sqn_booking, {
                                                                 'attr' : {
-                                                                    'class' : 'input_nombre',
-                                                                    
-                                                                    'maxlength' : '23',
-                                                                    'max' : '100',
+                                                                    'class' : 'span_inf10',
+                                                                    'max' : '10',
                                                                 }
                                                             }) }}
-                                <span class="span__ar"> / 10</span>
+                                <span class="span__ar "> / 10</span>
                             </div>
                         </div>
                         <div class="data_form">
@@ -330,10 +336,9 @@
                                  {# <input type="text" class="input_pourcent" max="100"> #}
                                 {{ form_widget(form.sqn_tripadvisor, {
                                                                 'attr' : {
-                                                                    'class' : 'input_nombre',
+                                                                    'class' : 'span_inf5',
                                                                     
-                                                                    'maxlength' : '23',
-                                                                    'max' : '100',
+                                                                    'max' : '5',
                                                                 }
                                                             }) }}
                                 <span class="span__ar"> / 5</span>
@@ -362,16 +367,37 @@
 
 
 <script>
-
-    var inputs = document.querySelectorAll('form input');
-    for (let index = 0; index < inputs.length; index++) {
-        inputs[index].value = "";
-    }
+        var inputs = document.querySelectorAll('form input');
+    {% if action == "ajout" %}
+        
+        for (let index = 0; index < inputs.length; index++) {
+            if(inputs[index].getAttribute('id') != "donnee_mensuelle__token"){
+                inputs[index].value = "";
+            }
+        }
+    {% endif %}
 
     var t =  document.querySelectorAll(".input_pourcent");
+
     for (let index = 0; index < t.length; index++) {
         t[index].onkeyup = function(){
             handleChange(this);
+        }
+    }
+
+    var span_inf5 = document.querySelectorAll(".span_inf5"); 
+    
+    var span_inf10 = document.querySelectorAll(".span_inf10");
+
+    for (let index = 0; index < span_inf5.length; index++) {
+        span_inf5[index].onkeyup = function(){
+            handleChange2(this,5);
+        }
+    }
+
+    for (let index = 0; index < span_inf10.length; index++) {
+        span_inf10[index].onkeyup = function(){
+            handleChange2(this,10);
         }
     }
 
@@ -381,6 +407,18 @@
         input.value = 0;
         } else if (input.value > 100) {
         input.value = 100;
+        } else if (isNaN(input.value)) {
+        input.value = 0;
+        }
+
+    }
+
+    function handleChange2(input, max) {
+
+        if (input.value < 0) {
+        input.value = 0;
+        } else if (input.value > max) {
+        input.value = max;
         } else if (isNaN(input.value)) {
         input.value = 0;
         }
@@ -436,7 +474,7 @@
                         'mois' : mois,
                     },
                     success : function(response){
-                        if(response == "non vide"){
+                        if(response != "vide"){
                             var choice = confirm("Ce mois admet déja un enregistrement.\nVoulez-vous emporter ce changement?");
                             if(choice == true){
                                
@@ -452,6 +490,26 @@
                         alert('erreur de ajax tester_mois_dm');
                     }
                 })
+        })
+
+        // edit 
+
+        $(document).on('change', "#donnee_mensuelle_mois", function(){
+            var annee = $('#donnee_mensuelle_annee').val();
+            var mois = $(this).val() + "-" + annee;
+            var jqxhr = $.post( "/profile/tester_mois_dm/" + pseudo_hotel, {'mois' : mois}, function(response) {
+                if(response != "vide"){
+                    window.location.href = "/profile/edit_donnee_mensuelle/" + pseudo_hotel + "/" + response;
+                }
+                else{
+                    var inputs = document.querySelectorAll('form input');
+                    for (let index = 0; index < inputs.length; index++) {
+                         if(inputs[index].getAttribute('id') != "donnee_mensuelle__token"){
+                            inputs[index].value = "";
+                        }
+                    }
+                }
+            })
         })
 
         

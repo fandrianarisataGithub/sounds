@@ -573,7 +573,6 @@ body {
     padding-left: 15px;
     padding-right: 15px;
     background-color: #f0f0f7 !important;
-    
 }
 
 #hrs_content .dropdown-menu,
@@ -4363,13 +4362,14 @@ li.li_legende div span:first-child {
     width: auto;
 }
 
-.input_nombre {
+.input_nombre,
+.span_inf5,
+.span_inf10 {
     border: none;
     border: 0px;
     border-bottom-color: currentcolor;
     border-bottom-style: none;
     border-bottom-width: 0px;
-    /*! width: 200px; */
     padding-left: 10px;
     padding-bottom: 5px;
     height: 35px;
@@ -4391,7 +4391,8 @@ form .data_form {
     align-content: center !important;
     min-height: 100px;
 }
-.kadoany label{
+
+.kadoany label {
     width: auto !important;
 }
 
@@ -5929,7 +5930,7 @@ table.small_tab tbody tr td {
 .li_unite_selected_pf>div span.exit_pf,
 .li_unite_selected_pf>div span.exit_pf_enc,
 .li_unite_selected_pf>div span.exit_pf_facture,
-.li_unite_selected_pf>div span.exit_pf_en_cours{
+.li_unite_selected_pf>div span.exit_pf_en_cours {
     position: relative;
     left: 72px;
     bottom: 45px !important;
@@ -5977,7 +5978,16 @@ table.small_tab tbody tr td {
     -ms-flex-align: center !important;
     align-items: center !important;
 }
-
+#tableau_recette_depense .table_content{
+    width: 2600px !important;
+}
+#tableau_recette_depense .t_header_row {
+    width: 2600px !important;
+    height: 35px !important;
+    -webkit-box-align: center !important;
+    -ms-flex-align: center !important;
+    align-items: center !important;
+}
 .trh_remarque_a_ter th {
     vertical-align: middle !important;
     text-align: start;
@@ -6541,8 +6551,15 @@ tr td.t_concerne_rem {
 .liste_comptes {
     display: flex;
     margin-bottom: 25px;
+    justify-content: space-between;
 }
-
+.liste_comptes .block_banques:first-child{
+    display: flex;
+    height: auto !important;
+}
+.block_banques section{
+    display: flex;
+}
 .unite_banque {
     width: 200px;
 }
@@ -6560,7 +6577,7 @@ tr td.t_concerne_rem {
     color: #fff !important;
     border-radius: 25px;
     padding: 5px;
-    background: #c79c67
+    background: #c79c67;
 }
 
 .unite_banque p.montant_banque {
@@ -6602,9 +6619,11 @@ tr td.t_concerne_rem {
     align-items: center;
     margin-bottom: 25px;
 }
-.filtre_tresor .part_filter:first-child > div{
+
+.filtre_tresor .part_filter:first-child>div {
     display: inline-block;
 }
+
 .filtre_tresor .part_filter:last-child {
     text-align: end;
     justify-content: end;
@@ -6682,13 +6701,11 @@ tr td.t_concerne_rem {
 
 .tres_des {
     max-width: 200px !important;
-     min-width: 200px !important;
-  
+    min-width: 200px !important;
 }
 
 .tres_date {
     max-width: 150px !important;
-  
 }
 
 .tres_idPro {
@@ -6698,12 +6715,10 @@ tr td.t_concerne_rem {
 .tres_sage {
     max-width: 150px !important;
     min-width: 150px !important;
-   
 }
 
 .tres_client {
     width: 200px !important;
-  
     max-width: 200px !important;
     min-width: 200px !important;
 }
@@ -6714,47 +6729,49 @@ tr td.t_concerne_rem {
     text-align: start !important;
     padding-left: 16px;
 }
-.tres_idPro{
-    
+
+.tres_idPro {
     max-width: 150px !important;
     min-width: 150px;
 }
-.tres_mode_p{
-  
+
+.tres_mode_p {
     min-width: 150px !important;
     max-width: 150px !important;
 }
-.tres_compte_b{
-     
-     max-width: 180px !important;
+
+.tres_compte_b {
+    max-width: 180px !important;
     min-width: 180px !important;
 }
-.tres_monnaie{
-  
+
+.tres_monnaie {
     min-width: 150px !important;
     max-width: 150px !important;
 }
+
 .t_body_tres .tres_monnaie {
     -ms-flex-negative: 0 !important;
     flex-shrink: 0 !important;
     text-align: start !important;
     padding-left: 16px;
 }
+
 .t_body_tres .tres_des {
     -ms-flex-negative: 0 !important;
     flex-shrink: 0 !important;
     text-align: start !important;
     padding-left: 0px;
 }
+
 .t_body_tres .tres_compte_b {
-   
     -ms-flex-negative: 0 !important;
     flex-shrink: 0 !important;
     text-align: start !important;
     padding-left: 16px;
 }
+
 .t_body_tres .tres_idPro {
-   
     -ms-flex-negative: 0 !important;
     flex-shrink: 0 !important;
     text-align: start !important;
@@ -6762,7 +6779,6 @@ tr td.t_concerne_rem {
 }
 
 .t_body_tres .tres_sage {
-    
     -ms-flex-negative: 0 !important;
     flex-shrink: 0 !important;
     text-align: start !important;
@@ -6770,7 +6786,6 @@ tr td.t_concerne_rem {
 }
 
 .t_body_tres .tres_client {
-  
     -ms-flex-negative: 0 !important;
     flex-shrink: 0 !important;
     text-align: start !important;
@@ -6778,77 +6793,81 @@ tr td.t_concerne_rem {
 }
 
 .t_body_tres .tres_mode_p {
-  
     -ms-flex-negative: 0 !important;
     flex-shrink: 0 !important;
     text-align: start !important;
     padding-left: 16px;
 }
 
-.form_date{
+.form_date {
     display: inline-block !important;
 }
-.form_search{
+
+.form_search {
     display: inline-block !important;
 }
+
 
 /* formulaire recette */
 
-.form_rec_dep{
-    
-}
-.form_rec_dep .form-group:first-child{
+.form_rec_dep .form-group:first-child {
     margin-top: 25px;
 }
 
-.form_rec_dep select{
+.form_rec_dep select {
     height: 30px;
     width: 200px;
     text-align: center;
 }
+
 .form_rec_dep .form-group:first-child {
     margin-bottom: 25px;
 }
-.form_rec_dep .form-group label{
+
+.form_rec_dep .form-group label {
     display: inline-block;
     width: 200px;
 }
+
 .form_rec_dep .form-group input,
-.form_rec_dep .form-group select{
+.form_rec_dep .form-group select {
     height: 30px;
     width: 200px;
-    border: 1px solid rgba(200,200,200,0.5);
-    background: rgba(255,255,255,0.5);
+    border: 1px solid rgba(200, 200, 200, 0.5);
+    background: rgba(255, 255, 255, 0.5);
     padding-left: 3px;
     color: #323232 !important;
 }
 
-.form_search{
-   
-   display : flex !important;
-   width : auto !important;
+.form_search {
+    display: flex !important;
+    width: auto !important;
 }
-.form_date{
-    
-    display : flex !important;
-    flex-wrap : nowrap !important;
-    width : 400px;
+
+.form_date {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    width: 400px;
 }
-.filtre_tresor .part_filter:first-child{
-   
-    width : auto;
-    display : flex;
+
+.filtre_tresor .part_filter:first-child {
+    width: auto;
+    display: flex;
 }
-.filtre_tresor .part_filter:last-child{
-    width : auto;
-    display : flex ;
+
+.filtre_tresor .part_filter:last-child {
+    width: auto;
+    display: flex;
 }
+
 .filtre_tresor .part_filter:last-child select,
-.filtre_tresor .part_filter:first-child input{
-    font-size : 12px;
+.filtre_tresor .part_filter:first-child input {
+    font-size: 12px;
 }
-.last_fg button, .last_fg button:focus{
-   margin-left: 203px;
+
+.last_fg button,
+.last_fg button:focus {
+    margin-left: 203px;
     width: 200px;
     height: 30px;
     background: #c79c67;
@@ -6858,74 +6877,148 @@ tr td.t_concerne_rem {
     border-color: transparent;
     border-radius: 0px;
 }
-.last_fg button span{
-    color: #fff ;
+
+.last_fg button span {
+    color: #fff;
 }
-.last_fg button:hover{
-     border-color: #c79c67;
+
+.last_fg button:hover {
+    border-color: #c79c67;
     background: transparent !important;
 }
-.last_fg button:hover span{
+
+.last_fg button:hover span {
     color: #c79c67;
 }
+
+
 /* fin recette form */
 
+
 /* tableau_depense caché par défaut */
+
 .button_banque a,
-.button_banque a:focus{
+.button_banque a:focus {
     display: block;
 }
 
-.t_body_row .tres_des{
+.t_body_row .tres_des {
     padding-left: 16px;
 }
-#tableau_depense{
+
+#tableau_depense {
     display: none;
 }
 
-#formulaire{
+#formulaire {
     width: 450px;
     position: absolute;
     top: 0px !important;
     right: 0;
-    background : #323232;
+    background: #323232;
     padding-left: 15px;
     z-index: 1;
     min-height: 100vh;
     transition: right 0.5s ease-in-out;
 }
-.form_hide{
+
+.form_hide {
     right: -470px !important;
     transition: right 0.5s ease-in-out;
 }
 
-#formulaire form label{
+#formulaire form label {
     color: #fff !important;
 }
-#formulaire form input, #formulaire form select{
-    background: rgba(255,255,255,0.8)
-}
 
-#formulaire .action button{
+.form_rec_dep form .form-group:first-child{
+    display: flex;
+}
+.form_rec_dep form .form-group:first-child p{
+    width: 120px;
+}
+#formulaire form input,
+#formulaire form select {
+    background: rgba(255, 255, 255, 0.8)
+}
+[type="radio"]:checked,
+[type="radio"]:not(:checked) {
+    position: absolute;
+    left: -9999px;
+}
+[type="radio"]:checked + label,
+[type="radio"]:not(:checked) + label
+{
+    position: relative;
+    padding-left: 28px;
+    cursor: pointer;
+    line-height: 20px;
+    display: inline-block;
+    color: #666;
+}
+[type="radio"]:checked + label:before,
+[type="radio"]:not(:checked) + label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 18px;
+    height: 18px;
+    border: 1px solid #ddd;
+    border-radius: 100%;
+    background: #fff;
+}
+[type="radio"]:checked + label:after,
+[type="radio"]:not(:checked) + label:after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background: #c79c67;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    border-radius: 100%;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+[type="radio"]:not(:checked) + label:after {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+}
+[type="radio"]:checked + label:after {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+}
+#formulaire .action button {
     display: inline-block;
     width: 50px;
     position: absolute;
     top: 5px;
-    background: rgba(255,255,255,0.8) !important;
-    border-color: rgba(255,255,255,0.8) !important;
+    background: transparent !important;
+    border-color: transparent !important;
     box-shadow: none;
     border: 1px solid #fff;
     border-radius: 5px;
+    text-align: start;
 }
-#formulaire .action button:hover{
-     border-color: transparent !important;
-    background: transparent !important;
-}
-#formulaire .action button:hover span{
+#formulaire .action button span{
     color: #fff;
+    font-size: 25px;
 }
-#error_form{
-    background: rgba(255,255,255, 0.8);
+#formulaire .action button:hover {
+    border-color: transparent !important;
+    background: transparent !important;
+    transition: text-align 2s ease-in-out;
+}
+
+#formulaire .action button:hover span {
+    color: #ccc;
+}
+
+#error_form {
+    background: rgba(255, 255, 255, 0.8);
     display: none;
     width: 80%;
     margin: auto;
@@ -6933,10 +7026,11 @@ tr td.t_concerne_rem {
     align-items: center !important;
     padding: 0 !important;
     margin-bottom: 15px;
-     background: rgb(36,0,6);
-    background: linear-gradient(90deg, rgba(36,0,6,1) 0%, rgba(233,12,80,1) 0%, rgba(241,248,250,1) 86%, rgba(241,248,250,1) 91%); 
+    background: rgb(36, 0, 6);
+    background: linear-gradient(90deg, rgba(36, 0, 6, 1) 0%, rgba(233, 12, 80, 1) 0%, rgba(241, 248, 250, 1) 86%, rgba(241, 248, 250, 1) 91%);
 }
-#error_form p{
+
+#error_form p {
     vertical-align: middle;
     height: 30px;
     font-size: 12px;
@@ -6945,18 +7039,19 @@ tr td.t_concerne_rem {
     padding-left: 15px;
     color: #fff;
 }
-.liste_pf_selected_facture_en_attente ul{
-    display: flex ;
+
+.liste_pf_selected_facture_en_attente ul {
+    display: flex;
     margin-top: 25px;
 }
 
-.liste_pf_selected_transaction_en_cours ul{
-    display: flex ;
+.liste_pf_selected_transaction_en_cours ul {
+    display: flex;
     margin-top: 25px;
 }
 
-.liste_pf_selected_facture ul, 
-.liste_pf_selected_en_cours ul{
+.liste_pf_selected_facture ul,
+.liste_pf_selected_en_cours ul {
     display: flex !important;
     margin-top: 25px !important;
 }

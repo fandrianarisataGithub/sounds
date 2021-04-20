@@ -84,6 +84,11 @@ class User implements UserInterface
      */
     private $receptionniste;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $comptable;
+
     public function __construct()
     {
         $this->hotels = new ArrayCollection();
@@ -283,6 +288,18 @@ class User implements UserInterface
     public function setImage(?string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getComptable(): ?string
+    {
+        return $this->comptable;
+    }
+
+    public function setComptable(?string $comptable): self
+    {
+        $this->comptable = $comptable;
 
         return $this;
     }

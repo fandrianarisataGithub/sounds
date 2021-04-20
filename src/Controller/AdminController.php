@@ -136,6 +136,14 @@ class AdminController extends AbstractController
                             $user->addHotel($hotels);
                         }
 
+                        else if ($role == "comptable") {
+                            $user->setRoles(array('ROLE_USER'));
+                            $user->setProfile("admin_hotel"); // hotel unique
+                            $user->setComptable('oui'); // stria tsy tadidiko tsoony ze moimba anle profile tany
+                            $hotels = $reposHotel->findOneByNom($hotel);
+                            $user->addHotel($hotels);
+                        }
+
                         $user->setHotel($hotel);
                         
                         // on persist 
@@ -182,6 +190,7 @@ class AdminController extends AbstractController
                 $son_role = "";
                 $son_profile = $elm->getProfile();
                 $son_recep = $elm->getReceptionniste();
+                $son_comptable = $elm->getComptable();
                 $son_nom_hotel = "";
                 // les admin : super admin et admin all hotels
                
@@ -193,12 +202,16 @@ class AdminController extends AbstractController
                     $son_role = 'Admin hôtels';
                     $son_nom_hotel = "Accès à tous les hôtels";
                 }
-                else if($son_profile == "admin_hotel" && $son_recep != "oui"){
+                else if($son_profile == "admin_hotel" && $son_recep != "oui"  && $son_comptable != "oui"){
                     $son_role = 'Admin '. $elm->getHotel();
                     $son_nom_hotel = "Accès simple";
                 } 
                 else if($son_profile == "admin_hotel" && $son_recep == "oui"){
                     $son_role = 'Receptionniste '. $elm->getHotel();
+                    $son_nom_hotel = "Accès simple";
+                }
+                else if($son_profile == "admin_hotel" && $son_comptable == "oui"){
+                    $son_role = 'Comptable '. $elm->getHotel();
                     $son_nom_hotel = "Accès simple";
                 } 
                 else if ($son_profile == "admin_tropical_wood") {
@@ -208,23 +221,23 @@ class AdminController extends AbstractController
 
                 $html .= '
                     <li>
-							<span class="nom_pers">
-								' . $elm->getNom() . '
-								<br>
-								' . $elm->getPrenom() . '
-							</span>
-							<span class="role_pers">
-								' . $son_role . '</br>' . $son_nom_hotel . '
-							</span>
-							<div>
-								<a href="#" data-id = "' . $elm->getId() . '"  data-target="#modal_form_modif_admin" class = "edit_user">
-									<span class="fa fa-edit"></span>
-								</a>
-								<a href="#" data-id = "' . $elm->getId() . '" data-toggle="modal" data-target="#modal_form_confirme_pers" class="delete_user">
-									<span class="fa fa-trash-o"></span>
-								</a>
-							</div>
-						</li>
+                        <span class="nom_pers">
+                            ' . $elm->getNom() . '
+                            <br>
+                            ' . $elm->getPrenom() . '
+                        </span>
+                        <span class="role_pers">
+                            ' . $son_role . '</br>' . $son_nom_hotel . '
+                        </span>
+                        <div>
+                            <a href="#" data-id = "' . $elm->getId() . '"  data-target="#modal_form_modif_admin" class = "edit_user">
+                                <span class="fa fa-edit"></span>
+                            </a>
+                            <a href="#" data-id = "' . $elm->getId() . '" data-toggle="modal" data-target="#modal_form_confirme_pers" class="delete_user">
+                                <span class="fa fa-trash-o"></span>
+                            </a>
+                        </div>
+                    </li>
                 ';
             }
             $data = json_encode($html); // formater le résultat de la requête en json
@@ -242,6 +255,7 @@ class AdminController extends AbstractController
                 $son_role = "";
                 $son_profile = $elm->getProfile();
                 $son_nom_hotel = "";
+                
                 // les admin : super admin et admin all hotels
 
                 if ($son_profile == "super_admin") {
@@ -260,23 +274,23 @@ class AdminController extends AbstractController
 
                 $html .= '
                     <li>
-							<span class="nom_pers">
-								' . $elm->getNom() . '
-								<br>
-								' . $elm->getPrenom() . '
-							</span>
-							<span class="role_pers">
-								' . $son_role . '</br>' . $son_nom_hotel . '
-							</span>
-							<div>
-								<a href="#" data-id = "' . $elm->getId() . '"  data-target="#modal_form_modif_admin" class = "edit_user">
-									<span class="fa fa-edit"></span>
-								</a>
-								<a href="#" data-id = "' . $elm->getId() . '" data-toggle="modal" data-target="#modal_form_confirme_pers" class="delete_user">
-									<span class="fa fa-trash-o"></span>
-								</a>
-							</div>
-						</li>
+                        <span class="nom_pers">
+                            ' . $elm->getNom() . '
+                            <br>
+                            ' . $elm->getPrenom() . '
+                        </span>
+                        <span class="role_pers">
+                            ' . $son_role . '</br>' . $son_nom_hotel . '
+                        </span>
+                        <div>
+                            <a href="#" data-id = "' . $elm->getId() . '"  data-target="#modal_form_modif_admin" class = "edit_user">
+                                <span class="fa fa-edit"></span>
+                            </a>
+                            <a href="#" data-id = "' . $elm->getId() . '" data-toggle="modal" data-target="#modal_form_confirme_pers" class="delete_user">
+                                <span class="fa fa-trash-o"></span>
+                            </a>
+                        </div>
+                    </li>
                 ';
             }
                 dd($html);
@@ -310,6 +324,8 @@ class AdminController extends AbstractController
                     <option value="admin_all_hotels">Admin des hôtels</option>
                     <option value="editeur">Editeur pour un hôtel</option>
                     <option value="tropical_wood">Admin Tropical Wood</option>
+                    <option value="receptionniste">Receptionniste</option>
+                    <option value="comptable">Comptable</option>
                 </select>
                 ';
             }
@@ -319,17 +335,45 @@ class AdminController extends AbstractController
                     <option selected="selected" value="admin_all_hotels">Admin des hôtels</option>
                     <option value="editeur">Editeur pour un hôtel</option>
                     <option value="tropical_wood">Admin Tropical Wood</option>
+                    <option value="receptionniste">Receptionniste</option>
+                    <option value="comptable">Comptable</option>
                 </select>
                 ';
             }
             else if ($son_profile == "admin_hotel") {
-                $select_role .= '
-                    <option  value="super_admin">Super admin</option>
-                    <option  value="admin_all_hotels">Admin des hôtels</option>
-                    <option selected="selected" value="editeur">Editeur pour un hôtel</option>
-                    <option value="tropical_wood">Admin Tropical Wood</option>
-                </select>
-                ';
+                if($user->getReceptionniste() == "oui"){
+                    $select_role .= '
+                            <option  value="super_admin">Super admin</option>
+                            <option  value="admin_all_hotels">Admin des hôtels</option>
+                            <option value="editeur">Editeur pour un hôtel</option>
+                            <option value="tropical_wood">Admin Tropical Wood</option>
+                            <option selected="selected" value="receptionniste">Receptionniste</option>
+                            <option value="comptable">Comptable</option>
+                        </select>
+                    ';
+                }
+                else if($user->getComptable() == "oui"){
+                    $select_role .= '
+                            <option value="super_admin">Super admin</option>
+                            <option value="admin_all_hotels">Admin des hôtels</option>
+                            <option value="editeur">Editeur pour un hôtel</option>
+                            <option value="tropical_wood">Admin Tropical Wood</option>
+                            <option value="receptionniste">Receptionniste</option>
+                            <option selected="selected" value="comptable">Comptable</option>
+                        </select>
+                    ';
+                }
+                else{
+                    $select_role .= '
+                            <option value="super_admin">Super admin</option>
+                            <option value="admin_all_hotels">Admin des hôtels</option>
+                            <option selected="selected" value="editeur">Editeur pour un hôtel</option>
+                            <option value="tropical_wood">Admin Tropical Wood</option>
+                            <option value="receptionniste">Receptionniste</option>
+                            <option value="comptable">Comptable</option>
+                        </select>
+                    ';
+                }
             }
             else if ($son_profile == "admin_tropical_wood") {
                 $select_role .= '
@@ -337,6 +381,8 @@ class AdminController extends AbstractController
                     <option  value="admin_all_hotels">Admin des hôtels</option>
                     <option  value="editeur">Editeur pour un hôtel</option>
                     <option selected="selected" value="tropical_wood">Admin Tropical Wood</option>
+                    <option value="receptionniste">Receptionniste</option>
+                    <option value="comptable">Comptable</option>
                 </select>
                 ';
             }
@@ -485,7 +531,8 @@ class AdminController extends AbstractController
                 if(count($user_by_mail) == 0){
                     if ($role == "super_admin") {
                         $user->setRoles(array('ROLE_ADMIN'));
-                        $user->setProfile("super_admin"); // acces à tous
+                        $user->setProfile("super_admin"); 
+                        // acces à tous
                         $user->setHotel("tous");
                         // on select tous les hotels
                         $hotels = $reposHotel->findAll();
@@ -495,7 +542,8 @@ class AdminController extends AbstractController
                     } else if ($role == "admin_all_hotels") {
                         $user->setRoles(array('ROLE_ADMIN'));
                         $user->setHotel("tous_hotel");
-                        $user->setProfile("admin_all_hotels"); // acces unique pour tous les hotel
+                        $user->setProfile("admin_all_hotels"); 
+                        // acces unique pour tous les hotel
                         // on select tous les hotels
                         $hotels = $reposHotel->findAll();
                         foreach ($hotels as $h) {
@@ -515,6 +563,20 @@ class AdminController extends AbstractController
                         $user->setProfile("admin_tropical_wood");
                         $user->setHotel($hotel);
                         $user->setRoles(array('ROLE_TROPICAL_WOOD'));
+                        $hotels = $reposHotel->findOneByNom($hotel);
+                        $user->addHotel($hotels);
+                    }else if ($role == "receptionniste") {
+                        $user->setProfile("admin_hotel");
+                        $user->setReceptionniste("oui");
+                        $user->setHotel($hotel);
+                        $user->setRoles(array('ROLE_USER'));
+                        $hotels = $reposHotel->findOneByNom($hotel);
+                        $user->addHotel($hotels);
+                    }else if ($role == "comptable") {
+                        $user->setProfile("admin_hotel");
+                        $user->setComptable("oui");
+                        $user->setHotel($hotel);
+                        $user->setRoles(array('ROLE_USER'));
                         $hotels = $reposHotel->findOneByNom($hotel);
                         $user->addHotel($hotels);
                     }
@@ -562,6 +624,21 @@ class AdminController extends AbstractController
                             $user->setProfile("admin_tropical_wood");
                             $user->setHotel($hotel);
                             $user->setRoles(array('ROLE_TROPICAL_WOOD'));
+                            $hotels = $reposHotel->findOneByNom($hotel);
+                            $user->addHotel($hotels);
+                        }
+                        else if ($role == "receptionniste") {
+                            $user->setProfile("admin_hotel");
+                            $user->setReceptionniste("oui");
+                            $user->setHotel($hotel);
+                            $user->setRoles(array('ROLE_USER'));
+                            $hotels = $reposHotel->findOneByNom($hotel);
+                            $user->addHotel($hotels);
+                        }else if ($role == "comptable") {
+                            $user->setProfile("admin_hotel");
+                            $user->setComptable("oui");
+                            $user->setHotel($hotel);
+                            $user->setRoles(array('ROLE_USER'));
                             $hotels = $reposHotel->findOneByNom($hotel);
                             $user->addHotel($hotels);
                         }

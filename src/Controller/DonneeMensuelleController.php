@@ -18,12 +18,27 @@ class DonneeMensuelleController extends AbstractController
 
     /**
      * @Route("/profile/donnee_mensuelle/{pseudo_hotel}", name="donnee_mensuelle")
+     * @Route("/profile/edit_donnee_mensuelle/{pseudo_hotel}/{id}", name = "edit_donnee_mensuelle")
      */
-    public function donnee_mensuelle(Services $services, Request $request, $pseudo_hotel, EntityManagerInterface $manager, SessionInterface $session, HotelRepository $reposHotel)
+    public function donnee_mensuelle(?DonneeMensuelle $donnee_mensuelle, Services $services, Request $request, $pseudo_hotel, EntityManagerInterface $manager, SessionInterface $session, HotelRepository $reposHotel)
     {
         $today = new \DateTime();
-        $mois_num = $today->format('m');
-        $donnee_mensuelle = new DonneeMensuelle();
+        //dd($mois_num);
+        $action = "modif";
+        if(!$donnee_mensuelle){
+            //dd("tsisy");
+            $donnee_mensuelle = new DonneeMensuelle();
+            $action = "ajout";
+           
+            $mois_num = $today->format('m');
+           
+        }
+        else if($donnee_mensuelle){
+            //dd("misy");
+            $tab_num = explode("-", $donnee_mensuelle->getMois());
+            $mois_num = $tab_num[0];
+        }
+        
         $form = $this->createForm(DonneeMensuelleType::class, $donnee_mensuelle);
         $data_session = $session->get('hotel');
         if ($data_session == null) {
@@ -51,21 +66,19 @@ class DonneeMensuelleController extends AbstractController
                 $un_repo_mois_hotel = $repoDM->findBy(['mois' => $s, 'hotel' => $hotel[0]]);
                
                 if ($un_repo_mois_hotel) {
-                    // on l'efface pour garder la derniere
-                    $manager->remove($un_repo_mois_hotel[0]);
+                    
                     $manager->flush();
-                    $donnee_mensuelle->setMois($s);
-                    $donnee_mensuelle->setHotel($hotel[0]);
-                    // dd($donnee_mensuelle);
-                    $manager->persist($donnee_mensuelle);
-                    $manager->flush();
+                    $this->addFlash("success", "Donnée mensuelle modifiée avec succès");
                 }
                 if (!$un_repo_mois_hotel) {
                     $donnee_mensuelle->setMois($s);
                     $donnee_mensuelle->setHotel($hotel[0]);
-                    // dd($donnee_mensuelle);
+                    
                     $manager->persist($donnee_mensuelle);
                     $manager->flush();
+                    
+                    $this->addFlash("success", "Donnée mensuelle créee avec succès");
+                    return $this->redirectToRoute("donnee_mensuelle", ['pseudo_hotel' => $pseudo_hotel]);
                 }
             }
             return $this->render('donnee_mensuelle/donnee_mensuelle.html.twig', [
@@ -76,6 +89,7 @@ class DonneeMensuelleController extends AbstractController
                 'form'          => $form->createView(),
                 'tropical_wood' => false,
                 "mois_num"      => $mois_num,
+                "action"        => $action
             ]);
         }
     }
@@ -88,14 +102,15 @@ class DonneeMensuelleController extends AbstractController
         if($request->isXmlHttpRequest()){
             $mois = $request->get('mois');
             $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
-            $exist = $repoDM->findBy(['hotel'=>$hotel, 'mois'=>$mois]);
+            $exist = $repoDM->findOneBy(['hotel'=>$hotel, 'mois'=>$mois]);
             $data = json_encode("vide");
             if($exist){
-                $data = json_encode("non vide");
+                $data = json_encode($exist->getId());
             }
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent($data);
             return $response;
         }
     }
+    
 }

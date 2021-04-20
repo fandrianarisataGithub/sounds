@@ -31,7 +31,7 @@
 					{# formulaire #}
 					<div id="formulaire" class="form_hide">
 						<div class="action">
-							<button id="action_hide_form"><span class="fa fa-arrow-right"></span></button>
+							<button id="action_hide_form"><span class="fa fa-long-arrow-right "></span></button>
 						</div>
 						<div class="entete_tresor">
 							<div class="titre_tresor">
@@ -41,10 +41,14 @@
 						<div class="form_rec_dep">
 							<form action="">
 								<div class="form-group">
-									<select name="" id="select_tres">
-										<option value="recette">Recette</option>
-										<option value="depense">Dépense</option>
-									</select>
+									<p>
+										<input type="radio" class="radio" id="encaissement" name="radio-group" value="encaissement" checked>
+										<label for="encaissement">Encaissement</label>
+									</p>
+									<p>
+										<input type="radio" class="radio" id="decaissement" name="radio-group" value ="decaissement">
+										<label for="decaissement">Décaissement</label>
+									</p>
 								</div>
 								<div class="form-group">
 									<label for="">Date *</label>
@@ -82,31 +86,36 @@
 								<div class="form-group">
 									<label for="">Mode paiement *</label>
 									<select name="" id="mode_pmt">
-										<option value="CCIO">CCIO</option>
+										<option value="ESPECES">ESPECES</option>
 										<option value="CHEQUE">CHEQUE</option>
-										<option value="EFFET">EFFET</option>
-										<option value="ESP">ESP</option>
+										<option value="VIREMENT">VIREMENT</option>
 										<option value="PRELEVEMENT">PRELEVEMENT</option>
 										<option value="TRAITE">TRAITE</option>
-										<option value="VERSEMENT">VERSEMENT</option>
-										<option value="VIREMENT">VIREMENT</option>
 									</select>
 								</div>
 								<div class="form-group">
 									<label for="">Compte *</label>
 									<select name="" id="compte_b">
+										<option value="CAISSE AR">CAISSE AR</option>
 										<option value="BNI AR" selected="selected">BNI AR</option>
 										<option value="BNI EURO">BNI EURO</option>
 										<option value="BMOI AR">BMOI AR</option>
 										<option value="MCB AR">MCB AR</option>
 										<option value="BFV AR">BFV AR</option>
 										<option value="BOA AR">BOA AR</option>
-										<option value="CAISSE AR">CAISSE AR</option>
 									</select>
 								</div>
 								<div class="form-group form_depense">
 									<label for="" id="label_num_compte">N° compte *</label>
 									<input type="text" id="num_compte">
+								</div>
+								<div class="form-group form_depense">
+									<label for="">Décaissement *</label>
+									<input type="text" id="decaissement" class="input_nombre">
+								</div>
+								<div class="form-group form_recette">
+									<label for="">Encaissement *</label>
+									<input type="text" id="encaissement" class="input_nombre">
 								</div>
 								<div class="form-group">
 									<label for="">Monnaie *</label>
@@ -116,8 +125,21 @@
 									</select>
 								</div>
 								<div class="form-group">
-									<label for="">Montant *</label>
-									<input type="text" id="paiement" class="input_nombre">
+									<label for="">Catégorie *</label>
+									<select name="" id="categorie">
+										<option value="">Achats Stockés - Matières premières</option>
+										<option value="">Achats Stockés - Fournitures </option>
+										<option value="">Achats Stockés - Autres</option>
+										<option value="">Achats non stockés - Matières et fournitures</option>
+										<option value="">Achats d’études et prestations de services</option>
+										<option value="">Achats de matériel, équipements et travaux </option>
+
+										<option value="">Services extérieurs</option>
+										<option value="">Autres services extérieurs</option>
+										<option value="">Impôts, taxes et versements assimilés </option>
+										<option value="">Charges de personnel</option>
+
+									</select>
 								</div>
 								<div class="form-group" id="error_form">
 									<p></p>
@@ -134,61 +156,71 @@
                             <h4>Comptes</h4>
                         </div>
                         <div class="liste_comptes">
-                            <div class="unite_banque">
-								<p class="nom_banque">
-									BNI <span class="unite">Ar</span>
-								</p>
-								<p class="montant_banque">
-									<span class="montant">120000000</span>
-								</p>
+							<div class="block_banques">
+								<div class="unite_banque">
+									<p class="nom_banque">
+										CAISSE <span class="unite">Ar</span>
+									</p>
+									<p class="montant_banque">
+										<span class="montant">120000000</span>
+									</p>
+								</div>
+								<div class="unite_banque">
+									<p class="nom_banque">
+										BNI <span class="unite">Ar</span>
+									</p>
+									<p class="montant_banque">
+										<span class="montant">120000000</span>
+									</p>
+								</div>
 							</div>
-							<div class="unite_banque">
-								<p class="nom_banque">
-									BNI <span class="unite">EURO</span>
-								</p>
-								<p class="montant_banque">
-									<span class="montant">120000000</span>
-								</p>
-							</div>
-							<div class="unite_banque">
-								<p class="nom_banque">
-									BMOI <span class="unite">Ar</span>
-								</p>
-								<p class="montant_banque">
-									<span class="montant">120000000</span>
-								</p>
-							</div>
-							<div class="unite_banque">
-								<p class="nom_banque">
-									MCB <span class="unite">Ar</span>
-								</p>
-								<p class="montant_banque">
-									<span class="montant">120000000</span>
-								</p>
-							</div>
-							<div class="unite_banque">
-								<p class="nom_banque">
-									BFV <span class="unite">Ar</span>
-								</p>
-								<p class="montant_banque">
-									<span class="montant">120000000</span>
-								</p>
-							</div>
-							<div class="unite_banque">
-								<p class="nom_banque">
-									BOA <span class="unite">Ar</span>
-								</p>
-								<p class="montant_banque">
-									<span class="montant">120000000</span>
-								</p>
-							</div>
-							<div class="unite_banque">
-								<p class="nom_banque">
-									CAISSE <span class="unite">Ar</span>
-								</p>
-								<p class="montant_banque">
-									<span class="montant">120000000</span>
-								</p>
+							<div class="block_banques">
+								<section>
+									<div class="unite_banque">
+										<p class="nom_banque">
+											BNI <span class="unite">EURO</span>
+										</p>
+										<p class="montant_banque">
+											<span class="montant">120000000</span>
+										</p>
+									</div>
+									<div class="unite_banque">
+										<p class="nom_banque">
+											BMOI <span class="unite">Ar</span>
+										</p>
+										<p class="montant_banque">
+											<span class="montant">120000000</span>
+										</p>
+									</div>
+								</section>
+								<section>
+									<div class="unite_banque">
+										<p class="nom_banque">
+											MCB <span class="unite">Ar</span>
+										</p>
+										<p class="montant_banque">
+											<span class="montant">120000000</span>
+										</p>
+									</div>
+									<div class="unite_banque">
+										<p class="nom_banque">
+											BFV <span class="unite">Ar</span>
+										</p>
+										<p class="montant_banque">
+											<span class="montant">120000000</span>
+										</p>
+									</div>
+								</section>
+								<section>
+									<div class="unite_banque">
+										<p class="nom_banque">
+											BOA <span class="unite">Ar</span>
+										</p>
+										<p class="montant_banque">
+											<span class="montant">120000000</span>
+										</p>
+									</div>
+								</section>
 							</div>
                         </div>
                     </div>
@@ -226,141 +258,68 @@
 								<span class="fa fa-search"></span><input type="text" id="serch_tresorerie" placeholder="Rechercher">
 							</div>
 						</aside>
-						<aside class="part_filter">
-							<div class="form_select">
-								<form action="" class="form-inline">
-									<div class="form-group">
-										<select name="" id="select_mode_pmt_tri" class="form-control">
-											<option value="">Mode de paiement</option>
-											<option value="CCIO">CCIO</option>
-											<option value="CHEQUE">CHEQUE</option>
-											<option value="EFFET">EFFET</option>
-											<option value="ESP">ESP</option>
-											<option value="PRELEVEMENT">PRELEVEMENT</option>
-											<option value="TRAITE">TRAITE</option>
-											<option value="VERSEMENT">VERSEMENT</option>
-											<option value="VIREMENT">VIREMENT</option>
-										</select>
-									</div>
-									<div class="form-group">
-										<select name="" id="select_comptes_tri" class="form-control">
-											<option value="comptes">Comptes</option>
-											<option value="BNI Ar">BNI Ar</option>
-											<option value="BNI Euro">BNI Euro</option>
-											<option value="BMOI Ar">BMOI Ar</option>
-											<option value="MCB Ar">MCB Ar</option>
-											<option value="BFV Ar">BFV Ar</option>
-											<option value="BOA Ar">BOA Ar</option>
-											<option value="Caisse Ar">Caisse Ar</option>
-										</select>
-									</div>
-									<div class="form-group">
-										<select name="" id="" class="form-control">
-											<option value="monnaie">Monnaie</option>
-											<option value="Ar">Ar</option>
-											<option value="Euro">Euro</option>
-										</select>
-									</div>
-								</form>
-							</div>
-						</aside>
 					</div>
-					<div class="tableau_tropical tableau_scroll tab_active" id="tableau_recette">
+					<div class="tableau_tropical tableau_scroll tab_active" id="tableau_recette_depense">
 						<div class="table_content">
 							<div class="table_header">
 								<div class="t_header_row t_header_trans t_header_tres">
-									<div class="tres_date">
-										<span>Date</span>
-									</div>
 									<div class="tres_des">
 										<span>Désignation</span>
 									</div>
+									<div class="tres_date">
+										<span>Date</span>
+									</div>
+									<div class="tres_doc">
+										<span>Document</span>
+									</div>
+									<div class="tres_mode_p">
+										<span>Mode de paiement</span>
+									</div>
+									<div class="tres_compte_b">
+										<span>Compte bancaire/Caisse</span>
+									</div>
+									<div class="tres_compte_b">
+										<span>Encaissement</span>
+									</div>
+									<div class="tres_compte_b">
+										<span>Décaissement</span>
+									</div>
+									<div class="tres_monnaie">
+										<span>Monnaie</span>
+									</div>
+									<div class="tres_monnaie">
+										<span>Type de flux</span>
+									</div>
+									<div class="tres_des">
+										<span>Sous-catégorie</span>
+									</div>
+									<div class="tres_des">
+										<span>Catégorie</span>
+									</div>
 									<div class="tres_idPro">
 										<span>ID Pro</span>
-									</div>
-									<div class="tres_sage">
-										<span>N° Sage</span>
 									</div>
 									<div
 										class=" tres_client">
 										<span>Client</span>
 									</div>
-									<div class="tres_mode_p">
-										<span>Mode de paiement</span>
-									</div>
-									<div class="tres_compte_b">
-										<span>Comptes</span>
-									</div>
-									<div class="tres_monnaie">
-										<span>Monnaie</span>
-									</div>
-									<div class="tres_paiement sans_border">
-										<span>Paiement</span>
-										<span class="span_tri">
-											<a href="#" class="a_tri" data-type="paiement" data-data="ASC">
-												<small class="fa fa-sort-asc"></small>
-											</a>
-											<a href="#" class="a_tri" data-type="paiement" data-data="DESC">
-												<small class="fa fa-sort-desc"></small>
-											</a>
-										</span>
-									</div>
-								</div>
-							</div>
-							<div class="table_body liste_pf" id="body_recette">
-								
-							</div>
-						</div>
-					</div>	
-					{# depense #}
-					<div class="tableau_tropical tableau_scroll" id="tableau_depense">
-						<div class="table_content">
-							<div class="table_header">
-								<div class="t_header_row t_header_trans t_header_tres">
-									<div class="tres_date">
-										<span>Date</span>
-									</div>
-									<div class="tres_des">
-										<span>Désignation</span>
-									</div>
-									<div class="tres_idPro">
-										<span>N° de compte</span>
-									</div>
 									<div class="tres_sage">
 										<span>N° Sage</span>
 									</div>
 									<div
 										class=" tres_client">
-										
-										<span>Fournisseur</span>
-									</div>
-									<div class="tres_mode_p">
-										<span>Mode de paiement</span>
-									</div>
-									<div class="tres_compte_b">
-										<span>Comptes</span>
-									</div>
-									<div class="tres_monnaie">
-										<span>Monnaie</span>
-									</div>
-									<div class="tres_paiement sans_border">
-										<span>Paiement</span>
-										<span class="span_tri">
-											<a href="#" class="a_tri" data-type="paiement" data-data="ASC">
-												<small class="fa fa-sort-asc"></small>
-											</a>
-											<a href="#" class="a_tri" data-type="paiement" data-data="DESC">
-												<small class="fa fa-sort-desc"></small>
-											</a>
-										</span>
+										<span>Prestataire</span>
 									</div>
 								</div>
 							</div>
-							<div class="table_body liste_pf" id = "body_depense">
+							{# <div class="table_body liste_pf" id="body_recette">
+								
+							</div> #}
+							<div class="table_body liste_pf" id="">
 								
 							</div>
 						</div>
-					</div>
+					</div>	
 					
 				</div>
 			</div>
@@ -380,6 +339,11 @@
 			}
 		}
 		$(document).ready(function(){
+
+			// event form dec enc
+
+			$('.form_depense').hide();
+
 			function lister_data_recette(){
 				var data = {
 					"date1" : $("#date1").val(),
@@ -486,24 +450,13 @@
 					$('#error_form').slideUp();
 				})
 
-				function formater_form() {
-					if($('#select_tres').val() == 'depense'){
+				$(".radio").change(function(){
+						//console.log($(this).val());
+					if($(this).val() == 'decaissement'){
 						$('.form_recette').fadeOut();
 						$('.form_depense').fadeIn();
 					}
-					else if($('#select_tres').val() == 'recette'){
-						$('.form_depense').fadeOut();
-						$('.form_recette').fadeIn();
-					}
-				}
-				formater_form();
-				$('#select_tres').on('change', function(){
-					var val = $(this).val();
-					if(val == 'depense'){
-						$('.form_recette').fadeOut();
-						$('.form_depense').fadeIn();
-					}
-					else if(val == 'recette'){
+					if($(this).val() == 'encaissement'){
 						$('.form_depense').fadeOut();
 						$('.form_recette').fadeIn();
 					}
