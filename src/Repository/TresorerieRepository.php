@@ -3,8 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Tresorerie;
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Tresorerie|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,7 +18,6 @@ class TresorerieRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Tresorerie::class);
     }
-
 
     // /**
     //  * @return Tresorerie[] Returns an array of Tresorerie objects

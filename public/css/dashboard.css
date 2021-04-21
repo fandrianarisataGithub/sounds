@@ -6579,7 +6579,27 @@ tr td.t_concerne_rem {
     padding: 5px;
     background: #c79c67;
 }
-
+.btn_voir_plus{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.btn_voir_plus p{
+    border-radius: 5px !important;
+    background: #323232 !important;
+    display: inline-block;
+    font-size: 12px;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    cursor: pointer;
+}
+.btn_voir_plus p:hover{
+    background: transparent !important;
+    border:1px solid #323232 !important;
+    color: #323232 !important;
+}
+.aside_banques{
+    display: none;
+}
 .unite_banque p.montant_banque {
     margin-bottom: 15px;
     color: #323232 !important;
@@ -6867,8 +6887,8 @@ tr td.t_concerne_rem {
 
 .last_fg button,
 .last_fg button:focus {
-    margin-left: 203px;
-    width: 200px;
+    margin-left: 135px;
+    width: 300px;
     height: 30px;
     background: #c79c67;
     display: flex;
@@ -6891,7 +6911,6 @@ tr td.t_concerne_rem {
     color: #c79c67;
 }
 
-
 /* fin recette form */
 
 
@@ -6911,7 +6930,7 @@ tr td.t_concerne_rem {
 }
 
 #formulaire {
-    width: 450px;
+    width: 500px;
     position: absolute;
     top: 0px !important;
     right: 0;
@@ -6923,14 +6942,18 @@ tr td.t_concerne_rem {
 }
 
 .form_hide {
-    right: -470px !important;
+    right: -520px !important;
     transition: right 0.5s ease-in-out;
 }
 
 #formulaire form label {
+   
     color: #fff !important;
 }
-
+#formulaire form .form-group >label{
+  
+    max-width: 130px;
+}
 .form_rec_dep form .form-group:first-child{
     display: flex;
 }
@@ -6939,8 +6962,16 @@ tr td.t_concerne_rem {
 }
 #formulaire form input,
 #formulaire form select {
+    width: 300px;
+    font-size: 12px;
     background: rgba(255, 255, 255, 0.8)
 }
+
+#sous_categorie option span{
+    display: inline-block;
+    max-width: 300px !important;
+}
+
 [type="radio"]:checked,
 [type="radio"]:not(:checked) {
     position: absolute;
@@ -7026,8 +7057,7 @@ tr td.t_concerne_rem {
     align-items: center !important;
     padding: 0 !important;
     margin-bottom: 15px;
-    background: rgb(36, 0, 6);
-    background: linear-gradient(90deg, rgba(36, 0, 6, 1) 0%, rgba(233, 12, 80, 1) 0%, rgba(241, 248, 250, 1) 86%, rgba(241, 248, 250, 1) 91%);
+    background: red;
 }
 
 #error_form p {

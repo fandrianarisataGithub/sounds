@@ -74,7 +74,7 @@
 								{# si Dépense #}
 								<div class="form-group form_depense">
 									<label for="">Fournisseur *</label>
-									<input type="text" id="fournisseur">
+									<input type="text" id="prestataire">
 								</div>
 								
 								{# fin dépense #}
@@ -110,12 +110,12 @@
 									<input type="text" id="num_compte">
 								</div>
 								<div class="form-group form_depense">
-									<label for="">Décaissement *</label>
-									<input type="text" id="decaissement" class="input_nombre">
+									<label for="">Montant *</label>
+									<input type="text" id="decaissement_montant" class="input_nombre">
 								</div>
 								<div class="form-group form_recette">
-									<label for="">Encaissement *</label>
-									<input type="text" id="encaissement" class="input_nombre">
+									<label for="">Montant *</label>
+									<input type="text" id="encaissement_montant" class="input_nombre">
 								</div>
 								<div class="form-group">
 									<label for="">Monnaie *</label>
@@ -127,24 +127,22 @@
 								<div class="form-group">
 									<label for="">Catégorie *</label>
 									<select name="" id="categorie">
-										<option value="">Achats Stockés - Matières premières</option>
-										<option value="">Achats Stockés - Fournitures </option>
-										<option value="">Achats Stockés - Autres</option>
-										<option value="">Achats non stockés - Matières et fournitures</option>
-										<option value="">Achats d’études et prestations de services</option>
-										<option value="">Achats de matériel, équipements et travaux </option>
-
-										<option value="">Services extérieurs</option>
-										<option value="">Autres services extérieurs</option>
-										<option value="">Impôts, taxes et versements assimilés </option>
-										<option value="">Charges de personnel</option>
-
+										<option value="" selected="selected">Choisir une catégorie</option>
+										{% for element in liste_cate %}
+											<option value="{{ element.getNom() }}">{{ element.getNom() }}</option>
+										{% endfor %}
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="">Sous catégorie *</label>
+									<select name="" id="sous_categorie">
+										<option value="" selected="selected">Choisir une sous-catégorie</option>
 									</select>
 								</div>
 								<div class="form-group" id="error_form">
 									<p></p>
 								</div>
-								<div class="form-group last_fg">
+								<div class="last_fg">
 									<button class="btn btn-default" id = "ajout_tres"><span>Enregistrer</span></button>
 								</div>
 							</form>
@@ -174,7 +172,14 @@
 									</p>
 								</div>
 							</div>
-							<div class="block_banques">
+							<div class="block_banques btn_voir_plus">
+								<div class="unite_banque">
+									<p class="nom_banque">
+										<span class="fa fa-plus"></span> <span class="unite">Voir plus</span>
+									</p>
+								</div>
+							</div>
+							<div class="block_banques aside_banques">
 								<section>
 									<div class="unite_banque">
 										<p class="nom_banque">
@@ -211,7 +216,7 @@
 										</p>
 									</div>
 								</section>
-								<section>
+								<section>									
 									<div class="unite_banque">
 										<p class="nom_banque">
 											BOA <span class="unite">Ar</span>
@@ -323,6 +328,8 @@
 					
 				</div>
 			</div>
+			{# test #}
+			<div id="test"></div>
 		<!-- / contenue  -->
 	</section>
 {% endblock %}
@@ -330,6 +337,18 @@
 	<script src="{{ asset('js/cleave.min.js') }}"></script>
 	<script>
 		window.onload = function(){
+			// on force le navigateur à imposer l'option de depart
+			var sortBySelect = document.querySelector("#categorie"); 
+			sortBySelect.value = ""; 
+			sortBySelect.dispatchEvent(new Event("change"));
+			// fin force
+
+			// on force le navigateur à imposer l'option de depart
+			var sortBySelect = document.querySelector("#sous_categorie"); 
+			sortBySelect.value = ""; 
+			sortBySelect.dispatchEvent(new Event("change"));
+			// fin force
+
 			var compte_b = document.querySelector('#compte_b').value ;
 			
 			if(compte_b == "CAISSE AR"){
@@ -337,8 +356,59 @@
 				document.querySelector('#num_compte').style.display = "none";
 				document.querySelector('#label_num_compte').style.display = "none";
 			}
+
+			var n = document.querySelectorAll(".input_nombre");
+			for (var i = n.length - 1; i >= 0; i--) {
+				new Cleave(n[i], { // prefix: 'Ar ',
+				numeral: true,
+				delimiter: [' '],
+				numeralThousandsGroupStyle: 'thousand',
+				numericOnly: true
+				});
+			}
 		}
 		$(document).ready(function(){
+			
+			// affichage au niveau des banques
+
+			$('.btn_voir_plus p').on('click', function(){
+				var span = $(this).find('.fa');
+				var unite = $(this).find('.unite');
+				if(span.hasClass('fa-plus')){
+					span.removeClass('fa-plus');
+					span.addClass('fa-minus');
+					unite.text("Réduire");
+					$(".aside_banques").fadeIn();
+				}
+				else if(span.hasClass('fa-minus')){
+					span.removeClass('fa-minus');
+					span.addClass('fa-plus');
+					unite.text("Voir plus");
+					$(".aside_banques").fadeOut();
+				}
+				
+			})
+
+			// on change categorie
+
+			$("#categorie").on('change', function(){
+				var val = $(this).val();
+				if(val != ""){
+					$.post("/check_his_sous_category", 
+							{"nom" : val},
+							function(data, status){
+								if(status == "success"){
+									var html = "";
+									for(var i = 0; i < data.length; i++){
+										
+										html += '<option value="'+ data[i] +'"><span>'+ data[i] +'</span></option>';
+									}
+									$("#sous_categorie").html(html);
+								}
+							}
+					)
+				}
+			})
 
 			// event form dec enc
 
@@ -358,22 +428,9 @@
 				})
 			}
 
-			function lister_data_depense(){
-				var data = {
-					"date1" : $("#date1").val(),
-					"date2" : $("#date2").val()
-				};
-				var url = "{{ path('lister_data_depense') }}";
-				var ajax = $.post(url, data, function(data){
-					$('#body_depense').html(data);
-				})
-				ajax.fail(function() {
-					alert('erreur au niveau de aff data depense')
-				})
-			}
+			
 			lister_data_recette();
-			lister_data_depense();
-			// annimation tableau
+			
 			$('#btn_recette').on('click', function(ev){
 				ev.preventDefault();
 				if($(this).hasClass('btn_gris')){
@@ -399,7 +456,6 @@
 				// aff de tableau recette
 				$('#tableau_depense').fadeOut('fast');
 				$('#tableau_recette').fadeIn('slow');
-				$('#select_tres').val("recette").trigger('change');
 			})
 			$('#btn_depense').on('click', function(ev){
 				ev.preventDefault();
@@ -475,48 +531,51 @@
 
 
 				$('#ajout_tres').on('click', function(ev){
+					
 					ev.preventDefault();
 					if(
 						$("#date").val() == "" || $("#designation").val() == "" || $('#sage').val() =="" ||
-						$('#mode_pmt').val() == "" || $("#compte_b").val() =="" || $('#paiement').val() == ""
-						|| $('#monnaie').val() == ""
+						$('#mode_pmt').val() == "" || $("#compte_b").val() =="" 
+						|| $('#monnaie').val() == "" || $("#categorie").val() ==""
 					){
 						$("#error_form").slideDown();
 						$("#error_form p").text('Veuillez remplir tous les champs')
 					}
 					else if(
 						$("#date").val() != "" && $("#designation").val() != "" && $('#sage').val() !="" &&
-						$('#mode_pmt').val() != "" && $("#compte_b").val() !="" && $('#paiement').val() != ""
-						&& $('#monnaie').val() != ""
+						$('#mode_pmt').val() != "" && $("#compte_b").val() !="" 
+						&& $('#monnaie').val() != "" && $("#categorie").val() != ""
 					){
 						var data = {
-							"choix" 		: $('#select_tres').val(),
 							"date"			: $("#date").val(),
 							"designation"	: $("#designation").val(),
 							"num_compte"	: $('#num_compte').val(),
-							"fournisseur"	: $('#fournisseur').val(),
+							"prestataire"	: $('#prestataire').val(),
 							"sage"			: $('#sage').val(),
 							"mode_pmt"		: $('#mode_pmt').val(),
 							"compte_b"		: $("#compte_b").val(),
-							"paiement"		: $('#paiement').val(),
 							"id_pro"		: $("#id_pro").val(),
 							"client"		: $('#client').val(),
-							"monnaie"		: $('#monnaie').val()
-
+							"monnaie"		: $('#monnaie').val(),
+							"encaissement_montant"	: $("#encaissement_montant").val(),
+							"decaissement_montant"	: $("#decaissement_montant").val(),
+							"encaissement"	: $("#encaissement").val(),
+							"decaissement"	: $("#decaissement").val(),
+							"categorie"		: $("#categorie").val(),
+							"sous_categorie"	: $("#sous_categorie").val(),
 						}
-						
-						// ajax
+					
 
 						var jqxhr = $.post("/profile/add_tres", data, function(data){
 							
 						})
 
 						jqxhr.done(function(data){
-							$('.form_rec_dep form')[0].reset();
-							$('#date1').val('');
-							$('#date2').val('');
-							lister_data_recette();
-							lister_data_depense();
+							// $('.form_rec_dep form')[0].reset();
+							// $('#date1').val('');
+							// $('#date2').val('');
+							// affichena
+							$("#test").html(data);
 						})
 						jqxhr.fail(function(){
 							alert('erreur au niveau de add tres')
