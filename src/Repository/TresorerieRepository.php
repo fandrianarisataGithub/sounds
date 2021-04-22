@@ -3,8 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Tresorerie;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Tresorerie|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,22 +19,31 @@ class TresorerieRepository extends ServiceEntityRepository
         parent::__construct($registry, Tresorerie::class);
     }
 
-    // /**
-    //  * @return Tresorerie[] Returns an array of Tresorerie objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Tresorerie[] Returns an array of Tresorerie objects
+     */
+    public function find_between($date1, $date2, $key_flux)
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
+        $query = $this->createQueryBuilder('t');
+        if($key_flux == "encaissement" || $key_flux == "decaissement"){
+            $query->andWhere('t.type_flux = :type_flux')
+            ->setParameter('type_flux', $key_flux);
+        }
+        if(($date1 != null && $date2 == null) || ($date1 == null && $date2 != null)){
+            $query->andWhere('t.date_paiment = :date1 OR t.date_paiment = :date2')
+            ->setParameter('date1', $date1)
+            ->setParameter('date2', $date2);
+        }
+        else if($date1 != null && $date2 != null){
+            $query->andWhere('t.date_paiment BETWEEN :date1 AND :date2')
+            ->setParameter('date1', $date1)
+            ->setParameter('date2', $date2);
+        }
+        return $query
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
+    
 
     /*
     public function findOneBySomeField($value): ?Tresorerie

@@ -50,6 +50,7 @@
 										<label for="decaissement">Décaissement</label>
 									</p>
 								</div>
+								<input type="hidden" name="choice" id="choice" value="">
 								<div class="form-group">
 									<label for="">Date *</label>
 									<input type="date" id="date">
@@ -160,7 +161,7 @@
 										CAISSE <span class="unite">Ar</span>
 									</p>
 									<p class="montant_banque">
-										<span class="montant">120000000</span>
+										<span class="val_montant_banque">120000000</span>
 									</p>
 								</div>
 								<div class="unite_banque">
@@ -168,25 +169,26 @@
 										BNI <span class="unite">Ar</span>
 									</p>
 									<p class="montant_banque">
-										<span class="montant">120000000</span>
+										<span class="val_montant_banque">120000000</span>
 									</p>
 								</div>
 							</div>
-							<div class="block_banques btn_voir_plus">
-								<div class="unite_banque">
-									<p class="nom_banque">
-										<span class="fa fa-plus"></span> <span class="unite">Voir plus</span>
-									</p>
-								</div>
-							</div>
+							
 							<div class="block_banques aside_banques">
+								<div class="block_banques btn_voir_plus">
+									<div class="unite_banque">
+										<p class="nom_banque">
+											<span class="fa fa-plus"></span> <span class="unite">Voir plus</span>
+										</p>
+									</div>
+								</div>
 								<section>
 									<div class="unite_banque">
 										<p class="nom_banque">
 											BNI <span class="unite">EURO</span>
 										</p>
 										<p class="montant_banque">
-											<span class="montant">120000000</span>
+											<span class="val_montant_banque">120000000</span>
 										</p>
 									</div>
 									<div class="unite_banque">
@@ -194,7 +196,7 @@
 											BMOI <span class="unite">Ar</span>
 										</p>
 										<p class="montant_banque">
-											<span class="montant">120000000</span>
+											<span class="val_montant_banque">120000000</span>
 										</p>
 									</div>
 								</section>
@@ -204,7 +206,7 @@
 											MCB <span class="unite">Ar</span>
 										</p>
 										<p class="montant_banque">
-											<span class="montant">120000000</span>
+											<span class="val_montant_banque">120000000</span>
 										</p>
 									</div>
 									<div class="unite_banque">
@@ -212,7 +214,7 @@
 											BFV <span class="unite">Ar</span>
 										</p>
 										<p class="montant_banque">
-											<span class="montant">120000000</span>
+											<span class="val_montant_banque">120000000</span>
 										</p>
 									</div>
 								</section>
@@ -222,7 +224,7 @@
 											BOA <span class="unite">Ar</span>
 										</p>
 										<p class="montant_banque">
-											<span class="montant">120000000</span>
+											<span class="val_montant_banque">120000000</span>
 										</p>
 									</div>
 								</section>
@@ -274,9 +276,6 @@
 									<div class="tres_date">
 										<span>Date</span>
 									</div>
-									<div class="tres_doc">
-										<span>Document</span>
-									</div>
 									<div class="tres_mode_p">
 										<span>Mode de paiement</span>
 									</div>
@@ -296,10 +295,10 @@
 										<span>Type de flux</span>
 									</div>
 									<div class="tres_des">
-										<span>Sous-catégorie</span>
+										<span>Catégorie</span>
 									</div>
 									<div class="tres_des">
-										<span>Catégorie</span>
+										<span>Sous-catégorie</span>
 									</div>
 									<div class="tres_idPro">
 										<span>ID Pro</span>
@@ -317,10 +316,7 @@
 									</div>
 								</div>
 							</div>
-							{# <div class="table_body liste_pf" id="body_recette">
-								
-							</div> #}
-							<div class="table_body liste_pf" id="">
+							<div class="table_body liste_pf" id="body_tresorerie">
 								
 							</div>
 						</div>
@@ -367,6 +363,16 @@
 				});
 			}
 		}
+		var montant = document.querySelectorAll(".val_montant_banque");
+		var t = montant.length;
+		var test = new Intl.NumberFormat();
+		if (t > 0) {
+			for (var i = 0; i < t; i++) {
+				var val = test.format(montant[i].innerHTML);
+				montant[i].innerHTML = val;
+			}
+		}
+		
 		$(document).ready(function(){
 			
 			// affichage au niveau des banques
@@ -378,13 +384,13 @@
 					span.removeClass('fa-plus');
 					span.addClass('fa-minus');
 					unite.text("Réduire");
-					$(".aside_banques").fadeIn();
+					$(".aside_banques section").css("display", "flex");
 				}
 				else if(span.hasClass('fa-minus')){
 					span.removeClass('fa-minus');
 					span.addClass('fa-plus');
 					unite.text("Voir plus");
-					$(".aside_banques").fadeOut();
+					$(".aside_banques section").fadeOut();
 				}
 				
 			})
@@ -414,44 +420,61 @@
 
 			$('.form_depense').hide();
 
-			function lister_data_recette(){
+			function lister_data_tresorerie(){
+				var nbr_btn_dore = document.querySelectorAll(".button_banque .btn_dore").length;
 				var data = {
 					"date1" : $("#date1").val(),
-					"date2" : $("#date2").val()
+					"date2" : $("#date2").val(),
+					"key_flux" : ""
 				};
-				var url = "{{ path('lister_data_recette') }}";
+				if(nbr_btn_dore == 2){
+					data.key_flux = "all";
+				}
+				else if(nbr_btn_dore == 1){
+					var id = document.querySelectorAll(".button_banque .btn_dore")[0].getAttribute("id");
+					if(id == "btn_recette"){
+						data.key_flux = "encaissement";
+					}
+					if(id == "btn_depense"){
+						data.key_flux = "decaissement";
+					}
+				}
+				var url = "{{ path('lister_data_tresorerie') }}";
 				var ajax = $.post(url, data, function(data){
-					$('#body_recette').html(data);
+					$('#body_tresorerie').html(data).promise().done(function(){
+						var montant = document.querySelectorAll(".montant");
+						var t = montant.length;
+						var test = new Intl.NumberFormat();
+						if (t > 0) {
+							for (var i = 0; i < t; i++) {
+								var val = test.format(montant[i].innerHTML);
+								montant[i].innerHTML = val;
+							}
+						}
+					});
+					$('#formulaire').addClass('form_hide');
 				})
 				ajax.fail(function() {
-					alert('erreur au niveau de aff data recette')
+					console.log('erreur au niveau de aff data tresorerie')
 				})
 			}
 
 			
-			lister_data_recette();
+			lister_data_tresorerie();
 			
 			$('#btn_recette').on('click', function(ev){
 				ev.preventDefault();
 				if($(this).hasClass('btn_gris')){
-
+					
 					$(this).removeClass('btn_gris');
 					$(this).addClass('btn_dore');
-
-					if($('#btn_depense').hasClass('btn_dore')){
-						$('#btn_depense').removeClass('btn_dore');
-						$('#btn_depense').addClass('btn_gris');
-					}
+					lister_data_tresorerie();
 				}
 				else{
-
+					
 					$(this).removeClass('btn_dore');
 					$(this).addClass('btn_gris');
-
-					if($('#btn_depense').hasClass('btn_dore')){
-						$('#btn_depense').removeClass('btn_gris');
-						$('#btn_depense').addClass('btn_dore');
-					}
+					lister_data_tresorerie();
 				}
 				// aff de tableau recette
 				$('#tableau_depense').fadeOut('fast');
@@ -460,24 +483,18 @@
 			$('#btn_depense').on('click', function(ev){
 				ev.preventDefault();
 				if($(this).hasClass('btn_gris')){
-
+					
 					$(this).removeClass('btn_gris');
 					$(this).addClass('btn_dore');
+					lister_data_tresorerie();
 
-					if($('#btn_recette').hasClass('btn_dore')){
-						$('#btn_recette').removeClass('btn_dore');
-						$('#btn_recette').addClass('btn_gris');
-					}
 				}
 				else{
-
+					
 					$(this).removeClass('btn_dore');
 					$(this).addClass('btn_gris');
+					lister_data_tresorerie();
 
-					if($('#btn_recette').hasClass('btn_dore')){
-						$('#btn_recette').removeClass('btn_gris');
-						$('#btn_recette').addClass('btn_dore');
-					}
 				}
 				// aff de tableau depense
 				$('#tableau_recette').fadeOut('fast');
@@ -487,8 +504,7 @@
 			// trier_by_btn_ok
 			$('#trier_by_btn_ok').on('click', function(ev){
 				ev.preventDefault();
-				lister_data_recette();
-				lister_data_depense();
+				lister_data_tresorerie();
 			})
 			$('#action_hide_form').on('click', function(ev){
 				ev.preventDefault();
@@ -505,29 +521,21 @@
 				$('#formulaire form input').on('focus', function(){
 					$('#error_form').slideUp();
 				})
-
+				$("#choice").val("encaissement");
 				$(".radio").change(function(){
 						//console.log($(this).val());
 					if($(this).val() == 'decaissement'){
 						$('.form_recette').fadeOut();
 						$('.form_depense').fadeIn();
+						$("#choice").val("decaissement");
 					}
 					if($(this).val() == 'encaissement'){
 						$('.form_depense').fadeOut();
 						$('.form_recette').fadeIn();
+						$("#choice").val("encaissement");
 					}
 				})
 
-				// si on chousi caisse hide num compte 
-				$('#compte_b').on('change', function(){
-					if($(this).val() == "CAISSE AR"){
-						$('#label_num_compte').slideUp();
-						$('#num_compte').slideUp();
-					}else{
-						$('#label_num_compte').slideDown();
-						$('#num_compte').slideDown();
-					}
-				})
 
 
 				$('#ajout_tres').on('click', function(ev){
@@ -559,8 +567,7 @@
 							"monnaie"		: $('#monnaie').val(),
 							"encaissement_montant"	: $("#encaissement_montant").val(),
 							"decaissement_montant"	: $("#decaissement_montant").val(),
-							"encaissement"	: $("#encaissement").val(),
-							"decaissement"	: $("#decaissement").val(),
+							"choice"		: $("#choice").val(),
 							"categorie"		: $("#categorie").val(),
 							"sous_categorie"	: $("#sous_categorie").val(),
 						}
@@ -571,11 +578,12 @@
 						})
 
 						jqxhr.done(function(data){
-							// $('.form_rec_dep form')[0].reset();
-							// $('#date1').val('');
-							// $('#date2').val('');
+							$('.form_rec_dep form')[0].reset();
+							$('#date1').val('');
+							$('#date2').val('');
+							lister_data_tresorerie();
 							// affichena
-							$("#test").html(data);
+							// $("#test").html(data);
 						})
 						jqxhr.fail(function(){
 							alert('erreur au niveau de add tres')
@@ -585,37 +593,8 @@
 						// })
 					}
 				})
-				var n = document.querySelector("#paiement");
-					new Cleave(n, { // prefix: 'Ar ',
-						numeral: true,
-						delimiter: [' '],
-						numeralThousandsGroupStyle: 'thousand',
-						numericOnly: true
-					});
-				new Cleave('#paiement', {blocks: null});
 				
-			/* fin formulaire */
 
-			/* animation mode pmt */
-				function inArray(needle, haystack) {
-					var length = haystack.length;
-					for(var i = 0; i < length; i++) {
-						if(haystack[i] == needle) return true;
-					}
-					return false;
-				}
-
-				$('#select_mode_pmt_tri').on('change', function(){
-
-					var val = $(this).val();
-					var tab = ['CCIO', 'CHEQUE', 'EFFET', 'ESP', 'PRELEVEMENT', 'TRAITE', 'VERSEMENT', 'VIREMENT'];
-					if(inArray(val, tab)){
-						var champs = $('.tres_mode_p span');
-						$.each(champs, function (indexInArray, valueOfElement) { 
-							 alert(valueOfElement.innerHTML);
-						});
-					}
-				})
 
 			/* /animation mode pmt */
 		})

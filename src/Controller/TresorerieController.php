@@ -10,6 +10,7 @@ use App\Entity\CategoryTresorerie;
 use App\Form\TresorerieDepenseType;
 use App\Form\TresorerieRecetteType;
 use App\Entity\SousCategorieTresorerie;
+use App\Repository\TresorerieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -75,109 +76,146 @@ class TresorerieController extends AbstractController
     /**
      * @Route("/profile/add_tres", name = "add_tres")
      */
-    public function add_tres(Request $request, EntityManagerInterface $manager)
+    public function add_tres(Request $request, EntityManagerInterface $manager, TresorerieRepository $repoTres)
     {
         $response = new Response();
+        $total_tres = count($repoTres->findAll());
         if($request->isXmlHttpRequest()){
-            
-           /* "date"			: $("#date").val(),
-            "designation"	: $("#designation").val(),
-            "prestataire"	: $('#prestataire').val(),
-            "sage"			: $('#sage').val(),
-            "mode_pmt"		: $('#mode_pmt').val(),
-            "compte_b"		: $("#compte_b").val(),
-            "id_pro"		: $("#id_pro").val(),
-            "client"		: $('#client').val(),
-            "monnaie"		: $('#monnaie').val(),
-            "encaissement"	: $("#encaissement_montant").val(),
-            "decaissement"	: $("#decaissement_montant").val(),
-            "categorie"		: $("#categorie").val(),
-            "sous_categorie"	: $("#sous_categorie").val(),*/
+            $tresorerie = new Tresorerie();
+           
+            $choice = $request->get('choice');
             $date = date_create($request->get('date'));
             $designation = $request->get('designation');
             $mode_pmt = $request->get('mode_pmt');
-            $compte = $request->get('compte');
-
-           if($request->get('encaissement_montant')){
-
-           }
-           else if($request->get('encaissement_montant')){
-
-           }
-           
+            $compte = $request->get('compte_b');
+            $monnaie = $request->get('monnaie');
+            $categorie = $request->get('categorie');
+            $sous_categorie = $request->get('sous_categorie');
+            
+            // montant (dec,enc)
+            // on hydrate tresorerie
+            $tresorerie->setDatePaiment($date);
+            $tresorerie->setDesignation($designation);
+            $tresorerie->setModePaiement($mode_pmt);
+            $tresorerie->setCompte($compte);
+            $tresorerie->setMonnaie($monnaie);
+            $tresorerie->setCategorie($categorie);
+            $tresorerie->setSousCategorie($sous_categorie);
+            $tresorerie->setTypeFlux($choice);
+            $tresorerie->setNumSage($request->get("sage"));
+            if($choice === "encaissement"){
+                $tresorerie->setEncaissement(str_replace(" ", "", $request->get("encaissement_montant")));
+                $tresorerie->setIdPro($request->get("id_pro"));
+                $tresorerie->setClient($request->get('client'));
+            }
+            if($choice === "decaissement"){
+                $tresorerie->setDecaissement(str_replace(" ", "", $request->get("decaissement_montant")));
+                $tresorerie->setPrestataire($request->get('prestataire'));
+            }
+            $manager->persist($tresorerie);
             $manager->flush();
-            $data = "ok";
-            $data = json_encode($data);
-            $response->headers->set('Content-Type', 'application/json');
-            $response->setContent($data);
+            $total_tres_after = count($repoTres->findAll());
+            if($total_tres < $total_tres_after){
+                $data = "ok";
+                $data = json_encode($data);
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+            }if($total_tres >= $total_tres_after){
+                $data = "error";
+                $data = json_encode($data);
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+            }
+            
         }
         return $response;
     }
 
     /**
-     * @Route("/profile/lister_data_recette", name ="lister_data_recette")
+     * @Route("/profile/lister_data_tresorerie", name ="lister_data_tresorerie")
      */
-    public function lister_data_recette(Request $request
-    ){
+    public function lister_data_tresorerie(Request $request,TresorerieRepository $repoTres)
+    {
         $response = new Response();
         if($request->isXmlHttpRequest()){
             $date1 = $request->get('date1');
-            $date2 = $request->get('date2');   
+            $date2 = $request->get('date2');   //key_flux
+            $key_flux = $request->get('key_flux');
             $html  = '';
-            $date1_o = null;
-            $date2_o = null;
-            if($date1 != "" && $date2 != ""){
-                $date1_o = date_create($date1);
-                $date2_o = date_create($date2);
+            $tresoreries = [];
+            if($date1 != "" || $date2 != ""){
+                $tresoreries = $repoTres->find_between($date1, $date2, $key_flux);
+                
             }
-           
-            
-           
-            // foreach($recettes as $recette){
-            //     $html .='
-            //     <div class="t_body_row sous_tab_body t_body_tres">
-            //         <div class="tres_date">
-            //             <span>' . $recette->getDate()->format("d-m-Y") .'</span>
-            //         </div>
-            //         <div class="tres_des">
-            //             <span>'. $recette->getDesignation() .'</span>
-            //         </div>
-            //         <div class="tres_idPro">
-            //             <span> '. $recette->getIdPro() .'</span>
-            //         </div>
-            //         <div class="tres_sage">
-            //             <span> '. $recette->getNumSage() . '</span>
-            //         </div>
-            //         <div class=" tres_client">
+            else{
+                if($key_flux == "all"){
+                    $tresoreries = $repoTres->findAll();
+                }
+                else if($key_flux == "encaissement"){
+                    $tresoreries = $repoTres->findBy(["type_flux" => "encaissement"]);
+                }
+                else if($key_flux == "decaissement"){
+                    $tresoreries = $repoTres->findBy(["type_flux" => "decaissement"]);
+                }
+            }
+            foreach($tresoreries as $tresorerie){
+                $html .='
+                <div class="t_body_row sous_tab_body t_body_tres">
+                    <div class="tres_des">
+                        <span>'. $tresorerie->getDesignation() .'</span>
+                    </div>
+                    <div class="tres_date">
+                        <span>' . $tresorerie->getDatePaiment()->format("d-m-Y") .'</span>
+                    </div>
+                    <div class="tres_mode_p">
+                        <span> ' . $tresorerie->getModePaiement() .'</span>
+                    </div>
+                    <div class="tres_compte_b">
+                        <span>' . $tresorerie->getCompte() . '</span>
+                    </div>
+                    <div class="tres_compte_b">
+                        <span class="montant">' . $tresorerie->getEncaissement() .'</span>
+                    </div>
+                    <div class="tres_compte_b">
+                        <span class="montant">' . $tresorerie->getDecaissement() .'</span>
+                    </div>
+                    <div class="tres_monnaie">
+                        <span> ' . $tresorerie->getMonnaie() .'</span>
+                    </div>
+                    <div class="tres_monnaie">
+                        <span> ' . $tresorerie->getTypeFlux() .'</span>
+                    </div>
+                    <div class="tres_des">
+                        <span>'. $tresorerie->getCategorie() .'</span>
+                    </div>
+                    <div class="tres_des">
+                        <span>'. $tresorerie->getSousCategorie() .'</span>
+                    </div>
+                    <div class="tres_idPro">
+                        <span> '. $tresorerie->getIdPro() .'</span>
+                    </div>
+                    <div class=" tres_client">
+                        <span> ' . $tresorerie->getClient() .'</span>
+                    </div>
+                    <div class="tres_sage">
+                        <span> '. $tresorerie->getNumSage() . '</span>
+                    </div>
+                    <div class=" tres_client">
+                        <span> ' . $tresorerie->getPrestataire() .'</span>
+                    </div>
+                </div>               
+                ';
+            }
 
-            //             <span> ' . $recette->getNomClient() .'</span>
-            //         </div>
-            //         <div class="tres_mode_p">
-            //             <span> ' . $recette->getModePaiement() .'</span>
-            //         </div>
-            //         <div class="tres_compte_b">
-            //             <span>' . $recette->getCompteBancaire() .'</span>
-            //         </div>
-            //         <div class="tres_monnaie">
-            //             <span> ' . $recette->getMonnaie() .'</span>
-            //         </div>
-            //         <div class="tres_paiement sans_border">
-            //             <span class="montant">' . $recette->getPaiement() . '</span>
-            //         </div>
+            $html .= '
+                    </div>
+                </div>
+            ';
 
-            //     </div>               
-            //     ';
-            // }
-
-        //     $html .= '
-        //             </div>
-        //         </div>
-        //     ';
-
-        //     $data = $html;
-        //     $data = json_encode($data);
-        //     $response->headers->set('content-Type', 'application/json');
-        //     $response->setContent($data);
+            $data = $html;
+            $data = json_encode($data);
+            $response->headers->set('content-Type', 'application/json');
+            $response->setContent($data);
         }
         return $response;
     }
