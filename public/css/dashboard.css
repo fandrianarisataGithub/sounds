@@ -6559,77 +6559,90 @@ tr td.t_concerne_rem {
     font-size: 20px;
     color: #c79c67 !important;
 }
+.banque1{
+    display: flex;
+}
+.banque1_content{
+    width: 200px;
+   
+    border-radius: 25px;
+    height: 120px;
+    padding-top: 10px;
+     background: #fff;
+    box-shadow: 0px 0px 3px #e9e6e6;
+}
+.banque1_content .top{
+    display: flex;
+    justify-content: space-between;
+}
+.top img{
+    width: 60px;
+    height: 60px;
+}
+.top .nom_banque{
+    position: relative;
+    right: 20px;
+    top: 10px;
+}
+.nom_banque2, .nom_banque{
+    color: #c79c67;
+    font-weight: 600;
+    font-size: 9px;
+}
+.banque1_content p{
+    text-align: end;
+    font-size: 16px;
+    position: relative;
+    top: 15px;
+    right: 20px;
+}
+p.val_montant_banque{
+    color : #919191;
+    font-weight: 800;
+}
+.banque1 .banque1_content:last-child{
+    margin-left: 25px;
+}
+.banque2{
+    display: flex;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+.banque2 .unite_banque2{
+    width: 170px;
+    background: #fff;
+    box-shadow: 0px 0px 3px #e9e6e6;
+    border-radius: 25px;
+}
+.banque2 .unite_banque2:not(:first-child){
+    margin-left: 15px;
+    padding-right : 15px;
+}
 
+.unite_banque2{
+    display: flex;
+}
+.unite_banque2 img{
+    width: 50px;
+    height: 50px;
+    position: relative;
+    top: 5px;
+}
+.unite_banque2 span:last-child{
+    margin : 10px 10px 0px 10px;
+}
+.unite_banque2:not(:first-child) img{
+    margin-left: 10px;
+}
+.unite_banque2 p.nom_banque2{
+    font-size: 9px;
+}
 .liste_comptes {
     display: flex;
     margin-bottom: 25px;
     justify-content: space-between;
 }
 
-.liste_comptes .block_banques:first-child {
-    display: flex;
-    height: auto !important;
-}
-
-.block_banques section {
-    display: flex;
-}
-
-.unite_banque {
-    width: 200px;
-}
-
-.liste_comptes .unite_banque:not(:first-child) {
-    margin-left: 25px;
-}
-
-.unite_banque p {
-    text-align: center;
-}
-
-.unite_banque p.nom_banque {
-    margin-top: 0px;
-    color: #fff !important;
-    border-radius: 25px;
-    padding: 5px;
-    background: #c79c67;
-}
-
-.btn_voir_plus {
-    margin-left: 10px;
-    margin-right: 10px;
-    justify-content: end;
-    margin-bottom: 15px;
-}
-
-.btn_voir_plus p {
-    border-radius: 5px !important;
-    background: #323232 !important;
-    display: inline-block;
-    font-size: 12px;
-    height: 28px;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-    cursor: pointer;
-}
-
-.btn_voir_plus p:hover {
-    background: transparent !important;
-    border: 1px solid #323232 !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-    color: #323232 !important;
-}
-
-.aside_banques section {
-    display: none;
-}
-
-.unite_banque p.montant_banque {
-    margin-bottom: 15px;
-    color: #323232 !important;
-    font-weight: 550;
-}
 
 .liste_button_tres {
     display: flex;
@@ -6957,7 +6970,7 @@ tr td.t_concerne_rem {
 
 #formulaire {
     width: 500px;
-    position: absolute;
+    position: fixed;
     top: 0px !important;
     right: -15px;
     background: #323232;
@@ -6965,6 +6978,7 @@ tr td.t_concerne_rem {
     z-index: 1;
     min-height: 100vh;
     transition: right 0.5s ease-in-out;
+    box-shadow: 0px 0px 3px #fff;
 }
 
 .form_hide {

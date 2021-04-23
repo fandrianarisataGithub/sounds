@@ -52,21 +52,21 @@
 								</div>
 								<input type="hidden" name="choice" id="choice" value="">
 								<div class="form-group">
-									<label for="">Date *</label>
+									<label for="">Date </label>
 									<input type="date" id="date">
 								</div>
 								<div class="form-group">
-									<label for="">Désignation *</label>
+									<label for="">Désignation </label>
 									<input type="designation" id="designation">
 								</div>
 								{# si Recette #}
 			
 								<div class="form-group form_recette">
-									<label for="">ID pro *</label>
+									<label for="">ID pro </label>
 									<input type="text" id="id_pro">
 								</div>
 								<div class="form-group form_recette">
-									<label for="">Client *</label>
+									<label for="">Client </label>
 									<input type="text" id="client">
 								</div>
 								
@@ -74,18 +74,18 @@
 
 								{# si Dépense #}
 								<div class="form-group form_depense">
-									<label for="">Fournisseur *</label>
+									<label for="">Fournisseur </label>
 									<input type="text" id="prestataire">
 								</div>
 								
 								{# fin dépense #}
 
 								<div class="form-group">
-									<label for="">N° Sage *</label>
+									<label for="">N° Sage </label>
 									<input type="text" id="sage">
 								</div>
 								<div class="form-group">
-									<label for="">Mode paiement *</label>
+									<label for="">Mode paiement </label>
 									<select name="" id="mode_pmt">
 										<option value="ESPECES">ESPECES</option>
 										<option value="CHEQUE">CHEQUE</option>
@@ -95,7 +95,7 @@
 									</select>
 								</div>
 								<div class="form-group">
-									<label for="">Compte *</label>
+									<label for="">Compte </label>
 									<select name="" id="compte_b">
 										<option value="CAISSE AR">CAISSE AR</option>
 										<option value="BNI AR" selected="selected">BNI AR</option>
@@ -107,26 +107,36 @@
 									</select>
 								</div>
 								<div class="form-group form_depense">
-									<label for="" id="label_num_compte">N° compte *</label>
+									<label for="" id="label_num_compte">N° compte </label>
 									<input type="text" id="num_compte">
 								</div>
 								<div class="form-group form_depense">
-									<label for="">Montant *</label>
+									<label for="">Montant </label>
 									<input type="text" id="decaissement_montant" class="input_nombre">
 								</div>
 								<div class="form-group form_recette">
-									<label for="">Montant *</label>
+									<label for="">Montant </label>
 									<input type="text" id="encaissement_montant" class="input_nombre">
 								</div>
 								<div class="form-group">
-									<label for="">Monnaie *</label>
+									<label for="">Monnaie </label>
 									<select name="" id="monnaie">
 										<option value="Ar">Ar</option>
 										<option value="Euro">Euro</option>
 									</select>
 								</div>
-								<div class="form-group">
-									<label for="">Catégorie *</label>
+								<div class="form-group form_recette">
+									<label for="">Catégorie </label>
+									<select name="" id="categorie_recette">
+										<option value="" selected="selected">Choisir une catégorie</option>
+										<option value="Approvisionnement">Approvisionnement</option>
+										<option value="Paiement facture d'acompte">Paiement facture d'acompte</option>
+										<option value="Paimenent facture solde">Paimenent facture solde</option>
+										<option value="Retour de frais">Retour de frais</option>
+									</select>
+								</div>
+								<div class="form-group form_depense">
+									<label for="">Catégorie </label>
 									<select name="" id="categorie">
 										<option value="" selected="selected">Choisir une catégorie</option>
 										{% for element in liste_cate %}
@@ -134,8 +144,8 @@
 										{% endfor %}
 									</select>
 								</div>
-								<div class="form-group">
-									<label for="">Sous catégorie *</label>
+								<div class="form-group form_depense">
+									<label for="">Sous catégorie </label>
 									<select name="" id="sous_categorie">
 										<option value="" selected="selected">Choisir une sous-catégorie</option>
 									</select>
@@ -154,94 +164,109 @@
                         <div class="type_banque">
                             <h4>Comptes</h4>
                         </div>
-                        <div class="liste_comptes">
-							<div class="block_banques">
-								<div class="unite_banque">
-									<p class="nom_banque">
-										CAISSE <span class="unite">Ar</span>
-									</p>
-									<p class="montant_banque">
-										<span class="val_montant_banque">120000000</span>
-									</p>
+						<div class="banque1">
+							<div class="banque1_content">
+								<div class=" top">
+									<img src="{{ asset('images/caisse.png') }}" alt="logo banque 1">
+									<span class="nom_banque">
+										CAISSE EN AR
+									</span>
 								</div>
-								<div class="unite_banque">
-									<p class="nom_banque">
-										BNI <span class="unite">Ar</span>
-									</p>
-									<p class="montant_banque">
-										<span class="val_montant_banque">120000000</span>
-									</p>
-								</div>
+								<p class="val_montant_banque">
+									120000000
+								</p>
 							</div>
-							
-							<div class="block_banques aside_banques">
-								<div class="block_banques btn_voir_plus">
-									<div class="unite_banque">
-										<p class="nom_banque">
-											<span class="fa fa-plus"></span> <span class="unite">Voir plus</span>
-										</p>
-									</div>
+							<div class="banque1_content">
+								<div class="top">
+									<img src="{{ asset('images/bni.png') }}" alt="logo banque 2">
+									<span class="nom_banque">
+										BNI EN AR
+									</span>
 								</div>
-								<section>
-									<div class="unite_banque">
-										<p class="nom_banque">
-											BNI <span class="unite">EURO</span>
-										</p>
-										<p class="montant_banque">
-											<span class="val_montant_banque">120000000</span>
-										</p>
-									</div>
-									<div class="unite_banque">
-										<p class="nom_banque">
-											BMOI <span class="unite">Ar</span>
-										</p>
-										<p class="montant_banque">
-											<span class="val_montant_banque">120000000</span>
-										</p>
-									</div>
-								</section>
-								<section>
-									<div class="unite_banque">
-										<p class="nom_banque">
-											MCB <span class="unite">Ar</span>
-										</p>
-										<p class="montant_banque">
-											<span class="val_montant_banque">120000000</span>
-										</p>
-									</div>
-									<div class="unite_banque">
-										<p class="nom_banque">
-											BFV <span class="unite">Ar</span>
-										</p>
-										<p class="montant_banque">
-											<span class="val_montant_banque">120000000</span>
-										</p>
-									</div>
-								</section>
-								<section>									
-									<div class="unite_banque">
-										<p class="nom_banque">
-											BOA <span class="unite">Ar</span>
-										</p>
-										<p class="montant_banque">
-											<span class="val_montant_banque">120000000</span>
-										</p>
-									</div>
-								</section>
+								<p class="val_montant_banque">
+									120000000
+								</p>
 							</div>
-                        </div>
+						</div>
+						<div class="banque2">
+							<div class="unite_banque2">
+								<span class="img">
+									<img src="{{ asset('images/bni.png') }}" alt="banque 3">
+								</span>
+								<span>
+									<p class="nom_banque2">
+										BNI EN €
+									</p>
+									<p class="val_montant_banque">
+										120000000
+									</p>
+								</span>
+							</div>
+							<div class="unite_banque2">
+								<span class="img">
+									<img src="{{ asset('images/bmoi.png') }}" alt="banque 3">
+								</span>
+								<span>
+									<p class="nom_banque2">
+										BMOI EN AR
+									</p>
+									<p class="val_montant_banque">
+										120000000
+									</p>
+								</span>
+							</div>
+							<div class="unite_banque2">
+								<span class="img">
+									<img src="{{ asset('images/mcb.png') }}" alt="banque 3">
+								</span>
+								<span>
+									<p class="nom_banque2">
+										MCB EN AR
+									</p>
+									<p class="val_montant_banque">
+										120000000
+									</p>
+								</span>
+							</div>
+							<div class="unite_banque2">
+								<span class="img">
+									<img src="{{ asset('images/bfv.png') }}" alt="banque 3">
+								</span>
+								<span>
+									<p class="nom_banque2">
+										BFV EN AR
+									</p>
+									<p class="val_montant_banque">
+										120000000
+									</p>
+								</span>
+							</div>
+							<div class="unite_banque2">
+								<span class="img">
+									<img src="{{ asset('images/boa.png') }}" alt="banque 3">
+								</span>
+								<span>
+									<p class="nom_banque2">
+										BOA EN AR
+									</p>
+									<p class="val_montant_banque">
+										120000000
+									</p>
+								</span>
+							</div>
+						</div>
                     </div>
 				</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 					<div class="liste_button_tres">
 						<aside class="button_banque">
 							<a href="#" class="btn btn_dore" id="btn_recette" data-id = "tableau_recette">
-								<span>Recette</span>
+								<span>Encaissement</span>
 							</a>
 						</aside>
 						<aside class="button_banque">
 							<a href="#" class="btn btn_gris" id="btn_depense" data-id ="tableau_depense">
-								<span>Dépense</span>
+								<span>Décaissement</span>
 							</a>
 						</aside>
 					</div>
@@ -508,11 +533,13 @@
 			})
 			$('#action_hide_form').on('click', function(ev){
 				ev.preventDefault();
+				$("#contents").removeClass("show_form");
 				$('#formulaire').addClass('form_hide');
 			})
 
 			$('#show_formulaire').on('click', function(ev){
 				ev.preventDefault();
+				$("#contents").addClass("show_form");
 				$('#formulaire').removeClass('form_hide');
 			})
 
@@ -544,7 +571,7 @@
 					if(
 						$("#date").val() == "" || $("#designation").val() == "" || $('#sage').val() =="" ||
 						$('#mode_pmt').val() == "" || $("#compte_b").val() =="" 
-						|| $('#monnaie').val() == "" || $("#categorie").val() ==""
+						|| $('#monnaie').val() == ""
 					){
 						$("#error_form").slideDown();
 						$("#error_form p").text('Veuillez remplir tous les champs')
@@ -552,7 +579,7 @@
 					else if(
 						$("#date").val() != "" && $("#designation").val() != "" && $('#sage').val() !="" &&
 						$('#mode_pmt').val() != "" && $("#compte_b").val() !="" 
-						&& $('#monnaie').val() != "" && $("#categorie").val() != ""
+						&& $('#monnaie').val() != ""
 					){
 						var data = {
 							"date"			: $("#date").val(),
@@ -594,6 +621,17 @@
 					}
 				})
 				
+				$(document).mouseup(function(e) 
+				{
+					var container = $("#formulaire");
+
+					// if the target of the click isn't the container nor a descendant of the container
+					if (!container.is(e.target) && container.has(e.target).length === 0) 
+					{
+						$("#contents").removeClass("show_form");
+						$('#formulaire').addClass('form_hide');
+					}
+				});
 
 
 			/* /animation mode pmt */
