@@ -15,342 +15,347 @@
 		{% include "nav2.html.twig" %}
 		<!-- / entete content -->
 		<!-- contenue  -->
-			<div id="hrs_content"> <div>
-				
-				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
-					<div class="entete_tresor">
-                        <div class="titre_tresor">
-                            <h4><strong>Trésorerie</strong></h4>
-                        </div>
-                        <div class="btn_form_tresor">
-                            <a href="#" class="btn btn-default btn_gris" id="show_formulaire">
-								<span class="fa fa-plus"></span><span>Formulaires</span>
-							</a>
-                        </div>
-                    </div>
-					{# formulaire #}
-					<div id="formulaire" class="form_hide">
-						<div class="action">
-							<button id="action_hide_form"><span class="fa fa-long-arrow-right "></span></button>
-						</div>
+				<div id="hrs_content"> 				
+					<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 						<div class="entete_tresor">
 							<div class="titre_tresor">
 								<h4><strong>Trésorerie</strong></h4>
 							</div>
-						</div>
-						<div class="form_rec_dep">
-							<form action="">
-								<div class="form-group">
-									<p>
-										<input type="radio" class="radio" id="encaissement" name="radio-group" value="encaissement" checked>
-										<label for="encaissement">Encaissement</label>
-									</p>
-									<p>
-										<input type="radio" class="radio" id="decaissement" name="radio-group" value ="decaissement">
-										<label for="decaissement">Décaissement</label>
-									</p>
-								</div>
-								<input type="hidden" name="choice" id="choice" value="">
-								<div class="form-group">
-									<label for="">Date </label>
-									<input type="date" id="date">
-								</div>
-								<div class="form-group">
-									<label for="">Désignation </label>
-									<input type="designation" id="designation">
-								</div>
-								{# si Recette #}
-			
-								<div class="form-group form_recette">
-									<label for="">ID pro </label>
-									<input type="text" id="id_pro">
-								</div>
-								<div class="form-group form_recette">
-									<label for="">Client </label>
-									<input type="text" id="client">
-								</div>
-								
-								{# fin si recette #}
-
-								{# si Dépense #}
-								<div class="form-group form_depense">
-									<label for="">Fournisseur </label>
-									<input type="text" id="prestataire">
-								</div>
-								
-								{# fin dépense #}
-
-								<div class="form-group">
-									<label for="">N° Sage </label>
-									<input type="text" id="sage">
-								</div>
-								<div class="form-group">
-									<label for="">Mode paiement </label>
-									<select name="" id="mode_pmt">
-										<option value="ESPECES">ESPECES</option>
-										<option value="CHEQUE">CHEQUE</option>
-										<option value="VIREMENT">VIREMENT</option>
-										<option value="PRELEVEMENT">PRELEVEMENT</option>
-										<option value="TRAITE">TRAITE</option>
-									</select>
-								</div>
-								<div class="form-group">
-									<label for="">Compte </label>
-									<select name="" id="compte_b">
-										<option value="CAISSE AR">CAISSE AR</option>
-										<option value="BNI AR" selected="selected">BNI AR</option>
-										<option value="BNI EURO">BNI EURO</option>
-										<option value="BMOI AR">BMOI AR</option>
-										<option value="MCB AR">MCB AR</option>
-										<option value="BFV AR">BFV AR</option>
-										<option value="BOA AR">BOA AR</option>
-									</select>
-								</div>
-								<div class="form-group form_depense">
-									<label for="" id="label_num_compte">N° compte </label>
-									<input type="text" id="num_compte">
-								</div>
-								<div class="form-group form_depense">
-									<label for="">Montant </label>
-									<input type="text" id="decaissement_montant" class="input_nombre">
-								</div>
-								<div class="form-group form_recette">
-									<label for="">Montant </label>
-									<input type="text" id="encaissement_montant" class="input_nombre">
-								</div>
-								<div class="form-group">
-									<label for="">Monnaie </label>
-									<select name="" id="monnaie">
-										<option value="Ar">Ar</option>
-										<option value="Euro">Euro</option>
-									</select>
-								</div>
-								<div class="form-group form_recette">
-									<label for="">Catégorie </label>
-									<select name="" id="categorie_recette">
-										<option value="" selected="selected">Choisir une catégorie</option>
-										<option value="Approvisionnement">Approvisionnement</option>
-										<option value="Paiement facture d'acompte">Paiement facture d'acompte</option>
-										<option value="Paimenent facture solde">Paimenent facture solde</option>
-										<option value="Retour de frais">Retour de frais</option>
-									</select>
-								</div>
-								<div class="form-group form_depense">
-									<label for="">Catégorie </label>
-									<select name="" id="categorie">
-										<option value="" selected="selected">Choisir une catégorie</option>
-										{% for element in liste_cate %}
-											<option value="{{ element.getNom() }}">{{ element.getNom() }}</option>
-										{% endfor %}
-									</select>
-								</div>
-								<div class="form-group form_depense">
-									<label for="">Sous catégorie </label>
-									<select name="" id="sous_categorie">
-										<option value="" selected="selected">Choisir une sous-catégorie</option>
-									</select>
-								</div>
-								<div class="form-group" id="error_form">
-									<p></p>
-								</div>
-								<div class="last_fg">
-									<button class="btn btn-default" id = "ajout_tres"><span>Enregistrer</span></button>
-								</div>
-							</form>
-							{# <div id="test"></div> #}
-						</div>
-					</div>
-					<div class="entete_tresor entete_2">
-                        <div class="type_banque">
-                            <h4>Comptes</h4>
-                        </div>
-						<div class="banque1">
-							<div class="banque1_content">
-								<div class=" top">
-									<img src="{{ asset('images/caisse.png') }}" alt="logo banque 1">
-									<span class="nom_banque">
-										CAISSE EN AR
-									</span>
-								</div>
-								<p class="val_montant_banque">
-									120000000
-								</p>
-							</div>
-							<div class="banque1_content">
-								<div class="top">
-									<img src="{{ asset('images/bni.png') }}" alt="logo banque 2">
-									<span class="nom_banque">
-										BNI EN AR
-									</span>
-								</div>
-								<p class="val_montant_banque">
-									120000000
-								</p>
+							<div class="btn_form_tresor">
+								<a href="#" class="btn btn-default btn_gris" id="show_formulaire">
+									<span class="fa fa-plus"></span><span>Formulaire</span>
+								</a>
 							</div>
 						</div>
-						<div class="banque2">
-							<div class="unite_banque2">
-								<span class="img">
-									<img src="{{ asset('images/bni.png') }}" alt="banque 3">
-								</span>
-								<span>
-									<p class="nom_banque2">
-										BNI EN €
-									</p>
-									<p class="val_montant_banque">
-										120000000
-									</p>
-								</span>
+						{# formulaire #}
+						<div id="formulaire" class="form_hide">
+							<div class="action">
+								<button id="action_hide_form"><span class="fa fa-long-arrow-right "></span></button>
 							</div>
-							<div class="unite_banque2">
-								<span class="img">
-									<img src="{{ asset('images/bmoi.png') }}" alt="banque 3">
-								</span>
-								<span>
-									<p class="nom_banque2">
-										BMOI EN AR
-									</p>
-									<p class="val_montant_banque">
-										120000000
-									</p>
-								</span>
+							<div class="entete_tresor">
+								<div class="titre_tresor">
+									<h4><strong>Trésorerie</strong></h4>
+								</div>
 							</div>
-							<div class="unite_banque2">
-								<span class="img">
-									<img src="{{ asset('images/mcb.png') }}" alt="banque 3">
-								</span>
-								<span>
-									<p class="nom_banque2">
-										MCB EN AR
-									</p>
-									<p class="val_montant_banque">
-										120000000
-									</p>
-								</span>
-							</div>
-							<div class="unite_banque2">
-								<span class="img">
-									<img src="{{ asset('images/bfv.png') }}" alt="banque 3">
-								</span>
-								<span>
-									<p class="nom_banque2">
-										BFV EN AR
-									</p>
-									<p class="val_montant_banque">
-										120000000
-									</p>
-								</span>
-							</div>
-							<div class="unite_banque2">
-								<span class="img">
-									<img src="{{ asset('images/boa.png') }}" alt="banque 3">
-								</span>
-								<span>
-									<p class="nom_banque2">
-										BOA EN AR
-									</p>
-									<p class="val_montant_banque">
-										120000000
-									</p>
-								</span>
-							</div>
-						</div>
-                    </div>
-				</div>
-				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
-					<div class="liste_button_tres">
-						<aside class="button_banque">
-							<a href="#" class="btn btn_dore" id="btn_recette" data-id = "tableau_recette">
-								<span>Encaissement</span>
-							</a>
-						</aside>
-						<aside class="button_banque">
-							<a href="#" class="btn btn_gris" id="btn_depense" data-id ="tableau_depense">
-								<span>Décaissement</span>
-							</a>
-						</aside>
-					</div>
-					<div class="filtre_tresor">
-						<aside class="part_filter">
-							<div class="form_date">
-								<form action="" class="form-inline">
+							<div class="form_rec_dep">
+								<form action="">
 									<div class="form-group">
-										<label for="">Date</label>
-										<input type="date" id="date1">
+										<p>
+											<input type="radio" class="radio" id="encaissement" name="radio-group" value="encaissement" checked>
+											<label for="encaissement">Encaissement</label>
+										</p>
+										<p>
+											<input type="radio" class="radio" id="decaissement" name="radio-group" value ="decaissement">
+											<label for="decaissement">Décaissement</label>
+										</p>
+									</div>
+									<input type="hidden" name="choice" id="choice" value="">
+									<div class="form-group">
+										<label for="">Date </label>
+										<input type="date" id="date">
 									</div>
 									<div class="form-group">
-										<input type="date" id="date2">
+										<label for="">Désignation </label>
+										<input type="designation" id="designation">
+									</div>
+									{# si Recette #}
+				
+									<div class="form-group form_recette">
+										<label for="">ID pro </label>
+										<input type="text" id="id_pro">
+									</div>
+									<div class="form-group form_recette">
+										<label for="">Client </label>
+										<input type="text" id="client">
+									</div>
+									
+									{# fin si recette #}
+
+									{# si Dépense #}
+									<div class="form-group form_depense">
+										<label for="">Fournisseur </label>
+										<input type="text" id="prestataire">
+									</div>
+									
+									{# fin dépense #}
+
+									<div class="form-group">
+										<label for="">N° Sage </label>
+										<input type="text" id="sage">
 									</div>
 									<div class="form-group">
-										<button class="btn_black_tres" id="trier_by_btn_ok"><span>OK</span></button>
+										<label for="">Mode paiement </label>
+										<select name="" id="mode_pmt">
+											<option value="ESPECES">ESPECES</option>
+											<option value="CHEQUE">CHEQUE</option>
+											<option value="VIREMENT">VIREMENT</option>
+											<option value="PRELEVEMENT">PRELEVEMENT</option>
+											<option value="TRAITE">TRAITE</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="">Compte </label>
+										<select name="" id="compte_b">
+											<option value="CAISSE AR">CAISSE AR</option>
+											<option value="BNI AR" selected="selected">BNI AR</option>
+											<option value="BNI EURO">BNI EURO</option>
+											<option value="BMOI AR">BMOI AR</option>
+											<option value="MCB AR">MCB AR</option>
+											<option value="BFV AR">BFV AR</option>
+											<option value="BOA AR">BOA AR</option>
+										</select>
+									</div>
+									<div class="form-group form_depense">
+										<label for="" id="label_num_compte">N° compte </label>
+										<input type="text" id="num_compte">
+									</div>
+									<div class="form-group form_depense">
+										<label for="">Montant </label>
+										<input type="text" id="decaissement_montant" class="input_nombre">
+									</div>
+									<div class="form-group form_recette">
+										<label for="">Montant </label>
+										<input type="text" id="encaissement_montant" class="input_nombre">
+									</div>
+									<div class="form-group">
+										<label for="">Monnaie </label>
+										<select name="" id="monnaie">
+											<option value="Ar">Ar</option>
+											<option value="Euro">Euro</option>
+										</select>
+									</div>
+									<div class="form-group form_recette">
+										<label for="">Catégorie </label>
+										<select name="" id="categorie_recette">
+											<option value="" selected="selected">Choisir une catégorie</option>
+											<option value="Approvisionnement">Approvisionnement</option>
+											<option value="Paiement facture d'acompte">Paiement facture d'acompte</option>
+											<option value="Paimenent facture solde">Paimenent facture solde</option>
+											<option value="Retour de frais">Retour de frais</option>
+										</select>
+									</div>
+									<div class="form-group form_depense">
+										<label for="">Catégorie </label>
+										<select name="" id="categorie">
+											<option value="" selected="selected">Choisir une catégorie</option>
+											{% for element in liste_cate %}
+												<option value="{{ element.getNom() }}">{{ element.getNom() }}</option>
+											{% endfor %}
+										</select>
+									</div>
+									<div class="form-group form_depense">
+										<label for="">Sous catégorie </label>
+										<select name="" id="sous_categorie">
+											<option value="" selected="selected">Choisir une sous-catégorie</option>
+										</select>
+									</div>
+									<div class="form-group" id="error_form">
+										<p></p>
+									</div>
+									<div class="last_fg">
+										<button class="btn btn-default" id = "ajout_tres"><span>Enregistrer</span></button>
 									</div>
 								</form>
-							</div>
-							<div class="form_search">
-								<span class="fa fa-search"></span><input type="text" id="serch_tresorerie" placeholder="Rechercher">
-							</div>
-						</aside>
-					</div>
-					<div class="tableau_tropical tableau_scroll tab_active" id="tableau_recette_depense">
-						<div class="table_content">
-							<div class="table_header">
-								<div class="t_header_row t_header_trans t_header_tres">
-									<div class="tres_des">
-										<span>Désignation</span>
-									</div>
-									<div class="tres_date">
-										<span>Date</span>
-									</div>
-									<div class="tres_mode_p">
-										<span>Mode de paiement</span>
-									</div>
-									<div class="tres_compte_b">
-										<span>Compte bancaire/Caisse</span>
-									</div>
-									<div class="tres_compte_b">
-										<span>Encaissement</span>
-									</div>
-									<div class="tres_compte_b">
-										<span>Décaissement</span>
-									</div>
-									<div class="tres_monnaie">
-										<span>Monnaie</span>
-									</div>
-									<div class="tres_monnaie">
-										<span>Type de flux</span>
-									</div>
-									<div class="tres_des">
-										<span>Catégorie</span>
-									</div>
-									<div class="tres_des">
-										<span>Sous-catégorie</span>
-									</div>
-									<div class="tres_idPro">
-										<span>ID Pro</span>
-									</div>
-									<div
-										class=" tres_client">
-										<span>Client</span>
-									</div>
-									<div class="tres_sage">
-										<span>N° Sage</span>
-									</div>
-									<div
-										class=" tres_client">
-										<span>Prestataire</span>
-									</div>
-								</div>
-							</div>
-							<div class="table_body liste_pf" id="body_tresorerie">
-								
+								{# <div id="test"></div> #}
 							</div>
 						</div>
-					</div>	
-					
+						<div class="entete_tresor entete_2">
+							<div class="type_banque">
+								<h4>Comptes</h4>
+							</div>
+							<div class="banque1">
+								<div class="banque1_content">
+									<div class=" top">
+										<img src="{{ asset('images/caisse.png') }}" alt="logo banque 1">
+										<span class="nom_banque">
+											CAISSE EN AR
+										</span>
+									</div>
+									<p class="val_montant_banque">
+										120000000
+									</p>
+								</div>
+								<div class="banque1_content">
+									<div class="top">
+										<img src="{{ asset('images/bni.png') }}" alt="logo banque 2">
+										<span class="nom_banque">
+											BNI EN AR
+										</span>
+									</div>
+									<p class="val_montant_banque">
+										120000000
+									</p>
+								</div>
+							</div>
+							<div class="banque2">
+								<div class="unite_banque2">
+									<span class="img">
+										<img src="{{ asset('images/bni.png') }}" alt="banque 3">
+									</span>
+									<span>
+										<p class="nom_banque2">
+											BNI EN €
+										</p>
+										<p class="val_montant_banque">
+											120000000
+										</p>
+									</span>
+								</div>
+								<div class="unite_banque2">
+									<span class="img">
+										<img src="{{ asset('images/bmoi.png') }}" alt="banque 3">
+									</span>
+									<span>
+										<p class="nom_banque2">
+											BMOI EN AR
+										</p>
+										<p class="val_montant_banque">
+											120000000
+										</p>
+									</span>
+								</div>
+								<div class="unite_banque2">
+									<span class="img">
+										<img src="{{ asset('images/mcb.png') }}" alt="banque 3">
+									</span>
+									<span>
+										<p class="nom_banque2">
+											MCB EN AR
+										</p>
+										<p class="val_montant_banque">
+											120000000
+										</p>
+									</span>
+								</div>
+								<div class="unite_banque2">
+									<span class="img">
+										<img src="{{ asset('images/bfv.png') }}" alt="banque 3">
+									</span>
+									<span>
+										<p class="nom_banque2">
+											BFV EN AR
+										</p>
+										<p class="val_montant_banque">
+											120000000
+										</p>
+									</span>
+								</div>
+								<div class="unite_banque2">
+									<span class="img">
+										<img src="{{ asset('images/boa.png') }}" alt="banque 3">
+									</span>
+									<span>
+										<p class="nom_banque2">
+											BOA EN AR
+										</p>
+										<p class="val_montant_banque">
+											120000000
+										</p>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
+						<div class="liste_button_tres">
+							<aside class="button_banque">
+								<a href="#" class="btn btn_dore" id="btn_recette" data-id = "tableau_recette">
+									<span>Encaissement</span>
+								</a>
+							</aside>
+							<aside class="button_banque">
+								<a href="#" class="btn btn_gris" id="btn_depense" data-id ="tableau_depense">
+									<span>Décaissement</span>
+								</a>
+							</aside>
+						</div>
+						<div class="filtre_tresor">
+							<aside class="part_filter">
+								<div class="form_date">
+									<form action="" class="form-inline">
+										<div class="form-group">
+											<label for="">Date</label>
+											<input type="date" id="date1">
+										</div>
+										<div class="form-group">
+											<input type="date" id="date2">
+										</div>
+										<div class="form-group">
+											<button class="btn_black_tres" id="trier_by_btn_ok"><span>OK</span></button>
+										</div>
+									</form>
+								</div>
+								<div class="form_search">
+									<form action="">
+										<input type="text" placeholder="Client" id = "input_search">
+										<select name="" id="select_search">
+											<option value="Client">Client</option>
+											<option value="ID Pro">ID Pro</option>
+											<option value="Numero Sage">Numero Sage</option>
+											<option value="Prestataire">Prestataire</option>
+										</select>
+										<button class="btn_black_tres" id="button_search_tres">Rechercher</button>
+									</form>
+								</div>
+							</aside>
+						</div>
+						<div class="tableau_tropical tableau_scroll tab_active" id="tableau_recette_depense">
+							<div class="table_content">
+								<div class="table_header">
+									<div class="t_header_row t_header_trans t_header_tres">
+										<div class="tres_des">
+											<span>Désignation</span>
+										</div>
+										<div class="tres_date">
+											<span>Date</span>
+										</div>
+										<div class="tres_mode_p">
+											<span>Mode de paiement</span>
+										</div>
+										<div class="tres_compte_b">
+											<span>Compte bancaire/Caisse</span>
+										</div>
+										<div class="tres_compte_b">
+											<span>Encaissement</span>
+										</div>
+										<div class="tres_compte_b">
+											<span>Décaissement</span>
+										</div>
+										<div class="tres_monnaie">
+											<span>Monnaie</span>
+										</div>
+										<div class="tres_monnaie">
+											<span>Type de flux</span>
+										</div>
+										<div class="tres_des">
+											<span>Catégorie</span>
+										</div>
+										<div class="tres_des">
+											<span>Sous-catégorie</span>
+										</div>
+										<div class="tres_idPro">
+											<span>ID Pro</span>
+										</div>
+										<div
+											class=" tres_client">
+											<span>Client</span>
+										</div>
+										<div class="tres_sage">
+											<span>N° Sage</span>
+										</div>
+										<div
+											class=" tres_client">
+											<span>Prestataire</span>
+										</div>
+									</div>
+								</div>
+								<div class="table_body liste_pf" id="body_tresorerie">
+									
+								</div>
+							</div>
+						</div>						
+					</div>
 				</div>
-			</div>
-			{# test #}
-			<div id="test"></div>
 		<!-- / contenue  -->
 	</section>
 {% endblock %}
@@ -563,7 +568,46 @@
 					}
 				})
 
+				/* anim form search */
 
+				$("#select_search").change(function(){
+					$("#input_search").val("");
+					$("#input_search").attr("placeholder", $(this).val());
+				})
+
+				$("#button_search_tres").click(function(ev){
+					ev.preventDefault();
+					var select = $("#select_search").val();
+					var input = $("#input_search").val();
+					var data = {
+						"select" : select,
+						"input"	 : input
+					}
+
+					var jqxhr = $.post("/profile/search_tres", data, function(data){
+						$('#body_tresorerie').html(data).promise().done(function(){
+							var montant = document.querySelectorAll(".montant");
+							var t = montant.length;
+							var test = new Intl.NumberFormat();
+							if (t > 0) {
+								for (var i = 0; i < t; i++) {
+									var val = test.format(montant[i].innerHTML);
+									montant[i].innerHTML = val;
+								}
+							}
+						});
+					})
+
+					jqxhr.done(function(data){
+						console.log(data)
+					})
+					jqxhr.fail(function(data){
+						console.log("erreur ajax search_tres")
+					})
+
+				})
+
+				/* fin anim search */
 
 				$('#ajout_tres').on('click', function(ev){
 					
@@ -596,6 +640,7 @@
 							"decaissement_montant"	: $("#decaissement_montant").val(),
 							"choice"		: $("#choice").val(),
 							"categorie"		: $("#categorie").val(),
+							"categorie_recette" : $("#categorie_recette").val(),
 							"sous_categorie"	: $("#sous_categorie").val(),
 						}
 					
@@ -635,6 +680,12 @@
 
 
 			/* /animation mode pmt */
+
+			/*  search form  */
+
+			
+
+			/*fin search form*/
 		})
 	</script>
 {% endblock %}

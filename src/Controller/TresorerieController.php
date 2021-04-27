@@ -89,7 +89,8 @@ class TresorerieController extends AbstractController
             $mode_pmt = $request->get('mode_pmt');
             $compte = $request->get('compte_b');
             $monnaie = $request->get('monnaie');
-            $categorie = $request->get('categorie');
+            $categorie = $request->get('categorie'); // categorie_recette
+            $categorie_recette = $request->get('categorie_recette');
             $sous_categorie = $request->get('sous_categorie');
             
             // montant (dec,enc)
@@ -99,16 +100,18 @@ class TresorerieController extends AbstractController
             $tresorerie->setModePaiement($mode_pmt);
             $tresorerie->setCompte($compte);
             $tresorerie->setMonnaie($monnaie);
-            $tresorerie->setCategorie($categorie);
-            $tresorerie->setSousCategorie($sous_categorie);
+            
             $tresorerie->setTypeFlux($choice);
             $tresorerie->setNumSage($request->get("sage"));
             if($choice === "encaissement"){
+                $tresorerie->setCategorie($categorie_recette);
                 $tresorerie->setEncaissement(str_replace(" ", "", $request->get("encaissement_montant")));
                 $tresorerie->setIdPro($request->get("id_pro"));
                 $tresorerie->setClient($request->get('client'));
             }
             if($choice === "decaissement"){
+                $tresorerie->setCategorie($categorie);
+                $tresorerie->setSousCategorie($sous_categorie);
                 $tresorerie->setDecaissement(str_replace(" ", "", $request->get("decaissement_montant")));
                 $tresorerie->setPrestataire($request->get('prestataire'));
             }
@@ -132,6 +135,94 @@ class TresorerieController extends AbstractController
     }
 
     /**
+     * @Route("/profile/search_tres" , name="search_tres")
+    */
+    public function search_tres(Request $request, TresorerieRepository $repoTres)
+    {
+        $response = new Response();
+        if($request->isXmlHttpRequest()){
+
+            $select = $request->get('select');
+            $input = $request->get('input');
+           
+            $html = "";
+            $tresoreries = [];
+            if($select == "Prestataire"){
+                
+                $tresoreries = $repoTres->findLikePrestataire($input);
+            }
+            else{
+                if($select == "Client"){
+                    
+                    $tresoreries = $repoTres->findLikeClient($input);
+                }
+                if($select == "ID Pro"){
+                    
+                    $tresoreries = $repoTres->findLikeIdPro($input);
+                }
+                if($select == "Numero Sage"){
+                  
+                    $tresoreries = $repoTres->findLikeSage($input);
+                }
+            }
+            foreach($tresoreries as $tresorerie){
+                $html .= '
+                <div class="t_body_row sous_tab_body t_body_tres">
+                    <div class="tres_des">
+                        <span>'. $tresorerie->getDesignation() .'</span>
+                    </div>
+                    <div class="tres_date">
+                        <span>' . $tresorerie->getDatePaiment()->format("d-m-Y") .'</span>
+                    </div>
+                    <div class="tres_mode_p">
+                        <span> ' . $tresorerie->getModePaiement() . '</span>
+                    </div>
+                    <div class="tres_compte_b">
+                        <span>' . $tresorerie->getCompte() . '</span>
+                    </div>
+                    <div class="tres_compte_b">
+                        <span class="montant">' . $tresorerie->getEncaissement() .'</span>
+                    </div>
+                    <div class="tres_compte_b">
+                        <span class="montant">' . $tresorerie->getDecaissement() .'</span>
+                    </div>
+                    <div class="tres_monnaie">
+                        <span>' . $tresorerie->getMonnaie() . '</span>
+                    </div>
+                    <div class="tres_monnaie">
+                        <span> ' . $tresorerie->getTypeFlux() . '</span>
+                    </div>
+                    <div class="tres_des">
+                        <span>'. $tresorerie->getCategorie() . '</span>
+                    </div>
+                    <div class="tres_des">
+                        <span>'. $tresorerie->getSousCategorie() .'</span>
+                    </div>
+                    <div class="tres_idPro">
+                        <span> '. $tresorerie->getIdPro() .'</span>
+                    </div>
+                    <div class=" tres_client">
+                        <span> ' . $tresorerie->getClient() .'</span>
+                    </div>
+                    <div class="tres_sage">
+                        <span> '. $tresorerie->getNumSage() . '</span>
+                    </div>
+                    <div class=" tres_client">
+                        <span> ' . $tresorerie->getPrestataire() .'</span>
+                    </div>
+                </div>               
+                ';
+            }
+            
+            $data = $html;
+            $data = json_encode($data);
+            $response->headers->set('content-Type', 'application/json');
+            $response->setContent($data);
+        }
+        return $response;
+    }
+
+    /**
      * @Route("/profile/lister_data_tresorerie", name ="lister_data_tresorerie")
      */
     public function lister_data_tresorerie(Request $request,TresorerieRepository $repoTres)
@@ -144,10 +235,10 @@ class TresorerieController extends AbstractController
             $html  = '';
             $tresoreries = [];
             if($date1 != "" || $date2 != ""){
-                $tresoreries = $repoTres->find_between($date1, $date2, $key_flux);
-                
+                $tresoreries = $repoTres->find_between($date1, $date2, $key_flux);   
             }
             else{
+                
                 if($key_flux == "all"){
                     $tresoreries = $repoTres->findAll();
                 }
@@ -207,10 +298,6 @@ class TresorerieController extends AbstractController
                 ';
             }
 
-            $html .= '
-                    </div>
-                </div>
-            ';
 
             $data = $html;
             $data = json_encode($data);

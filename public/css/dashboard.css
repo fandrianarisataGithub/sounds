@@ -6704,6 +6704,21 @@ p.val_montant_banque{
     border-width: 1px;
     color: #585656;
 }
+/* formsearch tresorerie */
+    
+.form_search input, .form_search select{
+    width: 180px;
+    border:1px solid rgba(200,200,200,1) !important;
+}
+.form_search input{
+    padding-left: 5px;
+}
+.form_search .btn_black_tres{
+    width: 100px;
+    color: #fff;
+}
+
+/* / form search tres */
 
 .btn_black_tres span {
     color: #fff;

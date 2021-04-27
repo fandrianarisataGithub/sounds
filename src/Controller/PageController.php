@@ -225,8 +225,10 @@ class PageController extends AbstractController
     */
     public function hebergement(Services $services, $pseudo_hotel, DonneeDuJourRepository $repoDoneeDJ, Request $request, EntityManagerInterface $manager, ClientRepository $repo, SessionInterface $session, HotelRepository $repoHotel)
     {
+        
         $response = new Response();
         $data_session = $session->get('hotel');
+        
         if ($data_session == null) {
             return $this->redirectToRoute("app_logout");
         }
@@ -236,7 +238,9 @@ class PageController extends AbstractController
             $pseudo_hotel = 'royal_beach';
         }
         $data_session['pseudo_hotel'] = $pseudo_hotel;
+        
         $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+        
         if ($request->isXmlHttpRequest()) {
 
             $nom_client = $request->get('nom_client');
@@ -262,8 +266,7 @@ class PageController extends AbstractController
                 $manager->persist($client);
                 $manager->persist($hotel);
                 $manager->flush();
-                $data = json_encode("ok");
-               
+                $data = json_encode("ok");  
             }
             else{
                 $data = json_encode("Veuiller remplir ces formulaires"); 
@@ -272,13 +275,10 @@ class PageController extends AbstractController
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent($data);
             return $response;
-
         }
-
-        /** préparation des input des filtres */
-        // les année existant dans les donnée de jour pour l'hotel en cours
         $all_ddj = $repoDoneeDJ->findAll();
-        // dd($all_ddj);
+    
+        //dd($all_ddj);
         $current_hotel_ddj = [];
         //dd($current_hotel_ddj);
         $tab_annee = [];

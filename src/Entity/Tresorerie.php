@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use App\Repository\TresorerieRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TresorerieRepository;
 
 /**
  * @ORM\Entity(repositoryClass=TresorerieRepository::class)
