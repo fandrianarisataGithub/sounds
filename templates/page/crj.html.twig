@@ -18,6 +18,20 @@
 				<section class="section_part" id="section_part_top">
 					<div class="sous_titre">
 						<h2>Compte rendu journalier</h2>
+
+						{# telecharger pdf #}
+						<div class="pdf_download">
+							<form action="" class="form-inline">
+								<div>
+									<input type="date" class="date_pdf_download" id="date_pdf_download">
+								</div>
+								<button class="btn btn-default" id="download_to_pdf">
+									<span class="fa fa-file-text"></span>Télécharger en pdf
+								</button>
+							</form>
+						</div>
+						{# /telecharger pdf #}
+
 						<form action="{{ path('crj', {'pseudo_hotel' : hotel }) }}" method = "POST" class="tri">
 							<div id="tri_annee">
 								<h4>Filtre par Année :
@@ -212,6 +226,12 @@
 				$('.data-service > div').fadeIn();
 			}
 		})
+
+		$("#download_to_pdf").click(function(ev){
+			ev.preventDefault();
+			var date = $("#date_pdf_download").val();
+		})
+
 	})
 
 	

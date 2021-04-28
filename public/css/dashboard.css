@@ -1330,6 +1330,39 @@ li#li_historique>a:hover span:last-child {
     margin: 0px;
 }
 
+.pdf_download{
+    margin-top: 25px;
+}
+.pdf_download .form-inline{
+    display: flex;
+}
+
+.date_pdf_download{
+    height: 25px;
+    font-size: 12px;
+}
+.pdf_download form .btn{
+    font-size: 12px;
+    height: 25px;
+    padding: 0px 8px 0px 2px;
+    margin-left: 15px;
+    background: #d29e00;
+    border-color: #d29e00;
+    color: #fff;
+}
+.pdf_download form .btn:hover{
+    color : #d29e00;
+    background: transparent;
+}
+.pdf_download form .btn:hover span{
+     color: #d29e00;
+}
+.pdf_download form .btn span{ 
+    margin:0px 5px;
+    color: #fff;
+}
+
+
 .margin_tab form h3 {
     font-size: 22px;
     color: #d29e00;
