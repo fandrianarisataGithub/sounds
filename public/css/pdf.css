@@ -2,10 +2,81 @@ body {
     background-color: #fff;
     margin: 0;
     padding: 0;
+    font-family: 'Lato', 'Poppins', sans-serif;
+    color: #3f3e3e;
 }
-#corps{
+
+#corps {
+    width: 18cm;
     background: lightblue;
-    width: 95%;
+    padding: 1cm 0.5cm 1cm 0.5cm;
     margin: 0px auto 0px auto;
 }
+
+header h2 {
+    display: inline-block;
+    width: 5cm;
+}
+
+header h2.dore {
+    color: #d29e00;
+}
+
+header h2.gris {
+   margin-left: 0.9cm;
+    text-align: end;
+}
+
+#corps .rubric {
+    margin-top: 0px;
+}
+
+.content h3.titre_rubric {
+    display: inline-block;
+    width: 100%;
+}
+
+.table {
+    width: 18cm;
+    margin: 0px auto 0px auto;
+}
+
+.thead {
+    width: 18cm;
+    background: #d29e00;
+    border-radius: 5px;
+}
+
+.thead .row {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+}
+.row p{
+    text-align: start;
+}
+.thead .row p:first-child span{
+    position: relative;
+    left:15px;
+}
+.tbody .row p{
+    font-size: 12px;
+}
+.row p {
+    display: inline-block;
+    width: 3.6cm;
+    padding: 0.2cm;
+    height: auto;
+    height: auto; 
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.row p:not(:first-child){
+    margin-left: -4px;
+}
+
+
+
+
 
