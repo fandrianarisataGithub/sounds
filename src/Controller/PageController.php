@@ -50,6 +50,7 @@ class PageController extends AbstractController
      */
     public function first_page(Request $request)
     {
+        //return $this->render("default/construct.html.twig");
         return $this->redirectToRoute("app_login");
     }
 

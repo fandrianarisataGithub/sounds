@@ -21,14 +21,16 @@
 
 						{# telecharger pdf #}
 						<div class="pdf_download">
-							<form action="" class="form-inline">
+							<form action="/profile/pdf_ddj" class="form-inline" method="post" id="form_pdf">
 								<div>
-									<input type="date" class="date_pdf_download" id="date_pdf_download">
+									<input type="date" class="date_pdf_download" id="date_pdf_download" name="date">
 								</div>
+								<input type="hidden" name="hotel" id="hotel_pdf">
 								<button class="btn btn-default" id="download_to_pdf">
 									<span class="fa fa-file-text"></span>Télécharger en pdf
 								</button>
 							</form>
+							<div id="test"></div>
 						</div>
 						{# /telecharger pdf #}
 
@@ -230,6 +232,8 @@
 		$("#download_to_pdf").click(function(ev){
 			ev.preventDefault();
 			var date = $("#date_pdf_download").val();
+			$("#hotel_pdf").val('{{ hotel }}');
+			$("#form_pdf").submit();
 		})
 
 	})

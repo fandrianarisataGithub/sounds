@@ -1,82 +1,60 @@
-body {
-    background-color: #fff;
-    margin: 0;
-    padding: 0;
-    font-family: 'Lato', 'Poppins', sans-serif;
-    color: #3f3e3e;
+@media print {
+    body {
+        background-color: #fff;
+        margin: 0;
+        padding: 0;
+        font-family: 'Lato', 'Poppins', sans-serif;
+        color: #3f3e3e;
+        font-size: 10px;
+    }
+    #corps {
+        width: 18cm;
+        padding: 1cm 0.5cm 1cm 0.5cm;
+        margin: 0px auto 0px auto;
+    }
+    header h2 .dore {
+        color: #d29e00;
+        font-size: 15px
+    }
+    header h2 .gris {
+        margin-left: 0.9cm;
+        text-align: end;
+        font-size: 15px;
+        color: #3c3b3b;
+    }
+    #corps .rubric {
+        margin-top: 0px;
+    }
+    .titre_rubric {
+        display: inline-block;
+        width: 100%;
+        padding-bottom: 5px;
+        color: #d29e00;
+        border-bottom: 0.2px solid rgba(200, 200, 200, 0.5);
+    }
+    .part h4{
+        text-decoration: underline;
+        margin: 0;
+    }
+    .data>p:not(:first-child) {
+        margin-left: 0px;
+    }
+    
+    table {
+        width: 100%;
+        background: lavenderblush;
+    }
+    thead {
+        background: #d29e00;
+        color: #fff;
+    }
+    thead>tr>th:first-child {
+        min-width: 200px;
+    }
+    tbody {
+        background: lightgray;
+    }
+    tbody tr td {
+        text-align: center;
+    }
 }
-
-#corps {
-    width: 18cm;
-    background: lightblue;
-    padding: 1cm 0.5cm 1cm 0.5cm;
-    margin: 0px auto 0px auto;
-}
-
-header h2 {
-    display: inline-block;
-    width: 5cm;
-}
-
-header h2.dore {
-    color: #d29e00;
-}
-
-header h2.gris {
-   margin-left: 0.9cm;
-    text-align: end;
-}
-
-#corps .rubric {
-    margin-top: 0px;
-}
-
-.content h3.titre_rubric {
-    display: inline-block;
-    width: 100%;
-}
-
-.table {
-    width: 18cm;
-    margin: 0px auto 0px auto;
-}
-
-.thead {
-    width: 18cm;
-    background: #d29e00;
-    border-radius: 5px;
-}
-
-.thead .row {
-    color: #fff;
-    font-size: 13px;
-    font-weight: 600;
-}
-.row p{
-    text-align: start;
-}
-.thead .row p:first-child span{
-    position: relative;
-    left:15px;
-}
-.tbody .row p{
-    font-size: 12px;
-}
-.row p {
-    display: inline-block;
-    width: 3.6cm;
-    padding: 0.2cm;
-    height: auto;
-    height: auto; 
-    padding-top: 0;
-    padding-bottom: 0;
-}
-
-.row p:not(:first-child){
-    margin-left: -4px;
-}
-
-
-
-
-

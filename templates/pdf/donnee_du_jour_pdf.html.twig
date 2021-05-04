@@ -6,106 +6,89 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Export pdf donnée du jour</title>
 		<link href="https://fonts.googleapis.com/css?family=Lato:200,300,400,500,600,700,800,900,1000&display=swap" rel="stylesheet">
+		{# <link rel="stylesheet" media="print" href="{{ asset('css/pdf.css') }}"> #}
 		<style>
 			body {
-    background-color: #fff;
-    margin: 0;
-    padding: 0;
-    font-family: 'Lato', 'Poppins', sans-serif;
-    color: #3f3e3e;
-}
-
-#corps {
-    width: 18cm;
-    background: lightblue;
-    padding: 1cm 0.5cm 1cm 0.5cm;
-    margin: 0px auto 0px auto;
-}
-
-
-header h2 .dore {
-    color: #d29e00;
-}
-
-header h2 .gris {
-   margin-left: 0.9cm;
-    text-align: end;
-}
-
-#corps .rubric {
-    margin-top: 0px;
-}
-
-.content h3.titre_rubric {
-    display: inline-block;
-    width: 100%;
-}
-
-.table {
-    width: 18cm;
-    margin: 0px auto 0px auto;
-}
-
-.thead {
-    width: 18cm;
-    background: #d29e00;
-    border-radius: 5px;
-}
-
-.thead .row {
-    color: #fff;
-    font-size: 13px;
-    font-weight: 600;
-}
-.row p{
-    text-align: start;
-}
-.thead .row p:first-child span{
-    position: relative;
-    left:15px;
-}
-.tbody .row p{
-    font-size: 12px;
-}
-.row p {
-    display: inline-block;
-    width: 3.6cm;
-    padding: 0.2cm;
-    height: auto;
-    height: auto; 
-    padding-top: 0;
-    padding-bottom: 0;
-}
-
-.row p:not(:first-child){
-    margin-left: -4px;
-}
-
-
-
-
-
-
+				background-color: #fff;
+				margin: 0;
+				padding: 0;
+				font-family: 'Lato', 'Poppins', sans-serif;
+				color: #3f3e3e;
+				font-size: 10px;
+			}
+			#corps {
+				width: 18cm;
+				padding: 1cm 0.5cm 1cm 0.5cm;
+				margin: 0px auto 0px auto;
+			}
+			header h2 .dore {
+				color: #d29e00;
+				font-size: 15px
+			}
+			header h2 .gris {
+				margin-left: 0.9cm;
+				text-align: end;
+				font-size: 15px;
+				color: #3c3b3b;
+			}
+			#corps .rubric {
+				margin-top: 0px;
+			}
+			.titre_rubric {
+				display: inline-block;
+				width: 100%;
+				padding-bottom: 5px;
+				color: #d29e00;
+				border-bottom: 0.2px solid rgba(200, 200, 200, 0.5);
+			}
+			.part h4{
+				text-decoration: underline;
+				margin: 0;
+			}
+			.data>p:not(:first-child) {
+				margin-left: 0px;
+			}
+			
+			table {
+				width: 100%;
+				background: lavenderblush;
+			}
+			thead {
+				background: #d29e00;
+				color: #fff;
+			}
+			thead>tr>th:first-child {
+				min-width: 200px;
+			}
+			tbody {
+				background: lightgray;
+			}
+			tbody tr td {
+				text-align: center;
+			}
 		</style>
+		
 	</head>
 	<body>
 		<section id="corps">
 			<header>
-				<h2 class="titre dore"><span class="dore">Donnée du jour</span> <span class="gris">27/04/2021</span></h2>
+				<h2 class="titre dore"><span class="dore">Donnée du jour le </span> <span class="gris">{{ date|date('d-m-Y') }}</span></h2>
 			</header>
+			{% if ddj is not null %}
+				
 			<div class="rubric first-rubric">
 				<div class="content">
 					<h3 class="titre_rubric">Hébergement</h3>
 					<div class="data">
 						<p class="heb">Chiffre d'affaire:
-							<span class="montant">1000000</span>Ar</p>
+							<span class="montant">{{ ddj.getHebCa() }}</span> Ar</p>
 						<p class="heb">Taux d'occupation:
-							<span>100</span>%</p>
+							<span>{{ ddj.getHebTo() }}</span> %</p>
 						<p class="heb">Nombre de pax hébergé:
-							<span>60</span>
+							<span>{{ ddj.getNPaxHeb() }}</span>
 						</p>
 						<p class="heb">Nombre de chambre occupés:
-							<span>40</span>
+							<span>{{ ddj.getNChambreOccupe() }}</span>
 						</p>
 					</div>
 				</div>
@@ -116,34 +99,33 @@ header h2 .gris {
 					<h3 class="titre_rubric">Restaurant</h3>
 					<div class="data">
 						<p class="resto">Chiffre d'affaire:
-							<span class="montant">1000000</span>Ar</p>
+							<span class="montant">{{ ddj.getResCa() }}</span> Ar</p>
 						<p class="resto">Nombre de couvert:
-							<span>100</span>
+							<span>{{ ddj.getResNCouvert() }}</span>
 						</p>
 						<p class="resto">Petit déjeuner:
-							<span>60</span>
+							<span>{{ ddj.getResPDej() }}</span>
 						</p>
 						<p class="resto">Déjeuner:
-							<span>40</span>
+							<span>{{ ddj.getResDej() }}</span>
 						</p>
 						<p class="resto">Dinner:
-							<span>40</span>
+							<span>{{ ddj.getResDinner() }}</span>
 						</p>
 					</div>
 				</div>
 			</div>
 			<div class="rubric">
-
 				<div class="content">
 					<h3 class="titre_rubric">Spa</h3>
 					<div class="data">
 						<p class="spa">Chiffre d'affaire:
-							<span class="montant">1000000</span>Ar</p>
+							<span class="montant">{{ ddj.getSpaCa() }}</span> Ar</p>
 						<p class="spa">Nombre d'abonné:
-							<span>100</span>
+							<span>{{ ddj.getSpaNAbonne() }}</span>
 						</p>
 						<p class="spa">Fréquentation:
-							<span>60</span>
+							<span>{{ ddj.getSpaCUnique() }}</span>
 						</p>
 					</div>
 				</div>
@@ -152,137 +134,139 @@ header h2 .gris {
 				<div class="content_part_text">
 					<h3 class="titre_rubric">Compte rendu journalier</h3>
 					<div class="block">
-						<div class="part">
-							<h4>Direction</h4>
-							<p class="part_content">
-								Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor consectetur labore, nostrum, e
-								                            sse eius obcaecati, ratione earum doloribus nihil libero fugiat quaerat aut quae quod sequi. 
-								                            Quidem laudantium explicabo perferendis?
-							</p>
-						</div>
-						<div class="part">
-							<h4>Service RH</h4>
-							<p class="part_content">
-								Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor consectetur labore, nostrum, e
-								                            sse eius obcaecati, ratione earum doloribus nihil libero fugiat quaerat aut quae quod sequi. 
-								                            Quidem laudantium explicabo perferendis?
-							</p>
-						</div>
+						{% if ddj.getCrjDirection() is not null %}
+							<div class="part">
+								<h4>Direction</h4>
+								<p class="part_content">
+									{{ ddj.getCrjDirection()|raw }}
+								</p>
+							</div>
+						{% endif %}
+						{% if ddj.getCrjServiceRh() is not null %}
+							<div class="part">
+								<h4>Service RH</h4>
+								<p class="part_content">
+									{{ ddj.getCrjServiceRh()|raw }}
+								</p>
+							</div>
+						{% endif %}
 					</div>
 					<div class="block">
-						<div class="part">
-							<h4>Commercial</h4>
-							<p class="part_content">
-								Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor consectetur labore, nostrum, e
-								                            sse eius obcaecati, ratione earum doloribus nihil libero fugiat quaerat aut quae quod sequi. 
-								                            Quidem laudantium explicabo perferendis?
-							</p>
-						</div>
-						<div class="part">
-							<h4>Comptable</h4>
-							<p class="part_content">
-								Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor consectetur labore, nostrum, e
-								                            sse eius obcaecati, ratione earum doloribus nihil libero fugiat quaerat aut quae quod sequi. 
-								                            Quidem laudantium explicabo perferendis?
-							</p>
-						</div>
+						{% if ddj.getCrjCommercial() is not null %}
+							<div class="part">
+								<h4>Commercial</h4>
+								<p class="part_content">
+									{{ ddj.getCrjCommercial()|raw }}
+								</p>
+							</div>
+						{% endif %}
+						{% if ddj.getCrjComptable() is not null %}
+							<div class="part">
+								<h4>Comptable</h4>
+								<p class="part_content">
+									{{ ddj.getCrjComptable()|raw }}
+								</p>
+							</div>
+						{% endif %}
 					</div>
 					<div class="block">
-						<div class="part">
-							<h4>Réception</h4>
-							<p class="part_content">
-								Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor consectetur labore, nostrum, e
-								                            sse eius obcaecati, ratione earum doloribus nihil libero fugiat quaerat aut quae quod sequi. 
-								                            Quidem laudantium explicabo perferendis?
-							</p>
-						</div>
-						<div class="part">
-							<h4>Restaurant</h4>
-							<p class="part_content">
-								Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor consectetur labore, nostrum, e
-								                            sse eius obcaecati, ratione earum doloribus nihil libero fugiat quaerat aut quae quod sequi. 
-								                            Quidem laudantium explicabo perferendis?
-							</p>
-						</div>
+						{% if ddj.getCrjReception() is not null %}
+							<div class="part">
+								<h4>Réception</h4>
+								<p class="part_content">
+									{{ ddj.getCrjReception()|raw }}
+								</p>
+							</div>
+						{% endif %}
+						{% if ddj.getCrjRestaurant() is not null %}
+							<div class="part">
+								<h4>Restaurant</h4>
+								<p class="part_content">
+									{{ ddj.getCrjRestaurant()|raw }}
+								</p>
+							</div>
+						{% endif %}
 					</div>
 					<div class="block">
-						<div class="part">
-							<h4>Spa</h4>
-							<p class="part_content">
-								Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor consectetur labore, nostrum, e
-								                            sse eius obcaecati, ratione earum doloribus nihil libero fugiat quaerat aut quae quod sequi. 
-								                            Quidem laudantium explicabo perferendis?
-							</p>
-						</div>
-						<div class="part">
-							<h4>Service technique</h4>
-							<p class="part_content">
-								Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor consectetur labore, nostrum, e
-								                            sse eius obcaecati, ratione earum doloribus nihil libero fugiat quaerat aut quae quod sequi. 
-								                            Quidem laudantium explicabo perferendis?
-							</p>
-						</div>
+						{% if ddj.getCrjSpa() is not null %}
+							<div class="part">
+								<h4>Spa</h4>
+								<p class="part_content">
+									{{ ddj.getCrjSpa()|raw }}
+								</p>
+							</div>
+						{% endif %}
+						{% if ddj.getCrjSTechnique() is not null %}
+							<div class="part">
+								<h4>Service technique</h4>
+								<p class="part_content">
+									{{ ddj.getCrjSTechnique()|raw }}
+								</p>
+							</div>
+						{% endif %}
+						
 					</div>
 					<div class="block">
-						<div class="part">
-							<h4>Litiges</h4>
-							<p class="part_content">
-								Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor consectetur labore, nostrum, e
-								                            sse eius obcaecati, ratione earum doloribus nihil libero fugiat quaerat aut quae quod sequi. 
-								                            Quidem laudantium explicabo perferendis?
-							</p>
-						</div>
-						<div class="part">
-							<h4>Hébergement</h4>
-							<p class="part_content">
-								Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor consectetur labore, nostrum, e
-								                            sse eius obcaecati, ratione earum doloribus nihil libero fugiat quaerat aut quae quod sequi. 
-								                            Quidem laudantium explicabo perferendis?
-							</p>
-						</div>
+						{% if ddj.getCrjLitiges() %}
+							<div class="part">
+								<h4>Litiges</h4>
+								<p class="part_content">
+									{{ ddj.getCrjLitiges()|raw }}
+								</p>
+							</div>
+						{% endif %}
+						{% if ddj.getCrjHebergement() %}
+							<div class="part">
+								<h4>Hébergement</h4>
+								<p class="part_content">
+									{{ ddj.getCrjHebergement()|raw }}
+								</p>
+							</div>
+						{% endif %}
 					</div>
 				</div>
 			</div>
+			{% endif %}
+			{% if clients|length != 0 %}
 			<div class="rubric">
 				<div class="content">
 					<h3 class="titre_rubric">Client présent le
 						<span>27 Avril 2021</span>
 					</h3>
-					<div class="table">
-						<div class="thead">
-							<div class="row">
-								<p class="nom"><span>NOM</span></p>
-								<p>DATE D'ARRIVEE</p>
-								<p>DATE DU DEPART</p>
-								<p>DUREE DU SEJOUR</p>
-							</div>
-						</div>
-						<div class="tbody">
-							<div class="row">
-								<p class="nom">Rakoto be</p>
-								<p>24/04/2021</p>
-								<p>24/04/2021</p>
-								<p>
-									<span>5</span>jours</p>
-							</div>
-							<div class="row">
-								<p class="nom">Rakoto be</p>
-								<p>24/04/2021</p>
-								<p>24/04/2021</p>
-								<p>
-									<span>5</span>jours</p>
-							</div>
-							<div class="row">
-								<p class="nom">Rakoto be</p>
-								<p>24/04/2021</p>
-								<p>24/04/2021</p>
-								<p>
-									<span>5</span>jours</p>
-							</div>
-						</div>
-					</div>
+					<table>
+						<thead>
+							<tr>
+								<th>NOM</th>
+								<th>DATE D'ARRIVEE</th>
+								<th>DATE DU DEPART</th>
+								<th>DUREE DU SEJOUR</th>
+							</tr>
+						</thead>
+						<tbody>
+						{% for client in clients %}
+							<tr>
+								<td>{{ client.nom }} {{ client.prenom }}</td>
+								<td>{{ client.dateArrivee|date('d-m-Y') }}</td>
+								<td>{{ client.dateDepart|date('d-m-Y') }}</td>
+								<td>{{ client.dureeSejour }}</td>
+							</tr>
+						{% endfor %}
+						</tbody>
+					</table>
 				</div>
 			</div>
+			{% endif %}
 		</section>
+		<script>
+			var montant = document.querySelectorAll(".montant");
+			var t = montant.length;
+			var test = new Intl.NumberFormat();
+			if (t > 0) {
+				for (var i = 0; i < t; i++) {
+					var val = test.format(montant[i].innerHTML);
+					montant[i].innerHTML = val;
+				}
+			}
+		</script>
 	</body>
 </html>
