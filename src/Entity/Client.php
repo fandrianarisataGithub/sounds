@@ -53,6 +53,21 @@ class Client
      */
     private $createdAt;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $nbr_chambre;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $prix_total;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $provenance;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -138,6 +153,42 @@ class Client
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getNbrChambre(): ?int
+    {
+        return $this->nbr_chambre;
+    }
+
+    public function setNbrChambre(?int $nbr_chambre): self
+    {
+        $this->nbr_chambre = $nbr_chambre;
+
+        return $this;
+    }
+
+    public function getPrixTotal(): ?string
+    {
+        return $this->prix_total;
+    }
+
+    public function setPrixTotal(?string $prix_total): self
+    {
+        $this->prix_total = $prix_total;
+
+        return $this;
+    }
+
+    public function getProvenance(): ?string
+    {
+        return $this->provenance;
+    }
+
+    public function setProvenance(?string $provenance): self
+    {
+        $this->provenance = $provenance;
 
         return $this;
     }

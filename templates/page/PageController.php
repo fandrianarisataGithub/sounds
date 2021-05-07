@@ -248,9 +248,6 @@ class PageController extends AbstractController
             $prenom_client = (empty($request->get('prenom_client'))) ? "" : $request->get('prenom_client');
             $date_arrivee = $request->get('date_arrivee');
             $date_depart = $request->get('date_depart');
-            $nbr_chambre = $request->get('nbr_chambre');
-            $provenance = $request->get('provenance');
-            $prix_total = $request->get('prix_total');
             $createdAt = date_create($request->get('createdAt'));
             $date_arrivee = date_create($date_arrivee);
             $date_depart = date_create($date_depart);
@@ -263,12 +260,8 @@ class PageController extends AbstractController
                 $client->setNom($nom_client);
                 $client->setPrenom($prenom_client);
                 $client->setDateArrivee($date_arrivee);
-                
                 $client->setDateDepart($date_depart);
                 $client->setDureeSejour($days);
-                $client->setProvenance($provenance);
-                $client->setNbrChambre($nbr_chambre);
-                $client->setPrixTotal(str_replace(" ", "", $prix_total));
                 $client->setCreatedAt($createdAt);
                 $hotel->addClient($client);
                 $manager->persist($client);
@@ -689,91 +682,114 @@ class PageController extends AbstractController
         sort($year_mens);
         ksort($tab_adr);
         ksort($tab_revp);
-        $today = new \Datetime();
-        $today = $today->format('Y-m-d');
-
-        $data_repere = new \DateTime();
-        $date_repere_obj = date_create($data_repere->format('d-m-Y'));
-        $date_text_aff = $data_repere->format("d-m-Y");
-        $date_text_aff = $services->toMonthText($date_text_aff);
         
         if ($request->request->count() > 0) {
                 
+            if($request->request->get('action')){
+               if($request->request->get('action') == "modification"){
+                    //dd($request->request);
+                    $client_id = $request->request->get('client_id');
+                    $nom = $request->request->get('nom');
+                    $prenom = $request->request->get('prenom');
+                    $date_arrivee_client = $request->request->get('date_arrivee');
+                    $date_depart_client = $request->request->get('date_depart');
+
+                    $date_arrivee_client = date_create($date_arrivee_client);
+                    $date_depart_client = date_create($date_depart_client);
+                    $diff = $date_arrivee_client->diff($date_depart_client);
+                    $days = $diff->d;
+
+                    $client = $repo->find($client_id);
+                    $client->setNom($nom);
+                    $client->setPrenom($prenom);
+                    $client->setDateArrivee($date_arrivee_client);
+                    $client->setDateDepart($date_depart_client);
+                    $client->setDureeSejour($days);
+                    $manager->persist($client);
+                    $manager->flush();
+               }
+                if ($request->request->get('action') == "suppression") {
+                    //dd($request->request);
+                    $client_id = $request->request->get('client_id');
+                   
+
+                    $client = $repo->find($client_id);
+                  
+                    $manager->remove($client);
+                    $manager->flush();
+                }
+            }
             //dd($request->request);
             $date1 = $request->request->get('date1');
             $date2 = $request->request->get('date2');
             
-            if($date1 != "" && $date2 != ""){
-                $datte_text_1 = $services->toMonthText($date1);
-                $datte_text_2 = $services->toMonthText($date2);
+            $datte_text_1 = $services->toMonthText($date1);
+            $datte_text_2 = $services->toMonthText($date2);
 
-                $date1 = date_create($date1);
-                $date2 = date_create($date2);
+            $date1 = date_create($date1);
+            $date2 = date_create($date2);
 
-                $datte_text_1 = $services->toMonthText($date1->format('d-m-Y'));
-                $datte_text_2 = $services->toMonthText($date2->format('d-m-Y'));
+            $datte_text_1 = $services->toMonthText($date1->format('d-m-Y'));
+            $datte_text_2 = $services->toMonthText($date2->format('d-m-Y'));
 
-                $all_date_asked = $services->all_date_between2_dates($date1, $date2);
-                //dd($all_date_asked);
-                
-                $tab = [];
-                $data_session = $session->get('hotel');
-                $data_session['current_page'] = "crj";
-                $data_session['pseudo_hotel'] = $pseudo_hotel;
-                $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
-                $current_id_hotel = $l_hotel->getId();
-                $clients = $repo->findAll();
-                foreach ($clients as $item) {
-                    $son_id_hotel = $item->getHotel()->getId();
-                    if ($son_id_hotel == $current_id_hotel) {
-                        array_push($tab, $item);
-                    }
+            $all_date_asked = $services->all_date_between2_dates($date1, $date2);
+            //dd($all_date_asked);
+            
+            $tab = [];
+            $data_session = $session->get('hotel');
+            $data_session['current_page'] = "crj";
+            $data_session['pseudo_hotel'] = $pseudo_hotel;
+            $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+            $current_id_hotel = $l_hotel->getId();
+            $clients = $repo->findAll();
+            foreach ($clients as $item) {
+                $son_id_hotel = $item->getHotel()->getId();
+                if ($son_id_hotel == $current_id_hotel) {
+                    array_push($tab, $item);
                 }
-                foreach ($tab as $client) {
-                    // on liste tous les jour entre sa dete arrivee et date depart
-                    $sa_da = $client->getDateArrivee();
-                    $sa_dd = $client->getDateDepart();
-                    //dd($sa_dd);
-                    $his_al_dates = $services->all_date_between2_dates($sa_da, $sa_dd);
-                    //dd($his_al_dates);
-                    for ($i = 0; $i < count($all_date_asked); $i++) {
-                        for ($j = 0; $j < count($his_al_dates); $j++) {
-                            if ($all_date_asked[$i] == $his_al_dates[$j]) {
-                                if (!in_array($client, $tab_aff)) {
-                                    array_push($tab_aff, $client);
-                                }
+            }
+            foreach ($tab as $client) {
+                // on liste tous les jour entre sa dete arrivee et date depart
+                $sa_da = $client->getDateArrivee();
+                $sa_dd = $client->getDateDepart();
+                //dd($sa_dd);
+                $his_al_dates = $services->all_date_between2_dates($sa_da, $sa_dd);
+                //dd($his_al_dates);
+                for ($i = 0; $i < count($all_date_asked); $i++) {
+                    for ($j = 0; $j < count($his_al_dates); $j++) {
+                        if ($all_date_asked[$i] == $his_al_dates[$j]) {
+                            if (!in_array($client, $tab_aff)) {
+                                array_push($tab_aff, $client);
                             }
                         }
                     }
                 }
-                
-                return $this->render('page/hebergement.html.twig', [
-                    "id"                    => "li__hebergement",
-                    "tab_annee"             => $tab_sans_doublant,
-                    "hotel"                 => $data_session['pseudo_hotel'],
-                    "current_page"          => $data_session['current_page'],
-                    "tab_heb_to"            => $tab_heb_to,
-                    "tab_heb_ca"            => $tab_heb_ca,
-                    "tab_labels"            => $tab_labels,
-                    "type_affichage"        => "annee",
-                    'items'                 => $tab_aff,
-                    'date1'                 => $date1->format('Y-m-d'),
-                    'date2'                 => $date2->format('Y-m-d'),
-                    "tropical_wood"         => false,
-                    "interval_text_date"    => $datte_text_1 . " et " . $datte_text_2,
-                    "tab_adr"               => $tab_adr,
-                    "tab_revp"              => $tab_revp,
-                    "tab_heb_pax"           => $tab_heb_pax,
-                    "tab_heb_occ"           => $tab_heb_occ,
-                    "annee"                 => $annee,
-                    "year_mens"             => $year_mens,
-                    "today"                 => $today,
-                ]);
-            } 
-            else{
-                $this->redirectToRoute("hebergement", ['pseudo_hotel' => $data_session['pseudo_hotel']]);
-            }          
+            }
+            
+            return $this->render('page/hebergement.html.twig', [
+                "id"                    => "li__hebergement",
+                "tab_annee"             => $tab_sans_doublant,
+                "hotel"                 => $data_session['pseudo_hotel'],
+                "current_page"          => $data_session['current_page'],
+                "tab_heb_to"            => $tab_heb_to,
+                "tab_heb_ca"            => $tab_heb_ca,
+                "tab_labels"            => $tab_labels,
+                "type_affichage"        => "annee",
+                'items'                 => $tab_aff,
+                'date1'                 => $date1->format('Y-m-d'),
+                'date2'                 => $date2->format('Y-m-d'),
+                "tropical_wood"         => false,
+                "interval_text_date"    => $datte_text_1 . " et " . $datte_text_2,
+                "tab_adr"               => $tab_adr,
+                "tab_revp"              => $tab_revp,
+                "annee"                 => $annee,
+                "year_mens"             => $year_mens
+
+            ]);
+           
         }
+
+        
 
         $user = $data_session['user'];
         $pos = $this->services->tester_droit($pseudo_hotel, $user, $repoHotel);
@@ -781,8 +797,24 @@ class PageController extends AbstractController
             return $this->render('/page/error.html.twig');
         }
        else if ($pos != "impossible"){
-        
             
+            $clients = $repo->findBy(
+                ['hotel' => $hotel],
+                ['createdAt' => "DESC"]
+            );
+            $tab_aff = [];
+            $data_repere = new \DateTime();
+            $date_repere_obj = date_create($data_repere->format('d-m-Y'));
+            $date_text_aff = $data_repere->format("d-m-Y");
+            $date_text_aff = $services->toMonthText($date_text_aff);
+           
+            foreach($clients as $client){
+                $sa_date_arr = $client->getDateArrivee();
+                $sa_date_depart = $client->getDateDepart();
+                if($sa_date_arr <= $date_repere_obj && $sa_date_depart >= $date_repere_obj){
+                    array_push($tab_aff, $client);
+                }
+            }
            
             return $this->render('page/hebergement.html.twig', [
                 "id"                    => "li__hebergement",
@@ -795,10 +827,9 @@ class PageController extends AbstractController
                 "tab_heb_occ"           => $tab_heb_occ,
                 "tab_labels"            => $tab_labels,
                 "type_affichage"        => "annee",
-                "today"                 => $today,
                 'items'                 => $tab_aff,
-                "date_text_month"       => $date_text_aff,
                 "tropical_wood"         => false,
+                "date_text_month"       => $date_text_aff,
                 "tab_adr"               => $tab_adr,
                 "tab_revp"              => $tab_revp,
                 "annee"                 => $annee,

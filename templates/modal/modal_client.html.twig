@@ -1,0 +1,39 @@
+<!-- Modal modif  -->
+                    <div class="modal fade" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog opacity-animate4">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h3 class="modal-title" style="text-align: center;">Modification</h3>
+                                </div>
+                                <div class="modal-body modal_modif_client">
+                                    <form action="/profile/' . $pseudo_hotel . '/hebergement" method = "POST" id="form_edit_client">
+                                    </forn>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- fin Modal modif  -->
+
+                    <!-- Modal suppr  -->
+
+                    <div class="modal fade" id="modal_form_confirme" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog opacity-animate4">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h3 class="modal-title" style="text-align: center;">Voulez-vous vraiment supprimer cet élément ?</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="div__conf">
+                                        <button class="btn btn-warning supprimer" data-id = ""  data-dismiss="modal" data-confirm = "oui">Supprimer</button>
+                                        <button class="btn btn-warning annuler" data-dismiss="modal" data-confirm = "non">Annuler</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- fin Modal suppr  -->

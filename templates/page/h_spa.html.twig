@@ -172,6 +172,18 @@
 						"dataSrc":"",
 						
 					},
+					"initComplete":function( settings, json){
+                        var montant = document.querySelectorAll(".montant");
+                        var t = montant.length;
+                        var test = new Intl.NumberFormat();
+                        if (t > 0) {
+                            for (var i = 0; i < t; i++) {
+								var temp = montant[i].innerHTML.replaceAll(" ","");
+                                var val = test.format(temp);
+                                montant[i].innerHTML = val;
+                            }           
+                        }
+                    },
 
 					//annule le tri
 					order : [[0 , 'asc']],
@@ -243,7 +255,19 @@
 					success : function(response){
 						if(response == "ok"){
 
-							table.ajax.reload(null, false);
+							table.ajax.reload(function(response){
+                                var montant = document.querySelectorAll(".montant");
+
+								var t = montant.length;
+								var test = new Intl.NumberFormat();
+								if (t > 0) {
+									for (var i = 0; i < t; i++) {
+										var temp = montant[i].innerHTML.replaceAll(" ", "");
+										var val = test.format(temp);
+										montant[i].innerHTML = val;
+									}           
+								}
+                            }, false);
 							$('#modal_form').modal('hide');
 
 						}

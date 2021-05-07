@@ -76,7 +76,7 @@ class DonneeDuJourController extends AbstractController
                     
                     array_push($t, [
                         '<div>' . $item->getHebTo() . '<span class="unite">%</span></div>', 
-                        '<div ><span class="montant">' . $item->getHebCa() . '</span><span class="unite">Ar</span></div>', 
+                        '<div ><span class="montant">' . str_replace(" ", "", $item->getHebCa()) . '</span><span class="unite">Ar</span></div>', 
                         '<div>' . $item->getNPaxHeb() . '<span class="unite"></span></div>',
                         '<div>' . $item->getNChambreOccupe() . '<span class="unite"></span></div>', 
                         '<div class="date_historique">' . $item->getCreatedAt()->format('d-m-Y') . '</div>', 
@@ -345,7 +345,7 @@ class DonneeDuJourController extends AbstractController
                     <div class="form-group">
                         <label for="n_date_depart">Chiffre d affaire (Ariary) :
                         </label>
-                        <input type="text" id = "modal_modif_heb_ca" class="form-control ca" value = "'. $ddj->getHebCa() .'">
+                        <input type="text" id = "modal_modif_heb_ca" class="form-control ca" value = "'. str_replace(" ", "", $ddj->getHebCa()) .'">
                     </div>
                     <div class="form-group">
                         <label for="n_date_depart">Nombre de pax hébergé :
@@ -391,7 +391,7 @@ class DonneeDuJourController extends AbstractController
                     <div class="form-group">
                         <label>Chiffre d\'affaire (Ariary) :
                         </label>
-                        <input type="text" id = "modal_modif_res_ca" class="form-control ca" value="'. $ddj->getResCa() . '">
+                        <input type="text" id = "modal_modif_res_ca" class="form-control ca" value="'. str_replace(" ", "", $ddj->getResCa()) . '">
                     </div>
                     <div class="form-group">
                         <label>Petit déjeuner (Couverts) :
@@ -442,7 +442,7 @@ class DonneeDuJourController extends AbstractController
                     <div class="form-group">
                         <label>Chiffre d\'affaire (Ariary) :
                         </label>
-                        <input type="text" value="'. $ddj->getSpaCa() . '" id = "modal_modif_spa_ca" class="form-control ca">
+                        <input type="text" value="'. str_replace(" ", "", $ddj->getSpaCa()) . '" id = "modal_modif_spa_ca" class="form-control ca">
                     </div>
                     <div class="form-group">
                         <label>Nombre d\'abonné (Abonnés) :
@@ -478,9 +478,13 @@ class DonneeDuJourController extends AbstractController
             $id = $request->get('id');
             $heb_to = $request->get('heb_to');
             $heb_ca = $request->get('heb_ca');
+            $n_pax_heberge = $request->get('n_pax_heb');
+            $n_chambre_occupe = $request->get('n_chambre_occupe');
             $created_at = date_create($request->get('created_at'));
             $ddj = $repoDdj->find($id);
             $ddj->setHebCa($heb_ca);
+            $ddj->setNPaxHeb($n_pax_heberge);
+            $ddj->setNChambreOccupe($n_chambre_occupe);
             $ddj->setHebTo($heb_to);
             $ddj->setCreatedAt($created_at);
             $manager->flush();

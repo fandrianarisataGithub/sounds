@@ -74,21 +74,21 @@
 			<header>
 				<h2 class="titre dore"><span class="dore">Donnée du jour le </span> <span class="gris">{{ date|date('d-m-Y') }}</span></h2>
 			</header>
-			{% if ddj is not null %}
+			{# {% if ddj is not null %} #}
 				
 			<div class="rubric first-rubric">
 				<div class="content">
 					<h3 class="titre_rubric">Hébergement</h3>
 					<div class="data">
 						<p class="heb">Chiffre d'affaire:
-							<span class="montant">{{ ddj.getHebCa() }}</span> Ar</p>
+							<span class="montant">{{ ddj ? ddj.getHebCa() : "" }}</span> Ar</p>
 						<p class="heb">Taux d'occupation:
-							<span>{{ ddj.getHebTo() }}</span> %</p>
+							<span>{{ ddj ? ddj.getHebTo() : "" }}</span> %</p>
 						<p class="heb">Nombre de pax hébergé:
-							<span>{{ ddj.getNPaxHeb() }}</span>
+							<span>{{ ddj ? ddj.getNPaxHeb() : "" }}</span>
 						</p>
 						<p class="heb">Nombre de chambre occupés:
-							<span>{{ ddj.getNChambreOccupe() }}</span>
+							<span>{{ ddj ? ddj.getNChambreOccupe() : "" }}</span>
 						</p>
 					</div>
 				</div>
@@ -99,18 +99,18 @@
 					<h3 class="titre_rubric">Restaurant</h3>
 					<div class="data">
 						<p class="resto">Chiffre d'affaire:
-							<span class="montant">{{ ddj.getResCa() }}</span> Ar</p>
+							<span class="montant">{{ ddj ? ddj.getResCa() : "" }}</span> Ar</p>
 						<p class="resto">Nombre de couvert:
-							<span>{{ ddj.getResNCouvert() }}</span>
+							<span>{{ ddj ? ddj.getResNCouvert() : "" }}</span>
 						</p>
 						<p class="resto">Petit déjeuner:
-							<span>{{ ddj.getResPDej() }}</span>
+							<span>{{ ddj ? ddj.getResPDej() : ""}}</span>
 						</p>
 						<p class="resto">Déjeuner:
-							<span>{{ ddj.getResDej() }}</span>
+							<span>{{ ddj ? ddj.getResDej() : "" }}</span>
 						</p>
 						<p class="resto">Dinner:
-							<span>{{ ddj.getResDinner() }}</span>
+							<span>{{ ddj ? ddj.getResDinner() : "" }}</span>
 						</p>
 					</div>
 				</div>
@@ -120,16 +120,17 @@
 					<h3 class="titre_rubric">Spa</h3>
 					<div class="data">
 						<p class="spa">Chiffre d'affaire:
-							<span class="montant">{{ ddj.getSpaCa() }}</span> Ar</p>
+							<span class="montant">{{ ddj ? ddj.getSpaCa() : "" }}</span> Ar</p>
 						<p class="spa">Nombre d'abonné:
-							<span>{{ ddj.getSpaNAbonne() }}</span>
+							<span>{{ ddj ? ddj.getSpaNAbonne() : "" }}</span>
 						</p>
 						<p class="spa">Fréquentation:
-							<span>{{ ddj.getSpaCUnique() }}</span>
+							<span>{{ ddj ? ddj.getSpaCUnique() : "" }}</span>
 						</p>
 					</div>
 				</div>
 			</div>
+			{% if ddj is not null %}
 			<div class="rubric">
 				<div class="content_part_text">
 					<h3 class="titre_rubric">Compte rendu journalier</h3>
@@ -226,12 +227,12 @@
 					</div>
 				</div>
 			</div>
-			{% endif %}
+			{% endif %} 
 			{% if clients|length != 0 %}
 			<div class="rubric">
 				<div class="content">
 					<h3 class="titre_rubric">Client présent le
-						<span>27 Avril 2021</span>
+						<span>{{ date|date('d-m-Y') }}</span>
 					</h3>
 					<table>
 						<thead>

@@ -25,6 +25,19 @@ class ClientRepository extends ServiceEntityRepository
         return $this->findBy(array(), array('createdAt' => 'DESC'));
     }
 
+    public function findClientBetweenTwoDates($hotel, $date1, $date2)
+    {
+        return $this->createQueryBuilder('c')
+                ->andWhere('c.hotel = :hotel')
+                ->andWhere('c.dateArrivee >= :date1 AND c.dateDepart <= :date2')
+                ->setParameter('hotel' , $hotel)
+                ->setParameter('date1', $date1)
+                ->setParameter('date2', $date2)
+                ->getQuery()
+                ->getResult()
+        ;
+    }
+
 
     /*
     public function findOneBySomeField($value): ?Client

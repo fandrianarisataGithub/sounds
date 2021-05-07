@@ -2791,7 +2791,13 @@ li#log_out a:hover {
     background-color: #f0f0f7;
     margin-top: 70px;
 }
-
+#modif_date_arrivee, #modif_date_depart{
+    border: 1px solid rgba(200,200,200,0.5);
+    height: 30px;
+    padding: 5px;
+    border-radius: 5px;
+    min-width: 120px;
+}
 #modal_form .modal-content .modal-header button.close {
     position: absolute;
     right: 15px;
@@ -2799,7 +2805,7 @@ li#log_out a:hover {
 }
 
 #modal_form .modal-content form {
-    width: 75%;
+    /*! width: 75%; */
     margin-left: auto;
     margin-right: auto;
 }
@@ -2816,7 +2822,6 @@ li#log_out a:hover {
 
 #modal_form .modal-content form .form-group label {
     padding-top: 0px;
-    width: 60%;
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -2970,6 +2975,56 @@ li#log_out a:hover {
     border-left: 5px solid red;
 }
 
+#form_edit_client .form-group{
+    display: block !important;
+    margin: 0!important;
+}
+#form_edit_client label{
+    display: block !important;
+    margin-bottom:15px!important;
+}
+#form_edit_client .form-group .form-control{
+    margin: 0 !important;
+    width: 100% !important;
+}
+#form_edit_client .div_flex{
+    display: flex !important;
+    justify-content: space-between !important;
+    margin-top: 15px !important;
+    align-items: center !important;
+}
+.div_flex label{
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
+.div_flex input[type=text], .div_flex input[type=number]{
+    border: 1px solid rgba(200,200,200) !important;
+    border-radius: 5px;
+}
+.div_flex input[type=text]:focus, .div_flex input[type=number]:focus{
+    border-color: #d29e00 !important;
+}
+.div_flex input[type=text]{
+    margin-left: 0 !important;
+    width: 200px;
+    text-align: end;
+    padding-right: 5px;
+}
+.div_flex .span__ar{
+    vertical-align: bottom !important;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+#form_edit_client .form-group:last-child{
+   display: flex !important;
+    margin-top: 15px !important;
+    justify-content: space-between !important;
+}
+#form_edit_client .form-group:last-child button:last-child{
+    background: #323232 !important;
+    color: #fff;
+}
 .infos p {
     position: relative;
     top: 5px;
@@ -4601,13 +4656,35 @@ form .form-group span.span__ar {
     border-bottom: 2px solid #eeecec;
     margin-top: 0px;
 }
-
+#prix_total{
+    text-align: end;
+}
 .sous_data_form div .form-group {
     display: inline-block;
 }
 
 .sous_data_form div .form-group:last-child {
     margin-left: 20px;
+}
+.sous_data_form input[type=number], #modif_nbr_chambre_client{
+    width: 100px;
+    height: 30px;
+    border : none;
+    text-align: end;
+    border-bottom : 1px solid rgba(200,200,200,0.5);
+}
+.modal_modif_client {
+    font-size: 12px !important;
+}
+.modal_modif_client input, .modal_modif_client select{
+    font-size: 12px !important;
+}
+.modal_modif_client label:not(:first-child){
+    margin-left: 15px;
+}
+
+.last_div_sous_form .form-group{
+    margin-left: 0px !important;
 }
 
 .sous_data_form div input[type=date] {
@@ -4626,7 +4703,15 @@ form .form-group span.span__ar {
     border-radius: 4px;
     color: #858790;
 }
-
+#provenance{
+    width: 120px;
+    text-align: center;
+    border: 1px solid rgba(200,200,200,0.5);
+    border-radius: 5px;
+    height: 30px;
+    font-size: 12px;
+    padding: 5px;
+}
 .createdAt {
     background-color: #fff;
     border: solid 1px #cccccc;
@@ -4723,6 +4808,14 @@ input[maxlength] {
 .form-group label {
     color: rgba(0, 0, 0, .5) !important;
     font-weight: 500;
+}
+#modif_provenance_client{
+    width: 100px;
+    height: 30px;
+    padding: 5px;
+    border: 1px solid rgba(200,200,200,0.5);
+    border-radius: 5px;
+    
 }
 
 .td__actions a:last-child {

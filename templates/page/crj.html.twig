@@ -23,7 +23,7 @@
 						<div class="pdf_download">
 							<form action="/profile/pdf_ddj" class="form-inline" method="post" id="form_pdf">
 								<div>
-									<input type="date" class="date_pdf_download" id="date_pdf_download" name="date">
+									<input type="date" class="date_pdf_download" value="{{ "now"|date('Y-m-d') }}" id="date_pdf_download" name="date">
 								</div>
 								<input type="hidden" name="hotel" id="hotel_pdf">
 								<button class="btn btn-default" id="download_to_pdf">

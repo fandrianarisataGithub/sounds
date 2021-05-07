@@ -173,22 +173,34 @@
 						}
 					},
 					"ajax" : {
-								url : "/profile/historique_heb", // any am Clientcontroller
-								type : 'POST', 
-								data : {
-										'pseudo_hotel' : pseudo_hotel,
-										'date1' : $("#date1").val(),
-										'date2' : $("#date2").val(),
-								},
-								// success : function(response){
-								//     console.log(response);
-								// }, 
-								// error : function(){
-								//     alert('erreur server');
-								// },
-								"dataSrc":"",
-                        
-                    		},
+						url : "/profile/historique_heb", // any am Clientcontroller
+						type : 'POST', 
+						data : {
+								'pseudo_hotel' : pseudo_hotel,
+								'date1' : $("#date1").val(),
+								'date2' : $("#date2").val(),
+						},
+						// success : function(response){
+						//     console.log(response);
+						// }, 
+						// error : function(){
+						//     alert('erreur server');
+						// },
+						"dataSrc":"",
+					},
+					"initComplete":function( settings, json){
+                        var montant = document.querySelectorAll(".montant");
+
+                        var t = montant.length;
+                        var test = new Intl.NumberFormat();
+                        if (t > 0) {
+                            for (var i = 0; i < t; i++) {
+								var temp = montant[i].innerHTML.replaceAll(" ", "");
+                                var val = test.format(temp);
+                                montant[i].innerHTML = val;
+                            }           
+                        }
+                    },
 
                     //annule le tri
                     order : [[0 , 'asc']],
@@ -225,7 +237,19 @@
                      type : "POST",
                      success : function(response){
                         if(response == "deleted"){
-							table.ajax.reload(null, false);
+							table.ajax.reload(function(response){
+                                var montant = document.querySelectorAll(".montant");
+
+								var t = montant.length;
+								var test = new Intl.NumberFormat();
+								if (t > 0) {
+									for (var i = 0; i < t; i++) {
+										var temp = montant[i].innerHTML.replaceAll(" ", "");
+										var val = test.format(temp);
+										montant[i].innerHTML = val;
+									}           
+								}
+                            }, false);
 						}
                      },
                      error : function(error){
@@ -283,8 +307,9 @@
 					data : {
 						'id' : id,
 						'heb_to' : $('#modal_modif_heb_to').val(),
-						'heb_ca' : $('#modal_modif_heb_ca').val(),
-						'created_at' : $('#modal_modif_created_at').val(),
+						'heb_ca' : $('#modal_modif_heb_ca').val(),//
+						'n_pax_heb' : $('#modal_modif_n_pax_heb').val(),
+						'n_chambre_occupe' : $('#modal_modif_n_chambre_occupe').val(),
 					},
 					beforeSend : function(){
 						$('#btn_edit_ddj span').text('Patienter ...');
@@ -292,7 +317,19 @@
 					success : function(response){
 						if(response == "ok"){
 
-							table.ajax.reload(null, false);
+							table.ajax.reload(function(response){
+                                var montant = document.querySelectorAll(".montant");
+
+								var t = montant.length;
+								var test = new Intl.NumberFormat();
+								if (t > 0) {
+									for (var i = 0; i < t; i++) {
+										var temp = montant[i].innerHTML.replaceAll(" ", "");
+										var val = test.format(temp);
+										montant[i].innerHTML = val;
+									}           
+								}
+                            }, false);
 							$('#modal_form').modal('hide');
 
 						}

@@ -87,46 +87,66 @@ class ClientController extends AbstractController
         $response = new Response();
         if ($request->isXmlHttpRequest()) {
 
-            /*$date = $request->get('date');
-            $last = date_create($date . "00:00");
-            $next = date_create($date . "23:59");
-            $pseudo_hotel = $request->get('pseudo_hotel');
-            $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
-           
-            $t = [];
-            $clients_current_h = $repoClient->findBy([
-                "hotel" => $hotel
-            ]);
-            $clients_current = [];
-            foreach($clients_current_h as $c){
-                $cre = $c->getCreatedAt();
-                if($cre <= $next && $cre >= $last){
-                    array_push($clients_current, $c);
-                }
-            }
-            foreach ($clients_current as $item) {
-
-                array_push($t, ['<div>' . $item->getNom() . '</div><div>' . $item->getPrenom() . '</div><div><span>Ajouté le : </span>' . $item->getCreatedAt()->format("d-m-Y") . '</div>', $item->getDateArrivee()->format('d-m-Y'), $item->getDateDepart()->format('d-m-Y'), $item->getDureeSejour(), '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_diso" data-id = "' . $item->getId() . '" class="btn btn_client_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a><a href="#" data-toggle="modal" data-target="#modal_form_confirme" data-id = "' . $item->getId() . '" class="btn btn_client_suppr btn-danger btn-xs"><span class="fa fa-trash-o"></span></a></div>']);
-            }*/
             $pseudo_hotel = $request->get('pseudo_hotel');
             $hotel = $repoHotel->findOneByPseudo(['pseudo' => $pseudo_hotel]);
             $date = $request->get('date');
+            $date1 = $request->get('date1');
+            $date2 = $request->get('date2');
             $today = date_create($date);
-            $tab = $repoClient->findBy(['hotel' => $hotel]);
+            $tab = [];
             $tab_aff = [];
-            foreach ($tab as $client) {
-                // on liste tous les jour entre sa dete arrivee et date depart
-                $sa_da = $client->getDateArrivee();
-                $sa_dd = $client->getDateDepart();
-                if ($today <= $sa_dd && $today >= $sa_da
-                ) {
-                    array_push($tab_aff, $client);
+            if($date1 == "" && $date2 == ""){
+                $tab = $repoClient->findBy(['hotel' => $hotel]);
+                
+                foreach ($tab as $client) {
+                    // on liste tous les jour entre sa dete arrivee et date depart
+                    $sa_da = $client->getDateArrivee();
+                    $sa_dd = $client->getDateDepart();
+                    if ($today <= $sa_dd && $today >= $sa_da
+                    ) {
+                        array_push($tab_aff, $client);
+                    }
+                }
+               
+            }
+            else if($date1 != "" && $date2 != ""){
+                //$tab = $repoClient->findClientBetweenTwoDates();
+
+                $date1 = date_create($date1);
+                $date2 = date_create($date2);
+
+                $all_date_asked = $services->all_date_between2_dates($date1, $date2);
+                //dd($all_date_asked);
+                
+                $tab = $repoClient->findBy(['hotel' => $hotel]);
+               
+                foreach ($tab as $client) {
+                    // on liste tous les jour entre sa dete arrivee et date depart
+                    $sa_da = $client->getDateArrivee();
+                    $sa_dd = $client->getDateDepart();
+                    //dd($sa_dd);
+                    $his_al_dates = $services->all_date_between2_dates($sa_da, $sa_dd);
+                    //dd($his_al_dates);
+                    for ($i = 0; $i < count($all_date_asked); $i++) {
+                        for ($j = 0; $j < count($his_al_dates); $j++) {
+                            if ($all_date_asked[$i] == $his_al_dates[$j]) {
+                                if (!in_array($client, $tab_aff)) {
+                                    array_push($tab_aff, $client);
+                                }
+                            }
+                        }
+                    }
                 }
             }
+            
             $t = [];
             foreach ($tab_aff as $item) {
 
-                array_push($t, ['<div>' . $item->getNom() . '</div><div>' . $item->getPrenom() . '</div><div><span>Ajouté le : </span>' . $item->getCreatedAt()->format("d-m-Y") . '</div>', $item->getDateArrivee()->format('d-m-Y'), $item->getDateDepart()->format('d-m-Y'), $item->getDureeSejour(), '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_diso" data-id = "' . $item->getId() . '" class="btn btn_client_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a><a href="#" data-toggle="modal" data-target="#modal_form_confirme" data-id = "' . $item->getId() . '" class="btn btn_client_suppr btn-danger btn-xs"><span class="fa fa-trash-o"></span></a></div>']);
+                array_push($t, ['<div>' . $item->getNom() . '</div><div>' . $item->getPrenom() . '</div><div><span>Ajouté le : </span>' 
+                . $item->getCreatedAt()->format("d-m-Y") . '</div>', $item->getDateArrivee()->format('d-m-Y'), $item->getDateDepart()->format('d-m-Y'), $item->getProvenance(), $item->getDureeSejour(), $item->getNbrChambre(), '<span class="montant">' 
+                .$item->getPrixTotal().'</span>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_diso" data-id = "' 
+                . $item->getId() . '" class="btn btn_client_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a><a href="#" data-toggle="modal" data-target="#modal_form_confirme" data-id = "' 
+                . $item->getId() . '" class="btn btn_client_suppr btn-danger btn-xs"><span class="fa fa-trash-o"></span></a></div>']);
             }
 
             $data = json_encode($t);
@@ -135,21 +155,16 @@ class ClientController extends AbstractController
             return $response;
         }
         
-        $pseudo_hotel = "royal_beach";
-        $hotel = $repoHotel->findOneByPseudo(['pseudo' => $pseudo_hotel]);
-        $today = "2021-02-10";
-        $today = date_create($today);
-        $tab = $repoClient->findBy(['hotel' => $hotel]);
-        $tab_aff = [];
-        foreach ($tab as $client) {
-            // on liste tous les jour entre sa dete arrivee et date depart
-            $sa_da = $client->getDateArrivee();
-            $sa_dd = $client->getDateDepart();
-            if($today <= $sa_dd && $today >= $sa_da){
-                array_push($tab_aff, $client);
-            }
-        }
-        dd($tab_aff);
+    }
+
+    /**
+     * @Route("/profile/test")
+     */
+    public function test(HotelRepository $repoHotel, ClientRepository $repoClient)
+    {
+        $hotel = $repoHotel->find(1);
+        $clients = $repoClient->findClientBetweenTwoDates($hotel, "2021-05-07", "2021-05-11");
+        dd($clients);
     }
 
     /**
@@ -189,47 +204,69 @@ class ClientController extends AbstractController
             $client = $repoClient->find($client_id);
             $html = '';
             if($action == "modification"){
-                $html .= '<form action="/profile/' . $pseudo_hotel . '/hebergement" method = "POST">
-                        <input type="hidden" id = "hidden_date1" name = "date1" value = "' . $date1 . '">
-                        <input type="hidden" id = "hidden_date2" name = "date2" value = "' . $date2 . '">
-                        <input type="hidden" id = "hidden_id" value = "' . $client->getId() . '" name = "client_id">
-                        <input type="hidden" name = "action" value = "modification">
-                        <div class="form-group">
-                            <label for="n_date_depart">Nom du client :
-                            </label>
-                            <input type="text" id="modif_nom_client" class="form-control" value = "' . $client->getNom() . '" name = "nom">
-                        </div>
+                $html .= '
+                        
+                            <input type="hidden" id = "hidden_date1" name = "date1" value = "' . $date1 . '">
+                            <input type="hidden" id = "hidden_date2" name = "date2" value = "' . $date2 . '">
+                            <input type="hidden" id = "hidden_id" value = "' . $client->getId() . '" name = "client_id">
+                            <input type="hidden" name = "action" value = "modification">
                             <div class="form-group">
-                            <label for="n_date_depart">Prénom du client :
-                            </label>
-                            <input type="text" id="modif_prenom_client" class="form-control" value = "' . $client->getPrenom() . '" name = "prenom">
-                        </div>
-                        <div class="form-group">
-                            <label for="n_date_arrivee">Date d \'arrivée :
-                            </label>
-                            <input type="date" id="modif_date_arrivee" class="form-control" value = "' . $client->getDateArrivee()->format("Y-m-d") . '" name = "date_arrivee">
-                        </div>
-                        <div class="form-group">
-                            <label for="n_date_depart">Date du départ :
-                            </label>
-                            <input type="date" id="modif_date_depart" class="form-control" value = "' . $client->getDateDepart()->format("Y-m-d") . '" name = "date_depart">
-                        </div>
-                        <div class="form-group">
-                           <button type = "submit" class="form-control btn btn-warning" id="a_modal_modif_client" data-id="'. $client->getId() .'"><span>Enregistrer</span></button>
-                        </div>
-                    </form>';
+                                <label for="n_date_depart">Nom du client :
+                                </label>
+                                <input type="text" id="modif_nom_client" class="form-control" value = "' . $client->getNom() . '" name = "nom">
+                            </div>
+                            <div class="form-group">
+                                <label for="n_date_depart">Prénom du client :
+                                </label>
+                                <input type="text" id="modif_prenom_client" class="form-control" value = "' . $client->getPrenom() . '" name = "prenom">
+                            </div>
+                            <div class="form-group div_flex">
+                                <label for="n_date_arrivee">Check in:
+                                </label>
+                                <input type="date" id="modif_date_arrivee" value = "' . $client->getDateArrivee()->format("Y-m-d") . '" name = "date_arrivee">
+                                <label for="n_date_depart">check out :
+                                </label>
+                                <input type="date" id="modif_date_depart" value = "' . $client->getDateDepart()->format("Y-m-d") . '" name = "date_depart">
+                                <label for="">Provenance</label>
+                                <select name="" id="modif_provenance_client">
+                                    <option value="'. $client->getProvenance() .'">'. $client->getProvenance()  .'</option>
+                                    <option value="OTA">OTA</option>
+                                    <option value="DIRECT">DIRECT</option>
+                                    <option value="CORPO">CORPO</option>
+                                    <option value="TOA">TOA</option>
+                                </select>
+                            </div>
+                            <div class="form-group div_flex">
+                                <label for="nbr_nuit" class="label_nbr_chambre">Nombre de chambre :</label>
+                                <input type="number" id="modif_nbr_chambre_client" value="'. $client->getNbrChambre() .'"> 
+                                <label for="prix_total" class="label_prix_total">Prix total :</label>
+                                <input type="text" id="modif_prix_total_client" class="input_nombre" value="'. $client->getPrixTotal() .'">
+                                <span class="span__ar">Ar</span>
+                            </div>
+                        
+                            <div class="form-group" >
+                                <button type = "submit" class="btn btn-warning" id="a_modal_modif_client" data-id="'. $client->getId() .'">
+                                    <span>Enregistrer</span>
+                                </button>
+                                <button class="btn" data-dismiss="modal">
+                                    <span>Annuler</span>
+                                </button>
+                            </div>
+                        </form>
+                    ';
             }
             else{
-                $html .= '<form action="/profile/' . $pseudo_hotel . '/hebergement" method = "POST" id = "form_modal_delete">
-                        <input type="hidden" id = "hidden_date1" name = "date1" value = "' . $date1 . '">
-                        <input type="hidden" id = "hidden_date2" name = "date2" value = "' . $date2 . '">
-                        <input type="hidden" id = "hidden_id" value = "' . $client->getId() . '" name = "client_id">
-                        <input type="hidden" name = "action" value = "suppression">
-                        <div class="form-group">
-                           <button type = "submit" class="form-control btn btn-warning"><span>Supprimer</span></button>
-                           <button type = "buton" class="form-control btn btn-default" data-dismiss = "modal"><span>Annuler</span></button>
-                        </div>
-                    </form>';
+                $html .= '
+                        <form action="/profile/' . $pseudo_hotel . '/hebergement" method = "POST" id = "form_modal_delete">
+                            <input type="hidden" id = "hidden_date1" name = "date1" value = "' . $date1 . '">
+                            <input type="hidden" id = "hidden_date2" name = "date2" value = "' . $date2 . '">
+                            <input type="hidden" id = "hidden_id" value = "' . $client->getId() . '" name = "client_id">
+                            <input type="hidden" name = "action" value = "suppression">
+                            <div class="form-group">
+                            <button type = "submit" class="form-control btn btn-warning"><span>Supprimer</span></button>
+                            <button type = "buton" class="form-control btn btn-default" data-dismiss = "modal"><span>Annuler</span></button>
+                            </div>
+                        </form>';
             }
 
             $data = json_encode($html);
@@ -246,8 +283,21 @@ class ClientController extends AbstractController
         $response = new Response();
         if($request->isXmlHttpRequest()){
             $id = $request->get('id');
+            
+            if($id == ""){
+                $data = json_encode("ok");
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($data);
+                return $response;
+            }
+            
             $nom = $request->get('nom');
             $prenom = $request->get('prenom');
+            
+            $nbr_chambre = $request->get('nbr_chambre');
+            $provenance = $request->get('provenance');
+            $prix_total = $request->get('prix_total');
+
             $date_arrivee = $request->get('date_arrivee');
             $date_depart = $request->get('date_depart');
             $date_arrivee = date_create($date_arrivee);
@@ -259,6 +309,9 @@ class ClientController extends AbstractController
             $client = $repoClient->find($id);
             $client->setNom($nom);
             $client->setPrenom($prenom);
+            $client->setProvenance($provenance);
+            $client->setNbrChambre($nbr_chambre);
+            $client->setPrixTotal(str_replace(" ", "", $prix_total));
             $client->setDateArrivee($date_arrivee);
             $client->setDateDepart($date_depart);
             $client->setDureeSejour($days);

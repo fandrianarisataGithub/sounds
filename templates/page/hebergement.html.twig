@@ -206,7 +206,7 @@
 
 
 				</div>
-				<div class="col-lg-8 col-md-8 col-sm-12 col-sm-12 col-xs-12">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
 					<section class="section_part tab_content margin_tab tab_liste_client">
 						<div class="tableau">
 							<div class="sous_titre">
@@ -222,103 +222,17 @@
 									<h3>Filtre</h3>
 								</div>
 								<form class="tri" id="form_tri_tab_heb" action="{{ path('hebergement', { 'pseudo_hotel' : hotel }) }}" method="POST">
+									<input type="hidden" name = "createdAt" class="createdAt" id = "donnee_du_jour_createdAt" value = "{{ today }}">
 									<input name="date1" type="date" id="date1" {% if date1 is defined %} value="{{ date1 }}" {% endif %}>
 									<input type="date" name="date2" id="date2" {% if date2 is defined %} value="{{ date2 }}" {% endif %}>
-									<button type="submit" class="btn btn-primary btn-xs btn_filter">
+									<button type="submit" class="btn btn-primary btn-xs btn_filter" id="button_filtre_client">
 										<span>Filtrer</span>
 									</button>
 								</form>
 							</section>
-							<div class="tableau tab_historique">
-								<table class="display" id="tab_client_heb" style="width:100%">
-									<thead>
-										<tr>
-											<td>
-												<span>NOM</span>
-											</td>
-											<td>
-												<span>DATE D'ARRIVEE</span>
-											</td>
-											<td>
-												<span>DATE DE DEPART</span>
-											</td>
-											<td>
-												<span>DUREE DU SEJOUR</span>
-											</td>
-											<td><span>ACTIONS</span></td>
-										</tr>
-									</thead>
-									<tbody id="tbody_load">
-										{% if items is empty%}
-										{% else %}
-											{% for item in items %}
-												<tr>
-
-													<td>
-														<span>{{ item.nom }}
-															<br>
-															{% if item.prenom is defined %}
-																{{ item.prenom }}
-															{% endif %}
-														</span>
-													</td>
-													<td>
-														<span>{{ item.getDateArrivee() | date('d-m-Y') }}</span>
-													</td>
-													<td>
-														<span>{{ item.getDateDepart() | date('d-m-Y') }}</span>
-													</td>
-													<td>
-														<span>{{ item.getDureeSejour() }}</span>
-													</td>
-													<td class="td__actions">
-														<a href="#" data-target="#modal_form" class = "btn_client_modif" data-id = "{{ item.getId() }}"> 
-															<span class="fa fa-edit"></span>
-														</a>
-														<a href="#" data-target="#modal_form_confirme" class = "btn_client_suppr" data-id = "{{ item.getId() }}">
-															<span class="fa fa-trash-o"></span>
-														</a>
-													</td>
-												</tr>
-											{% endfor %}
-										{% endif %}
-									</tbody>
-								</table>
-							</div>
-							<!-- Modal modif  -->
-							<div class="modal fade" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-								<div class="modal-dialog opacity-animate4">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal">&times;</button>
-											<h3 class="modal-title" style="text-align: center;">Modification</h3>
-										</div>
-										<div class="modal-body modal_modif_client"></div>
-									</div>
-								</div>
-							</div>
-							<!-- fin Modal modif  -->
-
-							<!-- Modal suppr  -->
-
-							<div class="modal fade" id="modal_form_confirme" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-								<div class="modal-dialog opacity-animate4">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal">&times;</button>
-											<h3 class="modal-title" style="text-align: center;">Voulez-vous vraiment supprimer cet élément ?</h3>
-										</div>
-										<div class="modal-body">
-											<div id="div__conf">
-												<div class="modal-body modal_suppr_client"></div>
-											</div>
-										</div>
-
-									</div>
-								</div>
-							</div>
-
-							<!-- fin Modal suppr  -->
+							{% include "table/table_client.html.twig" %}
+							
+							{% include "modal/modal_client.html.twig" %}
 
 						</div>
 					</section>
@@ -1274,55 +1188,77 @@
 
 		var pseudo_hotel = "{{ hotel }}";
 		// alert(pseudo_hotel);
+                //alert(pseudo_hotel);
+                var table = $('#tableau_client_donnee_jour').DataTable({
+                    "language": {
+                        "sEmptyTable": "Aucune donnée disponible dans le tableau",
+                        "sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
+                        "sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
+                        "sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
+                        "sInfoPostFix": "",
+                        "sInfoThousands": ",",
+                        "sLengthMenu": "Afficher _MENU_ éléments",
+                        "sLoadingRecords": "Chargement...",
+                        "sProcessing": "Traitement...",
+                        "sSearch": "Rechercher :",
+                        "sZeroRecords": "Aucun élément correspondant trouvé",
+                        "oPaginate": {
+                            "sFirst": "Premier",
+                            "sLast": "Dernier",
+                            "sNext": "Suivant",
+                            "sPrevious": "Précédent"
+                        },
+                        "oAria": {
+                            "sSortAscending": ": activer pour trier la colonne par ordre croissant",
+                            "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+                        },
+                        "select": {
+                            "rows": {
+                                    "_": "%d lignes sélectionnées",
+                                    "0": "Aucune ligne sélectionnée",
+                                    "1": "1 ligne sélectionnée"
+                            }
+                        }
+                    },
 
-		var table = $('#tab_client_heb').DataTable({
-			"language": {
-				"sEmptyTable": "Aucune donnée disponible dans le tableau",
-				"sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
-				"sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
-				"sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
-				"sInfoPostFix": "",
-				"sInfoThousands": ",",
-				"sLengthMenu": "Afficher _MENU_ éléments",
-				"sLoadingRecords": "Chargement...",
-				"sProcessing": "Traitement...",
-				"sSearch": "Rechercher :",
-				"sZeroRecords": "Aucun élément correspondant trouvé",
-				"oPaginate": {
-					"sFirst": "Premier",
-					"sLast": "Dernier",
-					"sNext": "Suivant",
-					"sPrevious": "Précédent"
-				},
-				"oAria": {
-					"sSortAscending": ": activer pour trier la colonne par ordre croissant",
-					"sSortDescending": ": activer pour trier la colonne par ordre décroissant"
-				},
-				"select": {
-					"rows": {
-						"_": "%d lignes sélectionnées",
-						"0": "Aucune ligne sélectionnée",
-						"1": "1 ligne sélectionnée"
-					}
-				}
-			},
+                    "ajax" : {
+                        url : "/profile/select_current_client", // any am Clientcontroller
+                        type : 'POST', 
+                        data : {
+                            'pseudo_hotel' : pseudo_hotel,
+                            'date'  : $("#donnee_du_jour_createdAt").val(),
+							'date1' : $("#date1").val(),
+							'date2'	: $("#date2").val()
+                            },
+                        "dataSrc":"",
+                        
+                    },
+                    "initComplete":function( settings, json){
+						
+                        var montant = document.querySelectorAll(".montant");
+                        var t = montant.length;
+                        var test = new Intl.NumberFormat();
+                        if (t > 0) {
+                            for (var i = 0; i < t; i++) {
+                                var val = test.format(montant[i].innerHTML);
+                                montant[i].innerHTML = val;
+                            }           
+                        }
+                    },
 
-			// annule le tri
-			order: [
-				[0, 'asc']
-			],
-			ordering: false,
+                    //annule le tri
+                    order : [[0 , 'asc']],
+                    ordering : false,
 
-			responsive: true,
-			scrollY: false, // raha scrollena de asina val ex 400
-			scrollX: true,
-			scrollCollapse: true,
-			paging: true,
-			autoFill: true
-		});
+                    responsive: true,
+                    scrollY: false, // raha scrollena de asina val ex 400
+                    scrollX: true,
+                    scrollCollapse: true,
+                    paging: true,
+                     autoFill: true
+                });
 
-			new $.fn.dataTable.FixedHeader(table);
-
+                new $.fn.dataTable.FixedHeader(table);
 
 			/*  fiun table */
 
@@ -1330,112 +1266,129 @@
 
 
 			/* fin tri tableau heb */
-			// suppression client présent
+			// suppression client présent 
 
+            $(document).on('click', ".btn_client_suppr", function(ev){
+                //ev.preventDefault();
+                var id = $(this).attr('data-id');
+                //alert(id);
+                $('#div__conf button.supprimer').attr('data-id', id);
+            })
 
-			$(document).on('click', ".btn_client_suppr", function (ev) { // ev.preventDefault();
-				ev.preventDefault();
-				var id = $(this).attr('data-id');
-				var date1 = $('#date1').val();
-				var date2 = $('#date2').val();
-				// alert(id);
-				$.ajax({
-					url: "/admin/check_client",
-					data: {
-						"client_id": id,
-						"date1" : date1,
-						"date2" : date2,
-						"action" : "suppression",
-					},
-					type: "POST",
+            $('#div__conf button.supprimer').on('click', function(){
+                 var id = $(this).attr('data-id');
+                 //alert(id);
+                 // ajax
+                 $.ajax({
+                     url : "/admin/suprimer_client",
+                     data : {
+                         "client_id" : id,
+                         "pseudo_hotel" : pseudo_hotel,
+                     },
+                     type : "POST",
+                     success : function(response){
+                         if(response == "deleted"){
+                             table.ajax.reload(function(response){
+                                var montant = document.querySelectorAll(".montant");
 
-					success: function (response) {
-						$('.modal_suppr_client').html(response);
-						if($('.modal_suppr_client').children().length > 0){
-							setTimeout(function(){
-								$('#modal_form_confirme').modal('show');
-							}, 500);
-						}
-						
-					},
-					error: function (error) {
-						alert('erreur de server');
-					}
-				})
-			})
+								var t = montant.length;
+								var test = new Intl.NumberFormat();
+								if (t > 0) {
+									for (var i = 0; i < t; i++) {
+										var temp = montant[i].innerHTML.replaceAll(" ", "");
+										var val = test.format(temp);
+										montant[i].innerHTML = val;
+									}           
+								}
+                            }, false);
+                         }
+                     },
+                     error : function(error){
+                         alert('erreur de server suppression client dans donnée du jour ');
+                     },
+                })
+            })
 
-			/* fin suppression client*/
+            /* fin suppression client*/
 
-			/* debut modif client */
+            /* debut modif client */
 
-		$(document).on('click', '.btn_client_modif', function (ev) {
-			ev.preventDefault();
-			var id = $(this).attr('data-id');
-			var date1 = $('#date1').val();
-			var date2 = $('#date2').val();
-			// alert(id);
-			$.ajax({
-				url: "/admin/check_client",
-				data: {
-					"client_id": id,
-					"date1" : date1,
-					"date2" : date2,
-					"action" : "modification"
-				},
-				type: "POST",
+            $(document).on('click', '.btn_client_modif', function(ev){
+                ev.preventDefault();
+                 var id = $(this).attr('data-id');
+                 //alert(id);
+                 $.ajax({
+                     url : "/admin/check_client",
+                     data : {
+                         "client_id" : id,
+                         "action" : "modification",
+                     },
+                     type : "POST",
+                    
+                     success : function(response){
+                        $('#form_edit_client').html(response);
+                        $('#modal_form').modal('show');
+                     },
+                     error : function(error){
+                         alert('erreur de server');
+                     },
+                })
+            })
 
-				success: function (response) {
-					$('.modal_modif_client').html(response);
-				
-					if($('.modal_modif_client').children().length > 0){
-						setTimeout(function(){
-							$('#modal_form').modal('show');
-						}, 500);
-					}
-				},
-				error: function (error) {
-					alert('erreur de server');
-				}
-			})
-		})
+            $(document).on('click', '#a_modal_modif_client', function(ev){
+                ev.preventDefault();
+                var id = $(this).attr("data-id");
+                var nom = $('#modif_nom_client').val();
+                var prenom = $('#modif_prenom_client').val();
+                var date_arrivee = $('#modif_date_arrivee').val();
+                var date_depart = $('#modif_date_depart').val();
+                var nbr_chambre = $('#modif_nbr_chambre_client').val();
+                var prix_total = $("#modif_prix_total_client").val();
+                var provenance = $("#modif_provenance_client").val();
+                //alert(id+"/"+nom+"/"+date_depart+"/"+date_arrivee+"/"+prenom);
+                // ajax
+                $.ajax({
+                    url : "/admin/edit_client",
+                    data : {
+                        "id" : id,
+                        "nom"    : nom,
+                        "prenom" : prenom,
+                        "date_arrivee"  : date_arrivee,
+                        "date_depart"   : date_depart,
+                        "nbr_chambre"   : nbr_chambre,
+                        "prix_total"    : prix_total,
+                        "provenance"    : provenance,    
+                    },
+                    type : "POST",
+                    beforeSend : function(){
+                       $('#a_modal_modif_client').html('<span>Patienter...</span>'); 
+                    },
+                    success : function(response){
+                        if(response == "ok"){
+                            table.ajax.reload(function(response){
+                                var montant = document.querySelectorAll(".montant");
 
-		$(document).on('click', '#a_modal_modif_client', function (ev) {
-			ev.preventDefault();
-			var id = $(this).attr("data-id");
-			var nom = $('#modif_nom_client').val();
-			var prenom = $('#modif_prenom_client').val();
-			var date_arrivee = $('#modif_date_arrivee').val();
-			var date_depart = $('#modif_date_depart').val();
-			// alert(id+"/"+nom+"/"+date_depart+"/"+date_arrivee+"/"+prenom);
-			// ajax
-			$.ajax({
-				url: "/admin/edit_client",
-				data: {
-					"id": id,
-					"nom": nom,
-					"prenom": prenom,
-					"date_arrivee": date_arrivee,
-					"date_depart": date_depart
-				},
-				type: "POST",
-				beforeSend: function () {
-					$('#a_modal_modif_client').html('<span>Patienter...</span>');
-				},
-				success: function (response) {
-					if (response == "ok") {
-						table.ajax.reload(null, false);
-						$('#modal_form').modal('hide');
-						Location.reload();
-					}
-				},
-				error: function (error) {
-					alert('erreur de server');
-				},
-				complete: function () {
-					$('#a_modal_modif_client').html('<span>Enregistrer</span>');
-				}
-			})
-		})
+								var t = montant.length;
+								var test = new Intl.NumberFormat();
+								if (t > 0) {
+									for (var i = 0; i < t; i++) {
+										var temp = montant[i].innerHTML.replaceAll(" ", "");
+										var val = test.format(temp);
+										montant[i].innerHTML = val;
+									}           
+								}
+                            }, false);
+                            $('#modal_form').modal('hide');
+                        }
+                    },
+                    error : function(error){
+                         alert('erreur de server');
+                    },
+                    complete : function(){
+                          $('#a_modal_modif_client').html('<span>Enregistrer</span>'); 
+                    },
+                })
+            })
 
 
 		// triage chart heb_to
@@ -2443,7 +2396,7 @@
 								alert('erreur server au niveau de triage stock '+pseudo_hotel)
 							}
 						})
-					})
+				})
 		})
 	</script>
 

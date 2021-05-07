@@ -22,6 +22,8 @@
                             <h2>Donnée du jour</h2>
                                 {# <input type="date" name = "donnee_du_jour[createdAt]" class="createdAt" id = "donnee_du_jour_createdAt" value = "{{ today }}"> #}
                                 <input type="date" name = "createdAt" class="createdAt" id = "donnee_du_jour_createdAt" value = "{{ today }}">
+                                <input type="hidden" name="" id="date1" value="">
+                                <input type="hidden" id="date2" value="" name="">
                         </div>
                         {# <div id="test"></div> #}
                     </section>
@@ -169,13 +171,33 @@
                                     </div>
                                     <div>
                                         <div class="form-group">
-                                            <label for="date_arrive" class="label_date">Date d'arrivé :</label>
+                                            <label for="date_arrive" class="label_date">Check in :</label>
                                             <input type="date" id="date_arrivee">
                                             <input type="hidden" id="hide_pseudo_hotel" value="{{ hotel }}">
                                         </div>
                                         <div class="form-group">
-                                            <label for="date_arrive" class="label_date">Date de départ :</label>
+                                            <label for="date_arrive" class="label_date">check out :</label>
                                             <input type="date" id="date_depart">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Provenance : </label>
+                                            <select name="" id="provenance">
+                                                <option value="OTA">OTA</option>
+                                                <option value="DIRECT">DIRECT</option>
+                                                <option value="CORPO">CORPO</option>
+                                                <option value="TOA">TOA</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="form-group">
+                                            <label for="nbr_nuit" class="label_nbr_chambre">Nombre de chambre :</label>
+                                            <input type="number" id="nbr_chambre">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="prix_total" class="label_prix_total">Prix total :</label>
+                                            <input type="text" id="prix_total" class="input_nombre">
+                                            <span class="span__ar">Ar</span>
                                         </div>
                                     </div>
                                     <div>
@@ -191,32 +213,7 @@
                                 <div class="sous_titre">
                                     <h4 class="label__titre">Client présent le : <span id="data_text_date"></span></h4>
                                 </div>
-                                <div>
-                                    <table class="display" style="width: 100%" id="tableau_client_donnee_jour">
-                                        <thead>
-                                            <tr>
-                                                <td>
-                                                    <span>NOM</span>
-                                                </td>
-                                                <td>
-                                                    <span>DATE D'ARRIVEE</span>
-                                                </td>
-                                                <td>
-                                                    <span>DATE DU DEPART</span>
-                                                </td>
-                                                <td>
-                                                    <span>DUREE DU SEJOUR</span>
-                                                </td>
-                                                <td>
-                                                    <span>ACTIONS</span>
-                                                </td>
-                                            </tr>
-                                        </thead>
-                                        <tbody id ="tbody_load">
-                                            
-                                        </tbody>
-                                    </table>
-                                </div>
+                                {% include "table/table_client.html.twig" %}
                             </div>
 
                             <div class="h4_titre" 
@@ -723,44 +720,7 @@
                     </div>
 
 
-                    <!-- Modal modif  -->
-                    <div class="modal fade" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-dialog opacity-animate4">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h3 class="modal-title" style="text-align: center;">Modification</h3>
-                                </div>
-                                <div class="modal-body modal_modif_client">
-                                    
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <!-- fin Modal modif  -->
-
-                    <!-- Modal suppr  -->
-
-                    <div class="modal fade" id="modal_form_confirme" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-dialog opacity-animate4">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h3 class="modal-title" style="text-align: center;">Voulez-vous vraiment supprimer cet élément ?</h3>
-                                </div>
-                                <div class="modal-body">
-                                    <div id="div__conf">
-                                        <button class="btn btn-warning supprimer" data-id = ""  data-dismiss="modal" data-confirm = "oui">Supprimer</button>
-                                        <button class="btn btn-warning annuler" data-dismiss="modal" data-confirm = "non">Annuler</button>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- fin Modal suppr  -->
+                    {% include "modal/modal_client.html.twig" %}
 
                 </div>
 
@@ -844,8 +804,8 @@ new Cleave('.input_pourcent', {blocks: [4]});
             $('.form_vide').val('');
             /* table */
                 var pseudo_hotel = $('#hide_pseudo_hotel').val();
-        //alert(pseudo_hotel);
-        var table = $('#tableau_client_donnee_jour').DataTable({
+                //alert(pseudo_hotel);
+                var table = $('#tableau_client_donnee_jour').DataTable({
                     "language": {
                         "sEmptyTable": "Aucune donnée disponible dans le tableau",
                         "sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
@@ -885,13 +845,24 @@ new Cleave('.input_pourcent', {blocks: [4]});
                             'date'  : $("#donnee_du_jour_createdAt").val()
                             },
                         // success : function(response){
-                        //     alert(response);
+                        //     console.log(response);
                         // }, 
                         // error : function(){
                         //     alert('erreur server');
                         // },
                         "dataSrc":"",
                         
+                    },
+                    "initComplete":function( settings, json){
+                        var montant = document.querySelectorAll(".montant");
+                        var t = montant.length;
+                        var test = new Intl.NumberFormat();
+                        if (t > 0) {
+                            for (var i = 0; i < t; i++) {
+                                var val = test.format(montant[i].innerHTML);
+                                montant[i].innerHTML = val;
+                            }           
+                        }
                     },
 
                     //annule le tri
@@ -918,12 +889,18 @@ new Cleave('.input_pourcent', {blocks: [4]});
                 var date_arrivee = $('#date_arrivee').val();
                 var date_depart = $('#date_depart').val();
                 var createdAt = $('#donnee_du_jour_createdAt').val();
+                var nbr_chambre = $('#nbr_chambre').val();
+                var prix_total = $("#prix_total").val();
+                var provenance = $("#provenance").val();
                 var data = {
                     "nom_client"    : nom,
                     "prenom_client" : prenom,
                     "date_arrivee"  : date_arrivee,
                     "date_depart"   : date_depart,
-                    "createdAt"     : createdAt,    
+                    "nbr_chambre"   : nbr_chambre,
+                    "prix_total"   : prix_total,
+                    "createdAt"     : createdAt, 
+                    "provenance"     : provenance,    
                 };
 
                 // test
@@ -933,7 +910,7 @@ new Cleave('.input_pourcent', {blocks: [4]});
                 // ajax 
 
                 $.ajax({
-                    url : "{{ path('hebergement', {'pseudo_hotel' : hotel}) }}",
+                    url : "{{ path('hebergement', {'pseudo_hotel' : hotel}) }}", // PageController
                     type : "POST",
                     data : data,
                     beforeSend : function(){
@@ -1009,8 +986,8 @@ new Cleave('.input_pourcent', {blocks: [4]});
                      type : "POST",
                     
                      success : function(response){
-                         $('.modal_modif_client').html(response);
-                          $('#modal_form').modal('show');
+                        $('#form_edit_client').html(response);
+                        $('#modal_form').modal('show');
                      },
                      error : function(error){
                          alert('erreur de server');
@@ -1025,33 +1002,49 @@ new Cleave('.input_pourcent', {blocks: [4]});
                 var prenom = $('#modif_prenom_client').val();
                 var date_arrivee = $('#modif_date_arrivee').val();
                 var date_depart = $('#modif_date_depart').val();
+                var nbr_chambre = $('#modif_nbr_chambre_client').val();
+                var prix_total = $("#modif_prix_total_client").val();
+                var provenance = $("#modif_provenance_client").val();
                 //alert(id+"/"+nom+"/"+date_depart+"/"+date_arrivee+"/"+prenom);
                 // ajax
                 $.ajax({
-                     url : "/admin/edit_client",
-                     data : {
-                         "id" : id,
-                         "nom" : nom,
-                         "prenom" : prenom,
-                         "date_arrivee" : date_arrivee,
-                         "date_depart" : date_depart,
-                     },
-                     type : "POST",
+                    url : "/admin/edit_client",
+                    data : {
+                        "id" : id,
+                        "nom"    : nom,
+                        "prenom" : prenom,
+                        "date_arrivee"  : date_arrivee,
+                        "date_depart"   : date_depart,
+                        "nbr_chambre"   : nbr_chambre,
+                        "prix_total"    : prix_total,
+                        "provenance"    : provenance,    
+                    },
+                    type : "POST",
                     beforeSend : function(){
                        $('#a_modal_modif_client').html('<span>Patienter...</span>'); 
                     },
-                     success : function(response){
+                    success : function(response){
                         if(response == "ok"){
-                            table.ajax.reload(null, false);
-                             $('#modal_form').modal('hide');
+                            table.ajax.reload(function(response){
+                                var montant = document.querySelectorAll(".montant");
+                                var t = montant.length;
+                                var test = new Intl.NumberFormat();
+                                if (t > 0) {
+                                    for (var i = 0; i < t; i++) {
+                                        var val = test.format(montant[i].innerHTML);
+                                        montant[i].innerHTML = val;
+                                    }           
+                                }
+                            }, false);
+                            $('#modal_form').modal('hide');
                         }
-                     },
-                     error : function(error){
+                    },
+                    error : function(error){
                          alert('erreur de server');
-                     },
-                     complete : function(){
+                    },
+                    complete : function(){
                           $('#a_modal_modif_client').html('<span>Enregistrer</span>'); 
-                     },
+                    },
                 })
             })
             
