@@ -1,0 +1,375 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Fidélisation{% endblock %}
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
+    <style>
+        .side-nav{
+            width : 100px !important;
+        }
+        #contents{
+            margin-left : 100px !important;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <section
+        id="contents" class="container-fluid">
+        <!-- entete content -->
+        {% include "nav2.html.twig" %}
+        <!-- / entete content -->
+        <div id="hrs_content" class="fidelisation">
+            <header>
+                <div class="f_titre">
+                    <h1>Fidélisation client</h1>
+                </div>
+                <div class="f_profile">
+                    <div>
+                        <a href="#">
+                            <img src="{{ asset('images/fidelisation/icone_setting.png') }}"
+                             class="icone_setting" width="20px" alt="icone_setting">
+                        </a>
+                    </div>
+                    <div>
+                        <p>Nom user</p>
+                    </div>
+                    <div class="f_pdp">
+                        <div><img src="{{ asset('images/user_pdp.png') }}" alt="pdp"></div>
+                    </div>
+                </div>
+            </header>
+            {# liste fidel #}
+            <div class="row block1">
+                <div class="col-lg-3">
+                    <a class="f_block" href="#">
+                        <div class="f_block_top">
+                            <aside>
+                                <p><span class="f_val">200</span> Clients</p>
+                            </aside>
+                            <aside>
+                                <p>
+                                    <img src="{{ asset('images/fidelisation/icone_cardex.png') }}" class="icone_client" alt="gris">
+                                </p>
+                            </aside>
+                        </div>
+                        <div class="f_block_bottom">
+                            <aside>
+                                <p>Client</p>
+                                <p class="nom_f">CARDEX</p>
+                            </aside>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-3" >
+                    <a class="f_block" href="#">
+                        <div class="f_block_top">
+                            <aside>
+                                <p><span class="f_val">200</span> Clients</p>
+                            </aside>
+                            <aside>
+                                <p>
+                                    <img src="{{ asset('images/fidelisation/icone_pref.png') }}" class="icone_client" alt="gris">
+                                </p>
+                            </aside>
+                        </div>
+                        <div class="f_block_bottom">
+                            <aside>
+                                <p>Client</p>
+                                <p class="nom_f">PREFERENTIEL</p>
+                            </aside>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-3" >
+                    <a class="f_block" href="#">
+                        <div class="f_block_top">
+                            <aside>
+                                <p><span class="f_val">200</span> Clients</p>
+                            </aside>
+                            <aside>
+                                <p>
+                                    <img src="{{ asset('images/fidelisation/icone_privilege.png') }}" class="icone_client" alt="gris">
+                                </p>
+                            </aside>
+                        </div>
+                        <div class="f_block_bottom">
+                            <aside>
+                                <p>Client</p>
+                                <p class="nom_f">PRIVILEGE</p>
+                            </aside>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-3" >
+                    <a class="f_block" href="#">
+                        <div class="f_block_top">
+                            <aside>
+                                <p><span class="f_val">200</span> Clients</p>
+                            </aside>
+                            <aside>
+                                <p>
+                                    <img src="{{ asset('images/fidelisation/icone_exclusif.png') }}" class="icone_client" alt="gris">
+                                </p>
+                            </aside>
+                        </div>
+                        <div class="f_block_bottom">
+                            <aside>
+                                <p>Client</p>
+                                <p class="nom_f">EXCLUSIF</p>
+                            </aside>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {# /liste fidel #}
+            {# statistique #}
+            <div class="row block2">
+                <div class="col-lg-3">
+                    <div class="f_block">
+                        <div class="f_block_top">
+                            <aside>
+                                <p>
+                                    <img src="{{ asset('images/fidelisation/icone_friends.png') }}" class="icone_stat" alt="icone_friends">
+                                </p>
+                            </aside>
+                        </div>
+                        <div class="f_block_bottom">
+                            <aside>
+                                <p>Nombre <br>de clients fidelisés</p>
+                            </aside>
+                            <aside>
+                                <p class="f_val_stat">160</p>
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="f_block">
+                        <div class="f_block_top">
+                            <aside>
+                                <p>
+                                    <img src="{{ asset('images/fidelisation/icone_nuite.png') }}" class="icone_stat" alt="icone_friends">
+                                </p>
+                            </aside>
+                        </div>
+                        <div class="f_block_bottom">
+                            <aside>
+                                <p>Nombre <br>de nuitées totales</p>
+                            </aside>
+                            <aside>
+                                <p class="f_val_stat">160</p>
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="f_block">
+                        <div class="f_block_top">
+                            <aside>
+                                <p>
+                                    <img src="{{ asset('images/fidelisation/icone_rev_global.png') }}" class="icone_stat" alt="icone_friends">
+                                </p>
+                            </aside>
+                        </div>
+                        <div class="f_block_bottom">
+                            <aside>
+                                <p>Revenu <br>global</p>
+                            </aside>
+                            <aside>
+                                <p class="f_val_stat"><span class="montant">9000000</span></p>
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {# /statistique #}
+            {# tableau et graph #}
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="f_table_home">
+                        <table class="table" id="table_f">
+                            <thead>
+                                <tr>
+                                    <th><span>Nom/Prénom</span></th>
+                                    <th><span>Email</span></th>
+                                    <th><span>Téléphone</span></th>
+                                    <th><span>Fidélisation</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span>Andrian mmm</span></td>
+                                    <td><span>Email@gmail.com</span></td>
+                                    <td><span>032 02 025 01</span></td>
+                                    <td>
+                                        <span class="btn_exclusif span_round">Exclusif</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span>Andrian mmm</span></td>
+                                    <td><span>Email@gmail.com</span></td>
+                                    <td><span>032 02 025 01</span></td>
+                                    <td>
+                                        <span class="btn_cardex span_round">Cardex</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span>Andrian mmm</span></td>
+                                    <td><span>Email@gmail.com</span></td>
+                                    <td><span>032 02 025 01</span></td>
+                                    <td>
+                                        <span class="btn_preferentiel span_round">Préférentiel</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span>Andrian mmm</span></td>
+                                    <td><span>Email@gmail.com</span></td>
+                                    <td><span>032 02 025 01</span></td>
+                                    <td>
+                                        <span class="btn_privilège span_round">Privilège</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span>Andrian mmm</span></td>
+                                    <td><span>Email@gmail.com</span></td>
+                                    <td><span>032 02 025 01</span></td>
+                                    <td>
+                                        <span class="btn_preferentiel span_round">Préférentiel</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="f_graph">
+                        {# graph #}
+                        <div>
+                            <canvas id="canvas_fidelisation"></canvas>
+                        </div>
+                        <div id="chart-legends_fidelisation"></div>
+                    </div>
+                </div>
+            </div>
+            {# /tableau et graph #}
+        </div>
+    <section>
+{% endblock %}
+{% block javascripts %}
+
+    <script>
+
+        const data = {
+            labels: [
+                'Red',
+                'Blue',
+                'Yellow'
+            ],
+            datasets: [{
+                label: 'My First Dataset',
+                data: [300, 50, 100],
+                backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)'
+                ],
+                hoverOffset: 4
+            }]
+        };
+
+        const config = {
+            type: 'doughnut',
+            data: data,
+            options: {
+                responsive: true,
+                plugins: {
+                legend: {
+                    position: 'right',
+                },
+                title: {
+                    display: false,
+                    text: ''
+                }
+                }
+            },
+        };
+
+        var myChart = new Chart(
+            document.getElementById('canvas_fidelisation'),
+            config
+        );
+
+        var table = $('#table_f').DataTable({
+                    "language": {
+                        "sEmptyTable": "Aucune donnée disponible dans le tableau",
+                        "sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
+                        "sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
+                        "sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
+                        "sInfoPostFix": "",
+                        "sInfoThousands": ",",
+                        "sLengthMenu": "Afficher _MENU_ éléments",
+                        "sLoadingRecords": "Chargement...",
+                        "sProcessing": "Traitement...",
+                        "sSearch": "Rechercher :",
+                        "sZeroRecords": "Aucun élément correspondant trouvé",
+                        "oPaginate": {
+                            "sFirst": "Premier",
+                            "sLast": "Dernier",
+                            "sNext": "Suivant",
+                            "sPrevious": "Précédent"
+                        },
+                        "oAria": {
+                            "sSortAscending": ": activer pour trier la colonne par ordre croissant",
+                            "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+                        },
+                        "select": {
+                            "rows": {
+                                    "_": "%d lignes sélectionnées",
+                                    "0": "Aucune ligne sélectionnée",
+                                    "1": "1 ligne sélectionnée"
+                            }
+                        }
+                    },
+
+                    /*"ajax" : {
+                        url : "/profile/select_current_client", // any am Clientcontroller
+                        type : 'POST', 
+                        data : {
+                            'pseudo_hotel' : pseudo_hotel,
+                            'date'  : $("#donnee_du_jour_createdAt").val(),
+							'date1' : $("#date1").val(),
+							'date2'	: $("#date2").val()
+                            },
+                        "dataSrc":"",
+                        
+                    },*/
+                    "initComplete":function( settings, json){
+						
+                        var montant = document.querySelectorAll(".montant");
+                        var t = montant.length;
+                        var test = new Intl.NumberFormat();
+                        if (t > 0) {
+                            for (var i = 0; i < t; i++) {
+                                var val = test.format(montant[i].innerHTML);
+                                montant[i].innerHTML = val;
+                            }           
+                        }
+                    },
+
+                    //annule le tri
+                    order : [[0 , 'asc']],
+                    ordering : false,
+
+                    responsive: true,
+                    scrollY: false, // raha scrollena de asina val ex 400
+                    scrollX: true,
+                    scrollCollapse: true,
+                    paging: true,
+                     autoFill: true
+                });
+
+                new $.fn.dataTable.FixedHeader(table);
+            
+    </script>
+    
+{% endblock %}

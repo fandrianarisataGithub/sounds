@@ -113,7 +113,6 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
         $l_hotel = $this->entityManager->getRepository(Hotel::class)->findOneBy(['nom' => $user_hotel]);
        
         if(!$l_hotel){ // pour le tous comme hotel
-            
             // si le groupe est sounds
             if($groupe == "sounds"){
                 // seules les profiles super_admin ou admin_all_hotels ou editeur peuvent s'y accéder
@@ -183,6 +182,9 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
                     // initialisation de la variable session hotel
                     $hotel['pseudo_hotel'] = $hotel_cible;
                     $hotel['current_page'] = "hebergement";
+                    if($user->getComptable() == "oui"){
+                        $hotel['current_page'] = "fournisseur";
+                    }
                     $hotel['user'] = $user;
                     $hotel['groupe'] = $groupe;
                     //dd($hotel['pseudo_hotel']);

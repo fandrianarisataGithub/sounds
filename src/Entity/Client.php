@@ -73,6 +73,11 @@ class Client
      */
     private $tarif;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Fidelisation::class, inversedBy="client")
+     */
+    private $fidelisation;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -206,6 +211,18 @@ class Client
     public function setTarif(?string $tarif): self
     {
         $this->tarif = $tarif;
+
+        return $this;
+    }
+
+    public function getFidelisation(): ?Fidelisation
+    {
+        return $this->fidelisation;
+    }
+
+    public function setFidelisation(?Fidelisation $fidelisation): self
+    {
+        $this->fidelisation = $fidelisation;
 
         return $this;
     }

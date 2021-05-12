@@ -143,7 +143,7 @@ class ClientController extends AbstractController
             foreach ($tab_aff as $item) {
 
                 array_push($t, ['<div>' . $item->getNom() . '</div><div>' . $item->getPrenom() . '</div><div><span>Ajouté le : </span>' 
-                . $item->getCreatedAt()->format("d-m-Y") . '</div>', $item->getDateArrivee()->format('d-m-Y'), $item->getDateDepart()->format('d-m-Y'), $item->getProvenance(), $item->getTarif(), $item->getDureeSejour(), $item->getNbrChambre(), '<span class="montant">' 
+                . $item->getCreatedAt()->format("d-m-Y") . '</div>', $item->getDateArrivee()->format('d-m-Y'), $item->getDateDepart()->format('d-m-Y'), $item->getProvenance(), $item->getDureeSejour(), $item->getNbrChambre(), '<span class="montant">' 
                 .$item->getPrixTotal().'</span>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_diso" data-id = "' 
                 . $item->getId() . '" class="btn btn_client_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a><a href="#" data-toggle="modal" data-target="#modal_form_confirme" data-id = "' 
                 . $item->getId() . '" class="btn btn_client_suppr btn-danger btn-xs"><span class="fa fa-trash-o"></span></a></div>']);
@@ -243,12 +243,6 @@ class ClientController extends AbstractController
                                 <input type="text" id="modif_prix_total_client" class="input_nombre" value="'. $client->getPrixTotal() .'">
                                 <span class="span__ar">Ar</span>
                             </div>
-
-                            <div class="form-group">
-                                <label for="n_date_depart">Tarif :
-                                </label>
-                                <input type="text" id="modif_tarif_client" class="form-control" value = "' . $client->getTarif() . '" name = "tarif">
-                            </div>
                         
                             <div class="form-group" >
                                 <button type = "submit" class="btn btn-warning" id="a_modal_modif_client" data-id="'. $client->getId() .'">
@@ -301,7 +295,7 @@ class ClientController extends AbstractController
             $prenom = $request->get('prenom');
             
             $nbr_chambre = $request->get('nbr_chambre');
-            $tarif = $request->get('tarif');
+            // $tarif = $request->get('tarif');
             $provenance = $request->get('provenance');
             $prix_total = $request->get('prix_total');
 
@@ -316,7 +310,7 @@ class ClientController extends AbstractController
             $client = $repoClient->find($id);
             $client->setNom($nom);
             $client->setPrenom($prenom);
-            $client->setTarif($tarif);
+            // $client->setTarif($tarif);
             $client->setProvenance($provenance);
             $client->setNbrChambre($nbr_chambre);
             $client->setPrixTotal(str_replace(" ", "", $prix_total));
