@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use App\Services\Services;
 use App\Repository\HotelRepository;
 use App\Repository\ClientRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,17 +27,53 @@ class PDFController extends AbstractController
     /**
      * @Route("/profile/pdf_ddj", name ="pdf_ddj")
      */
-    public function pdf_ddj(Request $request, DonneeDuJourRepository $repoDdj, HotelRepository $repoHotel, ClientRepository $repoClient): Response
+    public function pdf_ddj(Services $services ,Request $request, DonneeDuJourRepository $repoDdj, HotelRepository $repoHotel, ClientRepository $repoClient): Response
     {
            
             if($request->request->count() > 0){
              
                 $date = $request->request->get('date');
-                $hotel = $request->request->get('hotel');
-                $hotel = $repoHotel->findOneBy(["pseudo" => $hotel]);
+                $pseudo_hotel = $request->request->get('hotel');
+                $hotel = $repoHotel->findOneBy(["pseudo" => $pseudo_hotel]);
                 $date = date_create($date);
                 $ddj = $repoDdj->findOneBy(["createdAt" => $date, "hotel" => $hotel]);
-                $clients = $repoClient->findBy(["createdAt" => $date, "hotel" => $hotel]);
+            
+
+                //$all_date_asked = $services->all_date_between2_dates($date1, $date2);
+                $all_date_asked = [$date->format('Y-m-d')];
+                //dd($all_date_asked);
+                
+                $tab = [];
+               
+                $data_session['current_page'] = "crj";
+                $data_session['pseudo_hotel'] = $pseudo_hotel;
+                $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+                $current_id_hotel = $l_hotel->getId();
+                $clients = $repoClient->findAll();
+                foreach ($clients as $item) {
+                    $son_id_hotel = $item->getHotel()->getId();
+                    if ($son_id_hotel == $current_id_hotel) {
+                        array_push($tab, $item);
+                    }
+                }
+                $clients = [];
+                foreach ($tab as $client) {
+                    // on liste tous les jour entre sa dete arrivee et date depart
+                    $sa_da = $client->getDateArrivee();
+                    $sa_dd = $client->getDateDepart();
+                    //dd($sa_dd);
+                    $his_al_dates = $services->all_date_between2_dates($sa_da, $sa_dd);
+                    //dd($his_al_dates);
+                    for ($i = 0; $i < count($all_date_asked); $i++) {
+                        for ($j = 0; $j < count($his_al_dates); $j++) {
+                            if ($all_date_asked[$i] == $his_al_dates[$j]) {
+                                if (!in_array($client, $clients)) {
+                                    array_push($clients, $client);
+                                }
+                            }
+                        }
+                    }
+                }
             
                 // Configure Dompdf according to your needs
                 $pdfOptions = new Options();
@@ -60,11 +97,14 @@ class PDFController extends AbstractController
 
                 // Render the HTML as PDF
                 $dompdf->render();
-
+               
                 // Output the generated PDF to Browser (inline view)
-                $dompdf->stream("donnee_du_jour_".$hotel->getPseudo()."_".$date->format("d-m-Y"), [
+                
+                $dompdf->stream("donnee_du_jour_" . $pseudo_hotel . "_" . $date->format('d-m-Y').".pdf", [
                     "Attachment" => true
                 ]);
+                
+                exit();
             }
             return new Response("le PDF a été téléchargé");
            

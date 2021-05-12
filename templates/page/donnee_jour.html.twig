@@ -199,6 +199,10 @@
                                             <input type="text" id="prix_total" class="input_nombre">
                                             <span class="span__ar">Ar</span>
                                         </div>
+                                        <div class="form-group">
+                                            <label for="tarif_client" class="">Tarif :</label>
+                                            <input type="text" id="tarif_client">
+                                        </div>
                                     </div>
                                     <div>
                                         <button class="btn btn-default" id = "ajouter_client">
@@ -892,6 +896,7 @@ new Cleave('.input_pourcent', {blocks: [4]});
                 var nbr_chambre = $('#nbr_chambre').val();
                 var prix_total = $("#prix_total").val();
                 var provenance = $("#provenance").val();
+                var tarif_client = $("#tarif_client").val();
                 var data = {
                     "nom_client"    : nom,
                     "prenom_client" : prenom,
@@ -900,7 +905,8 @@ new Cleave('.input_pourcent', {blocks: [4]});
                     "nbr_chambre"   : nbr_chambre,
                     "prix_total"   : prix_total,
                     "createdAt"     : createdAt, 
-                    "provenance"     : provenance,    
+                    "provenance"     : provenance, 
+                    "tarif_client" : tarif_client,   
                 };
 
                 // test
@@ -1005,6 +1011,7 @@ new Cleave('.input_pourcent', {blocks: [4]});
                 var nbr_chambre = $('#modif_nbr_chambre_client').val();
                 var prix_total = $("#modif_prix_total_client").val();
                 var provenance = $("#modif_provenance_client").val();
+                var tarif = $("#modif_tarif_client").val();
                 //alert(id+"/"+nom+"/"+date_depart+"/"+date_arrivee+"/"+prenom);
                 // ajax
                 $.ajax({
@@ -1017,7 +1024,8 @@ new Cleave('.input_pourcent', {blocks: [4]});
                         "date_depart"   : date_depart,
                         "nbr_chambre"   : nbr_chambre,
                         "prix_total"    : prix_total,
-                        "provenance"    : provenance,    
+                        "provenance"    : provenance,  
+                         "tarif"    : tarif,    
                     },
                     type : "POST",
                     beforeSend : function(){

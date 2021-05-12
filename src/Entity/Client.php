@@ -68,6 +68,11 @@ class Client
      */
     private $provenance;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $tarif;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -189,6 +194,18 @@ class Client
     public function setProvenance(?string $provenance): self
     {
         $this->provenance = $provenance;
+
+        return $this;
+    }
+
+    public function getTarif(): ?string
+    {
+        return $this->tarif;
+    }
+
+    public function setTarif(?string $tarif): self
+    {
+        $this->tarif = $tarif;
 
         return $this;
     }

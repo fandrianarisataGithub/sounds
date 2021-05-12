@@ -245,6 +245,7 @@ class PageController extends AbstractController
         if ($request->isXmlHttpRequest()) {
 
             $nom_client = $request->get('nom_client');
+            $tarif_client = $request->get('tarif_client');
             $prenom_client = (empty($request->get('prenom_client'))) ? "" : $request->get('prenom_client');
             $date_arrivee = $request->get('date_arrivee');
             $date_depart = $request->get('date_depart');
@@ -262,6 +263,7 @@ class PageController extends AbstractController
                 $client->setDateArrivee($date_arrivee);
                 $client->setDateDepart($date_depart);
                 $client->setDureeSejour($days);
+                $client->setTarif($tarif_client);
                 $client->setCreatedAt($createdAt);
                 $hotel->addClient($client);
                 $manager->persist($client);

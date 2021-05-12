@@ -1345,6 +1345,7 @@
                 var nbr_chambre = $('#modif_nbr_chambre_client').val();
                 var prix_total = $("#modif_prix_total_client").val();
                 var provenance = $("#modif_provenance_client").val();
+				 var tarif = $("#modif_tarif_client").val();
                 //alert(id+"/"+nom+"/"+date_depart+"/"+date_arrivee+"/"+prenom);
                 // ajax
                 $.ajax({
@@ -1357,7 +1358,8 @@
                         "date_depart"   : date_depart,
                         "nbr_chambre"   : nbr_chambre,
                         "prix_total"    : prix_total,
-                        "provenance"    : provenance,    
+                        "provenance"    : provenance, 
+						"tarif"    : tarif,    
                     },
                     type : "POST",
                     beforeSend : function(){
