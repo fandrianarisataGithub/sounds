@@ -19,10 +19,13 @@ var t = montant.length;
 var test = new Intl.NumberFormat();
 if (t > 0) {
     for (var i = 0; i < t; i++) {
-        var val = test.format(montant[i].innerHTML);
+        var temp = montant[i].innerHTML.replaceAll(" ", "");
+        var val = test.format(temp);
         montant[i].innerHTML = val;
     }
 }
+
+
 
 
 $(function() {

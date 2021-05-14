@@ -3,6 +3,8 @@
 {% block title %}Fidélisation{% endblock %}
 {% block stylesheets %}
 	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/style_chart_rounded.css') }}">
+    <link rel="stylesheet" href="https://github.com/chartjs/Chart.js/releases/download/v2.9.3/Chart.min.css">
     <style>
         .side-nav{
             width : 100px !important;
@@ -40,7 +42,7 @@
             </header>
             {# liste fidel #}
             <div class="row block1">
-                <div class="col-lg-3">
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                     <a class="f_block" href="#">
                         <div class="f_block_top">
                             <aside>
@@ -60,7 +62,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col-lg-3" >
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" >
                     <a class="f_block" href="#">
                         <div class="f_block_top">
                             <aside>
@@ -80,7 +82,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col-lg-3" >
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" >
                     <a class="f_block" href="#">
                         <div class="f_block_top">
                             <aside>
@@ -100,7 +102,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col-lg-3" >
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" >
                     <a class="f_block" href="#">
                         <div class="f_block_top">
                             <aside>
@@ -124,7 +126,7 @@
             {# /liste fidel #}
             {# statistique #}
             <div class="row block2">
-                <div class="col-lg-3">
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                     <div class="f_block">
                         <div class="f_block_top">
                             <aside>
@@ -138,12 +140,12 @@
                                 <p>Nombre <br>de clients fidelisés</p>
                             </aside>
                             <aside>
-                                <p class="f_val_stat">160</p>
+                                <p class="f_val_stat"><span>160</span></p>
                             </aside>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                     <div class="f_block">
                         <div class="f_block_top">
                             <aside>
@@ -157,12 +159,12 @@
                                 <p>Nombre <br>de nuitées totales</p>
                             </aside>
                             <aside>
-                                <p class="f_val_stat">160</p>
+                                <p class="f_val_stat"><span>160</span></p>
                             </aside>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                     <div class="f_block">
                         <div class="f_block_top">
                             <aside>
@@ -176,7 +178,7 @@
                                 <p>Revenu <br>global</p>
                             </aside>
                             <aside>
-                                <p class="f_val_stat"><span class="montant">9000000</span></p>
+                                <p class="f_val_stat"><span class="montant_f">1900440000</span><span class="unite_f"> Ar</span></p>
                             </aside>
                         </div>
                     </div>
@@ -184,9 +186,16 @@
             </div>
             {# /statistique #}
             {# tableau et graph #}
-            <div class="row">
+            <div class="row block3">
                 <div class="col-lg-6">
                     <div class="f_table_home">
+                        <div class="top_tab">
+                            <h4>Clients</h4>
+                             <p id="p_container_input_search">
+                                <span class="fa fa-search"></span>
+                                <input type="text" id="mySearchText" placeholder="Rechercher...">
+                            </p>
+                        </div>
                         <table class="table" id="table_f">
                             <thead>
                                 <tr>
@@ -198,7 +207,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><span>Andrian mmm</span></td>
+                                    <td><span class="nom">Andrian mmm</span></td>
                                     <td><span>Email@gmail.com</span></td>
                                     <td><span>032 02 025 01</span></td>
                                     <td>
@@ -206,7 +215,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><span>Andrian mmm</span></td>
+                                    <td><span class="nom">qsqsqs f</span></td>
                                     <td><span>Email@gmail.com</span></td>
                                     <td><span>032 02 025 01</span></td>
                                     <td>
@@ -214,7 +223,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><span>Andrian mmm</span></td>
+                                    <td><span  class="nom">Andrian d</span></td>
                                     <td><span>Email@gmail.com</span></td>
                                     <td><span>032 02 025 01</span></td>
                                     <td>
@@ -222,15 +231,15 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><span>Andrian mmm</span></td>
+                                    <td><span  class="nom">Andrian ht</span></td>
                                     <td><span>Email@gmail.com</span></td>
                                     <td><span>032 02 025 01</span></td>
                                     <td>
-                                        <span class="btn_privilège span_round">Privilège</span>
+                                        <span class="btn_privilege span_round">Privilège</span>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><span>Andrian mmm</span></td>
+                                    <td><span  class="nom">Andrian sq</span></td>
                                     <td><span>Email@gmail.com</span></td>
                                     <td><span>032 02 025 01</span></td>
                                     <td>
@@ -244,62 +253,43 @@
                 <div class="col-lg-6">
                     <div class="f_graph">
                         {# graph #}
-                        <div>
-                            <canvas id="canvas_fidelisation"></canvas>
+                        <div class="canvas-con">
+                            <p class="text_center_chart">Provenance <br> client</p>
+                            <div class="canvas-con-inner">
+                                <canvas id="mychart" height="250px"></canvas>
+                            </div>
+                            <div id="my-legend-con" class="legend-con"></div>
                         </div>
-                        <div id="chart-legends_fidelisation"></div>
                     </div>
                 </div>
             </div>
             {# /tableau et graph #}
+            <div style="width: 200px; height: 200px;">
+                <canvas id="usersChart" width="1" height="1"></canvas>
+            </div>
         </div>
     <section>
 {% endblock %}
 {% block javascripts %}
+    <script src="https://github.com/chartjs/Chart.js/releases/download/v2.9.3/Chart.min.js"></script>
 
     <script>
+        var montant = document.querySelectorAll(".montant_f");
+            var t = montant.length;
+            var test = new Intl.NumberFormat();
+            if (t > 0) {
+                for (var i = 0; i < t; i++) {
+                    
+                    var val = test.format(montant[i].innerHTML.replaceAll(" ", ""));
+                    //alert(montant[i].innerHTML);
+                    montant[i].innerHTML = val;
+                }           
+        }
 
-        const data = {
-            labels: [
-                'Red',
-                'Blue',
-                'Yellow'
-            ],
-            datasets: [{
-                label: 'My First Dataset',
-                data: [300, 50, 100],
-                backgroundColor: [
-                'rgb(255, 99, 132)',
-                'rgb(54, 162, 235)',
-                'rgb(255, 205, 86)'
-                ],
-                hoverOffset: 4
-            }]
-        };
+        $(document).ready(function(){
 
-        const config = {
-            type: 'doughnut',
-            data: data,
-            options: {
-                responsive: true,
-                plugins: {
-                legend: {
-                    position: 'right',
-                },
-                title: {
-                    display: false,
-                    text: ''
-                }
-                }
-            },
-        };
-
-        var myChart = new Chart(
-            document.getElementById('canvas_fidelisation'),
-            config
-        );
-
-        var table = $('#table_f').DataTable({
+            var table = $('#table_f').DataTable({
+                   
                     "language": {
                         "sEmptyTable": "Aucune donnée disponible dans le tableau",
                         "sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
@@ -310,7 +300,7 @@
                         "sLengthMenu": "Afficher _MENU_ éléments",
                         "sLoadingRecords": "Chargement...",
                         "sProcessing": "Traitement...",
-                        "sSearch": "Rechercher :",
+                        "sSearch": "",
                         "sZeroRecords": "Aucun élément correspondant trouvé",
                         "oPaginate": {
                             "sFirst": "Premier",
@@ -369,6 +359,170 @@
                 });
 
                 new $.fn.dataTable.FixedHeader(table);
+
+                $("div.toolbar").html(`
+                    <div class="tf_toolbar">
+                        <h4> Titre du tableau </h4>
+                    </div>
+                `);
+                $('#mySearchText').on( 'keyup', function () {
+                    table.search($(this).val()).draw();
+                } );
+
+                /* datatable clickable */
+
+                $('#table_f').on('click', 'tbody td', function() {
+
+                //get textContent of the TD
+                console.log('TD cell textContent : ', this.textContent)
+
+                //get the value of the TD using the API 
+                console.log('value by API : ', table.cell({ row: this.parentNode.rowIndex, column : this.cellIndex }).data());
+                })
+
+
+                Chart.defaults.RoundedDoughnut    = Chart.helpers.clone(Chart.defaults.doughnut);
+                Chart.controllers.RoundedDoughnut = Chart.controllers.doughnut.extend({
+                    draw: function(ease) {
+                        var ctx           = this.chart.ctx;
+                        var easingDecimal = ease || 1;
+                        var arcs          = this.getMeta().data;
+                        Chart.helpers.each(arcs, function(arc, i) {
+                            arc.transition(easingDecimal).draw();
+
+                            var pArc   = arcs[i === 0 ? arcs.length - 1 : i - 1];
+                            var pColor = pArc._view.backgroundColor;
+
+                            var vm         = arc._view;
+
+                            var radius     = (vm.outerRadius + vm.innerRadius) / 2;
+                            var thickness  = (vm.outerRadius - vm.innerRadius) / 2;
+
+                            var startAngle = Math.PI - vm.startAngle - Math.PI / 2;
+                            var angle      = Math.PI - vm.endAngle - Math.PI / 2;
+
+                            ctx.save();
+                            ctx.translate(vm.x, vm.y);
+
+                            ctx.fillStyle = i === 0 ? vm.backgroundColor : pColor;
+                            ctx.beginPath();
+                            ctx.arc(radius * Math.sin(startAngle), radius * Math.cos(startAngle), thickness, 0, 2 * Math.PI);
+                            ctx.fill();
+
+                            ctx.fillStyle = vm.backgroundColor;
+                            ctx.beginPath();
+                            ctx.arc(radius * Math.sin(angle), radius * Math.cos(angle), thickness, 0, 2 * Math.PI);
+                            ctx.fill();
+
+                            ctx.restore();
+                        });
+                    }
+                });
+
+           var icone = [
+               "{{ asset('images/fidelisation/client_ota.png') }}",
+               "{{ asset('images/fidelisation/client_corpo.png') }}",
+               "{{ asset('images/fidelisation/client_toa.png') }}",
+               "{{ asset('images/fidelisation/client_direct.png') }}"
+           ]
+
+            var chartData = [
+                {"nom": "OTA", "eff": 25}, 
+                {"nom": "CORPORATE", "eff": 20}, 
+                {"nom": "TOA", "eff": 13}, 
+                {"nom": "DIRECT", "eff": 14}
+            ]
+            var data_aff = [];
+
+            for(var i = 0; i< chartData.length; i++){
+                data_aff.push(chartData[i].eff);
+            }
+
+            var label = [];
+
+            for(var i = 0; i< chartData.length; i++){
+                label.push(chartData[i].nom);
+            }
+
+            var myChart = new Chart(document.getElementById('mychart'), {
+                type: 'RoundedDoughnut',// doughnut
+                animation:{
+                    animateScale:true
+                },
+                data: {
+                    labels: label,
+                    datasets: [{
+                        label: 'Client',
+                        data: data_aff,
+                        backgroundColor: [
+                            "#1098F7",
+                            "#47C582",
+                            "#D49E00",
+                            "#7B61FF"
+                        ],
+                        borderColor: "#2b2b2b",
+                        borderWidth: 0,
+                    }]
+                },
+                options: {
+                    elements: {
+                        center: {
+                            //text: textInside
+                        }
+                    },
+                    hover : {
+                        onHover: function(event,elements) {
+                            $("#mychart").css("cursor", elements[0] ? "pointer" : "default");
+                            $("p.text_center_chart").css("background", "transparent !important");
+                        }
+                    },
+                    responsive: true,
+                    legend: false,
+                    legendCallback: function(chart) {
+                        var legendHtml = [];
+                        legendHtml.push('<ul class="ul_legend">');
+                        var item = chart.data.datasets[0];
+                        for (var i=0; i < item.data.length; i++) {
+                            legendHtml.push('<li>');
+                            legendHtml.push(`
+                                <div class="div_icone">
+                                    <img width="45px" height="45px" src="`+ icone[i] +`" alt="OTA" />
+                                </div>
+                                <div class="div_label">
+                                    <span>Client ` + chart.data.labels[i] + `</span></br>
+                                    <span>val %</span>
+                                </div>
+                                <div class="div_stat">
+                                    <span class="effectif">` + item.data[i] + `</span>
+                                </div>
+                            `);
+                            legendHtml.push('</li>');
+                        }
+
+                        legendHtml.push('</ul>');
+                        return legendHtml.join("");
+                    },
+                    tooltips: {
+                        enabled: true,
+                        mode: 'label',
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                var indice = tooltipItem.index;
+                                return data.datasets[0].data[indice] + " clients " + data.labels[indice] + '';
+                            }
+                        }
+                    },
+                }
+            });
+
+            $('#my-legend-con').html(myChart.generateLegend());
+
+            console.log(document.getElementById('my-legend-con'));
+
+                /* / chart*/
+
+        
+        })
             
     </script>
     

@@ -87,15 +87,13 @@
 					</a>
 				</li>
 			{% endif %}
-			{% if app.user.hotel == 'tous' %}
-				<li>
-					<a href="#">
-						<div>
-							<img src="{{ asset('images/tropical.png') }}" alt="tw">
-						</div>
-					</a>
-				</li>
-			{% endif %}
+			<li id="nav_fixed_top_tw">
+				<a href="{{ path('fidelisation_home', {'pseudo_hotel' : hotel}) }}">
+					<div>
+						F
+					</div>
+				</a>
+			</li>
 			<li id="log_out_entete">
 				<div>
 					<a href="{{ path('app_logout') }}">
