@@ -7305,7 +7305,25 @@ p.val_montant_banque{
     align-items: center;
     margin-bottom: 50px;
 }
-
+.fidelisation header > div:first-child{
+    display: flex;
+    align-items: center;
+}
+.fidelisation header > div:first-child div span.fa{
+    margin-left: 15px;
+    font-size: 25px;
+   color: #808080 !important;
+    font-weight : 600;
+}
+.with_last .retour{
+    margin-left: 10px;
+}
+.with_last:hover{
+    text-decoration: none;
+}
+.with_last .retour span{
+    color: #808080 !important;
+}
 .f_titre h1{
     font-size: 41px;
     color: #272727;
@@ -7463,6 +7481,9 @@ p.val_montant_banque{
     background: #2b2b2b;
     padding: 25px;
     border-radius: 30px;
+    display: flex;
+    justify-content: end;
+    align-items: center;
 }
 .f_graph #mychart{
     width: 250px;
@@ -7478,6 +7499,10 @@ p.val_montant_banque{
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+.p_container_input_search{
+    position: relative;
+    right: 25px;
 }
 .top_tab h4{
     font-weight: 600;
@@ -7656,5 +7681,231 @@ table.dataTable tbody td {
         align-items: center;
     }
 }
+
+/* cardex ...*/
+
+.with_retour{
+    display: flex;
+   align-items: center;
+    margin-left: 25px;
+}
+.with_retour div img{
+    width: 25px;
+    margin-right: 10px;
+}
+.with_retour div span{
+   color: #808080 !important;
+}
+.with_retour:hover{
+    text-decoration: none;
+}
+
+.f_sous_titre{
+    display: flex;
+    align-items: center;
+}
+
+.f_sous_titre h1{
+    margin-left: 35px;
+    font-size: 30px;
+    font-weight: 800;
+    margin-right : 25px;
+}
+
+.f_sous_titre div img{
+    position: relative;
+    top: 5px;
+}
+
+/* /cardex... */
+
+/* fiche client */
+
+.fiche_table{
+    padding-left: 20px;
+}
+
+.section_pers{
+    
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: start;
+}
+
+.section_pers .title{
+    color: #808080 !important;
+}
+.section_pers .nom{
+    font-size: 19px;
+    color: #444343;
+}
+.section_pers .action{
+    position: relative;
+    bottom: 15px;
+}
+.section_pers .fa{
+    color: #808080;
+    transition: all 1s ease-in-out;
+}
+
+.section_pers .action a:hover{
+    text-decoration: none;
+}
+
+.section_pers .action a:hover span{
+    color: #d29e00;
+    transition: all 1s ease-in-out;
+}
+
+.background_white{
+  
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    background: #fff;
+}
+.background_white .dataTables_scroll{
+    margin-top: 45px !important;
+}
+.background_white table{
+    margin: 0px !important;
+}
+#table_presta_client{
+    width: 100%;
+}
+
+.background_white table thead{
+    background: #F3F6F9;
+}
+
+.background_white .hotel{
+    width: 100px;
+    text-align: center
+}
+.background_white .check{
+     width: 100px;
+    text-align: center
+}
+.background_white th, .background_white td{
+    text-align: center;
+}
+.background_white .prix{
+    text-align: end;
+    width: 80px;
+   
+}
+.background_white td.prix span{
+    font-size: 13px !important;
+    display: block;
+    left: 0;
+
+}
+.ca_nuite{
+    display: flex;
+    flex-direction: column;
+    height: 350px;
+    justify-content: space-between;
+}
+.ca_nuite .cn{
+   background: #1F1F1F;
+    width: 300px;
+    margin: 0px auto 0px auto;
+    border-radius: 20px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: start;
+    height: 150px;
+}
+.cn{
+    color: #fff !important;
+}
+.cn_block_bottom{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: end;
+}
+.cn_block_bottom span.unite_f{
+    top: 0;
+    font-size: 12px;
+    color: #fff !important;
+}
+.background_white h3{
+    width: 100%;
+    font-weight: 600;
+    
+}
+.background_white h3 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.background_white h3 div.action{
+    width: 40px;
+    height: 40px;
+}
+.background_white h3 div.action a span.fa{
+    font-size: 40px;
+    transition: all 1s ease-in-out;
+    color: #808080;
+}
+.background_white h3 div.action a:hover span.fa{
+    color: #d29e00 ;
+    transition: all 1s ease-in-out;
+}
+.background_white label > select{
+    display: inline-block;
+    width: 50px;
+    height: 30px;
+    border-radius: 15px;
+    border: 1px solid rgba(189,189,189,0.8);
+}
+#table_presta_client thead th{
+    border: none !important;
+    color: rgba(90,91,91, 0.8)
+}
+
+#table_presta_client tbody tr td{
+    border: none;
+}
+
+@media all and (max-width:991px){
+    .ca_nuite {
+        display: flex;
+        flex-direction: row;
+        height: auto !important;
+        justify-content: space-between;
+        margin-top: 50px;
+    }
+}
+
+@media all and (max-width:767px){
+     #contents{
+         margin-left : 0px !important;
+    }
+    .ca_nuite {
+        
+        flex-direction: column;
+        height: 350px !important;
+        justify-content: space-between;
+        margin-top: 50px;
+    }
+}
+
+
+
+
+
+
+/* / fin client */
+
+
 /* /fidelisation */
 

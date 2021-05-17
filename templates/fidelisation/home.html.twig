@@ -4,7 +4,7 @@
 {% block stylesheets %}
 	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
     <link rel="stylesheet" href="{{ asset('css/style_chart_rounded.css') }}">
-    <link rel="stylesheet" href="https://github.com/chartjs/Chart.js/releases/download/v2.9.3/Chart.min.css">
+    {# <link rel="stylesheet" href="https://github.com/chartjs/Chart.js/releases/download/v2.9.3/Chart.min.css"> #}
     <style>
         .side-nav{
             width : 100px !important;
@@ -43,7 +43,7 @@
             {# liste fidel #}
             <div class="row block1">
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <a class="f_block" href="#">
+                    <a class="f_block" href="{{ path('fidelisation_cardex', {'pseudo_hotel' : hotel}) }}">
                         <div class="f_block_top">
                             <aside>
                                 <p><span class="f_val">200</span> Clients</p>
@@ -63,7 +63,7 @@
                     </a>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" >
-                    <a class="f_block" href="#">
+                    <a class="f_block" href="{{ path('fidelisation_preferentiel', {'pseudo_hotel' : hotel}) }}">
                         <div class="f_block_top">
                             <aside>
                                 <p><span class="f_val">200</span> Clients</p>
@@ -83,7 +83,7 @@
                     </a>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" >
-                    <a class="f_block" href="#">
+                    <a class="f_block" href="{{ path('fidelisation_privilege', {'pseudo_hotel' : hotel}) }}">
                         <div class="f_block_top">
                             <aside>
                                 <p><span class="f_val">200</span> Clients</p>
@@ -103,7 +103,7 @@
                     </a>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" >
-                    <a class="f_block" href="#">
+                    <a class="f_block" href="{{ path('fidelisation_exclusif', {'pseudo_hotel' : hotel}) }}">
                         <div class="f_block_top">
                             <aside>
                                 <p><span class="f_val">200</span> Clients</p>
@@ -250,12 +250,12 @@
                         </table>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-6 col-md-12 col-sm-12">
                     <div class="f_graph">
                         {# graph #}
                         <div class="canvas-con">
-                            <p class="text_center_chart">Provenance <br> client</p>
                             <div class="canvas-con-inner">
+                                <p class="text_center_chart">Provenance <br>client</p>
                                 <canvas id="mychart" height="250px"></canvas>
                             </div>
                             <div id="my-legend-con" class="legend-con"></div>

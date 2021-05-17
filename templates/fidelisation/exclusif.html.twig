@@ -1,0 +1,269 @@
+{% extends "base.html.twig" %}
+{% block title %}
+    CLIENT-EXCLUSIF
+{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
+     <style>
+        .side-nav{
+            width : 100px !important;
+        }
+        #contents{
+            margin-left : 100px !important;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <section
+        id="contents" class="container-fluid">
+        <!-- entete content -->
+        {% include "nav2.html.twig" %}
+        <!-- / entete content -->
+        <div id="hrs_content" class="fidelisation">
+            <header>
+                <a class="f_titre with_retour" href="{{ path('fidelisation_home', {'pseudo_hotel' : hotel}) }}">
+                    <div class="icone_home">
+                        <img width="30px" src="{{ asset('images/fidelisation/home_icone.png') }}" alt="home_icone">
+                    </div>
+                    <div class="retour">
+                        
+                            <span>Retour à l'acceuil</span>
+                       
+                    </div>
+                </a>
+                <div class="f_profile">
+                    <div>
+                        <a href="#">
+                            <img src="{{ asset('images/fidelisation/icone_setting.png') }}"
+                             class="icone_setting" width="20px" alt="icone_setting">
+                        </a>
+                    </div>
+                    <div>
+                        <p>Nom user</p>
+                    </div>
+                    <div class="f_pdp">
+                        <div><img src="{{ asset('images/user_pdp.png') }}" alt="pdp"></div>
+                    </div>
+                </div>
+            </header>
+            {# liste fidel #}
+            <div class="row">
+                <div class="f_sous_titre">
+                    <h1>Client EXCLUSIF</h1>
+                    <div>
+                        <img src="{{ asset('images/fidelisation/icone_exclusif.png') }}" class="icone_client" alt="gris">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row block2">
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                    <div class="f_block">
+                        <div class="f_block_top">
+                            <aside>
+                                <p>
+                                    <img src="{{ asset('images/fidelisation/icone_friends.png') }}" class="icone_stat" alt="icone_friends">
+                                </p>
+                            </aside>
+                        </div>
+                        <div class="f_block_bottom">
+                            <aside>
+                                <p>Nombre de clients <br> EXCLUSIF</p>
+                            </aside>
+                            <aside>
+                                <p class="f_val_stat"><span>160</span></p>
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                    <div class="f_block">
+                        <div class="f_block_top">
+                            <aside>
+                                <p>
+                                    <img src="{{ asset('images/fidelisation/icone_rev_global.png') }}" class="icone_stat" alt="icone_friends">
+                                </p>
+                            </aside>
+                        </div>
+                        <div class="f_block_bottom">
+                            <aside>
+                                <p>Revenu <br>global</p>
+                            </aside>
+                            <aside>
+                                <p class="f_val_stat"><span class="montant_f">1900440000</span><span class="unite_f"> Ar</span></p>
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row block3">
+                <div class="col-lg-6">
+                    <div class="f_table_home">
+                        <div class="top_tab">
+                            <p id="p_container_input_search" class="p_container_input_search">
+                                <span class="fa fa-search"></span>
+                                <input type="text" id="mySearchText" placeholder="Rechercher...">
+                            </p>
+                        </div>
+                        <table class="table" id="table_f">
+                            <thead>
+                                <tr>
+                                    <th><span>Nom/Prénom</span></th>
+                                    <th><span>Email</span></th>
+                                    <th><span>Téléphone</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="nom">Andrian mmm</span></td>
+                                    <td><span>Email@gmail.com</span></td>
+                                    <td><span>032 02 025 01</span></td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td><span class="nom">qsqsqs f</span></td>
+                                    <td><span>Email@gmail.com</span></td>
+                                    <td><span>032 02 025 01</span></td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td><span  class="nom">Andrian d</span></td>
+                                    <td><span>Email@gmail.com</span></td>
+                                    <td><span>032 02 025 01</span></td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td><span  class="nom">Andrian ht</span></td>
+                                    <td><span>Email@gmail.com</span></td>
+                                    <td><span>032 02 025 01</span></td>
+                                   
+                                </tr>
+                                <tr>
+                                    <td><span  class="nom">Andrian sq</span></td>
+                                    <td><span>Email@gmail.com</span></td>
+                                    <td><span>032 02 025 01</span></td>
+                                   
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+         </div>
+    </section>
+{% endblock %}
+{% block javascripts %}
+    <script src="https://github.com/chartjs/Chart.js/releases/download/v2.9.3/Chart.min.js"></script>
+
+    <script>
+        var montant = document.querySelectorAll(".montant_f");
+            var t = montant.length;
+            var test = new Intl.NumberFormat();
+            if (t > 0) {
+                for (var i = 0; i < t; i++) {
+                    
+                    var val = test.format(montant[i].innerHTML.replaceAll(" ", ""));
+                    //alert(montant[i].innerHTML);
+                    montant[i].innerHTML = val;
+                }           
+        }
+
+        $(document).ready(function(){
+
+            var table = $('#table_f').DataTable({
+                   
+                    "language": {
+                        "sEmptyTable": "Aucune donnée disponible dans le tableau",
+                        "sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
+                        "sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
+                        "sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
+                        "sInfoPostFix": "",
+                        "sInfoThousands": ",",
+                        "sLengthMenu": "Afficher _MENU_ éléments",
+                        "sLoadingRecords": "Chargement...",
+                        "sProcessing": "Traitement...",
+                        "sSearch": "",
+                        "sZeroRecords": "Aucun élément correspondant trouvé",
+                        "oPaginate": {
+                            "sFirst": "Premier",
+                            "sLast": "Dernier",
+                            "sNext": "Suivant",
+                            "sPrevious": "Précédent"
+                        },
+                        "oAria": {
+                            "sSortAscending": ": activer pour trier la colonne par ordre croissant",
+                            "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+                        },
+                        "select": {
+                            "rows": {
+                                    "_": "%d lignes sélectionnées",
+                                    "0": "Aucune ligne sélectionnée",
+                                    "1": "1 ligne sélectionnée"
+                            }
+                        }
+                    },
+
+                    /*"ajax" : {
+                        url : "/profile/select_current_client", // any am Clientcontroller
+                        type : 'POST', 
+                        data : {
+                            'pseudo_hotel' : pseudo_hotel,
+                            'date'  : $("#donnee_du_jour_createdAt").val(),
+							'date1' : $("#date1").val(),
+							'date2'	: $("#date2").val()
+                            },
+                        "dataSrc":"",
+                        
+                    },*/
+                    "initComplete":function( settings, json){
+						
+                        var montant = document.querySelectorAll(".montant");
+                        var t = montant.length;
+                        var test = new Intl.NumberFormat();
+                        if (t > 0) {
+                            for (var i = 0; i < t; i++) {
+                                var val = test.format(montant[i].innerHTML);
+                                montant[i].innerHTML = val;
+                            }           
+                        }
+                    },
+
+                    //annule le tri
+                    order : [[0 , 'asc']],
+                    ordering : false,
+
+                    responsive: true,
+                    scrollY: false, // raha scrollena de asina val ex 400
+                    scrollX: true,
+                    scrollCollapse: true,
+                    paging: true,
+                     autoFill: true
+            });
+
+                new $.fn.dataTable.FixedHeader(table);
+
+                $("div.toolbar").html(`
+                    <div class="tf_toolbar">
+                        <h4> Titre du tableau </h4>
+                    </div>
+                `);
+                $('#mySearchText').on( 'keyup', function () {
+                    table.search($(this).val()).draw();
+                });
+
+                /* datatable clickable */
+
+                $('#table_f').on('click', 'tbody td', function() {
+
+                    //get textContent of the TD
+                    console.log('TD cell textContent : ', this.textContent)
+
+                    //get the value of the TD using the API 
+                    console.log('value by API : ', table.cell({ row: this.parentNode.rowIndex, column : this.cellIndex }).data());
+                })
+        })
+            
+    </script>
+    
+{% endblock %}
