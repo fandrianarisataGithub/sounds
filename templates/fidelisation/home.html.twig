@@ -25,103 +25,46 @@
                 <div class="f_titre">
                     <h1>Fidélisation client</h1>
                 </div>
-                <div class="f_profile">
-                    <div>
-                        <a href="#">
-                            <img src="{{ asset('images/fidelisation/icone_setting.png') }}"
-                             class="icone_setting" width="20px" alt="icone_setting">
-                        </a>
-                    </div>
-                    <div>
-                        <p>Nom user</p>
-                    </div>
-                    <div class="f_pdp">
-                        <div><img src="{{ asset('images/user_pdp.png') }}" alt="pdp"></div>
-                    </div>
-                </div>
+                {% include "profile_user_fidelisation.html.twig" %}
             </header>
             {# liste fidel #}
-            <div class="row block1">
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <a class="f_block" href="{{ path('fidelisation_cardex', {'pseudo_hotel' : hotel}) }}">
-                        <div class="f_block_top">
-                            <aside>
-                                <p><span class="f_val">200</span> Clients</p>
-                            </aside>
-                            <aside>
-                                <p>
-                                    <img src="{{ asset('images/fidelisation/icone_cardex.png') }}" class="icone_client" alt="gris">
-                                </p>
-                            </aside>
+            <div class="row block1">      
+                {# boucle fid #}
+                {% for item in fidelisations %}
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="f_action_pack">
+                            <a href="#"  class="dropdown-toggle"
+                                role="button" id="{{ 'dropDownF' ~ item.id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                            >
+                                <span class="fa fa-gear"></span>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="{{ 'dropDownF' ~ item.id }}">
+                                <a class="dropdown-item open_modal" href="#" data-id = "{{ item.id }}"  data-toggle="modal">Parametrer</a>
+                                <a class="dropdown-item open_modal" data-id = "{{ item.id }}" href="#">Supprimer</a>
+                            </div>
                         </div>
-                        <div class="f_block_bottom">
-                            <aside>
-                                <p>Client</p>
-                                <p class="nom_f">CARDEX</p>
-                            </aside>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" >
-                    <a class="f_block" href="{{ path('fidelisation_preferentiel', {'pseudo_hotel' : hotel}) }}">
-                        <div class="f_block_top">
-                            <aside>
-                                <p><span class="f_val">200</span> Clients</p>
-                            </aside>
-                            <aside>
-                                <p>
-                                    <img src="{{ asset('images/fidelisation/icone_pref.png') }}" class="icone_client" alt="gris">
-                                </p>
-                            </aside>
-                        </div>
-                        <div class="f_block_bottom">
-                            <aside>
-                                <p>Client</p>
-                                <p class="nom_f">PREFERENTIEL</p>
-                            </aside>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" >
-                    <a class="f_block" href="{{ path('fidelisation_privilege', {'pseudo_hotel' : hotel}) }}">
-                        <div class="f_block_top">
-                            <aside>
-                                <p><span class="f_val">200</span> Clients</p>
-                            </aside>
-                            <aside>
-                                <p>
-                                    <img src="{{ asset('images/fidelisation/icone_privilege.png') }}" class="icone_client" alt="gris">
-                                </p>
-                            </aside>
-                        </div>
-                        <div class="f_block_bottom">
-                            <aside>
-                                <p>Client</p>
-                                <p class="nom_f">PRIVILEGE</p>
-                            </aside>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" >
-                    <a class="f_block" href="{{ path('fidelisation_exclusif', {'pseudo_hotel' : hotel}) }}">
-                        <div class="f_block_top">
-                            <aside>
-                                <p><span class="f_val">200</span> Clients</p>
-                            </aside>
-                            <aside>
-                                <p>
-                                    <img src="{{ asset('images/fidelisation/icone_exclusif.png') }}" class="icone_client" alt="gris">
-                                </p>
-                            </aside>
-                        </div>
-                        <div class="f_block_bottom">
-                            <aside>
-                                <p>Client</p>
-                                <p class="nom_f">EXCLUSIF</p>
-                            </aside>
-                        </div>
-                    </a>
-                </div>
+                        <a class="f_block" href="{{ path('fidelisation_' ~ item.nom, {'pseudo_hotel' : hotel}) }}">
+                            <div class="f_block_top">
+                                <aside>
+                                    <p><span class="f_val">200</span> Clients</p>
+                                </aside>
+                                <aside>
+                                    <p>
+                                        <img src="{{ asset('images/fidelisation/' ~ item.getIconeCarte()) }}" class="icone_client" alt="gris">
+                                    </p>
+                                </aside>
+                            </div>
+                            <div class="f_block_bottom">
+                                <aside>
+                                    <p>Client</p>
+                                    <p class="nom_f">{{ item.nom|upper }}</p>
+                                </aside>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+
+                {# / boucle fid #}
             </div>
             {# /liste fidel #}
             {# statistique #}
@@ -373,11 +316,13 @@
 
                 $('#table_f').on('click', 'tbody td', function() {
 
-                //get textContent of the TD
-                console.log('TD cell textContent : ', this.textContent)
+                    // //get textContent of the TD
+                    // console.log('TD cell textContent : ', this.textContent)
 
-                //get the value of the TD using the API 
-                console.log('value by API : ', table.cell({ row: this.parentNode.rowIndex, column : this.cellIndex }).data());
+                    // //get the value of the TD using the API 
+                    // console.log('value by API : ', table.cell({ row: this.parentNode.rowIndex, column : this.cellIndex }).data());
+
+                    window.location.href = "{{ path('fidelisation_fiche_client', {'pseudo_hotel' : hotel}) }}";
                 })
 
 
@@ -520,6 +465,26 @@
             console.log(document.getElementById('my-legend-con'));
 
                 /* / chart*/
+            // open modal 
+
+            $(".open_modal").click(function(ev){
+                ev.preventDefault();
+                //modif_fidelisation_pack
+                //$("#modif_fidelisation_pack").modal("show");
+                var id = $(this).attr("data-id");
+                // on check cette fide
+                $.ajax({
+                    url : "/profile/check_fidelisation/" + id,
+                    type : "POST",
+                    data : { "id" : id },
+                    success : function(response){
+                        console.log(response);
+                    },
+                    error : function(){
+                        console.log("Erreur au niveau de check fid");
+                    }
+                })
+            })
 
         
         })

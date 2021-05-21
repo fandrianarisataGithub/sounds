@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Fidelisation;
 use App\Repository\UserRepository;
 use App\Repository\HotelRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,22 +14,46 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class FidelisationController extends AbstractController
 {
+    private $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * @Route("/profile/fidelisation/home/{pseudo_hotel}", name="fidelisation_home")
      */
     public function fidelisation_home(Request $request, SessionInterface $session, $pseudo_hotel): Response
     {
         $data_session = $session->get('hotel');
-        $data_session['pseudo_hotel'] = $pseudo_hotel;
-        if($data_session == null){
+        if(!$data_session){
             return $this->redirectToRoute("app_logout");
         }
-        
+        $repoFid = $this->getDoctrine()->getRepository(Fidelisation::class);
+        $fidelisations = $repoFid->findAll([], ["id" => "ASC"]);
+       
         return $this->render('fidelisation/home.html.twig', [
             'fidelisation'  => true,
+            "fidelisations" => $fidelisations,
             'hotel'         => $pseudo_hotel,
             "current_page"      => $data_session['current_page'],
         ]);
+    }
+
+    /**
+     * @Route("/profile/check_fidelisation/{id}", name ="check_fidelisation")
+     */
+    public function check_fidelisation(Request $request, Fidelisation $fidelisation): Response
+    {
+        $response = new Response();
+        if($request->isXmlHttpRequest()){
+            $data = json_encode("fdff");
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+        }
+        
+        return $response;
     }
 
      /**
@@ -37,8 +62,7 @@ class FidelisationController extends AbstractController
     public function fidelisation_cardex(Request $request, SessionInterface $session, $pseudo_hotel): Response
     {
         $data_session = $session->get('hotel');
-        $data_session['pseudo_hotel'] = $pseudo_hotel;
-        if($data_session == null){
+        if(!$data_session){
             return $this->redirectToRoute("app_logout");
         }
         
@@ -55,8 +79,7 @@ class FidelisationController extends AbstractController
     public function fidelisation_exclusif(Request $request, SessionInterface $session, $pseudo_hotel): Response
     {
         $data_session = $session->get('hotel');
-        $data_session['pseudo_hotel'] = $pseudo_hotel;
-        if($data_session == null){
+        if(!$data_session){
             return $this->redirectToRoute("app_logout");
         }
         
@@ -73,8 +96,7 @@ class FidelisationController extends AbstractController
     public function fidelisation_preferentiel(Request $request, SessionInterface $session, $pseudo_hotel): Response
     {
         $data_session = $session->get('hotel');
-        $data_session['pseudo_hotel'] = $pseudo_hotel;
-        if($data_session == null){
+        if(!$data_session){
             return $this->redirectToRoute("app_logout");
         }
         
@@ -91,8 +113,7 @@ class FidelisationController extends AbstractController
     public function fidelisation_privilege(Request $request, SessionInterface $session, $pseudo_hotel): Response
     {
         $data_session = $session->get('hotel');
-        $data_session['pseudo_hotel'] = $pseudo_hotel;
-        if($data_session == null){
+        if(!$data_session){
             return $this->redirectToRoute("app_logout");
         }
         
@@ -109,8 +130,8 @@ class FidelisationController extends AbstractController
     public function fidelisation_fiche_clent(Request $request, SessionInterface $session, $pseudo_hotel): Response
     {
         $data_session = $session->get('hotel');
-        $data_session['pseudo_hotel'] = $pseudo_hotel;
-        if($data_session == null){
+    
+        if(!$data_session){
             return $this->redirectToRoute("app_logout");
         }
         

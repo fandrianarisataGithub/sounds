@@ -31,20 +31,7 @@
                        
                     </div>
                 </a>
-                <div class="f_profile">
-                    <div>
-                        <a href="#">
-                            <img src="{{ asset('images/fidelisation/icone_setting.png') }}"
-                             class="icone_setting" width="20px" alt="icone_setting">
-                        </a>
-                    </div>
-                    <div>
-                        <p>Nom user</p>
-                    </div>
-                    <div class="f_pdp">
-                        <div><img src="{{ asset('images/user_pdp.png') }}" alt="pdp"></div>
-                    </div>
-                </div>
+                {% include "profile_user_fidelisation.html.twig" %}
             </header>
             {# liste fidel #}
             <div class="row">
@@ -256,11 +243,7 @@
 
                 $('#table_f').on('click', 'tbody td', function() {
 
-                    //get textContent of the TD
-                    console.log('TD cell textContent : ', this.textContent)
-
-                    //get the value of the TD using the API 
-                    console.log('value by API : ', table.cell({ row: this.parentNode.rowIndex, column : this.cellIndex }).data());
+                    window.location.href = "{{ path('fidelisation_fiche_client', {'pseudo_hotel' : hotel}) }}";
                 })
         })
             

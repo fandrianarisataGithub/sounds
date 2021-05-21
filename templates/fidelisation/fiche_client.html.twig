@@ -40,20 +40,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="f_profile">
-                    <div>
-                        <a href="#">
-                            <img src="{{ asset('images/fidelisation/icone_setting.png') }}"
-                            class="icone_setting" width="20px" alt="icone_setting">
-                        </a>
-                    </div>
-                    <div>
-                        <p>Nom user</p>
-                    </div>
-                    <div class="f_pdp">
-                        <div><img src="{{ asset('images/user_pdp.png') }}" alt="pdp"></div>
-                    </div>
-                </div>
+                {% include "profile_user_fidelisation.html.twig" %}
             </header>
             <div class="row">
                 <div class="f_sous_titre">
@@ -194,7 +181,7 @@
                                     <p>CA <br>cumulé</p>
                                 </aside>
                                 <aside>
-                                    <p class="cn_val_stat"><span class="montant_f">00440000</span><span class="unite_f"> Ar</span></p>
+                                    <p class="cn_val_stat"><span class="montant_f">440000</span><span class="unite_f"> Ar</span></p>
                                 </aside>
                             </div>
                         </div>
@@ -202,7 +189,7 @@
                             <div class="cn_block_top">
                                 <aside>
                                     <p>
-                                        <img src="{{ asset('images/fidelisation/icone_rev_global.png') }}" class="icone_stat" alt="icone_friends">
+                                        <img src="{{ asset('images/fidelisation/icone_nuite.png') }}" class="icone_stat" alt="icone_friends">
                                     </p>
                                 </aside>
                             </div>

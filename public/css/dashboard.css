@@ -7392,6 +7392,9 @@ p.val_montant_banque{
     padding: 15px;
     box-shadow: 0px 0px 10px rgba(189,189,189,0.8);
 }
+.f_block:hover, .f_block:visited, .f_block:focus{
+    text-decoration: none !important;
+}
 
 .f_block_top{
     display: flex;
@@ -7876,6 +7879,49 @@ table.dataTable tbody td {
     border: none;
 }
 
+.f_action_pack{
+    text-align: start;
+}
+.f_action_pack > a{
+   
+    display: inline-flex;
+    transition: all 1s ease-in-out;
+    width: 30px;
+    height: 30px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    color: rgba(189,189,189);
+   
+}
+.f_action_pack a span.fa{
+    font-size: 25px;
+}
+.f_action_pack a:hover, .f_action_pack a:focus{
+    text-decoration: none;
+    transition: all 1s ease-in-out;
+     background: #fff;
+    box-shadow: 0px 0px 10px rgba(189,189,189,0.8);
+}
+.f_action_pack .dropdown-menu{
+    margin-left: 15px;
+    text-align: start;
+    height: auto;
+    position: absolute !important;
+}
+.f_action_pack .dropdown-menu a{
+    padding-left: 15px;
+    font-size: 13px;
+    color: #272727;
+    background: #e9e8e8;
+    display: block;
+    height: 30px;
+    padding-top: 5px;
+}
+.f_action_pack .dropdown-menu a:hover{
+    background: #fff;
+    color: rgba(189,189,189,0.9);
+}
 @media all and (max-width:991px){
     .ca_nuite {
         display: flex;

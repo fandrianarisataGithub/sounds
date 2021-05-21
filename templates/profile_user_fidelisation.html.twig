@@ -1,0 +1,20 @@
+<div class="f_profile">
+    <div>
+        <a href="{{ path('setting',{'pseudo_hotel' : hotel}) }}">
+            <img src="{{ asset('images/fidelisation/icone_setting.png') }}"
+                class="icone_setting" width="20px" alt="icone_setting">
+        </a>
+    </div>
+    <div>
+        <p>Nom user</p>
+    </div>
+    <div class="f_pdp">       
+        <div>
+            {% if app.user.image is not null %}
+                <img src="{{asset(app.user.image) }}" alt="pdp">
+            {% else %}
+                <img src="{{ asset('images/user_pdp.png') }}" alt="pdp">
+            {% endif %}
+        </div>
+    </div>
+</div>
