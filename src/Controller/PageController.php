@@ -251,6 +251,7 @@ class PageController extends AbstractController
             $date_depart = $request->get('date_depart');
             $nbr_chambre = $request->get('nbr_chambre');
             $provenance = $request->get('provenance');
+            $source = $request->get('source');
             $prix_total = $request->get('prix_total');
             $createdAt = date_create($request->get('createdAt'));
             $date_arrivee = date_create($date_arrivee);
@@ -267,6 +268,7 @@ class PageController extends AbstractController
                 $client->setTarif($tarif_client);
                 $client->setDateDepart($date_depart);
                 $client->setDureeSejour($days);
+                $client->setSource($source);
                 $client->setProvenance($provenance);
                 $client->setNbrChambre($nbr_chambre);
                 $client->setPrixTotal(str_replace(" ", "", $prix_total));
@@ -282,6 +284,7 @@ class PageController extends AbstractController
             }
 
             $response->headers->set('Content-Type', 'application/json');
+            $response->headers->set('Access-Control-Allow-Origin', '*');
             $response->setContent($data);
             return $response;
         }
@@ -2467,6 +2470,7 @@ class PageController extends AbstractController
                 $data = json_encode($tab_jour_heb_to);
 
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             } else {
@@ -2568,6 +2572,7 @@ class PageController extends AbstractController
                 $data = json_encode($tab_heb_to);
 
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             }
@@ -2614,6 +2619,7 @@ class PageController extends AbstractController
                 $data = json_encode($tab_jour_heb_ca);
 
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             } else {
@@ -2717,6 +2723,7 @@ class PageController extends AbstractController
                 $data = json_encode($tab_heb_ca);
 
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             }
@@ -2770,6 +2777,7 @@ class PageController extends AbstractController
                 $data = json_encode($retour);
                
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             } else {
@@ -2943,6 +2951,7 @@ class PageController extends AbstractController
                 $data = json_encode($retour);
 
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             }
@@ -2984,6 +2993,7 @@ class PageController extends AbstractController
                 $data = json_encode($tab_jour_res_ca);
 
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             } else {
@@ -3086,6 +3096,7 @@ class PageController extends AbstractController
                 $data = json_encode($tab_res_ca);
 
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             }
@@ -3136,6 +3147,7 @@ class PageController extends AbstractController
                 $data = json_encode($tableau_all);
 
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             } else {
@@ -3410,6 +3422,7 @@ class PageController extends AbstractController
                 $data = json_encode($tableau_all);
 
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             }
@@ -3452,6 +3465,7 @@ class PageController extends AbstractController
                 $data = json_encode($tab_jour_res_ca);
 
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             } else {
@@ -3554,6 +3568,7 @@ class PageController extends AbstractController
                 $data = json_encode($tab_res_ca);
 
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             }
@@ -3595,6 +3610,7 @@ class PageController extends AbstractController
                 $data = json_encode($tab_jour_spa_cu);
 
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             } else {
@@ -3697,6 +3713,7 @@ class PageController extends AbstractController
                 $data = json_encode($tab_spa_cu);
 
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             }
@@ -3735,6 +3752,7 @@ class PageController extends AbstractController
                 $data = json_encode($tab_jour_spa_cu);
 
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             } else {
@@ -3837,6 +3855,7 @@ class PageController extends AbstractController
                 $data = json_encode($tab_spa_cu);
 
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             }

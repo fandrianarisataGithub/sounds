@@ -48,7 +48,51 @@ class FidelisationController extends AbstractController
     {
         $response = new Response();
         if($request->isXmlHttpRequest()){
-            $data = json_encode("fdff");
+
+            $html = '
+
+            <form action="">
+                <div class="form-group">
+                    <label for="fid_limite_nuitee">Maximum de nuitée : </label>
+                    <input type="number" id="fid_limite_nuitee" placeholder = "20 ou 35 ..." class="form-control" value="'. $fidelisation->getLimiteNuite() .'">
+                </div>
+                <div class="form-group">
+                    <label for="fid_limite_ca">Maximum de CA : </label>
+                    <input type="number" id="fid_limite_ca" placeholder = "montant en Ar" class="form-control" value="'. $fidelisation->getLimiteCa() .'">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-warning btn-sm" id="modal_button_modif_fid" data-id ="'. $fidelisation->getid() .'" ><span>Enregistrer</span></button>
+                </div>
+            </form>
+
+            ';
+
+            $data = json_encode($html);
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($data);
+        }
+        
+        return $response;
+    }
+
+    /**
+     * @Route("/profile/modify_fidelisation/{id}", name ="modify_fidelisation")
+     */
+    public function modify_fidelisation(Request $request, Fidelisation $fidelisation): Response
+    {
+        $response = new Response();
+        if($request->isXmlHttpRequest()){
+
+            $ln = $request->get('ln');
+            $lc = $request->get('lc');
+            
+            $fidelisation->setLimiteNuite(intval($ln));
+            $fidelisation->setLimiteCa($lc);
+
+            $this->em->persist($fidelisation);
+            $this->em->flush();
+
+            $data = json_encode("ok");
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent($data);
         }

@@ -201,6 +201,7 @@ class CostController extends AbstractController
             $Liste["tab_salaire_value"] = $tab_salaire_value;
             $data = json_encode($Liste);
             $response->headers->set('Content-Type', 'application/json');
+            $response->headers->set('Access-Control-Allow-Origin', '*');
             $response->setContent($data);
             return $response;
         }
@@ -263,6 +264,7 @@ class CostController extends AbstractController
             $Liste["tab_salaire_p"] = $tab_salaire_p;
             $data = json_encode($Liste);
             $response->headers->set('Content-Type', 'application/json');
+            $response->headers->set('Access-Control-Allow-Origin', '*');
             $response->setContent($data);
             return $response;
         }

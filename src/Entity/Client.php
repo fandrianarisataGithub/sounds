@@ -78,6 +78,11 @@ class Client
      */
     private $fidelisation;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $source;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -223,6 +228,18 @@ class Client
     public function setFidelisation(?Fidelisation $fidelisation): self
     {
         $this->fidelisation = $fidelisation;
+
+        return $this;
+    }
+
+    public function getSource(): ?string
+    {
+        return $this->source;
+    }
+
+    public function setSource(?string $source): self
+    {
+        $this->source = $source;
 
         return $this;
     }

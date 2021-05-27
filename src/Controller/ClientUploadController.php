@@ -57,6 +57,7 @@ class ClientUploadController extends AbstractController
 
                 $data = json_encode($t);
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             } else {
@@ -85,6 +86,7 @@ class ClientUploadController extends AbstractController
 
                 $data = json_encode($t);
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             }

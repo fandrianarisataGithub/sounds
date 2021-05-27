@@ -80,6 +80,7 @@ class AdminController extends AbstractController
                         // erreur email déjà utilisé
                         $data = json_encode("L'adresse mail est déjà utilisé");
                         $response->headers->set('Content-Type', 'application/json');
+                        $response->headers->set('Access-Control-Allow-Origin', '*');
                         $response->setContent($data);
                     }
                     // si ce user n'est pas là
@@ -158,6 +159,7 @@ class AdminController extends AbstractController
                         // on stock ces data dans u tableau 
                         $data = json_encode("ok"); // formater le résultat de la requête en json
                         $response->headers->set('Content-Type', 'application/json');
+                        $response->headers->set('Access-Control-Allow-Origin', '*');
                         $response->setContent($data);
                     }                   
             }
@@ -165,6 +167,7 @@ class AdminController extends AbstractController
                 // erreur email et pass vide ou le nom
                 $data = json_encode("Veuiller remplir tous les champs");
                 $response->headers->set('Content-Type', 'application/json');
+                $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
             }
 
@@ -243,6 +246,7 @@ class AdminController extends AbstractController
             $data = json_encode($html); // formater le résultat de la requête en json
 
             $response->headers->set('Content-Type', 'application/json');
+            $response->headers->set('Access-Control-Allow-Origin', '*');
             $response->setContent($data);
             return $response;
         }
@@ -503,6 +507,7 @@ class AdminController extends AbstractController
 
             $data = json_encode($html);
             $response->headers->set('Content-Type', 'application/json');
+            $response->headers->set('Access-Control-Allow-Origin', '*');
             $response->setContent($data);
             return $response; 
         }
@@ -654,6 +659,7 @@ class AdminController extends AbstractController
 
             $data = json_encode($retour);
             $response->headers->set('Content-Type', 'application/json');
+            $response->headers->set('Access-Control-Allow-Origin', '*');
             $response->setContent($data);
             return $response; 
         }
@@ -674,6 +680,7 @@ class AdminController extends AbstractController
             $manager->flush();
             $data = json_encode('ok'); 
             $response->headers->set('Content-Type', 'application/json');
+            $response->headers->set('Access-Control-Allow-Origin', '*');
             $response->setContent($data);
             return $response;          
         }
@@ -713,6 +720,7 @@ class AdminController extends AbstractController
                             ';
                             $data = json_encode($html);
                             $response->headers->set('Content-Type', 'application/json');
+                            $response->headers->set('Access-Control-Allow-Origin', '*');
                             $response->setContent($data);
                             return $response;
                         }
@@ -720,6 +728,7 @@ class AdminController extends AbstractController
                     else{
                         $data = json_encode("error");
                         $response->headers->set('Content-Type', 'application/json');
+                        $response->headers->set('Access-Control-Allow-Origin', '*');
                         $response->setContent($data);
                         return $response;
                     }
@@ -782,6 +791,7 @@ class AdminController extends AbstractController
             }
             
             $response->headers->set('Content-Type', 'application/json');
+            $response->headers->set('Access-Control-Allow-Origin', '*');
             $response->setContent($data);
             return $response;
            

@@ -33,14 +33,16 @@
                 {% for item in fidelisations %}
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                         <div class="f_action_pack">
-                            <a href="#"  class="dropdown-toggle"
-                                role="button" id="{{ 'dropDownF' ~ item.id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                            >
-                                <span class="fa fa-gear"></span>
+                            <a href="#" class="a_bull">
+                                <span class="fa fa-ellipsis-h"></span>
                             </a>
-                            <div class="dropdown-menu" aria-labelledby="{{ 'dropDownF' ~ item.id }}">
-                                <a class="dropdown-item open_modal" href="#" data-id = "{{ item.id }}"  data-toggle="modal">Parametrer</a>
-                                <a class="dropdown-item open_modal" data-id = "{{ item.id }}" href="#">Supprimer</a>
+                            <div class="his_dropDown">
+                                <a class="dropdown-item open_modal" href="#" data-id = "{{ item.id }}"  data-toggle="modal">
+                                    <span class="fa fa-gear"></span><span>Parametrer</span>
+                                </a>
+                                <a class="dropdown-item open_modal" data-id = "{{ item.id }}" href="#">
+                                    <span class="fa fa-trash-o"></span><span>Supprimer</span>
+                                </a>
                             </div>
                         </div>
                         <a class="f_block" href="{{ path('fidelisation_' ~ item.nom, {'pseudo_hotel' : hotel}) }}">
@@ -107,6 +109,7 @@
                         </div>
                     </div>
                 </div>
+                <div id="test"></div>
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                     <div class="f_block">
                         <div class="f_block_top">
@@ -470,7 +473,7 @@
             $(".open_modal").click(function(ev){
                 ev.preventDefault();
                 //modif_fidelisation_pack
-                //$("#modif_fidelisation_pack").modal("show");
+                //
                 var id = $(this).attr("data-id");
                 // on check cette fide
                 $.ajax({
@@ -478,7 +481,9 @@
                     type : "POST",
                     data : { "id" : id },
                     success : function(response){
-                        console.log(response);
+
+                        $("#modif_fidelisation_pack .modal-body").html(response);
+                        $("#modif_fidelisation_pack").modal("show");
                     },
                     error : function(){
                         console.log("Erreur au niveau de check fid");
@@ -486,6 +491,73 @@
                 })
             })
 
+           $(document).on('click', "#modal_button_modif_fid", function(ev){
+                    ev.preventDefault();
+                    
+                    var id = $(this).attr('data-id');
+                    var ln = $("#fid_limite_nuitee").val();
+                    var lc = $("#fid_limite_ca").val();
+                    var data = {
+                        "id" : id,
+                        "ln" : ln,
+                        "lc" : lc
+                    }
+                    $.ajax({
+                        url : "/profile/modify_fidelisation/" + id,
+                        type : "POST",
+                        data : data,
+                        success : function(response){
+                            
+                            if(response ===  "ok"){
+                                $("#modif_fidelisation_pack").modal("hide");
+                                // reload the page 
+                                window.location.reload();
+                            }
+                        },
+                        error : function(){
+                            console.log("Erreur au niveau de check fid");
+                        }
+                    })
+           })
+
+           /* animation bull  */
+
+           $(".block1 .f_block").hover(
+               function(){
+                    $(this).siblings(".f_action_pack").find('.a_bull').css("display", "inline-flex");
+                },
+                function(){
+                   // $(this).siblings(".f_action_pack").find('.a_bull').hide();
+                   var a_bull_isHover = $(this).siblings(".f_action_pack").find('.a_bull:hover').length;
+                   if(a_bull_isHover == 0){
+                       $(this).siblings(".f_action_pack").find('.a_bull').hide();
+                
+                   }
+                }
+           )
+
+           $(".a_bull").on({
+               click : function(ev){
+                   ev.preventDefault();
+                   $(this).siblings(".his_dropDown").toggle();
+               },
+               mouseleave : function() {
+                   his_drp_isHover = $(this).siblings(".his_dropDown:hover").length;
+                   if(his_drp_isHover == 0){
+                       $(this).hide();
+                        $(this).siblings(".his_dropDown").hide();
+                   }
+               }
+           })
+
+           $(".his_dropDown").mouseleave(function(){
+               $(this).hide();
+               var a_bull_isHover = $(this).siblings(".f_action_pack").find('.a_bull:hover').length;
+                if(a_bull_isHover == 0){
+                    $('.a_bull').hide();
+            
+                }
+           })
         
         })
             

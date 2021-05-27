@@ -2830,6 +2830,9 @@ li#log_out a:hover {
     font-size: 12px;
 }
 
+
+
+
 .histo_pourcent,
 .ca {
     border: none;
@@ -3010,17 +3013,17 @@ li#log_out a:hover {
     text-align: end;
     padding-right: 5px;
 }
+#modif_prix_total_client{
+    padding-top: 5px;
+    color: rgba(0,0,0,0.8);
+}
 .div_flex .span__ar{
     vertical-align: bottom !important;
     display: flex;
     align-items: center;
     position: relative;
 }
-#form_edit_client .form-group:last-child{
-   display: flex !important;
-    margin-top: 15px !important;
-    justify-content: space-between !important;
-}
+
 #form_edit_client .form-group:last-child button:last-child{
     background: #323232 !important;
     color: #fff;
@@ -4809,13 +4812,43 @@ input[maxlength] {
     color: rgba(0, 0, 0, .5) !important;
     font-weight: 500;
 }
-#modif_provenance_client{
-    width: 100px;
+.modal_source_init{
+    margin-top: 15px;
+}
+.modal_source_init label{
+    color: rgba(0, 0, 0, .5) !important;
+    font-weight: 500;
+}
+.source select{
+    border: 1px solid rgba(189,189,189,0.5);
+    height: 30px;
+    border-radius: 5px;
+    text-align: center;
+    width: 120px;
+    color: rgba(0,0,0,0.5);
+}
+
+#modif_provenance_client, .modal_source_init select{
+    width: 120px;
     height: 30px;
     padding: 5px;
     border: 1px solid rgba(200,200,200,0.5);
     border-radius: 5px;
-    
+    text-align: center;
+}
+
+.modal_source select{
+    width: 120px;
+    width: 120px;
+    height: 30px;
+    padding: 5px;
+    border: 1px solid rgba(200,200,200,0.5);
+    border-radius: 5px;
+    text-align: center;
+}
+
+.form-group.list_btn{
+    margin-top: 25px !important;;
 }
 
 .td__actions a:last-child {
@@ -7880,48 +7913,67 @@ table.dataTable tbody td {
 }
 
 .f_action_pack{
-    text-align: start;
+    text-align: end;
 }
-.f_action_pack > a{
-   
-    display: inline-flex;
+.f_action_pack > a,.f_action_pack > a:focus {
+    position: absolute;
+    top: -25px;
+    right: 20px;
+    z-index: 1;
+    display: none;
     transition: all 1s ease-in-out;
     width: 30px;
     height: 30px;
     justify-content: center;
     align-items: center;
+    border: 2px solid #fff;
     border-radius: 50%;
     color: rgba(189,189,189);
+    background: #4D4D4D ;
    
 }
 .f_action_pack a span.fa{
-    font-size: 25px;
+    font-size: 15px;
+    color: #fff;
 }
 .f_action_pack a:hover, .f_action_pack a:focus{
     text-decoration: none;
     transition: all 1s ease-in-out;
-     background: #fff;
+     background: #4D4D4D ;
     box-shadow: 0px 0px 10px rgba(189,189,189,0.8);
 }
-.f_action_pack .dropdown-menu{
-    margin-left: 15px;
-    text-align: start;
-    height: auto;
-    position: absolute !important;
+.his_dropDown{
+    background: #4D4D4D;
+    position: absolute;
+    right: 25px;
+   display: none;
 }
-.f_action_pack .dropdown-menu a{
-    padding-left: 15px;
-    font-size: 13px;
-    color: #272727;
-    background: #e9e8e8;
+.his_dropDown a{
     display: block;
-    height: 30px;
-    padding-top: 5px;
+    width: 120px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    height: 35px;
+    color: #fff;
 }
-.f_action_pack .dropdown-menu a:hover{
+
+.his_dropDown a:hover{
+    text-decoration: none;
     background: #fff;
-    color: rgba(189,189,189,0.9);
+    
 }
+
+.his_dropDown a:hover span{
+    color: #4D4D4D;
+}
+
+.his_dropDown a span.fa{
+    margin : 0px 5px 
+}
+
+
+
 @media all and (max-width:991px){
     .ca_nuite {
         display: flex;
@@ -7944,10 +7996,68 @@ table.dataTable tbody td {
         margin-top: 50px;
     }
 }
+.source{
+    display: block;
+    margin-left: 0px !important;
+}
 
+#div_provenance div{
+    margin-left: 0;
+}
 
+#div_sous_source{
+    display: block;
+}
+#div_sous_source .source{
+    display: none;
+}
+.form-group.modal_flex div{
+    display: flex ;
+    margin-top: 15px;
+    justify-content: start !important;
+    align-items: center;
+}
 
+.modal_flex div label{
+    margin: 0px 15px 0px 0px !important;
+}
+.input_date_checkin{
+    margin-right: 15px;
+}
+.modal_flex input{
+    border: 1px solid rgba(189,189,189,0.8);
+    height: 30px;
+    border-radius: 5px;
+    width: 120px;
+    text-align: center;
+}
 
+.modal-content .list_btn{
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.modal-content .list_btn button.btn{
+    font-size: 13px !important;
+    background: #d29e00 !important;
+    border-color: transparent;
+}
+
+.modal-content .list_btn button:last-child{
+    background: #323232 !important;
+    color: #fff;
+}
+
+.modal_source label{
+    margin-top: 15px;
+    color: rgba(0, 0, 0, .5) !important;
+    font-weight: 500;
+}
+
+.modal_source{
+    display: none;
+}
 
 
 /* / fin client */

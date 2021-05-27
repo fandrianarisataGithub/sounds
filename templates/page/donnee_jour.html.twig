@@ -179,13 +179,44 @@
                                             <label for="date_arrive" class="label_date">check out :</label>
                                             <input type="date" id="date_depart">
                                         </div>
+                                    </div>
+                                    <div id="div_provenance">
                                         <div class="form-group">
                                             <label for="">Provenance : </label>
                                             <select name="" id="provenance">
-                                                <option value="OTA">OTA</option>
+                                                <option value="OTA" selected="selected">OTA</option>
                                                 <option value="DIRECT">DIRECT</option>
                                                 <option value="CORPO">CORPO</option>
                                                 <option value="TOA">TOA</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="div_sous_source">
+                                        <div class="source_TOA source form-group">
+                                            <label for="">Source : </label>
+                                            {# si TOA ou corpo #}
+                                            <input type="text" placeholder="ex Aventour" class="input__text" name="">
+                                        </div>
+                                        <div class="source_CORPO source form-group">
+                                            <label for="">Source : </label>
+                                            {# si TOA ou corpo #}
+                                            <input type="text" placeholder="Nom de la Société" class="input__text" name="">
+                                        </div>
+                                        <div class="source_DIRECT source form-group">
+                                            <label for="">Source : </label> 
+                                            <select name="">
+                                                <option value="Email">Email</option>
+                                                <option value="Téléphone">Téléphone</option>
+                                                <option value="Site web">Site web</option>
+                                                <option value="Comptoir">Comptoir</option>
+                                            </select>
+                                        </div>
+                                        <div class="source_OTA source form-group">
+                                            <label for="">Source : </label>
+                                            <select name="">
+                                                <option value="Booking">Booking</option>
+                                                <option value="Expedia">Expedia</option>
+                                                <option value="Hotelbeds">Hotelbeds</option>
                                             </select>
                                         </div>
                                     </div>
@@ -803,6 +834,7 @@ new Cleave('.input_pourcent', {blocks: [4]});
         // ajout de client 
 
         $(document).ready(function(){
+
             // vider le formulaire des recep
 
             $('.form_vide').val('');
@@ -896,6 +928,20 @@ new Cleave('.input_pourcent', {blocks: [4]});
                 var nbr_chambre = $('#nbr_chambre').val();
                 var prix_total = $("#prix_total").val();
                 var provenance = $("#provenance").val();
+                var source = "";
+                if(provenance == "OTA"){
+                    source = $(".source_OTA select").val();
+                }
+                if(provenance == "DIRECT"){
+                    source = $(".source_DIRECT select").val();
+                }
+                if(provenance == "TOA"){
+                    source = $(".source_TOA input").val();
+                }
+                if(provenance == "CORPO"){
+                    source = $(".source_CORPO input").val();
+                }
+                
                 // var tarif_client = $("#tarif_client").val();
                 var data = {
                     "nom_client"    : nom,
@@ -903,17 +949,14 @@ new Cleave('.input_pourcent', {blocks: [4]});
                     "date_arrivee"  : date_arrivee,
                     "date_depart"   : date_depart,
                     "nbr_chambre"   : nbr_chambre,
-                    "prix_total"   : prix_total,
+                    "prix_total"    : prix_total,
                     "createdAt"     : createdAt, 
-                    "provenance"     : provenance, 
-                    // "tarif_client" : tarif_client,   
+                    "provenance"    : provenance,
+                    "source"        : source, 
+                    
                 };
 
-                // test
-
-                //alert("nom = "+nom+" prenom = "+prenom+ "  date ar = "+date_arrivee+" date dep = "+date_depart); 
-
-                // ajax 
+                //console.log(data);
 
                 $.ajax({
                     url : "{{ path('hebergement', {'pseudo_hotel' : hotel}) }}", // PageController
@@ -929,11 +972,24 @@ new Cleave('.input_pourcent', {blocks: [4]});
                             $('#prenom_client').val("");
                             $('#date_arrivee').val("d-m-YYYY");
                             $('#date_depart').val("d-m-YYYY");
+                            $("#nbr_chambre").val("");
+                            $("#prix_total").val("");
+                            $(".source input").val("");
                             
                         }
                     },
                     complete : function(){
-                            table.ajax.reload(null, false);
+                        table.ajax.reload(function(response){
+                            var montant = document.querySelectorAll(".montant");
+                            var t = montant.length;
+                            var test = new Intl.NumberFormat();
+                            if (t > 0) {
+                                for (var i = 0; i < t; i++) {
+                                    var val = test.format(montant[i].innerHTML);
+                                    montant[i].innerHTML = val;
+                                }           
+                            }
+                        }, false);
                          $("#ajouter_client").html('<span class="fa fa-plus"></span><span>Ajouter</span>');
                     },
                     error : function() {
@@ -1011,9 +1067,33 @@ new Cleave('.input_pourcent', {blocks: [4]});
                 var nbr_chambre = $('#modif_nbr_chambre_client').val();
                 var prix_total = $("#modif_prix_total_client").val();
                 var provenance = $("#modif_provenance_client").val();
-                // var tarif = $("#modif_tarif_client").val();
-                //alert(id+"/"+nom+"/"+date_depart+"/"+date_arrivee+"/"+prenom);
-                // ajax
+                
+                var source = "";
+                if(provenance == "OTA"){
+                    source = $("#modal_source_OTA select").val();
+                }
+                if(provenance == "DIRECT"){
+                    source = $("#modal_source_DIRECT select").val();
+                }
+                if(provenance == "TOA"){
+                    source = $("#modal_source_TOA input").val();
+                }
+                if(provenance == "CORPO"){
+                    source = $("#modal_source_CORPO input").val();
+                }
+                var  data = {
+                    "id" : id,
+                    "nom"    : nom,
+                    "prenom" : prenom,
+                    "date_arrivee"  : date_arrivee,
+                    "date_depart"   : date_depart,
+                    "nbr_chambre"   : nbr_chambre,
+                    "prix_total"    : prix_total,
+                    "provenance"    : provenance,  
+                    "source"        : source,    
+                }
+                console.log(data);
+
                 $.ajax({
                     url : "/admin/edit_client",
                     data : {
@@ -1025,7 +1105,7 @@ new Cleave('.input_pourcent', {blocks: [4]});
                         "nbr_chambre"   : nbr_chambre,
                         "prix_total"    : prix_total,
                         "provenance"    : provenance,  
-                        //  "tarif"    : tarif,    
+                        "source"        : source,    
                     },
                     type : "POST",
                     beforeSend : function(){
@@ -1109,6 +1189,31 @@ new Cleave('.input_pourcent', {blocks: [4]});
                 }
                 return tab[2] + " " + mois[tab[1]] + " " + tab[0]; 
             }
+
+            function reinitialise_source(){
+                $(".source").hide();
+                var prov = $("#provenance").val();
+                $(".source_" + prov).show();
+            }
+
+            function reinitialise_modal_source(){
+                $(".modal_source").hide();
+                var prov = $("#modif_provenance_client").val();
+                $("#modal_source_" + prov).show();
+            }
+
+            reinitialise_source();
+            reinitialise_modal_source();
+
+            $("#provenance").change(function(){
+                reinitialise_source();
+            })
+
+            $(document).on("change", "#modif_provenance_client", function(){
+                $(".modal_source_init").hide();
+                reinitialise_modal_source();
+            })
+
            
         })
 

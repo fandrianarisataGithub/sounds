@@ -51,6 +51,7 @@ class FicheController extends AbstractController
 
                 $data = json_encode("ok");
                 $response->headers->set('Content-Type', 'application/json');
+				$response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             }
@@ -78,6 +79,7 @@ class FicheController extends AbstractController
 
                 $data = json_encode("ok");
                 $response->headers->set('Content-Type', 'application/json');
+				$response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->setContent($data);
                 return $response;
             }
@@ -263,6 +265,7 @@ class FicheController extends AbstractController
             }
             $data = json_encode($html);
             $response->headers->set('Content-Type', 'application/json');
+			$response->headers->set('Access-Control-Allow-Origin', '*');
             $response->setContent($data);
             return $response;
         }
