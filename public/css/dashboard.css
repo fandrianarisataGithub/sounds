@@ -8059,6 +8059,21 @@ table.dataTable tbody td {
     display: none;
 }
 
+.info_arror_client{
+    background: rgba(224,28,28,0.5);
+    width: 50%;
+    display: none;
+    height: 35px;
+    transition: all 1.5s ease-in-out;
+}
+
+.info_arror_client p{
+    height: 100%;
+    padding-top: 10px;
+    padding-left: 15px;
+    color: #fff;
+    border-left: 5px solid red;
+}
 
 /* / fin client */
 

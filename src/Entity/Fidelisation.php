@@ -49,6 +49,12 @@ class Fidelisation
      */
     private $icone_client;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $style_etiquette;
+
+
     public function __construct()
     {
         $this->client = new ArrayCollection();
@@ -148,4 +154,17 @@ class Fidelisation
 
         return $this;
     }
+
+    public function getStyleEtiquette(): ?string
+    {
+        return $this->style_etiquette;
+    }
+
+    public function setStyleEtiquette(?string $style_etiquette): self
+    {
+        $this->style_etiquette = $style_etiquette;
+
+        return $this;
+    }
+
 }

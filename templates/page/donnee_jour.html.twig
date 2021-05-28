@@ -170,6 +170,10 @@
                                         <span class="span__label span_prenom"></span><input type="text" class="input__text" placeholder="Prénom" name="" id = "prenom_client">
                                     </div>
                                     <div>
+                                        <span class="span__label"></span><input type="text" class="input__text" placeholder="Adresse email" name="" id ="email_client">
+                                        <span class="span__label span_prenom"></span><input type="text" class="input__text" placeholder="Téléphone" name="" id = "telephone_client">
+                                    </div>
+                                    <div>
                                         <div class="form-group">
                                             <label for="date_arrive" class="label_date">Check in :</label>
                                             <input type="date" id="date_arrivee">
@@ -234,6 +238,9 @@
                                             <label for="tarif_client" class="">Tarif :</label>
                                             <input type="text" id="tarif_client">
                                         </div> #}
+                                    </div>
+                                    <div class="info_arror_client">
+                                        <p></p>
                                     </div>
                                     <div>
                                         <button class="btn btn-default" id = "ajouter_client">
@@ -928,6 +935,8 @@ new Cleave('.input_pourcent', {blocks: [4]});
                 var nbr_chambre = $('#nbr_chambre').val();
                 var prix_total = $("#prix_total").val();
                 var provenance = $("#provenance").val();
+                var email_client = $("#email_client").val();
+                var telephone_client = $("#telephone_client").val();
                 var source = "";
                 if(provenance == "OTA"){
                     source = $(".source_OTA select").val();
@@ -953,10 +962,10 @@ new Cleave('.input_pourcent', {blocks: [4]});
                     "createdAt"     : createdAt, 
                     "provenance"    : provenance,
                     "source"        : source, 
+                    "email"         : email_client,
+                    "telephone"     : telephone_client
                     
                 };
-
-                //console.log(data);
 
                 $.ajax({
                     url : "{{ path('hebergement', {'pseudo_hotel' : hotel}) }}", // PageController
@@ -975,7 +984,17 @@ new Cleave('.input_pourcent', {blocks: [4]});
                             $("#nbr_chambre").val("");
                             $("#prix_total").val("");
                             $(".source input").val("");
+                            $("#email_client").val("");
+                            $("#telephone_client").val("");
                             
+                        }
+                        else{
+                            $(".info_arror_client p").text(response);
+                            $(".info_arror_client").fadeIn("slow");
+                            setTimeout(() => {
+                                $(".info_arror_client p").text("");
+                                $(".info_arror_client").fadeOut("slow");
+                            }, 3000);
                         }
                     },
                     complete : function(){
@@ -1022,7 +1041,17 @@ new Cleave('.input_pourcent', {blocks: [4]});
                      type : "POST",
                      success : function(response){
                          if(response == "deleted"){
-                             table.ajax.reload(null, false);
+                             table.ajax.reload(function(response){
+                                var montant = document.querySelectorAll(".montant");
+                                var t = montant.length;
+                                var test = new Intl.NumberFormat();
+                                if (t > 0) {
+                                    for (var i = 0; i < t; i++) {
+                                        var val = test.format(montant[i].innerHTML);
+                                        montant[i].innerHTML = val;
+                                    }           
+                                }
+                            }, false);
                          }
                      },
                      error : function(error){
@@ -1067,6 +1096,8 @@ new Cleave('.input_pourcent', {blocks: [4]});
                 var nbr_chambre = $('#modif_nbr_chambre_client').val();
                 var prix_total = $("#modif_prix_total_client").val();
                 var provenance = $("#modif_provenance_client").val();
+                var email = $("#modif_email_client").val();
+                var telephone = $("#modif_telephone_client").val();
                 
                 var source = "";
                 if(provenance == "OTA"){
@@ -1090,23 +1121,15 @@ new Cleave('.input_pourcent', {blocks: [4]});
                     "nbr_chambre"   : nbr_chambre,
                     "prix_total"    : prix_total,
                     "provenance"    : provenance,  
-                    "source"        : source,    
+                    "source"        : source, 
+                    "email"         : email,    
+                    "telephone"     : telephone, 
                 }
-                console.log(data);
+                //console.log(data);
 
                 $.ajax({
                     url : "/admin/edit_client",
-                    data : {
-                        "id" : id,
-                        "nom"    : nom,
-                        "prenom" : prenom,
-                        "date_arrivee"  : date_arrivee,
-                        "date_depart"   : date_depart,
-                        "nbr_chambre"   : nbr_chambre,
-                        "prix_total"    : prix_total,
-                        "provenance"    : provenance,  
-                        "source"        : source,    
-                    },
+                    data : data,
                     type : "POST",
                     beforeSend : function(){
                        $('#a_modal_modif_client').html('<span>Patienter...</span>'); 

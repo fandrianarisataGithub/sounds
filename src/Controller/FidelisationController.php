@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Client;
 use App\Entity\Fidelisation;
 use App\Repository\UserRepository;
 use App\Repository\HotelRepository;
@@ -30,6 +31,8 @@ class FidelisationController extends AbstractController
         if(!$data_session){
             return $this->redirectToRoute("app_logout");
         }
+        $clients = $this->getDoctrine()->getRepository(Client::class)->findAll();
+        
         $repoFid = $this->getDoctrine()->getRepository(Fidelisation::class);
         $fidelisations = $repoFid->findAll([], ["id" => "ASC"]);
        

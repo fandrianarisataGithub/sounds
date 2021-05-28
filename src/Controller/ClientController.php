@@ -222,6 +222,16 @@ class ClientController extends AbstractController
                                 <label for="">Prénom : </label>
                                 <input type="text" id="modif_prenom_client" class="form-control" value="'. $client->getPrenom() .'">
                             </div>
+                            <div class="mail_phone">
+                                <div class="form-group">
+                                    <label for="">Email : </label>
+                                    <input type="text" id="modif_email_client" class="form-control" value="'. $client->getEmail() .'">
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Prénom : </label>
+                                    <input type="text" id="modif_telephone_client" class="form-control" value="'. $client->getTelephone() .'">
+                                </div>
+                            </div>
                             <div class="form-group modal_flex">
                                 <div>
                                     <label for="">Check in : </label>
@@ -373,6 +383,8 @@ class ClientController extends AbstractController
             $nbr_chambre = $request->get('nbr_chambre');
             // $tarif = $request->get('tarif');
             $provenance = $request->get('provenance');
+            $email = $request->get('email');
+            $telephone = $request->get('telephone');
             $source = $request->get('source');
             $prix_total = $request->get('prix_total');
             $date_arrivee = $request->get('date_arrivee');
@@ -385,8 +397,10 @@ class ClientController extends AbstractController
             $client = $repoClient->find($id);
             $client->setNom($nom);
             $client->setPrenom($prenom);
-            // $client->setTarif($tarif);
+            
             $client->setProvenance($provenance);
+            $client->setEmail($email);
+            $client->setTelephone($telephone);
             $client->setSource($source);
             $client->setNbrChambre($nbr_chambre);
             $client->setPrixTotal(str_replace(" ", "", $prix_total));

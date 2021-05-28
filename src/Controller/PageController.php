@@ -251,6 +251,8 @@ class PageController extends AbstractController
             $date_depart = $request->get('date_depart');
             $nbr_chambre = $request->get('nbr_chambre');
             $provenance = $request->get('provenance');
+            $email = $request->get('email');
+            $telephone = $request->get('telephone');
             $source = $request->get('source');
             $prix_total = $request->get('prix_total');
             $createdAt = date_create($request->get('createdAt'));
@@ -258,30 +260,42 @@ class PageController extends AbstractController
             $date_depart = date_create($date_depart);
             $diff = $date_arrivee->diff($date_depart);
             $days = $diff->d;
-           
-            // condition 
-            if(!empty($nom_client) && !empty($date_depart) && !empty($date_arrivee)){
-                $client = new Client();
-                $client->setNom($nom_client);
-                $client->setPrenom($prenom_client);
-                $client->setDateArrivee($date_arrivee);
-                $client->setTarif($tarif_client);
-                $client->setDateDepart($date_depart);
-                $client->setDureeSejour($days);
-                $client->setSource($source);
-                $client->setProvenance($provenance);
-                $client->setNbrChambre($nbr_chambre);
-                $client->setPrixTotal(str_replace(" ", "", $prix_total));
-                $client->setCreatedAt($createdAt);
-                $hotel->addClient($client);
-                $manager->persist($client);
-                $manager->persist($hotel);
-                $manager->flush();
-                $data = json_encode("ok");  
+
+            if(filter_var($email, FILTER_VALIDATE_EMAIL)){
+                if(!empty($nom_client) && !empty($date_depart) && !empty($date_arrivee)){
+                    $client = new Client();
+                    $client->setNom($nom_client);
+                    $client->setPrenom($prenom_client);
+                    $client->setDateArrivee($date_arrivee);
+                    $client->setTarif($tarif_client);
+                    $client->setDateDepart($date_depart);
+                    $client->setDureeSejour($days);
+                    $client->setSource($source);
+                    $client->setEmail($email);
+                    $client->setTelephone($telephone);
+                    $client->setProvenance($provenance);
+                    $client->setNbrChambre($nbr_chambre);
+                    $client->setPrixTotal(str_replace(" ", "", $prix_total));
+                    $client->setCreatedAt($createdAt);
+                    $hotel->addClient($client);
+                    // fidelisation 
+    
+                    
+    
+                    $manager->persist($client);
+                    $manager->persist($hotel);
+                    $manager->flush();
+                    $data = json_encode("ok");  
+                }
+                else{
+                    $data = json_encode("Veuiller renseigner tous les champs nécessaires"); 
+                }
             }
             else{
-                $data = json_encode("Veuiller remplir ces formulaires"); 
+                $data = json_encode("L'adresse email n'est pas valide"); 
             }
+           
+            // condition 
 
             $response->headers->set('Content-Type', 'application/json');
             $response->headers->set('Access-Control-Allow-Origin', '*');
