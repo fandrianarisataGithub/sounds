@@ -1,11 +1,11 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Fidélisation{% endblock %}
+{% extends "base.html.twig" %}
+{% block title %}
+    CLIENT-OTA
+{% endblock %}
 {% block stylesheets %}
-	<link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
     <link rel="stylesheet" href="{{ asset('css/style_chart_rounded.css') }}">
-    {# <link rel="stylesheet" href="https://github.com/chartjs/Chart.js/releases/download/v2.9.3/Chart.min.css"> #}
-    <style>
+     <style>
         .side-nav{
             width : 100px !important;
         }
@@ -22,54 +22,24 @@
         <!-- / entete content -->
         <div id="hrs_content" class="fidelisation">
             <header>
-                <div class="f_titre">
-                    <h1>Fidélisation client</h1>
-                </div>
+                <a class="f_titre with_retour" href="{{ path('fidelisation_home', {'pseudo_hotel' : hotel}) }}">
+                    <div class="icone_home">
+                        <img width="30px" src="{{ asset('images/fidelisation/home_icone.png') }}" alt="home_icone">
+                    </div>
+                    <div class="retour">
+                        
+                            <span>Retour à l'acceuil</span>
+                       
+                    </div>
+                </a>
                 {% include "profile_user_fidelisation.html.twig" %}
             </header>
             {# liste fidel #}
-            <div class="row block1">      
-                {# boucle fid #}
-                {% for item in fidelisations %}
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <div class="f_action_pack">
-                            <a href="#" class="a_bull">
-                                <span class="fa fa-ellipsis-h"></span>
-                            </a>
-                            <div class="his_dropDown">
-                                <a class="dropdown-item open_modal" href="#" data-id = "{{ item.id }}"  data-toggle="modal">
-                                    <span class="fa fa-gear"></span><span>Parametrer</span>
-                                </a>
-                                <a class="dropdown-item open_modal" data-id = "{{ item.id }}" href="#">
-                                    <span class="fa fa-trash-o"></span><span>Supprimer</span>
-                                </a>
-                            </div>
-                        </div>
-                        <a class="f_block" href="{{ path('fidelisation_' ~ item.nom, {'pseudo_hotel' : hotel}) }}">
-                            <div class="f_block_top">
-                                <aside>
-                                    <p><span class="f_val">200</span> Clients</p>
-                                </aside>
-                                <aside>
-                                    <p>
-                                        <img src="{{ asset('images/fidelisation/' ~ item.getIconeCarte()) }}" class="icone_client" alt="gris">
-                                    </p>
-                                </aside>
-                            </div>
-                            <div class="f_block_bottom">
-                                <aside>
-                                    <p>Client</p>
-                                    <p class="nom_f">{{ item.nom|upper }}</p>
-                                </aside>
-                            </div>
-                        </a>
-                    </div>
-                {% endfor %}
-
-                {# / boucle fid #}
+            <div class="row">
+                <div class="f_sous_titre">
+                    <h1>Client OTA</h1>
+                </div>
             </div>
-            {# /liste fidel #}
-            {# statistique #}
             <div class="row block2">
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                     <div class="f_block">
@@ -82,7 +52,7 @@
                         </div>
                         <div class="f_block_bottom">
                             <aside>
-                                <p>Nombre <br>de clients fidelisés</p>
+                                <p>Nombre <br>de clients OTA</p>
                             </aside>
                             <aside>
                                 <p class="f_val_stat"><span>160</span></p>
@@ -130,14 +100,11 @@
                     </div>
                 </div>
             </div>
-            {# /statistique #}
-            {# tableau et graph #}
             <div class="row block3">
                 <div class="col-lg-6">
                     <div class="f_table_home">
                         <div class="top_tab">
-                            <h4>Clients</h4>
-                             <p id="p_container_input_search">
+                            <p id="p_container_input_search" class="p_container_input_search">
                                 <span class="fa fa-search"></span>
                                 <input type="text" id="mySearchText" placeholder="Rechercher...">
                             </p>
@@ -146,51 +113,33 @@
                             <thead>
                                 <tr>
                                     <th><span>Nom/Prénom</span></th>
-                                    <th><span>Email</span></th>
-                                    <th><span>Téléphone</span></th>
-                                    <th><span>Fidélisation</span></th>
+                                    <th><span>Email/Téléphone</span></th>
+                                    <th><span>Source</span></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td><span class="nom">Andrian mmm</span></td>
-                                    <td><span>Email@gmail.com</span></td>
-                                    <td><span>032 02 025 01</span></td>
                                     <td>
-                                        <span class="btn_exclusif span_round">Exclusif</span>
+                                        <span>Email@gmail.com</span><br>
+                                        <span>032 02 025 01</span>
                                     </td>
+                                    <td>
+                                        <span>BOOKING</span>
+                                    </td>
+                                    
                                 </tr>
                                 <tr>
                                     <td><span class="nom">qsqsqs f</span></td>
-                                    <td><span>Email@gmail.com</span></td>
-                                    <td><span>032 02 025 01</span></td>
-                                    <td>
-                                        <span class="btn_cardex span_round">Cardex</span>
-                                    </td>
+                                    <td><span>Email@gmail.com</span><br><span>032 02 025 01</span></td>
+                                    <td><span>HOTELBEDS</span></td>
+                                    
                                 </tr>
                                 <tr>
                                     <td><span  class="nom">Andrian d</span></td>
-                                    <td><span>Email@gmail.com</span></td>
-                                    <td><span>032 02 025 01</span></td>
-                                    <td>
-                                        <span class="btn_preferentiel span_round">Préférentiel</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span  class="nom">Andrian ht</span></td>
-                                    <td><span>Email@gmail.com</span></td>
-                                    <td><span>032 02 025 01</span></td>
-                                    <td>
-                                        <span class="btn_privilege span_round">Privilège</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span  class="nom">Andrian sq</span></td>
-                                    <td><span>Email@gmail.com</span></td>
-                                    <td><span>032 02 025 01</span></td>
-                                    <td>
-                                        <span class="btn_preferentiel span_round">Préférentiel</span>
-                                    </td>
+                                    <td><span>Email@gmail.com</span><br><span>032 02 025 01</span></td>
+                                    <td><span>EXPEDIA</span></td>
+                                    
                                 </tr>
                             </tbody>
                         </table>
@@ -201,7 +150,7 @@
                         {# graph #}
                         <div class="canvas-con">
                             <div class="canvas-con-inner">
-                                <p class="text_center_chart">Provenance <br>client</p>
+                                <p class="text_center_chart">Client <br>DIRECT</p>
                                 <canvas id="mychart" height="250px"></canvas>
                             </div>
                             <div id="my-legend-con" class="legend-con"></div>
@@ -209,12 +158,8 @@
                     </div>
                 </div>
             </div>
-            {# /tableau et graph #}
-            <div style="width: 200px; height: 200px;">
-                <canvas id="usersChart" width="1" height="1"></canvas>
-            </div>
-        </div>
-    <section>
+         </div>
+    </section>
 {% endblock %}
 {% block javascripts %}
     <script src="https://github.com/chartjs/Chart.js/releases/download/v2.9.3/Chart.min.js"></script>
@@ -302,7 +247,7 @@
                     scrollCollapse: true,
                     paging: true,
                      autoFill: true
-                });
+            });
 
                 new $.fn.dataTable.FixedHeader(table);
 
@@ -313,21 +258,16 @@
                 `);
                 $('#mySearchText').on( 'keyup', function () {
                     table.search($(this).val()).draw();
-                } );
+                });
 
                 /* datatable clickable */
 
                 $('#table_f').on('click', 'tbody td', function() {
 
-                    // //get textContent of the TD
-                    // console.log('TD cell textContent : ', this.textContent)
-
-                    // //get the value of the TD using the API 
-                    // console.log('value by API : ', table.cell({ row: this.parentNode.rowIndex, column : this.cellIndex }).data());
-
                     window.location.href = "{{ path('fidelisation_fiche_client', {'pseudo_hotel' : hotel}) }}";
                 })
 
+                // chart Js 
 
                 Chart.defaults.RoundedDoughnut    = Chart.helpers.clone(Chart.defaults.doughnut);
                 Chart.controllers.RoundedDoughnut = Chart.controllers.doughnut.extend({
@@ -375,17 +315,29 @@
            ]
 
             var chartData = [
-                {"nom": "OTA", "eff": 0}, 
-                {"nom": "CORPORATE", "eff": 2}, 
-                {"nom": "TOA", "eff": 3}, 
-                {"nom": "DIRECT", "eff": 0}
+                {"nom": "BOOKING", "eff": 20, "ca" : 12000000}, 
+                {"nom": "EXPEDIA", "eff" : 4 , "ca": 2025000}, 
+                {"nom": "HOTELBEDS", "eff" : 10 ,"ca": 13000000}, 
             ]
+
             var data_aff = [];
 
             for(var i = 0; i< chartData.length; i++){
                 data_aff.push(chartData[i].eff);
             }
 
+            // format montant ca 
+            var test = new Intl.NumberFormat();
+            for (var i = 0; i <  chartData.length; i++) {
+                var temp = chartData[i].ca.toString();
+                
+                var val = test.format(temp);
+                
+                chartData[i].ca = val;
+
+            }
+            
+            //console.log(chartData);
             var label = [];
 
             for(var i = 0; i< chartData.length; i++){
@@ -438,18 +390,19 @@
                         for (var i=0; i < item.data.length; i++) {
                             legendHtml.push('<li>');
                             legendHtml.push(`
-                                <a href="` + tab_link[i] +`">
+                               
                                     <div class="div_icone">
                                         <img width="45px" height="45px" src="`+ icone[i] +`" alt="OTA" />
                                     </div>
                                     <div class="div_label">
-                                        <span>Client ` + chart.data.labels[i] + `</span></br>
-                                        <span>val %</span>
+                                        <span>Source ` + chart.data.labels[i] + `</span></br>
+                                        <span>` + item.data[i] + ` </span>
                                     </div>
-                                    <div class="div_stat">
-                                        <span class="effectif">` + item.data[i] + `</span>
+                                    <div class="div_label">
+                                        <span>CA ` + chart.data.labels[i] + `</span></br>
+                                        <span>`+ (chartData[i].ca) +` Ar</span>
                                     </div>
-                                </a>
+                               
                             `);
                             legendHtml.push('</li>');
                         }
@@ -471,99 +424,19 @@
             });
 
             $('#my-legend-con').html(myChart.generateLegend());
-
-                /* / chart*/
-            // open modal 
-
-            $(".open_modal").click(function(ev){
-                ev.preventDefault();
-                //modif_fidelisation_pack
-                //
-                var id = $(this).attr("data-id");
-                // on check cette fide
-                $.ajax({
-                    url : "/profile/check_fidelisation/" + id,
-                    type : "POST",
-                    data : { "id" : id },
-                    success : function(response){
-
-                        $("#modif_fidelisation_pack .modal-body").html(response);
-                        $("#modif_fidelisation_pack").modal("show");
-                    },
-                    error : function(){
-                        console.log("Erreur au niveau de check fid");
-                    }
-                })
-            })
-
-           $(document).on('click', "#modal_button_modif_fid", function(ev){
-                    ev.preventDefault();
-                    
-                    var id = $(this).attr('data-id');
-                    var ln = $("#fid_limite_nuitee").val();
-                    var lc = $("#fid_limite_ca").val();
-                    var data = {
-                        "id" : id,
-                        "ln" : ln,
-                        "lc" : lc
-                    }
-                    $.ajax({
-                        url : "/profile/modify_fidelisation/" + id,
-                        type : "POST",
-                        data : data,
-                        success : function(response){
-                            
-                            if(response ===  "ok"){
-                                $("#modif_fidelisation_pack").modal("hide");
-                                // reload the page 
-                                window.location.reload();
-                            }
-                        },
-                        error : function(){
-                            console.log("Erreur au niveau de check fid");
-                        }
-                    })
-           })
-
-           /* animation bull  */
-
-           $(".block1 .f_block").hover(
-               function(){
-                    $(this).siblings(".f_action_pack").find('.a_bull').css("display", "inline-flex");
-                },
-                function(){
-                   // $(this).siblings(".f_action_pack").find('.a_bull').hide();
-                   var a_bull_isHover = $(this).siblings(".f_action_pack").find('.a_bull:hover').length;
-                   if(a_bull_isHover == 0){
-                       $(this).siblings(".f_action_pack").find('.a_bull').hide();
-                
-                   }
+            var montant = document.querySelectorAll(".montant");
+            var t = montant.length;
+            var test = new Intl.NumberFormat();
+            if (t > 0) {
+                for (var i = 0; i < t; i++) {
+                    var temp = montant[i].innerHTML.replaceAll(" ", "");
+                    var val = test.format(temp);
+                    montant[i].innerHTML = val;
                 }
-           )
+            }
 
-           $(".a_bull").on({
-               click : function(ev){
-                   ev.preventDefault();
-                   $(this).siblings(".his_dropDown").toggle();
-               },
-               mouseleave : function() {
-                   his_drp_isHover = $(this).siblings(".his_dropDown:hover").length;
-                   if(his_drp_isHover == 0){
-                       $(this).hide();
-                        $(this).siblings(".his_dropDown").hide();
-                   }
-               }
-           })
 
-           $(".his_dropDown").mouseleave(function(){
-               $(this).hide();
-               var a_bull_isHover = $(this).siblings(".f_action_pack").find('.a_bull:hover').length;
-                if(a_bull_isHover == 0){
-                    $('.a_bull').hide();
-            
-                }
-           })
-        
+            /* / chart*/
         })
             
     </script>

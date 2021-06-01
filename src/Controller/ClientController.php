@@ -228,7 +228,7 @@ class ClientController extends AbstractController
                                     <input type="text" id="modif_email_client" class="form-control" value="'. $client->getEmail() .'">
                                 </div>
                                 <div class="form-group">
-                                    <label for="">Prénom : </label>
+                                    <label for="">Téléphone : </label>
                                     <input type="text" id="modif_telephone_client" class="form-control" value="'. $client->getTelephone() .'">
                                 </div>
                             </div>
@@ -331,7 +331,7 @@ class ClientController extends AbstractController
                             </div>
 
                             <div class=" list_btn">
-                                <button type = "submit" class="btn btn-warning" id="a_modal_modif_client" data-id="'. $client->getId() .'">
+                                <button type = "submit" class="btn btn-warning" id="a_modal_modif_client" data-change-source-init="non" data-id="'. $client->getId() .'">
                                     <span>Enregistrer</span>
                                 </button>
                                 <button class="btn" data-dismiss="modal">

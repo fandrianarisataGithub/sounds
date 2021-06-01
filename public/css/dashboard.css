@@ -7921,7 +7921,6 @@ table.dataTable tbody td {
     right: 20px;
     z-index: 1;
     display: none;
-    transition: all 1s ease-in-out;
     width: 30px;
     height: 30px;
     justify-content: center;
@@ -7930,7 +7929,7 @@ table.dataTable tbody td {
     border-radius: 50%;
     color: rgba(189,189,189);
     background: #4D4D4D ;
-   
+   transition: all 1s ease-in-out;
 }
 .f_action_pack a span.fa{
     font-size: 15px;
@@ -7938,9 +7937,9 @@ table.dataTable tbody td {
 }
 .f_action_pack a:hover, .f_action_pack a:focus{
     text-decoration: none;
-    transition: all 1s ease-in-out;
      background: #4D4D4D ;
     box-shadow: 0px 0px 10px rgba(189,189,189,0.8);
+    transition: all 1s ease-in-out;
 }
 .his_dropDown{
     background: #4D4D4D;

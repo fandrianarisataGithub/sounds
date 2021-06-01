@@ -174,7 +174,7 @@ class FidelisationController extends AbstractController
      /**
      * @Route("/profile/fidelisation/fiche_client/{pseudo_hotel}", name="fidelisation_fiche_client")
      */
-    public function fidelisation_fiche_clent(Request $request, SessionInterface $session, $pseudo_hotel): Response
+    public function fidelisation_fiche_client(Request $request, SessionInterface $session, $pseudo_hotel): Response
     {
         $data_session = $session->get('hotel');
     
@@ -183,6 +183,66 @@ class FidelisationController extends AbstractController
         }
         
         return $this->render('fidelisation/fiche_client.html.twig', [
+            'fidelisation'  => true,
+            'hotel'         => $pseudo_hotel,
+            "current_page"      => $data_session['current_page'],
+        ]);
+    }
+    /**
+     * @Route("/profile/client_OTA/{pseudo_hotel}", name="client_OTA")
+     */
+    public function client_OTA(Request $request, SessionInterface $session, $pseudo_hotel) :Response
+    {
+        $data_session = $session->get('hotel');
+        if(!$data_session){
+            return $this->redirectToRoute("app_logout");
+        }
+        return $this->render("fidelisation/client/client_OTA.html.twig", [
+            'fidelisation'  => true,
+            'hotel'         => $pseudo_hotel,
+            "current_page"      => $data_session['current_page'],
+        ]);
+    }
+    /**
+     * @Route("/profile/client_CORPO/{pseudo_hotel}", name="client_CORPO")
+     */
+    public function client_CORPO(Request $request, SessionInterface $session, $pseudo_hotel) :Response
+    {
+        $data_session = $session->get('hotel');
+        if(!$data_session){
+            return $this->redirectToRoute("app_logout");
+        }
+        return $this->render("fidelisation/client/client_CORPO.html.twig", [
+            'fidelisation'  => true,
+            'hotel'         => $pseudo_hotel,
+            "current_page"      => $data_session['current_page'],
+        ]);
+    }
+    /**
+     * @Route("/profile/client_TOA/{pseudo_hotel}", name="client_TOA")
+     */
+    public function client_TOA(Request $request, SessionInterface $session, $pseudo_hotel) :Response
+    {
+        $data_session = $session->get('hotel');
+        if(!$data_session){
+            return $this->redirectToRoute("app_logout");
+        }
+        return $this->render("fidelisation/client/client_TOA.html.twig", [
+            'fidelisation'  => true,
+            'hotel'         => $pseudo_hotel,
+            "current_page"      => $data_session['current_page'],
+        ]);
+    }
+    /**
+     * @Route("/profile/client_DIRECT/{pseudo_hotel}", name="client_DIRECT")
+     */
+    public function client_DIRECT(Request $request, SessionInterface $session, $pseudo_hotel) :Response
+    {
+        $data_session = $session->get('hotel');
+        if(!$data_session){
+            return $this->redirectToRoute("app_logout");
+        }
+        return $this->render("fidelisation/client/client_DIRECT.html.twig", [
             'fidelisation'  => true,
             'hotel'         => $pseudo_hotel,
             "current_page"      => $data_session['current_page'],

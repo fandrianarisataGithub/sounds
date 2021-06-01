@@ -280,8 +280,6 @@ class PageController extends AbstractController
                     $hotel->addClient($client);
                     // fidelisation 
     
-                    
-    
                     $manager->persist($client);
                     $manager->persist($hotel);
                     $manager->flush();
@@ -450,8 +448,6 @@ class PageController extends AbstractController
         $occ_oct = 0;
         $occ_nov = 0;
         $occ_dec = 0;
-
-        
         
         $all_ddj = $repoDoneeDJ->findBy(['hotel' => $hotel]);
         

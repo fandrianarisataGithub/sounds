@@ -67,6 +67,23 @@ ul.ul_legend li{
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
+    padding-right: 5px;
+    transition: all 1s ease-in-out;
+}
+ul.ul_legend li a{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding-right: 5px;
+    transition: all 1s ease-in-out;
+    border-radius: 15px;
+}
+ul.ul_legend li a:hover, ul.ul_legend li a:focus{
+    background: #4a4949;
+    border-radius: 15px;
+    transition: all 1s ease-in-out;
 }
 
 .div_icone{

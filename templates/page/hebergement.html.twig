@@ -1337,6 +1337,7 @@
 
             $(document).on('click', '#a_modal_modif_client', function(ev){
                 ev.preventDefault();
+                var source_init = $(this).attr("data-change-source-init");
                 var id = $(this).attr("data-id");
                 var nom = $('#modif_nom_client').val();
                 var prenom = $('#modif_prenom_client').val();
@@ -1345,22 +1346,52 @@
                 var nbr_chambre = $('#modif_nbr_chambre_client').val();
                 var prix_total = $("#modif_prix_total_client").val();
                 var provenance = $("#modif_provenance_client").val();
-				 var tarif = $("#modif_tarif_client").val();
-                //alert(id+"/"+nom+"/"+date_depart+"/"+date_arrivee+"/"+prenom);
-                // ajax
+                var email = $("#modif_email_client").val();
+                var telephone = $("#modif_telephone_client").val();
+                
+                var source = "";
+                if(provenance == "OTA"){
+                    source = $("#modal_source_OTA_init select").val();
+                    if(source_init == "oui"){
+                        source = $("#modal_source_OTA select").val();
+                    }
+                }
+                if(provenance == "DIRECT"){
+                    source = $("#modal_source_DIRECT_init select").val();
+                    if(source_init == "oui"){
+                         source = $("#modal_source_DIRECT select").val();
+                    }
+                }
+                if(provenance == "TOA"){
+                    source = $("#modal_source_TOA_init input").val();
+                    if(source_init == "oui"){
+                        source = $("#modal_source_TOA input").val();
+                    }
+                }
+                if(provenance == "CORPO"){
+                    source = $("#modal_source_CORPO_init input").val();
+                    if(source_init == "oui"){
+                        source = $("#modal_source_CORPO input").val();
+                    }
+                }
+                var  data = {
+                    "id" : id,
+                    "nom"    : nom,
+                    "prenom" : prenom,
+                    "date_arrivee"  : date_arrivee,
+                    "date_depart"   : date_depart,
+                    "nbr_chambre"   : nbr_chambre,
+                    "prix_total"    : prix_total,
+                    "provenance"    : provenance,  
+                    "source"        : source, 
+                    "email"         : email,    
+                    "telephone"     : telephone, 
+                }
+                console.log(data);
+
                 $.ajax({
                     url : "/admin/edit_client",
-                    data : {
-                        "id" : id,
-                        "nom"    : nom,
-                        "prenom" : prenom,
-                        "date_arrivee"  : date_arrivee,
-                        "date_depart"   : date_depart,
-                        "nbr_chambre"   : nbr_chambre,
-                        "prix_total"    : prix_total,
-                        "provenance"    : provenance, 
-						"tarif"    : tarif,    
-                    },
+                    data : data,
                     type : "POST",
                     beforeSend : function(){
                        $('#a_modal_modif_client').html('<span>Patienter...</span>'); 
@@ -1369,16 +1400,14 @@
                         if(response == "ok"){
                             table.ajax.reload(function(response){
                                 var montant = document.querySelectorAll(".montant");
-
-								var t = montant.length;
-								var test = new Intl.NumberFormat();
-								if (t > 0) {
-									for (var i = 0; i < t; i++) {
-										var temp = montant[i].innerHTML.replaceAll(" ", "");
-										var val = test.format(temp);
-										montant[i].innerHTML = val;
-									}           
-								}
+                                var t = montant.length;
+                                var test = new Intl.NumberFormat();
+                                if (t > 0) {
+                                    for (var i = 0; i < t; i++) {
+                                        var val = test.format(montant[i].innerHTML);
+                                        montant[i].innerHTML = val;
+                                    }           
+                                }
                             }, false);
                             $('#modal_form').modal('hide');
                         }
@@ -2399,6 +2428,22 @@
 							}
 						})
 				})
+
+				function reinitialise_modal_source(){
+					$(".modal_source").hide();
+					var prov = $("#modif_provenance_client").val();
+					//alert(prov);
+					$("#modal_source_" + prov).show();
+				}
+
+				$(document).on("change", "#modif_provenance_client", function(){
+					
+					$(".modal_source_init").hide();
+					$("#a_modal_modif_client").attr("data-change-source-init", "oui");
+					reinitialise_modal_source();
+				})
+				
+				reinitialise_modal_source();
 		})
 	</script>
 
