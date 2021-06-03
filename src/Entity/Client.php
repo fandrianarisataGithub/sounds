@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use App\Repository\ClientRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ClientRepository;
 
 /**
  * @ORM\Entity(repositoryClass=ClientRepository::class)
@@ -276,5 +276,19 @@ class Client
         $this->telephone = $telephone;
 
         return $this;
+    }
+
+    public function afficheContact() :string
+    {
+        if($this->getEmail()){
+            return $this->getEmail();
+        }
+        else if((!$this->getEmail()) && ($this->getTelephone())){
+            return $this->getTelephone();
+        }
+        else if((!$this->getEmail()) && (!$this->getTelephone())){
+            return "";
+        }
+        
     }
 }

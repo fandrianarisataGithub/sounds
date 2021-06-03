@@ -257,7 +257,7 @@
                                 </div>
                                 {% include "table/table_client.html.twig" %}
                             </div>
-
+                            <div id="test_d"></div>
                             <div class="h4_titre" 
                                 {% if app.user.receptionniste == "oui" %}
                                     style="display: none !important"
@@ -975,6 +975,7 @@ new Cleave('.input_pourcent', {blocks: [4]});
                         $("#ajouter_client").html('<span>Patienter...</span>');
                     },
                     success : function (response) {
+                       
                         if(response == "ok"){
                             // on initialise le formulaire
                             $('#nom_client').val("");
@@ -991,10 +992,6 @@ new Cleave('.input_pourcent', {blocks: [4]});
                         else{
                             $(".info_arror_client p").text(response);
                             $(".info_arror_client").fadeIn("slow");
-                            setTimeout(() => {
-                                $(".info_arror_client p").text("");
-                                $(".info_arror_client").fadeOut("slow");
-                            }, 3000);
                         }
                     },
                     complete : function(){
@@ -1018,6 +1015,13 @@ new Cleave('.input_pourcent', {blocks: [4]});
                 })
                 
             });
+
+            // fade out error form 
+
+            $("#ajouter_client").blur(function(){
+                $(".info_arror_client").fadeOut("fast");
+                
+            })
 
             // suppression client présent 
 

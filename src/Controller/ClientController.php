@@ -143,8 +143,8 @@ class ClientController extends AbstractController
             $t = [];
             foreach ($tab_aff as $item) {
 
-                array_push($t, ['<div>' . $item->getNom() . '</div><div>' . $item->getPrenom() . '</div><div><span>Ajouté le : </span>' 
-                . $item->getCreatedAt()->format("d-m-Y") . '</div>', $item->getDateArrivee()->format('d-m-Y'), $item->getDateDepart()->format('d-m-Y'), $item->getProvenance(), $item->getSource(), $item->getDureeSejour(), $item->getNbrChambre(), '<span class="montant">' 
+                array_push($t, ['<div>' . $item->getNom() . '</div><div>' . $item->getPrenom() . '</div><div><span>Contact : </span>' 
+                . $item->afficheContact() . '</div>', $item->getDateArrivee()->format('d-m-Y'), $item->getDateDepart()->format('d-m-Y'), $item->getProvenance(), $item->getSource(), $item->getDureeSejour(), $item->getNbrChambre(), '<span class="montant">' 
                 .$item->getPrixTotal().'</span>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_diso" data-id = "' 
                 . $item->getId() . '" class="btn btn_client_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a><a href="#" data-toggle="modal" data-target="#modal_form_confirme" data-id = "' 
                 . $item->getId() . '" class="btn btn_client_suppr btn-danger btn-xs"><span class="fa fa-trash-o"></span></a></div>']);

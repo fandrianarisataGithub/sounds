@@ -249,6 +249,7 @@ class PageController extends AbstractController
             $prenom_client = (empty($request->get('prenom_client'))) ? "" : $request->get('prenom_client');
             $date_arrivee = $request->get('date_arrivee');
             $date_depart = $request->get('date_depart');
+           
             $nbr_chambre = $request->get('nbr_chambre');
             $provenance = $request->get('provenance');
             $email = $request->get('email');
@@ -256,13 +257,59 @@ class PageController extends AbstractController
             $source = $request->get('source');
             $prix_total = $request->get('prix_total');
             $createdAt = date_create($request->get('createdAt'));
-            $date_arrivee = date_create($date_arrivee);
-            $date_depart = date_create($date_depart);
-            $diff = $date_arrivee->diff($date_depart);
-            $days = $diff->d;
-
-            if(filter_var($email, FILTER_VALIDATE_EMAIL)){
-                if(!empty($nom_client) && !empty($date_depart) && !empty($date_arrivee)){
+            $diff = "";
+            $days = "";
+            if(!empty($date_depart) && !empty($date_arrivee)){
+                $date_arrivee = date_create($date_arrivee);
+                $date_depart = date_create($date_depart);
+                $diff = $date_arrivee->diff($date_depart);
+                $days = $diff->d;
+            }
+            
+            if(!empty($email)){
+                if(filter_var($email, FILTER_VALIDATE_EMAIL)){
+                    if(!empty($nom_client) 
+                            && !empty($date_depart) 
+                            && !empty($date_arrivee)
+                            && !empty($prix_total) 
+                            && !empty($nbr_chambre)
+                    ){
+                        $client = new Client();
+                        $client->setNom($nom_client);
+                        $client->setPrenom($prenom_client);
+                        $client->setDateArrivee($date_arrivee);
+                        $client->setTarif($tarif_client);
+                        $client->setDateDepart($date_depart);
+                        $client->setDureeSejour($days);
+                        $client->setSource($source);
+                        $client->setEmail($email);
+                        $client->setTelephone($telephone);
+                        $client->setProvenance($provenance);
+                        $client->setNbrChambre($nbr_chambre);
+                        $client->setPrixTotal(str_replace(" ", "", $prix_total));
+                        $client->setCreatedAt($createdAt);
+                        $hotel->addClient($client);
+                        // fidelisation 
+        
+                        $manager->persist($client);
+                        $manager->persist($hotel);
+                        $manager->flush();
+                        $data = json_encode("ok");  
+                    }
+                    else{
+                        $data = json_encode("Veuiller renseigner au moins les champs Nom, Check in, check out, Nbr chambres, Prix total"); 
+                    }
+                }else{
+                    $data = json_encode("Veuiller entrer un adresse email valide"); 
+                }
+            }else if(empty($email)){
+                if(!empty($nom_client) 
+                        && !empty($date_depart) 
+                        && !empty($date_arrivee)
+                        && !empty($prix_total) 
+                        && !empty($nbr_chambre)
+                        && !empty($telephone)
+                ){
                     $client = new Client();
                     $client->setNom($nom_client);
                     $client->setPrenom($prenom_client);
@@ -271,7 +318,6 @@ class PageController extends AbstractController
                     $client->setDateDepart($date_depart);
                     $client->setDureeSejour($days);
                     $client->setSource($source);
-                    $client->setEmail($email);
                     $client->setTelephone($telephone);
                     $client->setProvenance($provenance);
                     $client->setNbrChambre($nbr_chambre);
@@ -279,18 +325,15 @@ class PageController extends AbstractController
                     $client->setCreatedAt($createdAt);
                     $hotel->addClient($client);
                     // fidelisation 
-    
                     $manager->persist($client);
                     $manager->persist($hotel);
                     $manager->flush();
                     $data = json_encode("ok");  
                 }
                 else{
-                    $data = json_encode("Veuiller renseigner tous les champs nécessaires"); 
+                    $data = json_encode("Veuiller renseigner au moins les champs Nom, Check in, check out, Nbr chambres, Prix total et un contact");  
                 }
-            }
-            else{
-                $data = json_encode("L'adresse email n'est pas valide"); 
+                
             }
            
             // condition 
