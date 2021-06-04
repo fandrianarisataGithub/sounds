@@ -1,4 +1,21 @@
 {
+    "api-platform/api-pack": {
+        "version": "v1.3.0"
+    },
+    "api-platform/core": {
+        "version": "2.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.5",
+            "ref": "a93061567140e386f107be75340ac2aee3f86cbf"
+        },
+        "files": [
+            "./config/packages/api_platform.yaml",
+            "./config/routes/api_platform.yaml",
+            "./src/Entity/.gitignore"
+        ]
+    },
     "beberlei/doctrineextensions": {
         "version": "v1.2.8"
     },
@@ -108,6 +125,9 @@
     "ezyang/htmlpurifier": {
         "version": "v4.13.0"
     },
+    "fig/link-util": {
+        "version": "1.1.2"
+    },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.2"
     },
@@ -143,6 +163,18 @@
     },
     "myclabs/php-enum": {
         "version": "1.7.6"
+    },
+    "nelmio/cors-bundle": {
+        "version": "1.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.5",
+            "ref": "6bea22e6c564fba3a1391615cada1437d0bde39c"
+        },
+        "files": [
+            "./config/packages/nelmio_cors.yaml"
+        ]
     },
     "nikic/php-parser": {
         "version": "v4.8.0"
@@ -459,6 +491,9 @@
     "symfony/property-info": {
         "version": "v4.4.11"
     },
+    "symfony/proxy-manager-bridge": {
+        "version": "v4.4.25"
+    },
     "symfony/routing": {
         "version": "4.2",
         "recipe": {
@@ -621,6 +656,9 @@
     },
     "webmozart/assert": {
         "version": "1.9.1"
+    },
+    "willdurand/negotiation": {
+        "version": "3.0.0"
     },
     "yectep/phpspreadsheet-bundle": {
         "version": "v0.1.1"
