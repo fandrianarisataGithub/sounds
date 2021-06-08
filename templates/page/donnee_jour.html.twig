@@ -25,7 +25,7 @@
                                 <input type="hidden" name="" id="date1" value="">
                                 <input type="hidden" id="date2" value="" name="">
                         </div>
-                        {# <div id="test"></div> #}
+                        <div id="test"></div>
                     </section>
                 </div>
                 <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
@@ -162,16 +162,26 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <section class="sous_form">
+                            <section class="sous_form" id="app_client">
                                 <h4 class="label__titre">Nouveau client</h4>
                                 <div class="sous_data_form">
                                     <div>
-                                        <span class="span__label"></span><input type="text" class="input__text" placeholder="Nom" name="" id ="nom_client">
-                                        <span class="span__label span_prenom"></span><input type="text" class="input__text" placeholder="Prénom" name="" id = "prenom_client">
+                                        <span class="span__label"></span>
+                                        <input type="text" class="input__text" placeholder="Nom" name="nom_client" id ="nom_client" autocomplete="off"/>
+                                        <ul class="group_nom_client">
+                                            <li><a href="#">anarana ...</a></li>
+                                            <li><a href="#">anarana ...</a></li>
+                                            <li><a href="#">anarana ...</a></li>
+                                            <li><a href="#">anarana ...</a></li>
+                                        </ul>
+                                        <span class="span__label span_prenom"></span>
+                                        <input type="text" class="input__text" placeholder="Prénom" name="prenom_client" id = "prenom_client"/>
                                     </div>
                                     <div>
-                                        <span class="span__label"></span><input type="text" class="input__text" placeholder="Adresse email" name="" id ="email_client">
-                                        <span class="span__label span_prenom"></span><input type="text" class="input__text" placeholder="Téléphone" name="" id = "telephone_client">
+                                        <span class="span__label"></span>
+                                        <input type="text" class="input__text" placeholder="Adresse email" name="email_client" id ="email_client"/>
+                                        <span  class="span__label span_prenom"></span>
+                                        <input  type="text" class="input__text" placeholder="Téléphone" name="telephone_client" id = "telephone_client"/>
                                     </div>
                                     <div>
                                         <div class="form-group">
@@ -250,7 +260,6 @@
                                     </div>
                                 </div>
                             </section>
-
                             <div class="tableau" id="tab_client_present">
                                 <div class="sous_titre">
                                     <h4 class="label__titre">Client présent le : <span id="data_text_date"></span></h4>
@@ -781,8 +790,8 @@
 <!-- un plugin tres important pour les input -->
 
 <script src="{{ asset('js/cleave.min.js') }}"></script>
-
-
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script>
 
     document.querySelector(".input_pourcent").onkeyup = function(){
@@ -968,14 +977,15 @@ new Cleave('.input_pourcent', {blocks: [4]});
                 };
 
                 $.ajax({
-                    url : "{{ path('hebergement', {'pseudo_hotel' : hotel}) }}", // PageController
+                    url : "{{ path('store_client', {'pseudo_hotel' : hotel}) }}", // ClientController
                     type : "POST",
                     data : data,
                     beforeSend : function(){
                         $("#ajouter_client").html('<span>Patienter...</span>');
                     },
                     success : function (response) {
-                       
+                        $('#test').html(response);
+                        
                         if(response == "ok"){
                             // on initialise le formulaire
                             $('#nom_client').val("");
@@ -1263,6 +1273,7 @@ new Cleave('.input_pourcent', {blocks: [4]});
 
 
 </script>
+<script src="{{ asset('js/vue.js') }}"></script>
 
 
 {% endblock %}

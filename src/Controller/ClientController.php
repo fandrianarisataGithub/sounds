@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Client;
 use App\Services\Services;
+use App\Entity\Fidelisation;
 use App\Repository\HotelRepository;
 use App\Repository\ClientRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\FidelisationRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,6 +17,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ClientController extends AbstractController
 {
+    public $repoClient;
+    public $repoFid;
+    public $manager;
+    public $startFidelisation; // date de debut de la catégorisation
+
+    public function __construct(ClientRepository $repoClient, FidelisationRepository $repoFid, EntityManagerInterface $manager)
+    {
+        $this->startFidelisation = date_create("2021-01-01"); 
+        $this->repoClient = $repoClient;
+        $this->manager = $manager;
+        $this->repoFid = $repoFid;
+    }
+
     /**
      * @Route("/profile/select_client/today", name="listing_client")
      */
@@ -160,13 +176,214 @@ class ClientController extends AbstractController
     }
 
     /**
-     * @Route("/profile/test")
-     */
-    public function test(HotelRepository $repoHotel, ClientRepository $repoClient)
+     * @Route("/profile/storeclient/{pseudo_hotel}", name="store_client")
+    */
+    public function storeClient(
+        HotelRepository $repoHotel, 
+        ClientRepository $repoClient,
+        Request $request,
+        $pseudo_hotel)
     {
-        $hotel = $repoHotel->find(1);
-        $clients = $repoClient->findClientBetweenTwoDates($hotel, "2021-05-07", "2021-05-11");
-        dd($clients);
+        $response = new Response();
+        $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+        if ($request->isXmlHttpRequest()) {
+
+            $nom_client = $request->get('nom_client');
+            $tarif_client = $request->get('tarif_client');
+            $prenom_client = (empty($request->get('prenom_client'))) ? "" : $request->get('prenom_client');
+            $date_arrivee = $request->get('date_arrivee');
+            $date_depart = $request->get('date_depart');
+            $nbr_chambre = $request->get('nbr_chambre');
+            $provenance = $request->get('provenance');
+            $email = $request->get('email');
+            $telephone = $request->get('telephone');
+            $tab_identifiant = ["mail" => $email, "telephone" => $telephone];
+            $source = $request->get('source');
+            $prix_total = $request->get('prix_total');
+            $createdAt = date_create($request->get('createdAt'));
+            $diff = "";
+            $days = "";
+            $client = new Client();
+            
+            // start client insertiion
+            if(!empty($date_depart) && !empty($date_arrivee)){
+                $date_arrivee = date_create($date_arrivee);
+                $date_depart = date_create($date_depart);
+                $diff = $date_arrivee->diff($date_depart);
+                $days = $diff->d;
+            }
+            
+            if(!empty($email)){
+                if(filter_var($email, FILTER_VALIDATE_EMAIL)){
+                    if(!empty($nom_client) 
+                            && !empty($date_depart) 
+                            && !empty($date_arrivee)
+                            && !empty($prix_total) 
+                            && !empty($nbr_chambre)
+                    ){
+                        
+                        $client->setNom($nom_client);
+                        $client->setPrenom($prenom_client);
+                        $client->setDateArrivee($date_arrivee);
+                        $client->setTarif($tarif_client);
+                        $client->setDateDepart($date_depart);
+                        $client->setDureeSejour($days);
+                        $client->setSource($source);
+                        $client->setEmail($email);
+                        
+                        $client->setTelephone($telephone);
+                        $client->setProvenance($provenance);
+                        $client->setNbrChambre($nbr_chambre);
+                        $client->setPrixTotal(str_replace(" ", "", $prix_total));
+                        $client->setCreatedAt($createdAt);
+                       
+                        $hotel->addClient($client);
+                        // fidelisation 
+        
+                        $this->manager->persist($client);
+                        $this->manager->persist($hotel);
+                        $this->manager->flush();
+                        $data = json_encode("ok");  
+                    }
+                    else{
+                        $data = json_encode("Veuiller renseigner au moins les champs Nom, Check in, check out, Nbr chambres, Prix total"); 
+                    }
+                }else{
+                    $data = json_encode("Veuiller entrer un adresse email valide"); 
+                }
+            }else if(empty($email)){
+                if(!empty($nom_client) 
+                        && !empty($date_depart) 
+                        && !empty($date_arrivee)
+                        && !empty($prix_total) 
+                        && !empty($nbr_chambre)
+                        && !empty($telephone)
+                ){
+                    
+                    $client->setNom($nom_client);
+                    $client->setPrenom($prenom_client);
+                    $client->setDateArrivee($date_arrivee);
+                    $client->setTarif($tarif_client);
+                    $client->setDateDepart($date_depart);
+                    $client->setDureeSejour($days);
+                    $client->setSource($source);
+                    $client->setTelephone($telephone);
+                    $client->setProvenance($provenance);
+                    $client->setNbrChambre($nbr_chambre);
+                    $client->setPrixTotal(str_replace(" ", "", $prix_total));
+                    $client->setCreatedAt($createdAt);
+                    $hotel->addClient($client);
+                    // fidelisation 
+                    $this->manager->persist($client);
+                    $this->manager->persist($hotel);
+                    $this->manager->flush();
+                    $data = json_encode("ok");  
+                }
+                else{
+                    $data = json_encode("Veuiller renseigner au moins les champs Nom, Check in, check out, Nbr chambres, Prix total et un contact");  
+                }
+                
+            }
+           
+            // condition 
+
+            $response->headers->set('Content-Type', 'application/json');
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->setContent($data);
+
+            // end client insertion in fidelisation
+            
+            $this->categorisation($tab_identifiant);
+        
+
+            return $response;
+        }
+    }
+
+    public function setCategoriesForClients($clients, $nameOfFid){
+        $fidelisation = $this->repoFid->findOneBy(['nom'=>$nameOfFid]);
+        foreach($clients as $item){
+            $item->setFidelisation($fidelisation);
+        }
+        $this->manager->flush();
+    }
+
+    /**
+     * @Route("/profile/listeAllClients", name = "vue_all_clients")
+     */
+    public function vue_all_clients(Request $request)
+    {
+        $response = new Response();
+        // tokony alaina le nom distinct anle clients
+        $data = $this->repoClient->findAllForVue();
+        $data = json_encode($data);
+        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->setContent($data);
+        return $response;
+    }
+
+    /**
+     * @Route("/profile/findClientByHisName", name = "findClientByHisName")
+     */
+    public function findClientByHisName(Request $request)
+    {
+        $response = new Response();
+        if($request->isXmlHttpRequest()){
+            // tokony alaina le nom distinct anle clients
+            //$data = $this->repoClient->fincClientLikeName($request->get('nom'));
+            $data = json_encode($request->get('nom'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->setContent($data);
+            return $response;
+        }
+        else{
+            $data = "tato";
+            $response->headers->set('Content-Type', 'application/json');
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->setContent($data);
+            return $response;
+        }
+    }
+
+    /**
+     * catégorisation du client inseré
+    */
+    public function categorisation($tab_identifiant) :void
+    {
+
+        $clients = $this->repoClient->searchTabIdentifiant($tab_identifiant, $this->startFidelisation);
+        
+        $client = end($clients);
+        // la dernière date d'insertion de ce client
+        $lastCreatedAt = $client->getCreatedAt();
+
+        $diff = date_diff($lastCreatedAt, new \DateTime())->y;
+        if($diff >= 1){
+            $this->setCategoriesForClients($clients, "cardex");
+        }
+        else if($diff < 1){
+            $ca = 0;
+            $nuitee = 0;
+            foreach($clients as $item){
+                $ca = $ca + $item->getPrixTotal();
+                $nuitee = $nuitee + $item->getDureeSejour();
+            }
+            if( $nuitee >= 0 &&  $nuitee <= 25){
+                $this->setCategoriesForClients($clients, "cardex");
+            }
+            if( $nuitee >= 26 &&  $nuitee <= 50){
+                $this->setCategoriesForClients($clients, "preferentiel");
+            }
+            if( $nuitee >= 51 &&  $nuitee <= 90){
+                $this->setCategoriesForClients($clients, "privilege");
+            }
+            if( $nuitee >= 91){ // on n'a pas encore de limite 
+                $this->setCategoriesForClients($clients, "exclusif");
+            }
+        }
+        
     }
 
     /**

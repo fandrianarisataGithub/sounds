@@ -2,15 +2,14 @@
 
 namespace App\Entity;
 
+use Svg\Tag\Group;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ClientRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
  * @ORM\Entity(repositoryClass=ClientRepository::class)
- * @ApiResource(
- *      collectionOperations = {"get"}
- * )
+ * 
  */
 class Client
 {
@@ -18,57 +17,68 @@ class Client
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * 
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * 
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="datetime")
+     * 
      */
     private $dateArrivee;
 
     /**
      * @ORM\Column(type="datetime")
+     * 
      */
     private $dateDepart;
 
     /**
      * @ORM\Column(type="integer")
+     * 
      */
     private $dureeSejour;
 
     /**
      * @ORM\ManyToOne(targetEntity=Hotel::class, inversedBy="clients")
      * @ORM\JoinColumn(nullable=false)
+     * 
      */
     private $hotel;
 
     /**
      * @ORM\Column(type="datetime")
+     * 
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * 
      */
     private $nbr_chambre;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * 
      */
     private $prix_total;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * 
      */
     private $provenance;
 
@@ -79,21 +89,25 @@ class Client
 
     /**
      * @ORM\ManyToOne(targetEntity=Fidelisation::class, inversedBy="client")
+     * 
      */
     private $fidelisation;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * 
      */
     private $source;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * 
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * 
      */
     private $telephone;
 
@@ -295,4 +309,6 @@ class Client
         }
         
     }
+
+   
 }
