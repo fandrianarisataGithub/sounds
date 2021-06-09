@@ -17,10 +17,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ClientController extends AbstractController
 {
-    public $repoClient;
-    public $repoFid;
-    public $manager;
-    public $startFidelisation; // date de debut de la catégorisation
+    private $repoClient;
+    private $repoFid;
+    private $manager;
+    private $startFidelisation; // date de debut de la catégorisation
 
     public function __construct(ClientRepository $repoClient, FidelisationRepository $repoFid, EntityManagerInterface $manager)
     {
@@ -309,18 +309,18 @@ class ClientController extends AbstractController
     }
 
     /**
-     * @Route("/profile/listeAllClients", name = "vue_all_clients")
+     * @Route("/profile/findAllClients", name = "findAllClients")
      */
-    public function vue_all_clients(Request $request)
+    public function findAllClients(Request $request)
     {
         $response = new Response();
-        // tokony alaina le nom distinct anle clients
-        $data = $this->repoClient->findAllForVue();
-        $data = json_encode($data);
+        $clients = $this->repoClient->findAllForVue();
+        $result = json_encode($clients);
         $response->headers->set('Content-Type', 'application/json');
         $response->headers->set('Access-Control-Allow-Origin', '*');
-        $response->setContent($data);
+        $response->setContent($result);
         return $response;
+        
     }
 
     /**
@@ -329,22 +329,15 @@ class ClientController extends AbstractController
     public function findClientByHisName(Request $request)
     {
         $response = new Response();
-        if($request->isXmlHttpRequest()){
-            // tokony alaina le nom distinct anle clients
-            //$data = $this->repoClient->fincClientLikeName($request->get('nom'));
-            $data = json_encode($request->get('nom'));
-            $response->headers->set('Content-Type', 'application/json');
-            $response->headers->set('Access-Control-Allow-Origin', '*');
-            $response->setContent($data);
-            return $response;
-        }
-        else{
-            $data = "tato";
-            $response->headers->set('Content-Type', 'application/json');
-            $response->headers->set('Access-Control-Allow-Origin', '*');
-            $response->setContent($data);
-            return $response;
-        }
+        $data = json_decode($request->getContent());
+        $nom = $data->nom;
+        $clients = $this->repoClient->selectDistinc($nom);
+        $result = json_encode($clients);
+        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->setContent($result);
+        return $response;
+        
     }
 
     /**

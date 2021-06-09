@@ -23,6 +23,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\FournisseurRepository;
 use App\Repository\ClientUploadRepository;
 use App\Repository\DonneeDuJourRepository;
+use App\Repository\FidelisationRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\DataTropicalWoodRepository;
@@ -40,11 +41,19 @@ class PageController extends AbstractController
 {
 
     private  $services;
-    public function __construct(Services $services)
+    public $repoClient;
+    public $repoFid;
+    public $manager;
+    public $startFidelisation; // date de debut de la catégorisation
+
+    public function __construct(Services $services, ClientRepository $repoClient, FidelisationRepository $repoFid, EntityManagerInterface $manager)
     {
+        $this->startFidelisation = date_create("2021-01-01"); 
+        $this->repoClient = $repoClient;
+        $this->manager = $manager;
+        $this->repoFid = $repoFid;
         $this->services = $services;
     }
-
     /**
      * @Route("/", name="first_page")
      */
@@ -2193,6 +2202,7 @@ class PageController extends AbstractController
             if ($pos == "impossible") {
                 return $this->render('/page/error.html.twig');
             } else {
+
                 return $this->render('page/donnee_jour.html.twig', [
                     "id" => "li__donnee_du_jour",
                     "tropical_wood"     => false,
@@ -2200,8 +2210,17 @@ class PageController extends AbstractController
                     "hotel" => $data_session['pseudo_hotel'],
                     "current_page" => $data_session['current_page'],
                     "today" => $today->format("Y-m-d"),
+                    'result' => $this->findAllClients()
                 ]);
             }
+    }
+
+    public function findAllClients()
+    {
+        $clients = $this->repoClient->findAllForVue();
+        
+        return json_encode($clients, JSON_UNESCAPED_UNICODE);
+        
     }
 
     /**

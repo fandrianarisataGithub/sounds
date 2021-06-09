@@ -8214,6 +8214,12 @@ ul.group_nom_client li a:focus {
     text-decoration: none;
 }
 
+ul.group_nom_client{
+    width: 250px;
+}
+ul.group_nom_client li a{
+    font-size: 13px
+}
 
 /* / fin client */
 

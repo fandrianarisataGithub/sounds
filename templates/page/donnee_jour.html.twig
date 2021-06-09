@@ -35,7 +35,6 @@
 
                         <!-- formulaire total -->
 
-                        
                             <div class="h4_titre">
                                 <h4>Hébergement</h4>
                             </div>
@@ -162,26 +161,25 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <section class="sous_form" id="app_client">
-                                <h4 class="label__titre">Nouveau client</h4>
+                            <section class="sous_form">
+                                <h4 class="label__titre">Nouveau client </h4>
                                 <div class="sous_data_form">
                                     <div>
                                         <span class="span__label"></span>
-                                        <input type="text" class="input__text" placeholder="Nom" name="nom_client" id ="nom_client" autocomplete="off"/>
-                                        <ul class="group_nom_client">
-                                            <li><a href="#">anarana ...</a></li>
-                                            <li><a href="#">anarana ...</a></li>
-                                            <li><a href="#">anarana ...</a></li>
-                                            <li><a href="#">anarana ...</a></li>
+                                        <input v-model="nom" v-on:keyup="proposeName" type="text" class="input__text" placeholder="Nom" name="nom_client" id ="nom_client" autocomplete="off"/>
+                                        <ul v-if="isTyping && filteredClients.length && nom !='' > 0" class="group_nom_client">
+                                            <li v-for="client in filteredClients" v-bind:key="client.id">
+                                                <a @click.prevent="putClient(client)" href="#">${ client.nom }</a>
+                                            </li>
                                         </ul>
                                         <span class="span__label span_prenom"></span>
-                                        <input type="text" class="input__text" placeholder="Prénom" name="prenom_client" id = "prenom_client"/>
+                                        <input v-model="prenom" type="text" class="input__text" placeholder="Prénom" name="prenom_client" id = "prenom_client"/>
                                     </div>
                                     <div>
                                         <span class="span__label"></span>
-                                        <input type="text" class="input__text" placeholder="Adresse email" name="email_client" id ="email_client"/>
+                                        <input v-model="email" type="text" class="input__text" placeholder="Adresse email" name="email_client" id ="email_client"/>
                                         <span  class="span__label span_prenom"></span>
-                                        <input  type="text" class="input__text" placeholder="Téléphone" name="telephone_client" id = "telephone_client"/>
+                                        <input v-model="telephone"  type="text" class="input__text" placeholder="Téléphone" name="telephone_client" id = "telephone_client"/>
                                     </div>
                                     <div>
                                         <div class="form-group">
@@ -787,19 +785,14 @@
 {% endblock %}
 
 {% block javascripts %}
-<!-- un plugin tres important pour les input -->
 
 <script src="{{ asset('js/cleave.min.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script>
 
     document.querySelector(".input_pourcent").onkeyup = function(){
         handleChange(this);
        // alert('kjh')
     }
-
-
 
 	function handleChange(input) {
 
@@ -832,7 +825,7 @@
     }
 
 
-new Cleave('.input_pourcent', {blocks: [4]});
+    new Cleave('.input_pourcent', {blocks: [4]});
 
 
 /* fin utilisation de cleave.js pour les input */
@@ -1271,9 +1264,49 @@ new Cleave('.input_pourcent', {blocks: [4]});
            
         })
 
-
 </script>
-<script src="{{ asset('js/vue.js') }}"></script>
+
+<script>
+    
+    var datas = $('<div>').html('{{ result }}')[0].textContent;
+    var clients = JSON.parse(datas)
+    var app = new Vue({
+        el: '#app',
+        delimiters: ['${', '}'],
+        data() {
+            return {
+                nom: '',
+                prenom: '',
+                email: '',
+                telephone: '',
+                clients: clients,
+                isTyping : false,
+            }
+        },
+        computed : {
+            filteredClients(){
+                return this.clients.filter((client)=>{
+                    return client.nom.toLowerCase().includes(this.nom.toLowerCase());
+                })
+            }
+        },
+        methods: {
+            proposeName: function() {
+               setTimeout(() => {
+                    this.isTyping = true;
+                }, 300);
+            },
+            putClient: function(client){
+                this.isTyping = false;
+                this.nom = client.nom;
+                this.prenom = (client.prenom != '') ? client.prenom : ''
+                 this.email = (client.email != '') ? client.email : ''
+                  this.telephone = (client.telephone != '') ? client.telephone : ''
+
+            }
+        }
+    })
+</script>
 
 
 {% endblock %}

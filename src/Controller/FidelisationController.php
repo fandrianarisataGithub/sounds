@@ -6,7 +6,9 @@ use App\Entity\Client;
 use App\Entity\Fidelisation;
 use App\Repository\UserRepository;
 use App\Repository\HotelRepository;
+use App\Repository\ClientRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\FidelisationRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,10 +18,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class FidelisationController extends AbstractController
 {
     private $em;
+    private $respoFid;
+    private $repoClient;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(ClientRepository $repoClient, EntityManagerInterface $em, FidelisationRepository $repoFid)
     {
         $this->em = $em;
+        $this->repoFid = $repoFid;
+        $this->repoClient = $repoClient;
     }
 
     /**
@@ -31,8 +37,9 @@ class FidelisationController extends AbstractController
         if(!$data_session){
             return $this->redirectToRoute("app_logout");
         }
-        $clients = $this->getDoctrine()->getRepository(Client::class)->findAll();
-        
+        // tous les clients fidélisé
+        $clients = $this->repoClient->findAllClientsFid();
+        dd($clients);
         $repoFid = $this->getDoctrine()->getRepository(Fidelisation::class);
         $fidelisations = $repoFid->findAll([], ["id" => "ASC"]);
        
@@ -40,6 +47,7 @@ class FidelisationController extends AbstractController
             'fidelisation'  => true,
             "fidelisations" => $fidelisations,
             'hotel'         => $pseudo_hotel,
+            "clients"       => $clients,
             "current_page"      => $data_session['current_page'],
         ]);
     }

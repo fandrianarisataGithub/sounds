@@ -29,33 +29,54 @@ class ClientRepository extends ServiceEntityRepository
     public function findClientBetweenTwoDates($hotel, $date1, $date2)
     {
         return $this->createQueryBuilder('c')
-                ->andWhere('c.hotel = :hotel')
-                ->andWhere('c.dateArrivee >= :date1 AND c.dateDepart <= :date2')
-                ->setParameter('hotel' , $hotel)
-                ->setParameter('date1', $date1)
-                ->setParameter('date2', $date2)
-                ->getQuery()
-                ->getResult()
+            ->andWhere('c.hotel = :hotel')
+            ->andWhere('c.dateArrivee >= :date1 AND c.dateDepart <= :date2')
+            ->setParameter('hotel' , $hotel)
+            ->setParameter('date1', $date1)
+            ->setParameter('date2', $date2)
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findAllClientsFid()
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.fidelisation IS NOT NULL')
+            ->getQuery()
+            ->getResult()
+        ;
+        // $conn = $this->getEntityManager()
+        //     ->getConnection();
+        // $sql = 'SELECT * FROM client INNER JOIN fidelisation ON client.fidelisation_id = fidelisation.id';
+        // $stmt = $conn->prepare($sql);
+        // $stmt->execute();
+        // return $stmt->fetchAll();
+    }
+
+    public function selectDistinc($nom)
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c.nom, c.prenom, c.email, c.telephone')
+            ->where('c.nom LIKE :word')
+            ->setParameter('word', $nom.'%')
+            ->distinct()
+            ->getQuery()
+            ->getResult()
         ;
     }
 
     public function findAllForVue()
     {
-        $entityManager = $this->getEntityManager();
-
-        $query = $entityManager->createQuery(
-            'SELECT DISTINCT c.nom, c.email, c.telephone, c.prenom
-            FROM App\Entity\Client c
-            WHERE c.email is not NULL OR c.telephone is not NULL'
-        );
-
-        // returns an array of Product objects
-        return $query->getResult();
-       
+        return $this->createQueryBuilder('c')
+            ->select('c.nom, c.prenom, c.email, c.telephone, c.id')
+            ->distinct()
+            ->getQuery()
+            ->getResult()
+        ; 
     }
 
-
-    
     public function searchTabIdentifiant($tab, \DateTime $start)
     {
 
@@ -70,6 +91,7 @@ class ClientRepository extends ServiceEntityRepository
                 ->getResult()
             ;
         }
+        
         if($tab["telephone"]){
             return $this->createQueryBuilder('c')
                 ->andWhere('c.telephone = :val')
@@ -81,7 +103,6 @@ class ClientRepository extends ServiceEntityRepository
                 ->getResult()
             ;
         }
-        
         
     }
     
