@@ -11,6 +11,12 @@
         #contents{
             margin-left : 100px !important;
         }
+        #aside1 ul li.logo_active_fidelisation{
+            background-color: #555555;
+        } 
+        #aside1 ul li.logo_active {
+            background-color: transparent;
+        }
     </style>
 {% endblock %}
 {% block body %}
@@ -58,7 +64,7 @@
                                 <p>Nombre de clients <br> PRIVILEGE</p>
                             </aside>
                             <aside>
-                                <p class="f_val_stat"><span>160</span></p>
+                                <p class="f_val_stat"><span>{{ data_clients['nbr_clients'] }}</span></p>
                             </aside>
                         </div>
                     </div>
@@ -77,7 +83,7 @@
                                 <p>Revenu <br>global</p>
                             </aside>
                             <aside>
-                                <p class="f_val_stat"><span class="montant_f">1900440000</span><span class="unite_f"> Ar</span></p>
+                                <p class="f_val_stat"><span class="montant_f">{{ data_clients["rev_global"] }}</span><span class="unite_f"> Ar</span></p>
                             </aside>
                         </div>
                     </div>
@@ -99,39 +105,23 @@
                                     <th><span>Nom/Prénom</span></th>
                                     <th><span>Email</span></th>
                                     <th><span>Téléphone</span></th>
+                                    <th><span></span></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><span class="nom">Andrian mmm</span></td>
-                                    <td><span>Email@gmail.com</span></td>
-                                    <td><span>032 02 025 01</span></td>
-                                    
-                                </tr>
-                                <tr>
-                                    <td><span class="nom">qsqsqs f</span></td>
-                                    <td><span>Email@gmail.com</span></td>
-                                    <td><span>032 02 025 01</span></td>
-                                    
-                                </tr>
-                                <tr>
-                                    <td><span  class="nom">Andrian d</span></td>
-                                    <td><span>Email@gmail.com</span></td>
-                                    <td><span>032 02 025 01</span></td>
-                                    
-                                </tr>
-                                <tr>
-                                    <td><span  class="nom">Andrian ht</span></td>
-                                    <td><span>Email@gmail.com</span></td>
-                                    <td><span>032 02 025 01</span></td>
-                                   
-                                </tr>
-                                <tr>
-                                    <td><span  class="nom">Andrian sq</span></td>
-                                    <td><span>Email@gmail.com</span></td>
-                                    <td><span>032 02 025 01</span></td>
-                                   
-                                </tr>
+                                {% for client in data_clients['clients'] %}
+                                    <tr data-contact = "{{ (client['email'] is empty) ? client['telephone'] : client['email'] }}">
+                                        <td>
+                                            <span class="nom">{{ client['client_nom'] }}</span><br>
+                                            <span class="nom">{{ client['prenom'] }}</span>
+                                        </td>
+                                        <td><span>{{ client['email'] }}</span></td>
+                                        <td><span>{{ client['telephone'] }}</span></td>
+                                        <td>
+                                            <span class="{{ client['style_etiquette'] }}">{{ client['fid_nom']|capitalize  }}</span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -157,7 +147,7 @@
         }
 
         $(document).ready(function(){
-
+            var hotel = '{{ hotel }}';
             var table = $('#table_f').DataTable({
                    
                     "language": {
@@ -243,7 +233,14 @@
 
                 $('#table_f').on('click', 'tbody td', function() {
 
-                    window.location.href = "{{ path('fidelisation_fiche_client', {'pseudo_hotel' : hotel}) }}";
+                        // //get textContent of the TD
+                        // console.log('TD cell textContent : ', this.textContent)
+
+                        // //get the value of the TD using the API 
+                        // console.log('value by API : ', table.cell({ row: this.parentNode.rowIndex, column : this.cellIndex }).data());
+                        var contact = $(this).parent().attr('data-contact');
+                        //alert(contact)
+                        window.location.href = "/profile/fidelisation/fiche_client/" + hotel + "/" + contact;
                 })
         })
             

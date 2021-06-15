@@ -7853,11 +7853,11 @@ table.dataTable tbody td {
 }
 
 .section_pers {
-    height: 80px;
+    height: 100px;
     display: flex;
     flex-direction: column;
-    justify-content: end;
-    align-items: start;
+    justify-content: start;
+    align-items: top;
 }
 
 .section_pers .title {
@@ -8222,6 +8222,35 @@ ul.group_nom_client li a{
 }
 
 /* / fin client */
+
+/* style error_form_contact */
+    
+#error_form_contact{
+    margin : 15px 0px;
+    background: red;
+    height: 35px;
+    display: none;
+}
+
+#error_form_contact p{
+    margin: 0;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding-left: 15px;
+    color:#fff;
+}
+#modal_contact_client form .form-control:focus{
+    border-color: #c89b11 !important;
+    box-shadow: 0px 0px 3px #c89b11;
+}
+
+#edit_contact_client button{
+    margin-top: 15px !important;
+}
+
+    
+/* / fin error_form_contact */
 
 
 /* /fidelisation */

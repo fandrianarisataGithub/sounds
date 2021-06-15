@@ -200,26 +200,29 @@ class ClientController extends AbstractController
             $tab_identifiant = ["mail" => $email, "telephone" => $telephone];
             $source = $request->get('source');
             $prix_total = $request->get('prix_total');
+            //dd($prix_total);
             $createdAt = date_create($request->get('createdAt'));
             $diff = "";
             $days = "";
             $client = new Client();
-            
+            $t = ['0','1','2', '3', '4', '5', '6', '7', '8', '9'];
             // start client insertiion
             if(!empty($date_depart) && !empty($date_arrivee)){
                 $date_arrivee = date_create($date_arrivee);
                 $date_depart = date_create($date_depart);
                 $diff = $date_arrivee->diff($date_depart);
-                $days = $diff->d;
+                $days = $diff->days;
+                //dd($days);
             }
             
-            if(!empty($email)){
-                if(filter_var($email, FILTER_VALIDATE_EMAIL)){
+            if(!empty($email) && $email != "0"){
+                if(filter_var($email, FILTER_VALIDATE_EMAIL) && !in_array($email[0], $t)){
                     if(!empty($nom_client) 
                             && !empty($date_depart) 
                             && !empty($date_arrivee)
                             && !empty($prix_total) 
                             && !empty($nbr_chambre)
+                            && !empty($source)
                     ){
                         
                         $client->setNom($nom_client);
@@ -243,21 +246,23 @@ class ClientController extends AbstractController
                         $this->manager->persist($client);
                         $this->manager->persist($hotel);
                         $this->manager->flush();
+                        $this->categorisation($tab_identifiant);
                         $data = json_encode("ok");  
                     }
                     else{
-                        $data = json_encode("Veuiller renseigner au moins les champs Nom, Check in, check out, Nbr chambres, Prix total"); 
+                        $data = json_encode("Veuiller renseigner au moins les champs Nom, Check in, check out, Source, Nbr chambres, Prix total"); 
                     }
                 }else{
                     $data = json_encode("Veuiller entrer un adresse email valide"); 
                 }
-            }else if(empty($email)){
+            }else if(empty($email) || $email == "0"){
                 if(!empty($nom_client) 
                         && !empty($date_depart) 
                         && !empty($date_arrivee)
                         && !empty($prix_total) 
                         && !empty($nbr_chambre)
                         && !empty($telephone)
+                        && !empty($source)
                 ){
                     
                     $client->setNom($nom_client);
@@ -277,10 +282,11 @@ class ClientController extends AbstractController
                     $this->manager->persist($client);
                     $this->manager->persist($hotel);
                     $this->manager->flush();
+                    $this->categorisation($tab_identifiant);
                     $data = json_encode("ok");  
                 }
                 else{
-                    $data = json_encode("Veuiller renseigner au moins les champs Nom, Check in, check out, Nbr chambres, Prix total et un contact");  
+                    $data = json_encode("Veuiller renseigner au moins les champs Nom, Check in, check out, Nbr chambres, Source, Prix total et un contact");  
                 }
                 
             }
@@ -293,7 +299,7 @@ class ClientController extends AbstractController
 
             // end client insertion in fidelisation
             
-            $this->categorisation($tab_identifiant);
+            
         
 
             return $response;
@@ -306,6 +312,50 @@ class ClientController extends AbstractController
             $item->setFidelisation($fidelisation);
         }
         $this->manager->flush();
+    }
+
+    /**
+     * catégorisation du client inseré
+     * 
+    */
+    public function categorisation($tab_identifiant) :void
+    {
+
+        $clients = $this->repoClient->searchClientsByTabIdentifiant($tab_identifiant, $this->startFidelisation);
+        $fids = $this->repoFid->findAll(); // par défaut findAll affiche un resultat ascendant d'id
+        
+        //dd($clients);
+        $client = ($clients != null ? end($clients) : null );
+        // la dernière date d'insertion de ce client
+       if($client){
+            $lastCreatedAt = $client->getCreatedAt();
+
+            $diff = date_diff($lastCreatedAt, new \DateTime())->y;
+            if($diff >= 1){
+                $this->setCategoriesForClients($clients, "cardex");
+            }
+            else if($diff < 1){
+                $ca = 0;
+                $nuitee = 0;
+                foreach($clients as $item){
+                    $ca = $ca + $item->getPrixTotal();
+                    $nuitee = $nuitee + $item->getDureeSejour();
+                }
+                if( $nuitee >= 0 &&  $nuitee <= $fids[0]->getLimiteNuite()){
+                    $this->setCategoriesForClients($clients, "cardex");
+                }
+                if( $nuitee >= (intval($fids[0]->getLimiteNuite()) + 1) &&  $nuitee <= $fids[1]->getLimiteNuite()){
+                    $this->setCategoriesForClients($clients, "preferentiel");
+                }
+                if( $nuitee >= (intval($fids[1]->getLimiteNuite()) + 1) &&  $nuitee <= $fids[2]->getLimiteNuite()){
+                    $this->setCategoriesForClients($clients, "privilege");
+                }
+                if( $nuitee >= (intval($fids[2]->getLimiteNuite()) + 1)){ 
+                    $this->setCategoriesForClients($clients, "exclusif");
+                }
+            }
+       }
+        
     }
 
     /**
@@ -340,44 +390,7 @@ class ClientController extends AbstractController
         
     }
 
-    /**
-     * catégorisation du client inseré
-    */
-    public function categorisation($tab_identifiant) :void
-    {
-
-        $clients = $this->repoClient->searchTabIdentifiant($tab_identifiant, $this->startFidelisation);
-        
-        $client = end($clients);
-        // la dernière date d'insertion de ce client
-        $lastCreatedAt = $client->getCreatedAt();
-
-        $diff = date_diff($lastCreatedAt, new \DateTime())->y;
-        if($diff >= 1){
-            $this->setCategoriesForClients($clients, "cardex");
-        }
-        else if($diff < 1){
-            $ca = 0;
-            $nuitee = 0;
-            foreach($clients as $item){
-                $ca = $ca + $item->getPrixTotal();
-                $nuitee = $nuitee + $item->getDureeSejour();
-            }
-            if( $nuitee >= 0 &&  $nuitee <= 25){
-                $this->setCategoriesForClients($clients, "cardex");
-            }
-            if( $nuitee >= 26 &&  $nuitee <= 50){
-                $this->setCategoriesForClients($clients, "preferentiel");
-            }
-            if( $nuitee >= 51 &&  $nuitee <= 90){
-                $this->setCategoriesForClients($clients, "privilege");
-            }
-            if( $nuitee >= 91){ // on n'a pas encore de limite 
-                $this->setCategoriesForClients($clients, "exclusif");
-            }
-        }
-        
-    }
+    
 
     /**
      * @Route("/admin/suprimer_client", name = "delete_client")
@@ -628,5 +641,56 @@ class ClientController extends AbstractController
         }
     }
 
+    /**
+     * @Route("/profile/edit_client_by_fid", name="edit_client_by_fid")
+     */
+    public function edit_client_by_fid(Request $request, EntityManagerInterface $manager):Response
+    {
+        $response = new Response;
+        $data = json_decode($request->getContent());
+        $nom = $data->nom;
+        $prenom = $data->prenom;
+        $email = $data->email;
+        $telephone = $data->telephone;
+        $client_by_mail = $this->repoClient->findBy([
+            "email" => $email
+        ]);
+        
+        $client_by_telephone = $this->repoClient->findBy([
+            "telephone" => $telephone
+        ]);
+        //dd($client_by_telephone);
+        if($client_by_mail){
+            foreach($client_by_mail as $client){
+                $client->setNom($nom);
+                $client->setPrenom($prenom);
+                $client->setEmail($email);
+                $client->setTelephone($telephone);
+                $manager->flush();
+            }
+            $data = json_encode("ok");
+            $response->headers->set('Content-Type', 'application/json');
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->setContent($data);
+
+        }
+        if($client_by_telephone){
+            foreach($client_by_telephone as $client){
+                $client->setNom($nom);
+                $client->setPrenom($prenom);
+                $client->setEmail($email);
+                $client->setTelephone($telephone);
+                $manager->flush();
+            }
+            $data = json_encode("ok");
+            $response->headers->set('Content-Type', 'application/json');
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->setContent($data);
+
+        }
+
+        return $response;
+        
+    }
     
 }

@@ -18,7 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class FidelisationController extends AbstractController
 {
     private $em;
-    private $respoFid;
+    private $repoFid;
     private $repoClient;
 
     public function __construct(ClientRepository $repoClient, EntityManagerInterface $em, FidelisationRepository $repoFid)
@@ -38,16 +38,15 @@ class FidelisationController extends AbstractController
             return $this->redirectToRoute("app_logout");
         }
         // tous les clients fidélisé
-        $clients = $this->repoClient->findAllClientsFid();
-        dd($clients);
-        $repoFid = $this->getDoctrine()->getRepository(Fidelisation::class);
-        $fidelisations = $repoFid->findAll([], ["id" => "ASC"]);
+        $datas = $this->repoClient->findDatasForHome();
        
+        $fidelisations = $this->repoFid->findAll([], ["id" => "ASC"]);
+        
         return $this->render('fidelisation/home.html.twig', [
             'fidelisation'  => true,
             "fidelisations" => $fidelisations,
             'hotel'         => $pseudo_hotel,
-            "clients"       => $clients,
+            "datas"       => $datas,
             "current_page"      => $data_session['current_page'],
         ]);
     }
@@ -120,11 +119,14 @@ class FidelisationController extends AbstractController
         if(!$data_session){
             return $this->redirectToRoute("app_logout");
         }
+        // tous les clients cardex DISTINCT, total prix_total et nombre de clients
+        $data_clients = $this->repoClient->findAllClientsFidById(1);
         
         return $this->render('fidelisation/cardex.html.twig', [
             'fidelisation'  => true,
             'hotel'         => $pseudo_hotel,
-            "current_page"      => $data_session['current_page'],
+            "current_page"  => $data_session['current_page'],
+            "data_clients"       => $data_clients
         ]);
     }
 
@@ -137,11 +139,13 @@ class FidelisationController extends AbstractController
         if(!$data_session){
             return $this->redirectToRoute("app_logout");
         }
-        
+        // tous les clients exclusif DISTINCT, total prix_total et nombre de clients
+        $data_clients = $this->repoClient->findAllClientsFidById(4);
         return $this->render('fidelisation/exclusif.html.twig', [
             'fidelisation'  => true,
             'hotel'         => $pseudo_hotel,
             "current_page"      => $data_session['current_page'],
+            "data_clients"       => $data_clients
         ]);
     }
 
@@ -154,11 +158,13 @@ class FidelisationController extends AbstractController
         if(!$data_session){
             return $this->redirectToRoute("app_logout");
         }
-        
+         // tous les clients préferentiel DISTINCT, total prix_total et nombre de clients
+         $data_clients = $this->repoClient->findAllClientsFidById(2);
         return $this->render('fidelisation/preferentiel.html.twig', [
             'fidelisation'  => true,
             'hotel'         => $pseudo_hotel,
             "current_page"      => $data_session['current_page'],
+            "data_clients"       => $data_clients
         ]);
     }
 
@@ -171,29 +177,49 @@ class FidelisationController extends AbstractController
         if(!$data_session){
             return $this->redirectToRoute("app_logout");
         }
-        
+       // tous les clients privilège DISTINCT, total prix_total et nombre de clients
+       $data_clients = $this->repoClient->findAllClientsFidById(3);
         return $this->render('fidelisation/privilege.html.twig', [
             'fidelisation'  => true,
             'hotel'         => $pseudo_hotel,
             "current_page"      => $data_session['current_page'],
+            "data_clients"      => $data_clients
         ]);
     }
 
      /**
-     * @Route("/profile/fidelisation/fiche_client/{pseudo_hotel}", name="fidelisation_fiche_client")
+     * @Route("/profile/fidelisation/fiche_client/{pseudo_hotel}/{contact}", name="fidelisation_fiche_client")
      */
-    public function fidelisation_fiche_client(Request $request, SessionInterface $session, $pseudo_hotel): Response
+    public function fidelisation_fiche_client(Request $request, SessionInterface $session, $pseudo_hotel, $contact): Response
     {
         $data_session = $session->get('hotel');
     
         if(!$data_session){
             return $this->redirectToRoute("app_logout");
         }
-        
+        $clients = $this->repoClient->findClientByContact($contact);
+        //dd($clients);
+        // sa fidelisation
+        // calcul de nbr de nuitée et total ca 
+        $ca = 0;
+        $nuitee = 0;
+       
+        foreach($clients as $item){
+            
+            $ca += $item[0]->getPrixTotal();
+            
+            $nuitee += $item[0]->getDureeSejour();
+        }
+        $fidelisation = $this->repoFid->findOneBy(['id' => $clients[0][0]->getFidelisation()->getId()]);
+        //dd($fidelisation);
         return $this->render('fidelisation/fiche_client.html.twig', [
-            'fidelisation'  => true,
-            'hotel'         => $pseudo_hotel,
+            'fidelisation'      => true,
+            'hotel'             => $pseudo_hotel,
             "current_page"      => $data_session['current_page'],
+            "clients"           => $clients,
+            "fidelisation"   => $fidelisation,
+            'ca'            => $ca,
+            'nuitee'        => $nuitee
         ]);
     }
     /**

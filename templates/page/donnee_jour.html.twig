@@ -173,23 +173,23 @@
                                             </li>
                                         </ul>
                                         <span class="span__label span_prenom"></span>
-                                        <input v-model="prenom" type="text" class="input__text" placeholder="Prénom" name="prenom_client" id = "prenom_client"/>
+                                        <input v-model="prenom" @focus="liveOutFocus" type="text" class="input__text" placeholder="Prénom" name="prenom_client" id = "prenom_client"/>
                                     </div>
                                     <div>
                                         <span class="span__label"></span>
-                                        <input v-model="email" type="text" class="input__text" placeholder="Adresse email" name="email_client" id ="email_client"/>
+                                        <input v-model="email" @focus="liveOutFocus" type="text" class="input__text" placeholder="Adresse email" name="email_client" id ="email_client"/>
                                         <span  class="span__label span_prenom"></span>
-                                        <input v-model="telephone"  type="text" class="input__text" placeholder="Téléphone" name="telephone_client" id = "telephone_client"/>
+                                        <input v-model="telephone" @focus="liveOutFocus"  type="text" class="input__text" placeholder="Téléphone" name="telephone_client" id = "telephone_client"/>
                                     </div>
                                     <div>
                                         <div class="form-group">
                                             <label for="date_arrive" class="label_date">Check in :</label>
-                                            <input type="date" id="date_arrivee">
+                                            <input @focus="liveOutFocus" type="date" id="date_arrivee">
                                             <input type="hidden" id="hide_pseudo_hotel" value="{{ hotel }}">
                                         </div>
                                         <div class="form-group">
                                             <label for="date_arrive" class="label_date">check out :</label>
-                                            <input type="date" id="date_depart">
+                                            <input @focus="liveOutFocus" type="date" id="date_depart">
                                         </div>
                                     </div>
                                     <div id="div_provenance">
@@ -234,7 +234,7 @@
                                     </div>
                                     <div>
                                         <div class="form-group">
-                                            <label for="nbr_nuit" class="label_nbr_chambre">Nombre de chambre :</label>
+                                            <label for="nbr_nuit" class="label_nbr_chambre">Nombre de chambre réservé :</label>
                                             <input type="number" id="nbr_chambre">
                                         </div>
                                         <div class="form-group">
@@ -811,35 +811,6 @@
 
 <script>
 
-	/* utilisation de cleave.js pour les input */
-
-    // style des % et Ar
-    var n = document.querySelectorAll(".input_nombre");
-    for (var i = n.length - 1; i >= 0; i--) {
-    new Cleave(n[i], { // prefix: 'Ar ',
-    numeral: true,
-    delimiter: [' '],
-    numeralThousandsGroupStyle: 'thousand',
-    numericOnly: true
-    });
-    }
-
-
-    new Cleave('.input_pourcent', {blocks: [4]});
-
-
-/* fin utilisation de cleave.js pour les input */
-
-</script>
-<script>
-
-	$(document).ready(function () {
-        
-});
-</script>
-
-<script>
-
         // ajout de client 
 
         $(document).ready(function(){
@@ -977,7 +948,7 @@
                         $("#ajouter_client").html('<span>Patienter...</span>');
                     },
                     success : function (response) {
-                        $('#test').html(response);
+                       // $('#test').html(response);
                         
                         if(response == "ok"){
                             // on initialise le formulaire
@@ -1300,13 +1271,38 @@
                 this.isTyping = false;
                 this.nom = client.nom;
                 this.prenom = (client.prenom != '') ? client.prenom : ''
-                 this.email = (client.email != '') ? client.email : ''
-                  this.telephone = (client.telephone != '') ? client.telephone : ''
+                this.email = (client.email != '') ? client.email : ''
+                this.telephone = (client.telephone != '') ? client.telephone : ''
 
+            },
+            liveOutFocus : function () {
+                this.isTyping = false;
             }
         }
     })
 </script>
+<script>
 
+	/* utilisation de cleave.js pour les input */
+
+    // style des % et Ar
+    var n = document.querySelectorAll(".input_nombre");
+    for (var i = n.length - 1; i >= 0; i--) {
+        //alert(n[i])
+        new Cleave(n[i], { // prefix: 'Ar ',
+            numeral: true,
+            delimiter: [' '],
+            numeralThousandsGroupStyle: 'thousand',
+            numericOnly: true
+        });
+    }
+
+
+    new Cleave('.input_pourcent', {blocks: [4]});
+
+
+/* fin utilisation de cleave.js pour les input */
+
+</script>
 
 {% endblock %}

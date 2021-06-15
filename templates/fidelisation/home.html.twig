@@ -12,6 +12,12 @@
         #contents{
             margin-left : 100px !important;
         }
+        #aside1 ul li.logo_active_fidelisation{
+            background-color: #555555;
+        } 
+        #aside1 ul li.logo_active {
+            background-color: transparent;
+        }
     </style>
 {% endblock %}
 {% block body %}
@@ -28,8 +34,12 @@
                 {% include "profile_user_fidelisation.html.twig" %}
             </header>
             {# liste fidel #}
+            {% if is_granted('ROLE_ADMIN')  %}
             <div class="row block1">      
                 {# boucle fid #}
+                {# for displaying effectif by fid name #}
+                {% set i = 0 %}
+
                 {% for item in fidelisations %}
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                         <div class="f_action_pack">
@@ -48,7 +58,9 @@
                         <a class="f_block" href="{{ path('fidelisation_' ~ item.nom, {'pseudo_hotel' : hotel}) }}">
                             <div class="f_block_top">
                                 <aside>
-                                    <p><span class="f_val">200</span> Clients</p>
+                                    <p><span class="f_val">{{ datas['stat'][i] }}</span> Client{% if datas['stat'][i] >= 2 %}<span>s</span>{% endif %}
+                                    </p>
+                                    {% set i = i + 1 %}
                                 </aside>
                                 <aside>
                                     <p>
@@ -70,6 +82,7 @@
             </div>
             {# /liste fidel #}
             {# statistique #}
+            
             <div class="row block2">
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                     <div class="f_block">
@@ -85,7 +98,7 @@
                                 <p>Nombre <br>de clients fidelisés</p>
                             </aside>
                             <aside>
-                                <p class="f_val_stat"><span>160</span></p>
+                                <p class="f_val_stat"><span>{{ datas['clients']|length }}</span></p>
                             </aside>
                         </div>
                     </div>
@@ -104,7 +117,7 @@
                                 <p>Nombre <br>de nuitées totales</p>
                             </aside>
                             <aside>
-                                <p class="f_val_stat"><span>160</span></p>
+                                <p class="f_val_stat"><span>{{ datas['chiffres']['total_nuitee'] }}</span></p>
                             </aside>
                         </div>
                     </div>
@@ -124,12 +137,13 @@
                                 <p>Revenu <br>global</p>
                             </aside>
                             <aside>
-                                <p class="f_val_stat"><span class="montant_f">1900440000</span><span class="unite_f"> Ar</span></p>
+                                <p class="f_val_stat"><span class="montant_f">{{ datas['chiffres']['rev_global'] }}</span><span class="unite_f"> Ar</span></p>
                             </aside>
                         </div>
                     </div>
                 </div>
             </div>
+            {% endif %}
             {# /statistique #}
             {# tableau et graph #}
             <div class="row block3">
@@ -152,51 +166,39 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><span class="nom">Andrian mmm</span></td>
-                                    <td><span>Email@gmail.com</span></td>
-                                    <td><span>032 02 025 01</span></td>
-                                    <td>
-                                        <span class="btn_exclusif span_round">Exclusif</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span  class="nom">Andrian ht</span></td>
-                                    <td><span>Email@gmail.com</span></td>
-                                    <td><span>032 02 025 01</span></td>
-                                    <td>
-                                        <span class="btn_privilege span_round">Privilège</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span  class="nom">Andrian sq</span></td>
-                                    <td><span>Email@gmail.com</span></td>
-                                    <td><span>032 02 025 01</span></td>
-                                    <td>
-                                        <span class="btn_preferentiel span_round">Préférentiel</span>
-                                    </td>
-                                </tr>
+                                {% for client in datas['clients'] %}
+                                    <tr data-contact = "{{ (client['email'] is empty) ? client['telephone'] : client['email'] }}">
+                                        <td>
+                                            <span class="nom">{{ client['client_nom'] }}</span><br>
+                                            <span class="nom">{{ client['prenom'] }}</span>
+                                        </td>
+                                        <td><span>{{ client['email'] }}</span></td>
+                                        <td><span>{{ client['telephone'] }}</span></td>
+                                        <td>
+                                            <span class="{{ client['style_etiquette'] }}">{{ client['fid_nom']|capitalize  }}</span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div class="col-lg-6 col-md-12 col-sm-12">
-                    <div class="f_graph">
-                        {# graph #}
-                        <div class="canvas-con">
-                            <div class="canvas-con-inner">
-                                <p class="text_center_chart">Provenance <br>client</p>
-                                <canvas id="mychart" height="250px"></canvas>
+                {% if is_granted('ROLE_ADMIN')  %}
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <div class="f_graph">
+                            {# graph #}
+                            <div class="canvas-con">
+                                <div class="canvas-con-inner">
+                                    <p class="text_center_chart">Provenance <br>client</p>
+                                    <canvas id="mychart" height="250px"></canvas>
+                                </div>
+                                <div id="my-legend-con" class="legend-con"></div>
                             </div>
-                            <div id="my-legend-con" class="legend-con"></div>
                         </div>
                     </div>
-                </div>
+                {% endif %}
             </div>
             {# /tableau et graph #}
-            <div style="width: 200px; height: 200px;">
-                <canvas id="usersChart" width="1" height="1"></canvas>
-            </div>
         </div>
     <section>
 {% endblock %}
@@ -204,6 +206,7 @@
     <script src="https://github.com/chartjs/Chart.js/releases/download/v2.9.3/Chart.min.js"></script>
 
     <script>
+    var hotel = '{{ hotel }}'
         var montant = document.querySelectorAll(".montant_f");
             var t = montant.length;
             var test = new Intl.NumberFormat();
@@ -308,8 +311,9 @@
 
                     // //get the value of the TD using the API 
                     // console.log('value by API : ', table.cell({ row: this.parentNode.rowIndex, column : this.cellIndex }).data());
-
-                    window.location.href = "{{ path('fidelisation_fiche_client', {'pseudo_hotel' : hotel}) }}";
+                    var contact = $(this).parent().attr('data-contact');
+                    //alert(contact)
+                    window.location.href = "/profile/fidelisation/fiche_client/" + hotel + "/" + contact;
                 })
 
 
@@ -550,6 +554,10 @@
         
         })
             
+    </script>
+    {# vue.js #}
+    <script>
+        
     </script>
     
 {% endblock %}

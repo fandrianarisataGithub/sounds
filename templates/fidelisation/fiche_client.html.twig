@@ -4,7 +4,7 @@
 {% endblock %}
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/dashboard.css')}}">
-     <link rel="stylesheet" href="{{ asset('css/style_chart_rounded.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style_chart_rounded.css') }}">
      <style>
         .side-nav{
             width : 100px !important;
@@ -12,6 +12,13 @@
         #contents{
             margin-left : 100px;
         }
+        #aside1 ul li.logo_active_fidelisation{
+            background-color: #555555;
+        } 
+        #aside1 ul li.logo_active {
+            background-color: transparent;
+        }
+
     </style>
 {% endblock %}
 {% block body %}
@@ -31,14 +38,16 @@
                             <span>Retour à l'acceuil</span>
                         </div>
                     </a>
+                    {% if is_granted('ROLE_ADMIN') %}
                     <div>
                         <span class="fa fa-angle-left"></span>
                     </div>
-                    <a class="f_titre with_last" href="{{ path('fidelisation_cardex', {'pseudo_hotel' : hotel}) }}">
+                    <a class="f_titre with_last" href="{{ path('fidelisation_' ~ fidelisation.nom, {'pseudo_hotel' : hotel}) }}">
                         <div class="retour">
-                            <span>Client CARDEX</span>
+                            <span>Client {{ fidelisation.nom|capitalize }}</span>
                         </div>
-                    </a>
+                    </a> 
+                    {% endif %}
                 </div>
                 {% include "profile_user_fidelisation.html.twig" %}
             </header>
@@ -46,7 +55,7 @@
                 <div class="f_sous_titre">
                     <h1>Fiche client</h1>
                     <div>
-                        <img src="{{ asset('images/fidelisation/icone_friends.png') }}" class="icone_client" alt="gris">
+                        <img src="{{ asset('images/fidelisation/' ~ fidelisation.getIconeClient()) }}" class="icone_client" alt="icone client ">
                     </div>
                 </div>
             </div>
@@ -58,39 +67,45 @@
                         </div>
                         <div>
                             <p class="nom">
-                                Rakjoto sdkfkqs
+                                ${data_client.nom} <br>
+                                ${data_client.prenom}
                             </p>
                         </div>
                     </section>
                 </div>
-                <div class="col-lg-2 col-md-3 col-sm-6">
-                    <section class="section_pers">
-                        <div>
-                            <p class="title">Téléphone : </p>
-                        </div>
-                        <div>
-                            <p class="nom">
-                                +261 00 000 00
-                            </p>
-                        </div>
-                    </section>
-                </div>
-                <div class="col-lg-2 col-md-3 col-sm-6">
-                    <section class="section_pers">
-                        <div>
-                            <p class="title">Email : </p>
-                        </div>
-                        <div>
-                            <p class="nom">
-                                Rakjoto@sdkfkqs.com
-                            </p>
-                        </div>
-                    </section>
-                </div>
+                
+                    <div v-if="data_client.telephone != ''" class="col-lg-2 col-md-3 col-sm-6">
+                        <section class="section_pers">
+                            <div>
+                                <p class="title">Téléphone : </p>
+                            </div>
+                            <div>
+                                <p class="nom">
+                                   ${data_client.telephone}
+                                </p>
+                            </div>
+                        </section>
+                    </div>  
+                
+               
+                    <div v-if="data_client.email != ''" class="col-lg-2 col-md-3 col-sm-6">
+                        <section class="section_pers">
+                            <div>
+                                <p class="title">Email : </p>
+                            </div>
+                            <div>
+                                <p class="nom">
+                                    ${data_client.email}
+                                </p>
+                            </div>
+                        </section>
+                    </div>
+               
+                
                 <div class="col-lg-2 col-md-3 col-sm-6">
                    <section class="section_pers">
                          <div class="action">
-                            <a href="#">
+                            <a href="#" data-toggle="modal" data-target="#modal_contact_client">
                                 <span class="fa fa-edit fa-3x"></span>
                             </a>
                         </div>
@@ -114,58 +129,36 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="hotel">
-                                        <span>Royal Beach</span>
-                                    </td>
-                                    <td class="check">
-                                        <span>23-05-2021</span>
-                                    </td>
-                                    <td class="check">
-                                        <span>26-05-2021</span>
-                                    </td>
-                                    <td>
-                                        <span>Rirect</span>
-                                    </td>
-                                    <td class="prix">
-                                        <span class="montant_f">124510454</span>
-                                    </td>
-                                    <td>
-                                        <span>5</span>
-                                    </td>
-                                    <td>
-                                        <span>2</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="hotel">
-                                        <span>Royal Beach</span>
-                                    </td>
-                                    <td class="check">
-                                        <span>23-05-2021</span>
-                                    </td>
-                                    <td class="check">
-                                        <span>26-05-2021</span>
-                                    </td>
-                                    <td>
-                                        <span>Rirect</span>
-                                    </td>
-                                    <td class="prix">
-                                        <span class="montant_f">124510454</span>
-                                    </td>
-                                    <td>
-                                        <span>5</span>
-                                    </td>
-                                    <td>
-                                        <span>2</span>
-                                    </td>
-                                </tr>
-                                
-                                
+                                {% for client in clients %}
+                                    <tr>
+                                        <td class="hotel">
+                                            <span>{{ client['nom_hotel'] }}</span>
+                                        </td>
+                                        <td class="check">
+                                            <span>{{ client[0].dateArrivee|date('d-m-Y') }}</span>
+                                        </td>
+                                        <td class="check">
+                                            <span>{{ client[0].dateDepart|date('d-m-Y') }}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{ client[0].provenance }}</span>
+                                        </td>
+                                        <td class="prix">
+                                            <span class="montant_f">{{ client[0].getPrixTotal() }}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{ client[0].dureeSejour }}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{ client[0].getNbrChambre() }}</span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 </div>
+                {% if is_granted('ROLE_ADMIN') %}
                 <div class=" col-lg-4 col-md-4 col-sm-12">
                     <div class="ca_nuite">
                         <div class="cn">
@@ -181,7 +174,7 @@
                                     <p>CA <br>cumulé</p>
                                 </aside>
                                 <aside>
-                                    <p class="cn_val_stat"><span class="montant_f">440000</span><span class="unite_f"> Ar</span></p>
+                                    <p class="cn_val_stat"><span class="montant_f">{{ ca }}</span><span class="unite_f"> Ar</span></p>
                                 </aside>
                             </div>
                         </div>
@@ -198,12 +191,13 @@
                                     <p>Nuitée <br>cumulée</p>
                                 </aside>
                                 <aside>
-                                    <p class="cn_val_stat"><span class="montant_f">50</span><span class="unite_f"> nuité</span></p>
+                                    <p class="cn_val_stat"><span class="montant_f">{{ nuitee }}</span><span class="unite_f"> nuité</span></p>
                                 </aside>
                             </div>
                         </div>
                     </div>
                 </div>
+                {% endif %}
             </div>
             <div class="row fiche_table">
                 <div class=" col-lg-8 col-md-8">
@@ -216,6 +210,7 @@
                                 </a>
                             </div>
                         </h3>
+                        <div id="test"></div>
                         <table class="table" id="table_presta_client">
                             <thead>
                                 <tr>
@@ -257,6 +252,45 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modal_contact_client" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog opacity-animate4">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="modal-title" style="text-align: center;">Modification du contact</h3>
+                    </div>
+                    <div class="modal-body modal_modif_client">
+                        <form action="/profile/' . $pseudo_hotel . '/hebergement" method = "POST" id="form_edit_client">
+                            <div class="form-group">
+                                <label for="">Nom du client</label>
+                                <input v-model="data_client.nom" type="text" class="form-control" id="contact_nom_client">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Prénom du client</label>
+                                <input v-model="data_client.prenom" type="text" class="form-control" id="contact_prenom_client">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Email du client</label>
+                                <input v-model="data_client.email" type="email" class="form-control" id="contact_email_client">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Téléphone du client</label>
+                                <input v-model="data_client.telephone" type="text" class="form-control" id="contact_telephone_client">
+                            </div>
+                            <div id="error_form_contact">
+                                <p>
+                                    llrem sdzikfg dszkf dsqkf 
+                                </p>
+                            </div>
+                            <div class="form-group" id="edit_contact_client">
+                                <button v-on:click.prevent="editContactClient" class="btn btn-warning"><span>Enregistrer</span></button>
+                            </div>
+                        </form>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -355,7 +389,51 @@
             // tab 2 presta
 
         })
-            
+
+       
+
     </script>
+    <script>
+
+         // vue.js
+        let data_client = {
+            "nom" : '{{ clients[0][0].getNom() }}',
+            "prenom" : '{{ clients[0][0].getPrenom() }}',
+            "email" : '{{ clients[0][0].getEmail() is empty ? "" : clients[0][0].getEmail() }}',
+            "telephone" : '{{ clients[0][0].getTelephone() is empty ? "" : clients[0][0].getTelephone() }}',
+        }
+
+        //console.log(data_client);
+
+        var app  = new Vue({
+            el : "#app",
+            delimiters: ['${', '}'],
+            data() {
+                return {
+                    "data_client" : data_client
+                }
+            },
+            methods: {
+                editContactClient : function(){
+
+                    axios.post('{{ path("edit_client_by_fid") }}', {
+                        nom : this.data_client.nom,
+                        prenom : this.data_client.prenom,
+                        email : this.data_client.email,
+                        telephone : this.data_client.telephone
+                    })
+                    .then(function (response) {
+                        //console.log(response.data);
+                        if(response.data == "ok"){
+                            $('#modal_contact_client').modal('hide');
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            },
+        })
     
+    </script>
 {% endblock %}

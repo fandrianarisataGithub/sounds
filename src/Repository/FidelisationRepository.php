@@ -3,8 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Fidelisation;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Fidelisation|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,6 +17,21 @@ class FidelisationRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Fidelisation::class);
+    }
+
+    public function findAllClientsFid()
+    {
+        $qb = $this
+            ->createQueryBuilder('f')
+            ->leftJoin('App\Entity\Client', 'c', 'WITH', 'f.id = c.fidelisation')
+            ->addSelect('c')
+        ;
+        
+        return $qb
+            ->getQuery()
+            ->getResult()
+        ;
+
     }
 
     // /**
