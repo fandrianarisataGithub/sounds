@@ -2,11 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Visit;
 use App\Entity\Client;
+use App\Entity\Customer;
 use App\Services\Services;
 use App\Entity\Fidelisation;
 use App\Repository\HotelRepository;
+use App\Repository\VisitRepository;
 use App\Repository\ClientRepository;
+use App\Repository\CustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\FidelisationRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,15 +23,21 @@ class ClientController extends AbstractController
 {
     private $repoClient;
     private $repoFid;
+    private $repoCust;
+    private $repoVisit;
     private $manager;
     private $startFidelisation; // date de debut de la catégorisation
+    private $services;
 
-    public function __construct(ClientRepository $repoClient, FidelisationRepository $repoFid, EntityManagerInterface $manager)
+    public function __construct(VisitRepository $repoVisit, CustomerRepository $repoCust, ClientRepository $repoClient, FidelisationRepository $repoFid, EntityManagerInterface $manager, Services $services)
     {
         $this->startFidelisation = date_create("2021-01-01"); 
         $this->repoClient = $repoClient;
         $this->manager = $manager;
         $this->repoFid = $repoFid;
+        $this->services = $services;
+        $this->repoCust = $repoCust;
+        $this->repoVisit = $repoVisit;
     }
 
     /**
@@ -99,11 +109,11 @@ class ClientController extends AbstractController
     /**
      * @Route("/profile/select_current_client", name="listing_current_client")
      */
-    public function listing_current_client(Services $services, Request $request, ClientRepository $repoClient, HotelRepository $repoHotel)
+    public function listing_current_client(Services $services, Request $request, VisitRepository $repoVisit, HotelRepository $repoHotel, CustomerRepository $repoCust)
     {
         $response = new Response();
+        
         if ($request->isXmlHttpRequest()) {
-
             $pseudo_hotel = $request->get('pseudo_hotel');
             $hotel = $repoHotel->findOneByPseudo(['pseudo' => $pseudo_hotel]);
             $date = $request->get('date');
@@ -113,17 +123,19 @@ class ClientController extends AbstractController
             $tab = [];
             $tab_aff = [];
             if($date1 == "" && $date2 == ""){
-                $tab = $repoClient->findBy(['hotel' => $hotel], ["id" => "DESC"]);
-                
+                $tab = $repoVisit->findCustomersByVisit($hotel);
                 foreach ($tab as $client) {
                     // on liste tous les jour entre sa dete arrivee et date depart
-                    $sa_da = $client->getDateArrivee();
-                    $sa_dd = $client->getDateDepart();
+                    
+                    $sa_da = $client[0]->getCheckin();
+                    $sa_dd = $client[0]->getCheckout();
                     if ($today <= $sa_dd && $today >= $sa_da
                     ) {
+                        //dd('tato le');
                         array_push($tab_aff, $client);
                     }
                 }
+            
                
             }
             else if($date1 != "" && $date2 != ""){
@@ -135,12 +147,12 @@ class ClientController extends AbstractController
                 $all_date_asked = $services->all_date_between2_dates($date1, $date2);
                 //dd($all_date_asked);
                 
-                $tab = $repoClient->findBy(['hotel' => $hotel], ["id" => "DESC"]);
+                $tab = $repoVisit->findCustomersByVisit($hotel);
                
                 foreach ($tab as $client) {
                     // on liste tous les jour entre sa dete arrivee et date depart
-                    $sa_da = $client->getDateArrivee();
-                    $sa_dd = $client->getDateDepart();
+                    $sa_da = $client[0]->getCheckin();
+                    $sa_dd = $client[0]->getCheckout();
                     //dd($sa_dd);
                     $his_al_dates = $services->all_date_between2_dates($sa_da, $sa_dd);
                     //dd($his_al_dates);
@@ -157,13 +169,14 @@ class ClientController extends AbstractController
             }
             
             $t = [];
+            //dd($tab_aff);
             foreach ($tab_aff as $item) {
-
-                array_push($t, ['<div>' . $item->getNom() . '</div><div>' . $item->getPrenom() . '</div><div><span>Contact : </span>' 
-                . $item->afficheContact() . '</div>', $item->getDateArrivee()->format('d-m-Y'), $item->getDateDepart()->format('d-m-Y'), $item->getProvenance(), $item->getSource(), $item->getDureeSejour(), $item->getNbrChambre(), '<span class="montant">' 
-                .$item->getPrixTotal().'</span>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_diso" data-id = "' 
-                . $item->getId() . '" class="btn btn_client_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a><a href="#" data-toggle="modal" data-target="#modal_form_confirme" data-id = "' 
-                . $item->getId() . '" class="btn btn_client_suppr btn-danger btn-xs"><span class="fa fa-trash-o"></span></a></div>']);
+                $contact = ($item['email'] ? $item['email'] : $item['telephone']);
+                array_push($t, ['<div>' . $item['name'] . '</div><div>' . $item['lastName'] . '</div><div><span>Contact : </span>' 
+                . $contact . '</div>', $item[0]->getCheckin()->format('d-m-Y'), $item[0]->getCheckout()->format('d-m-Y'), $item[0]->getProvenance(), $item[0]->getSource(), $item[0]->getNbrNuitee(), $item[0]->getNbrChambre(), '<span class="montant">' 
+                .$item[0]->getMontant().'</span>', '<div class="text-start"><a href="#" data-toggle="modal" data-target="#modal_form_diso" data-id = "' 
+                . $item[0]->getId() . '" class="btn btn_client_modif btn-primary btn-xs"><span class="fa fa-edit"></span></a><a href="#" data-toggle="modal" data-target="#modal_form_confirme" data-id = "' 
+                . $item[0]->getId() . '" class="btn btn_client_suppr btn-danger btn-xs"><span class="fa fa-trash-o"></span></a></div>']);
             }
 
             $data = json_encode($t);
@@ -181,6 +194,8 @@ class ClientController extends AbstractController
     public function storeClient(
         HotelRepository $repoHotel, 
         ClientRepository $repoClient,
+        CustomerRepository $repoCust,
+        VisitRepository $repoVisit,
         Request $request,
         $pseudo_hotel)
     {
@@ -204,7 +219,7 @@ class ClientController extends AbstractController
             $createdAt = date_create($request->get('createdAt'));
             $diff = "";
             $days = "";
-            $client = new Client();
+            
             $t = ['0','1','2', '3', '4', '5', '6', '7', '8', '9'];
             // start client insertiion
             if(!empty($date_depart) && !empty($date_arrivee)){
@@ -223,31 +238,62 @@ class ClientController extends AbstractController
                             && !empty($prix_total) 
                             && !empty($nbr_chambre)
                             && !empty($source)
-                    ){
-                        
-                        $client->setNom($nom_client);
-                        $client->setPrenom($prenom_client);
-                        $client->setDateArrivee($date_arrivee);
-                        $client->setTarif($tarif_client);
-                        $client->setDateDepart($date_depart);
-                        $client->setDureeSejour($days);
-                        $client->setSource($source);
-                        $client->setEmail($email);
-                        
-                        $client->setTelephone($telephone);
-                        $client->setProvenance($provenance);
-                        $client->setNbrChambre($nbr_chambre);
-                        $client->setPrixTotal(str_replace(" ", "", $prix_total));
-                        $client->setCreatedAt($createdAt);
-                       
-                        $hotel->addClient($client);
-                        // fidelisation 
-        
-                        $this->manager->persist($client);
-                        $this->manager->persist($hotel);
-                        $this->manager->flush();
-                        $this->categorisation($tab_identifiant);
-                        $data = json_encode("ok");  
+                    ){  
+
+                        // on cherche si le client est déjà dans la base 
+                        $custumer = $repoCust->findCustByData([
+                            "name" => $nom_client,
+                            "lastName" => $prenom_client,
+                            "email" => $email,
+                            "telephone"=> $telephone
+                        ]);
+                        // si ses tests sont tous null on crée un nouveau customer and visit after
+
+                        if(!$custumer){
+                            $client = new Customer();
+                            $client->setName($nom_client);
+                            $client->setLastName($prenom_client);
+                            $client->setEmail($email);                           
+                            $client->setTelephone($telephone);
+                            $client->setCreatedAt($createdAt);
+                            $this->manager->persist($client);
+                            // on crée la data visit
+                            $visit = new Visit();
+                            $visit->setCustomer($client);
+                            $visit->setHotel($hotel);
+                            $visit->setCheckin($date_arrivee);
+                            $visit->setCheckout($date_depart);
+                            $visit->setNbrNuitee($days);
+                            $visit->setSource($source);   
+                            $visit->setProvenance($provenance);
+                            $visit->setNbrChambre($nbr_chambre);
+                            $visit->setMontant(str_replace(" ", "", $prix_total));
+                             
+                            $this->manager->persist($visit);
+                            $this->manager->flush();
+                            
+                            $this->categorisation($client);
+                            $data = json_encode("ok"); 
+                        }
+                        else if($custumer){
+                            $visit = new Visit();
+                            $visit->setCustomer($custumer);
+                            $visit->setHotel($hotel);
+                            $visit->setCheckin($date_arrivee);
+                            $visit->setCheckout($date_depart);
+                            $visit->setNbrNuitee($days);
+                            $visit->setSource($source);   
+                            $visit->setProvenance($provenance);
+                            $visit->setNbrChambre($nbr_chambre);
+                            $visit->setMontant(str_replace(" ", "", $prix_total));
+                             
+                            $this->manager->persist($visit);
+                            $this->manager->flush();
+                            
+                            $this->categorisation($custumer);
+                            $data = json_encode("ok");
+                        }
+
                     }
                     else{
                         $data = json_encode("Veuiller renseigner au moins les champs Nom, Check in, check out, Source, Nbr chambres, Prix total"); 
@@ -265,25 +311,59 @@ class ClientController extends AbstractController
                         && !empty($source)
                 ){
                     
-                    $client->setNom($nom_client);
-                    $client->setPrenom($prenom_client);
-                    $client->setDateArrivee($date_arrivee);
-                    $client->setTarif($tarif_client);
-                    $client->setDateDepart($date_depart);
-                    $client->setDureeSejour($days);
-                    $client->setSource($source);
+                   // on cherche si le client est déjà dans la base 
+                   $custumer = $repoCust->findCustByData([
+                    "name" => $nom_client,
+                    "lastName" => $prenom_client,
+                    "email" => $email,
+                    "telephone"=> $telephone
+                ]);
+                // si ses tests sont tous null on crée un nouveau customer and visit after
+
+                if(!$custumer){
+                    $client = new Customer();
+                    $client->setName($nom_client);
+                    $client->setLastName($prenom_client);
+                                              
                     $client->setTelephone($telephone);
-                    $client->setProvenance($provenance);
-                    $client->setNbrChambre($nbr_chambre);
-                    $client->setPrixTotal(str_replace(" ", "", $prix_total));
                     $client->setCreatedAt($createdAt);
-                    $hotel->addClient($client);
-                    // fidelisation 
                     $this->manager->persist($client);
-                    $this->manager->persist($hotel);
+                    // on crée la data visit
+                    $visit = new Visit();
+                    $visit->setCustomer($client);
+                    $visit->setHotel($hotel);
+                    $visit->setCheckin($date_arrivee);
+                    $visit->setCheckout($date_depart);
+                    $visit->setNbrNuitee($days);
+                    $visit->setSource($source);   
+                    $visit->setProvenance($provenance);
+                    $visit->setNbrChambre($nbr_chambre);
+                    $visit->setMontant(str_replace(" ", "", $prix_total));
+                     
+                    $this->manager->persist($visit);
                     $this->manager->flush();
-                    $this->categorisation($tab_identifiant);
-                    $data = json_encode("ok");  
+                    
+                    $this->categorisation($client);
+                    $data = json_encode("ok"); 
+                }
+                else if($custumer){
+                    $visit = new Visit();
+                    $visit->setCustomer($custumer);
+                    $visit->setHotel($hotel);
+                    $visit->setCheckin($date_arrivee);
+                    $visit->setCheckout($date_depart);
+                    $visit->setNbrNuitee($days);
+                    $visit->setSource($source);   
+                    $visit->setProvenance($provenance);
+                    $visit->setNbrChambre($nbr_chambre);
+                    $visit->setMontant(str_replace(" ", "", $prix_total));
+                     
+                    $this->manager->persist($visit);
+                    $this->manager->flush();
+                    
+                    $this->categorisation($custumer);
+                    $data = json_encode("ok");
+                }
                 }
                 else{
                     $data = json_encode("Veuiller renseigner au moins les champs Nom, Check in, check out, Nbr chambres, Source, Prix total et un contact");  
@@ -298,61 +378,59 @@ class ClientController extends AbstractController
             $response->setContent($data);
 
             // end client insertion in fidelisation
-            
-            
-        
 
             return $response;
         }
     }
 
-    public function setCategoriesForClients($clients, $nameOfFid){
+    public function setCategoriesForClient($client, $nameOfFid){
         $fidelisation = $this->repoFid->findOneBy(['nom'=>$nameOfFid]);
-        foreach($clients as $item){
-            $item->setFidelisation($fidelisation);
-        }
+            $client->setFidelisation($fidelisation);
+        
         $this->manager->flush();
     }
 
     /**
-     * catégorisation du client inseré
      * 
+     * @Route("/profile/liste_visit", name="list_visit")
     */
-    public function categorisation($tab_identifiant) :void
-    {
+    public function categorisation(?Customer $customer) :void
+    {   
+       
+       if($customer){
 
-        $clients = $this->repoClient->searchClientsByTabIdentifiant($tab_identifiant, $this->startFidelisation);
-        $fids = $this->repoFid->findAll(); // par défaut findAll affiche un resultat ascendant d'id
-        
-        //dd($clients);
-        $client = ($clients != null ? end($clients) : null );
-        // la dernière date d'insertion de ce client
-       if($client){
-            $lastCreatedAt = $client->getCreatedAt();
-
-            $diff = date_diff($lastCreatedAt, new \DateTime())->y;
-            if($diff >= 1){
-                $this->setCategoriesForClients($clients, "cardex");
+            // on cherche la date de la dernière visite
+            $last_visit = $this->repoVisit->findLastDateVisit($customer);
+            $date_last_visit = $last_visit[0]->getCreatedAt();
+            //dd($date_last_visit);
+            $diff_year = date_diff($date_last_visit, new \DateTime())->y;
+            // déjà si diff_year >= 1 ... on remet le client en btn_cardex
+            if($diff_year >= 1){
+                $this->setCategoriesForClient($customer, "cardex");
             }
-            else if($diff < 1){
-                $ca = 0;
-                $nuitee = 0;
-                foreach($clients as $item){
-                    $ca = $ca + $item->getPrixTotal();
-                    $nuitee = $nuitee + $item->getDureeSejour();
+            else if($diff_year < 1){
+                // on compte les montant
+                $somme_nuitee = 0;
+                $visits = $customer->getVisits();
+                foreach($visits as $visit){
+                    $somme_nuitee = $somme_nuitee + intval($visit->getNbrNuitee());
                 }
-                if( $nuitee >= 0 &&  $nuitee <= $fids[0]->getLimiteNuite()){
-                    $this->setCategoriesForClients($clients, "cardex");
+                // les fids
+                $fids = $this->repoFid->findAll();
+                //catégorisation
+                if( $somme_nuitee >= 0 &&  $somme_nuitee <= $fids[0]->getLimiteNuite()){
+                    $this->setCategoriesForClient($customer, "cardex");
                 }
-                if( $nuitee >= (intval($fids[0]->getLimiteNuite()) + 1) &&  $nuitee <= $fids[1]->getLimiteNuite()){
-                    $this->setCategoriesForClients($clients, "preferentiel");
+                if( $somme_nuitee >= (intval($fids[0]->getLimiteNuite()) + 1) &&  $somme_nuitee <= $fids[1]->getLimiteNuite()){
+                    $this->setCategoriesForClient($customer, "preferentiel");
                 }
-                if( $nuitee >= (intval($fids[1]->getLimiteNuite()) + 1) &&  $nuitee <= $fids[2]->getLimiteNuite()){
-                    $this->setCategoriesForClients($clients, "privilege");
+                if( $somme_nuitee >= (intval($fids[1]->getLimiteNuite()) + 1) &&  $somme_nuitee <= $fids[2]->getLimiteNuite()){
+                    $this->setCategoriesForClient($customer, "privilege");
                 }
-                if( $nuitee >= (intval($fids[2]->getLimiteNuite()) + 1)){ 
-                    $this->setCategoriesForClients($clients, "exclusif");
+                if( $somme_nuitee >= (intval($fids[2]->getLimiteNuite()) + 1)){ 
+                    $this->setCategoriesForClient($customer, "exclusif");
                 }
+                
             }
        }
         
@@ -390,7 +468,9 @@ class ClientController extends AbstractController
         
     }
 
-    
+    /**
+    * @Route('/profile/store_customer')
+    */
 
     /**
      * @Route("/admin/suprimer_client", name = "delete_client")

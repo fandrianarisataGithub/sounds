@@ -1589,6 +1589,7 @@ class PageController extends AbstractController
                     $manager->flush();
                 }
                 $data = $spreadsheet->getSheetByName("FOURNISSEURS")->toArray();
+                //dd(floatval(str_replace(",", "", $data[2][4])));
                 $text .= "on peut lire une donnée " . $data[5][0]." <br>";
                 $error_fichier = 0;
                 for ($i = 2; $i < count($data); $i++) {
@@ -1610,7 +1611,7 @@ class PageController extends AbstractController
                     $nom_fournisseur = $data[$i][3];
                     $montant = 0;
                     if ($data[$i][4] != null) {
-                        $montant = trim(intval($data[$i][4]));
+                        $montant = floatval(str_replace(",", "", $data[$i][4]));
                     }
 
                     $mode_pmt = "";
@@ -1621,7 +1622,7 @@ class PageController extends AbstractController
                     $montant_paye = 0;
                     $reste = $montant;
                     if ($data[$i][7] != null) {
-                        $montant_paye =trim(intval($data[$i][7]));
+                        $montant_paye = floatval(str_replace(",", "", $data[$i][7]));
                     }
 
                     $remarque = "";
@@ -1994,9 +1995,10 @@ class PageController extends AbstractController
                         $cup->setNumeroFacture($numero_facture);
                         $cup->setNom($nom);
                         $cup->setPersonneHebergee($personne_hebergee);
-                        $cup->setMontant($montant);
+                        //dd(floatval(str_replace(",", "", $montant)));
+                        $cup->setMontant(floatval(str_replace(",", "", $montant)));
 
-                        $cup->setMontantPayer($montant_paye);
+                        $cup->setMontantPayer(floatval(str_replace(",", "", $montant_paye)));
 
                         $cup->setModePmt($mode_pmt);
                         $cup->addHotel($hotel);

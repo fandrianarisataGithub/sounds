@@ -111,6 +111,16 @@ class Client
      */
     private $telephone;
 
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    //private $identity;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    //private $identityType;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -309,6 +319,30 @@ class Client
         }
         
     }
+
+    // public function getIdentity(): ?string
+    // {
+    //     return $this->identity;
+    // }
+
+    // public function setIdentity(?string $identity): self
+    // {
+    //     $this->identity = $identity;
+
+    //     return $this;
+    // }
+
+    // public function getIdentityType(): ?string
+    // {
+    //     return $this->identityType;
+    // }
+
+    // public function setIdentityType(?string $identityType): self
+    // {
+    //     $this->identityType = $identityType;
+
+    //     return $this;
+    // }
 
    
 }

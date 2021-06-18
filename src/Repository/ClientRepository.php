@@ -132,31 +132,97 @@ class ClientRepository extends ServiceEntityRepository
         // statistique group by fide nom
 
         $sql_group_by_fid = '
-            SELECT fidelisation.nom AS nom_fid, COUNT(DISTINCT client.email, client.telephone) AS effectif FROM client
+            SELECT fidelisation.nom, count(DISTINCT email, telephone) AS effectif
+            FROM client
             INNER JOIN fidelisation
-            ON fidelisation.id = client.fidelisation_id
-            GROUP BY (fidelisation.nom)
+            ON client.fidelisation_id = fidelisation.id
+            GROUP BY fidelisation.nom
         ';
 
         $stmt_fid_group_by = $conn->prepare($sql_group_by_fid);
         $stmt_fid_group_by->execute();
 
-        $data_fid_group_by = $stmt_fid_group_by->fetchAll();
+        $eff = $stmt_fid_group_by->fetchAll();
+        //dd($eff);
+        $tab_eff = [
+            0 => "0",
+            1 => "0",
+            2 => "0",
+            3 => "0"
+        ];
+        for ($i=0; $i < count($eff); $i++) { 
+            if($eff[$i]['nom'] == "cardex"){
+                $x = $eff[$i]['effectif'];
+                $tab_eff[0] = $x;
+            }
+            if($eff[$i]['nom'] == "preferentiel"){
+                $x = $eff[$i]['effectif'];
+                $tab_eff[1] = $x;
+            }
+            if($eff[$i]['nom'] == "privilege"){
+                $x = $eff[$i]['effectif'];
+                $tab_eff[2] = $x;
+            }
+            if($eff[$i]['nom'] == "exclusif"){
+                $x = $eff[$i]['effectif'];
+                $tab_eff[3] = $x;
+            }
+        }
+        //dd($tab_eff);
 
+
+       /* $sql_type_fids = '
+            SELECT COUNT(DISTINCT client.email, client.telephone) AS effectif_cardex
+            FROM client 
+            WHERE client.fidelisation_id = 1
+        ';
+
+        $stmt_fid_group_by = $conn->prepare($sql_type_fids);
+        $stmt_fid_group_by->execute();
+
+        $eff_cardex = $stmt_fid_group_by->fetch();
+
+        $sql_type_fids = '
+            SELECT COUNT(DISTINCT client.email, client.telephone) AS effectif_preferentiel
+            FROM client 
+            WHERE client.fidelisation_id = 2
+        ';
+
+        $stmt_fid_group_by = $conn->prepare($sql_type_fids);
+        $stmt_fid_group_by->execute();
+
+        $eff_preferentiel = $stmt_fid_group_by->fetch();
+
+        $sql_type_fids = '
+            SELECT COUNT(DISTINCT client.email, client.telephone) AS effectif_privilege
+            FROM client 
+            WHERE client.fidelisation_id = 3
+        ';
+
+        $stmt_fid_group_by = $conn->prepare($sql_type_fids);
+        $stmt_fid_group_by->execute();
+
+        $eff_privilege = $stmt_fid_group_by->fetch();
+
+        $sql_type_fids = '
+            SELECT COUNT(DISTINCT client.email, client.telephone) AS effectif_exclusif
+            FROM client 
+            WHERE client.fidelisation_id = 4
+        ';
+
+        $stmt_fid_group_by = $conn->prepare($sql_type_fids);
+        $stmt_fid_group_by->execute();
+
+        $eff_exclusif = $stmt_fid_group_by->fetch();*/
+        
         $datas = [
             "clients"   => $clients_fid_distinct,
             "chiffres"  => $chiffres,
             "graph"     => $data_graph,
-            "stat"      => [
-                0 => isset($data_fid_group_by[0]) ? $data_fid_group_by[0]['effectif'] : "0",
-                1 => isset($data_fid_group_by[1]) ? $data_fid_group_by[1]['effectif'] : "0",
-                2 => isset($data_fid_group_by[2]) ? $data_fid_group_by[2]['effectif'] : "0",
-                3 => isset($data_fid_group_by[3]) ? $data_fid_group_by[3]['effectif'] : "0",
-            ]
+            "stat"      => $tab_eff
         ];
 
         //dd($datas);
-
         return $datas;
         
         

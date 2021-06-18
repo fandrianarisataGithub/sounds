@@ -64,6 +64,11 @@ class Hotel
      */
     private $donneeMensuelles;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Visit::class, mappedBy="hotel")
+     */
+    private $visits;
+
     public function __construct()
     {
         $this->clients = new ArrayCollection();
@@ -72,6 +77,7 @@ class Hotel
         $this->fournisseurs = new ArrayCollection();
         $this->clientUploads = new ArrayCollection();
         $this->donneeMensuelles = new ArrayCollection();
+        $this->visits = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -283,6 +289,36 @@ class Hotel
             // set the owning side to null (unless already changed)
             if ($donneeMensuelle->getHotel() === $this) {
                 $donneeMensuelle->setHotel(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Visit[]
+     */
+    public function getVisits(): Collection
+    {
+        return $this->visits;
+    }
+
+    public function addVisit(Visit $visit): self
+    {
+        if (!$this->visits->contains($visit)) {
+            $this->visits[] = $visit;
+            $visit->setHotel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVisit(Visit $visit): self
+    {
+        if ($this->visits->removeElement($visit)) {
+            // set the owning side to null (unless already changed)
+            if ($visit->getHotel() === $this) {
+                $visit->setHotel(null);
             }
         }
 

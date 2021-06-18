@@ -142,5 +142,16 @@ class Services
             return $tab[0] . " " . $mois[$tab[1]] . " " . $tab[2];
             
         }
-        
+        public function generateIniqId(string $nom_client, string $contact, string $type) : string
+        { 
+            $tab = explode(" ", $nom_client);
+            $nom = $tab[0];
+            if($type === "email"){
+                return $nom . "_" . $contact;
+            }
+            else{
+                $format = str_replace(" ", "", $contact);
+                return $nom . "_" . $contact;
+            }
+        }
     } 

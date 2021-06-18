@@ -25,7 +25,7 @@
                                 <input type="hidden" name="" id="date1" value="">
                                 <input type="hidden" id="date2" value="" name="">
                         </div>
-                        <div id="test"></div>
+                        <div id="test"> qdskjgcfkqs qsdiudcfqs </div>
                     </section>
                 </div>
                 <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
@@ -258,6 +258,7 @@
                                     </div>
                                 </div>
                             </section>
+                            <div id="test"></div>
                             <div class="tableau" id="tab_client_present">
                                 <div class="sous_titre">
                                     <h4 class="label__titre">Client présent le : <span id="data_text_date"></span></h4>
@@ -860,8 +861,12 @@
                             'pseudo_hotel' : pseudo_hotel,
                             'date'  : $("#donnee_du_jour_createdAt").val()
                             },
+                        // beforeSend : function(){
+                        //     console.log(this.data);
+                        // },
                         // success : function(response){
-                        //     console.log(response);
+                        //     //console.log(response);
+                        //     $('#test').html(response);
                         // }, 
                         // error : function(){
                         //     alert('erreur server');
@@ -896,6 +901,28 @@
                 new $.fn.dataTable.FixedHeader(table);
 
             /*  fiun table */
+            // (function(){
+            //     $.ajax({
+            //         url : "/profile/select_current_client", // any am Clientcontroller
+            //             type : 'POST', 
+            //             data : {
+            //                 'pseudo_hotel' : pseudo_hotel,
+            //                 'date'  : $("#donnee_du_jour_createdAt").val()
+            //                 },
+            //             beforeSend : function(){
+            //                 console.log(this.data);
+            //             },
+            //             success : function(response){
+            //                 console.log(response);
+                            
+            //             }, 
+            //             error : function(){
+            //                 alert('erreur server');
+            //             },
+            //     })
+            // })()
+
+            /* test */
 
             $("#ajouter_client").click(function (e) { 
                 e.preventDefault();
@@ -948,7 +975,7 @@
                         $("#ajouter_client").html('<span>Patienter...</span>');
                     },
                     success : function (response) {
-                       // $('#test').html(response);
+                       $('#test').html(response);
                         
                         if(response == "ok"){
                             // on initialise le formulaire
