@@ -25,7 +25,7 @@
                                 <input type="hidden" name="" id="date1" value="">
                                 <input type="hidden" id="date2" value="" name="">
                         </div>
-                        <div id="test"> qdskjgcfkqs qsdiudcfqs </div>
+                        <div id="test"> </div>
                     </section>
                 </div>
                 <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 col-xs-12">
@@ -166,14 +166,14 @@
                                 <div class="sous_data_form">
                                     <div>
                                         <span class="span__label"></span>
-                                        <input v-model="nom" v-on:keyup="proposeName" type="text" class="input__text" placeholder="Nom" name="nom_client" id ="nom_client" autocomplete="off"/>
-                                        <ul v-if="isTyping && filteredClients.length && nom !='' > 0" class="group_nom_client">
+                                        <input v-model="name" v-on:keyup="proposeName" type="text" class="input__text" placeholder="Nom" name="nom_client" id ="nom_client" autocomplete="off"/>
+                                        <ul v-if="isTyping && filteredClients.length && name !='' > 0" class="group_nom_client">
                                             <li v-for="client in filteredClients" v-bind:key="client.id">
-                                                <a @click.prevent="putClient(client)" href="#">${ client.nom }</a>
+                                                <a @click.prevent="putClient(client)" href="#">${ client.name }</a>
                                             </li>
                                         </ul>
                                         <span class="span__label span_prenom"></span>
-                                        <input v-model="prenom" @focus="liveOutFocus" type="text" class="input__text" placeholder="Prénom" name="prenom_client" id = "prenom_client"/>
+                                        <input v-model="lastName" @focus="liveOutFocus" type="text" class="input__text" placeholder="Prénom" name="prenom_client" id = "prenom_client"/>
                                     </div>
                                     <div>
                                         <span class="span__label"></span>
@@ -976,7 +976,6 @@
                     },
                     success : function (response) {
                        $('#test').html(response);
-                        
                         if(response == "ok"){
                             // on initialise le formulaire
                             $('#nom_client').val("");
@@ -1040,7 +1039,7 @@
                  $.ajax({
                      url : "/admin/suprimer_client",
                      data : {
-                         "client_id" : id,
+                         "visit_id" : id,
                          "pseudo_hotel" : pseudo_hotel,
                      },
                      type : "POST",
@@ -1076,14 +1075,15 @@
                  $.ajax({
                      url : "/admin/check_client",
                      data : {
-                         "client_id" : id,
+                         "visit_id" : id,
                          "action" : "modification",
                      },
                      type : "POST",
                     
                      success : function(response){
+                        //$('#test').html(response);
                         $('#form_edit_client').html(response);
-                        $('#modal_form').modal('show');
+                        $('#modal_form_edit_client').modal('show');
                      },
                      error : function(error){
                          alert('erreur de server');
@@ -1091,43 +1091,45 @@
                 })
             })
 
-            $(document).on('click', '#a_modal_modif_client', function(ev){
+            /* reste à faire modification de l'input */
+
+            $(document).on('click', ' #a_modal_modif_client', function(ev){
                 ev.preventDefault();
                 var source_init = $(this).attr("data-change-source-init");
                 var id = $(this).attr("data-id");
-                var nom = $('#modif_nom_client').val();
-                var prenom = $('#modif_prenom_client').val();
-                var date_arrivee = $('#modif_date_arrivee').val();
-                var date_depart = $('#modif_date_depart').val();
-                var nbr_chambre = $('#modif_nbr_chambre_client').val();
-                var prix_total = $("#modif_prix_total_client").val();
-                var provenance = $("#modif_provenance_client").val();
-                var email = $("#modif_email_client").val();
-                var telephone = $("#modif_telephone_client").val();
+                var nom = $('#modif_nom_client').last().val();
+                var prenom = $(' #modif_prenom_client').last().val();
+                var date_arrivee = $(' #modif_date_arrivee').last().val();
+                var date_depart = $(' #modif_date_depart').last().val();
+                var nbr_chambre = $(' #modif_nbr_chambre_client').last().val();
+                var prix_total = $(" #modif_prix_total_client").last().val();
+                var provenance = $(" #modif_provenance_client").last().val();
+                var email = $(" #modif_email_client").last().val();
+                var telephone = $(" #modif_telephone_client").last().val();
                 
                 var source = "";
                 if(provenance == "OTA"){
-                    source = $("#modal_source_OTA_init select").val();
+                    source = $(" #modal_source_OTA_init select").last().val();
                     if(source_init == "oui"){
-                        source = $("#modal_source_OTA select").val();
+                        source = $(" #modal_source_OTA select").last().val();
                     }
                 }
                 if(provenance == "DIRECT"){
-                    source = $("#modal_source_DIRECT_init select").val();
+                    source = $(" #modal_source_DIRECT_init select").last().val();
                     if(source_init == "oui"){
-                         source = $("#modal_source_DIRECT select").val();
+                         source = $(" #modal_source_DIRECT select").last().val();
                     }
                 }
                 if(provenance == "TOA"){
-                    source = $("#modal_source_TOA_init input").val();
+                    source = $(" #modal_source_TOA_init input").last().val();
                     if(source_init == "oui"){
-                        source = $("#modal_source_TOA input").val();
+                        source = $(" #modal_source_TOA input").last().val();
                     }
                 }
                 if(provenance == "CORPO"){
-                    source = $("#modal_source_CORPO_init input").val();
+                    source = $(" #modal_source_CORPO_init input").last().val();
                     if(source_init == "oui"){
-                        source = $("#modal_source_CORPO input").val();
+                        source = $(" #modal_source_CORPO input").last().val();
                     }
                 }
                 var  data = {
@@ -1143,7 +1145,7 @@
                     "email"         : email,    
                     "telephone"     : telephone, 
                 }
-                console.log(data);
+                //console.log(data);
 
                 $.ajax({
                     url : "/admin/edit_client",
@@ -1153,6 +1155,7 @@
                        $('#a_modal_modif_client').html('<span>Patienter...</span>'); 
                     },
                     success : function(response){
+                        //$('#test').html(response)
                         if(response == "ok"){
                             table.ajax.reload(function(response){
                                 var montant = document.querySelectorAll(".montant");
@@ -1165,7 +1168,7 @@
                                     }           
                                 }
                             }, false);
-                            $('#modal_form').modal('hide');
+                            $('#modal_form_edit_client').modal('hide');
                         }
                     },
                     error : function(error){
@@ -1268,13 +1271,14 @@
     
     var datas = $('<div>').html('{{ result }}')[0].textContent;
     var clients = JSON.parse(datas)
+    //console.log(clients);
     var app = new Vue({
         el: '#app',
         delimiters: ['${', '}'],
         data() {
             return {
-                nom: '',
-                prenom: '',
+                name: '',
+                lastName: '',
                 email: '',
                 telephone: '',
                 clients: clients,
@@ -1284,7 +1288,7 @@
         computed : {
             filteredClients(){
                 return this.clients.filter((client)=>{
-                    return client.nom.toLowerCase().includes(this.nom.toLowerCase());
+                    return client.name.toLowerCase().includes(this.name.toLowerCase());
                 })
             }
         },
@@ -1296,8 +1300,8 @@
             },
             putClient: function(client){
                 this.isTyping = false;
-                this.nom = client.nom;
-                this.prenom = (client.prenom != '') ? client.prenom : ''
+                this.name = client.name;
+                this.lastName = (client.lastName != '') ? client.lastName : ''
                 this.email = (client.email != '') ? client.email : ''
                 this.telephone = (client.telephone != '') ? client.telephone : ''
 

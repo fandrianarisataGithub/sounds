@@ -2802,7 +2802,7 @@ li#log_out a:hover {
     height: 30px;
     padding: 5px;
     border-radius: 5px;
-    min-width: 120px;
+    min-width: 150px;
 }
 
 #modal_form .modal-content .modal-header button.close {

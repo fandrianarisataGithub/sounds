@@ -17,7 +17,9 @@ use App\Form\DonneeMensuelleType;
 use App\Form\FournisseurFileType;
 use App\Repository\UserRepository;
 use App\Repository\HotelRepository;
+use App\Repository\VisitRepository;
 use App\Repository\ClientRepository;
+use App\Repository\CustomerRepository;
 use App\Repository\FicheHotelRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\FournisseurRepository;
@@ -41,18 +43,22 @@ class PageController extends AbstractController
 {
 
     private  $services;
-    public $repoClient;
-    public $repoFid;
-    public $manager;
+    private $repoClient;
+    private $repoFid;
+    private $manager;
+    private $repoCust;
+    private $repoVisit;
     public $startFidelisation; // date de debut de la catégorisation
 
-    public function __construct(Services $services, ClientRepository $repoClient, FidelisationRepository $repoFid, EntityManagerInterface $manager)
+    public function __construct(Services $services, VisitRepository $repoVisit, ClientRepository $repoClient, CustomerRepository $repoCust, FidelisationRepository $repoFid, EntityManagerInterface $manager)
     {
         $this->startFidelisation = date_create("2021-01-01"); 
         $this->repoClient = $repoClient;
         $this->manager = $manager;
         $this->repoFid = $repoFid;
         $this->services = $services;
+        $this->repoCust =  $repoCust;
+        $this->repoVisit =  $repoVisit;
     }
     /**
      * @Route("/", name="first_page")
@@ -276,6 +282,7 @@ class PageController extends AbstractController
             if (count($tab_annee) > 0) {
                 array_push($tab_sans_doublant, $tab_annee[0]);
             }
+            
             for ($i = 0; $i < count($tab_annee); $i++) {
 
                 if (!in_array($tab_annee[$i], $tab_sans_doublant)) {
@@ -626,7 +633,6 @@ class PageController extends AbstractController
         $tab_adr = [];
         $tab_revp = [];
         
-       
         $repoDM = $this->getDoctrine()->getRepository(DonneeMensuelle::class);
         $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
         $all_dm = $repoDM->findBy(['hotel' => $hotel]);
@@ -680,38 +686,44 @@ class PageController extends AbstractController
 
                 $all_date_asked = $services->all_date_between2_dates($date1, $date2);
                 //dd($all_date_asked);
+                if($date1 == $date2){
+                    $all_date_asked = [0 => $date1->format('Y-m-d')];
+                }
                 
-                $tab = [];
+                //dd($all_date_asked);
                 $data_session = $session->get('hotel');
                 $data_session['current_page'] = "crj";
                 $data_session['pseudo_hotel'] = $pseudo_hotel;
                 $l_hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
-                $current_id_hotel = $l_hotel->getId();
-                $clients = $repo->findAll();
-                foreach ($clients as $item) {
-                    $son_id_hotel = $item->getHotel()->getId();
-                    if ($son_id_hotel == $current_id_hotel) {
-                        array_push($tab, $item);
-                    }
-                }
-                foreach ($tab as $client) {
+                // $current_id_hotel = $l_hotel->getId();
+                // $clients = $this->repoCust->findAll();
+                // foreach ($clients as $item) {
+                //     $son_id_hotel = $item->getHotel()->getId();
+                //     if ($son_id_hotel == $current_id_hotel) {
+                //         array_push($tab, $item);
+                //     }
+                // }
+                $visits = $this->repoVisit->findBy(['hotel' => $l_hotel]);
+                //dd($visits);
+                foreach ($visits as $visit) {
                     // on liste tous les jour entre sa dete arrivee et date depart
-                    $sa_da = $client->getDateArrivee();
-                    $sa_dd = $client->getDateDepart();
-                    //dd($sa_dd);
+                    $sa_da = $visit->getCheckin();
+                    $sa_dd = $visit->getCheckout();
+                   
                     $his_al_dates = $services->all_date_between2_dates($sa_da, $sa_dd);
                     //dd($his_al_dates);
+                    //dd($all_date_asked);
                     for ($i = 0; $i < count($all_date_asked); $i++) {
                         for ($j = 0; $j < count($his_al_dates); $j++) {
                             if ($all_date_asked[$i] == $his_al_dates[$j]) {
-                                if (!in_array($client, $tab_aff)) {
-                                    array_push($tab_aff, $client);
+                                if (!in_array($visit, $tab_aff)) {
+                                    array_push($tab_aff, $visit);
                                 }
                             }
                         }
                     }
                 }
-                
+                //dd($tab_aff);
                 return $this->render('page/hebergement.html.twig', [
                     "id"                    => "li__hebergement",
                     "tab_annee"             => $tab_sans_doublant,
@@ -721,7 +733,7 @@ class PageController extends AbstractController
                     "tab_heb_ca"            => $tab_heb_ca,
                     "tab_labels"            => $tab_labels,
                     "type_affichage"        => "annee",
-                    'items'                 => $tab_aff,
+                   
                     'date1'                 => $date1->format('Y-m-d'),
                     'date2'                 => $date2->format('Y-m-d'),
                     "tropical_wood"         => false,
@@ -2219,7 +2231,7 @@ class PageController extends AbstractController
 
     public function findAllClients()
     {
-        $clients = $this->repoClient->findAllForVue();
+        $clients = $this->repoCust->findAllForVue();
         
         return json_encode($clients, JSON_UNESCAPED_UNICODE);
         

@@ -1284,7 +1284,7 @@
                  $.ajax({
                      url : "/admin/suprimer_client",
                      data : {
-                         "client_id" : id,
+                         "visit_id" : id,
                          "pseudo_hotel" : pseudo_hotel,
                      },
                      type : "POST",
@@ -1322,17 +1322,17 @@
                  $.ajax({
                      url : "/admin/check_client",
                      data : {
-                         "client_id" : id,
+                         "visit_id" : id,
                          "action" : "modification",
                      },
                      type : "POST",
                     
                      success : function(response){
                         $('#form_edit_client').html(response);
-                        $('#modal_form').modal('show');
+                        $('#modal_form_edit_client').modal('show');
                      },
                      error : function(error){
-                         alert('erreur de server');
+                         alert('erreur de server check client');
                      },
                 })
             })
@@ -1411,7 +1411,7 @@
                                     }           
                                 }
                             }, false);
-                            $('#modal_form').modal('hide');
+                            $('#modal_form_edit_client').modal('hide');
                         }
                     },
                     error : function(error){

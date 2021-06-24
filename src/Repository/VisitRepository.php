@@ -42,7 +42,6 @@ class VisitRepository extends ServiceEntityRepository
             ->andWhere('v.customer = :val')
             ->setParameter('val', $customer)
             ->orderBy('v.createdAt', 'DESC')
-            ->setMaxResults(1)
             ->getQuery()
             ->getResult()
         ;

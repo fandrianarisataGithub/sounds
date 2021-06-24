@@ -146,6 +146,9 @@ class ClientController extends AbstractController
 
                 $all_date_asked = $services->all_date_between2_dates($date1, $date2);
                 //dd($all_date_asked);
+                if($date1 == $date2){
+                    $all_date_asked = [0 => $date1->format('Y-m-d')];
+                }
                 
                 $tab = $repoVisit->findCustomersByVisit($hotel);
                
@@ -201,6 +204,7 @@ class ClientController extends AbstractController
     {
         $response = new Response();
         $hotel = $repoHotel->findOneByPseudo($pseudo_hotel);
+        $today = new \DateTime();
         if ($request->isXmlHttpRequest()) {
 
             $nom_client = $request->get('nom_client');
@@ -231,7 +235,9 @@ class ClientController extends AbstractController
             }
             
             if(!empty($email) && $email != "0"){
+                //dd("juju");
                 if(filter_var($email, FILTER_VALIDATE_EMAIL) && !in_array($email[0], $t)){
+                    
                     if(!empty($nom_client) 
                             && !empty($date_depart) 
                             && !empty($date_arrivee)
@@ -239,7 +245,7 @@ class ClientController extends AbstractController
                             && !empty($nbr_chambre)
                             && !empty($source)
                     ){  
-
+                        
                         // on cherche si le client est déjà dans la base 
                         $custumer = $repoCust->findCustByData([
                             "name" => $nom_client,
@@ -247,6 +253,7 @@ class ClientController extends AbstractController
                             "email" => $email,
                             "telephone"=> $telephone
                         ]);
+                        
                         // si ses tests sont tous null on crée un nouveau customer and visit after
 
                         if(!$custumer){
@@ -268,7 +275,7 @@ class ClientController extends AbstractController
                             $visit->setProvenance($provenance);
                             $visit->setNbrChambre($nbr_chambre);
                             $visit->setMontant(str_replace(" ", "", $prix_total));
-                             
+                            $visit->setCreatedAt(date_create($today->format('Y-m-d')));
                             $this->manager->persist($visit);
                             $this->manager->flush();
                             
@@ -286,7 +293,7 @@ class ClientController extends AbstractController
                             $visit->setProvenance($provenance);
                             $visit->setNbrChambre($nbr_chambre);
                             $visit->setMontant(str_replace(" ", "", $prix_total));
-                             
+                            $visit->setCreatedAt(date_create($today->format('Y-m-d')));
                             $this->manager->persist($visit);
                             $this->manager->flush();
                             
@@ -302,6 +309,7 @@ class ClientController extends AbstractController
                     $data = json_encode("Veuiller entrer un adresse email valide"); 
                 }
             }else if(empty($email) || $email == "0"){
+                //dd("ato e");
                 if(!empty($nom_client) 
                         && !empty($date_depart) 
                         && !empty($date_arrivee)
@@ -312,12 +320,14 @@ class ClientController extends AbstractController
                 ){
                     
                    // on cherche si le client est déjà dans la base 
-                   $custumer = $repoCust->findCustByData([
-                    "name" => $nom_client,
-                    "lastName" => $prenom_client,
-                    "email" => $email,
-                    "telephone"=> $telephone
-                ]);
+                    $custumer = $repoCust->findCustByData([
+                        "name" => $nom_client,
+                        "lastName" => $prenom_client,
+                        "email" => $email,
+                        "telephone"=> $telephone
+                    ]);
+
+                    //dd($custumer);
                 // si ses tests sont tous null on crée un nouveau customer and visit after
 
                 if(!$custumer){
@@ -339,7 +349,7 @@ class ClientController extends AbstractController
                     $visit->setProvenance($provenance);
                     $visit->setNbrChambre($nbr_chambre);
                     $visit->setMontant(str_replace(" ", "", $prix_total));
-                     
+                    $visit->setCreatedAt(date_create($today->format('Y-m-d')));
                     $this->manager->persist($visit);
                     $this->manager->flush();
                     
@@ -357,7 +367,7 @@ class ClientController extends AbstractController
                     $visit->setProvenance($provenance);
                     $visit->setNbrChambre($nbr_chambre);
                     $visit->setMontant(str_replace(" ", "", $prix_total));
-                     
+                    $visit->setCreatedAt(date_create($today->format('Y-m-d')));
                     $this->manager->persist($visit);
                     $this->manager->flush();
                     
@@ -397,10 +407,10 @@ class ClientController extends AbstractController
     public function categorisation(?Customer $customer) :void
     {   
        
-       if($customer){
-
+        if($customer){
             // on cherche la date de la dernière visite
             $last_visit = $this->repoVisit->findLastDateVisit($customer);
+            //dd($last_visit);
             $date_last_visit = $last_visit[0]->getCreatedAt();
             //dd($date_last_visit);
             $diff_year = date_diff($date_last_visit, new \DateTime())->y;
@@ -469,20 +479,16 @@ class ClientController extends AbstractController
     }
 
     /**
-    * @Route('/profile/store_customer')
-    */
-
-    /**
      * @Route("/admin/suprimer_client", name = "delete_client")
      */
     public function delete_client(Request $request, ClientRepository $repoClient, HotelRepository $repoHotel, EntityManagerInterface $manager)
     {
         $response = new Response();
         if($request->isXmlHttpRequest()){
-            $client_id = $request->get('client_id');
+            $visit_id = $request->get('visit_id');
 
-            $client = $repoClient->find($client_id);
-            $manager->remove($client);
+            $visit = $this->repoVisit->find($visit_id);
+            $manager->remove($visit);
             $manager->flush();
 
             $data = json_encode("deleted");
@@ -503,11 +509,14 @@ class ClientController extends AbstractController
         $data_session['current_page'] = "hebergement";
         $pseudo_hotel = $data_session['pseudo_hotel'] ;
         if($request->isXmlHttpRequest()){
-            $client_id = $request->get('client_id');
+            $visit_id = $request->get('visit_id');
             $date1 = $request->get('date1');
             $date2 = $request->get('date2');
             $action = $request->get('action');
-            $client = $repoClient->find($client_id);
+            //$client = $this->repoCust->find($visit_id);
+            $visit = $this->repoVisit->find($visit_id);
+            $client = $this->repoCust->find($visit->getCustomer()->getId());
+            //dd($client->getName());
             $html = '';
             if($action == "modification"){
 
@@ -519,11 +528,11 @@ class ClientController extends AbstractController
                             <input type="hidden" name = "action" value = "modification">
                             <div class="form-group">
                                 <label for="">Nom : </label>
-                                <input type="text" id="modif_nom_client" class="form-control" value="'. $client->getNom() .'">
+                                <input type="text" id="modif_nom_client" class="form-control" value="'. $client->getName() .'">
                             </div>
                             <div class="form-group">
                                 <label for="">Prénom : </label>
-                                <input type="text" id="modif_prenom_client" class="form-control" value="'. $client->getPrenom() .'">
+                                <input type="text" id="modif_prenom_client" class="form-control" value="'. $client->getLastName() .'">
                             </div>
                             <div class="mail_phone">
                                 <div class="form-group">
@@ -538,61 +547,61 @@ class ClientController extends AbstractController
                             <div class="form-group modal_flex">
                                 <div>
                                     <label for="">Check in : </label>
-                                    <input type="date" id="modif_date_arrivee" class="input_date_checkin" value = "' . $client->getDateArrivee()->format("Y-m-d") . '">
+                                    <input type="date" id="modif_date_arrivee" class="input_date_checkin" value = "' . $visit->getCheckin()->format("Y-m-d") . '">
                                     <label for="" >Check out : </label>
-                                    <input type="date" id="modif_date_depart" value = "' . $client->getDateDepart()->format("Y-m-d") . '">
+                                    <input type="date" id="modif_date_depart" value = "' . $visit->getCheckout()->format("Y-m-d") . '">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="">Provenance : </label>
                                 <select name="" id="modif_provenance_client">
-                                    <option value="OTA" '. ($client->getProvenance() == "OTA" ? "selected" : "" ) . '>OTA</option>
-                                    <option value="DIRECT" '. ($client->getProvenance() == "DIRECT" ? "selected" : "" ) . '>DIRECT</option>
-                                    <option value="CORPO" '. ($client->getProvenance() == "CORPO" ? "selected" : "" ) . '>CORPO</option>
-                                    <option value="TOA" '. ($client->getProvenance() == "TOA" ? "selected" : "" ) . '>TOA</option>
+                                    <option value="OTA" '. ($visit->getProvenance() == "OTA" ? "selected" : "" ) . '>OTA</option>
+                                    <option value="DIRECT" '. ($visit->getProvenance() == "DIRECT" ? "selected" : "" ) . '>DIRECT</option>
+                                    <option value="CORPO" '. ($visit->getProvenance() == "CORPO" ? "selected" : "" ) . '>CORPO</option>
+                                    <option value="TOA" '. ($visit->getProvenance() == "TOA" ? "selected" : "" ) . '>TOA</option>
                                 </select>
                             </div>';
 
-                            if($client->getProvenance() == "TOA"){
+                            if($visit->getProvenance() == "TOA"){
                                 $html .= '
                                     <div class="modal_source_init" id="modal_source_TOA_init">
                                         <label for="">Source : </label>
-                                        <input type="text" placeholder="ex Aventour" value="'. $client->getSource() .'" class="form-control">
+                                        <input type="text" placeholder="ex Aventour" value="'. $visit->getSource() .'" class="form-control">
                                     </div>
                                 ';
                             }
 
-                            if($client->getProvenance() == "CORPO"){
+                            if($visit->getProvenance() == "CORPO"){
                                 $html .= '
                                     <div class=" modal_source_init" id="modal_source_CORPO_init">
                                         <label for="">Source : </label>
-                                        <input type="text" placeholder value="'. $client->getSource() .'" ="ex Nom de la société" class="form-control">
+                                        <input type="text" placeholder value="'. $visit->getSource() .'" ="ex Nom de la société" class="form-control">
                                     </div>
                                 ';
                             }
 
-                            if($client->getProvenance() == "OTA"){
+                            if($visit->getProvenance() == "OTA"){
                                 $html .= '
                                     <div class=" modal_source_init" id="modal_source_OTA_init">
                                         <label for="">Source : </label>
                                         <select name="">
-                                            <option value="Booking" '. ($client->getSource() == "Booking" ? "selected" : "" ) . '>Booking</option>
-                                            <option value="Expedia" '. ($client->getSource() == "Expedia" ? "selected" : "" ) . '>Expedia</option>
-                                            <option value="Hotelbeds" '. ($client->getSource() == "Hotelbeds" ? "selected" : "" ) . '>Hotelbeds</option>
+                                            <option value="Booking" '. ($visit->getSource() == "Booking" ? "selected" : "" ) . '>Booking</option>
+                                            <option value="Expedia" '. ($visit->getSource() == "Expedia" ? "selected" : "" ) . '>Expedia</option>
+                                            <option value="Hotelbeds" '. ($visit->getSource() == "Hotelbeds" ? "selected" : "" ) . '>Hotelbeds</option>
                                         </select>
                                     </div>
                                 ';
                             }
 
-                            if($client->getProvenance() == "DIRECT"){
+                            if($visit->getProvenance() == "DIRECT"){
                                 $html .= '
                                     <div class=" modal_source_init" id="modal_source_DIRECT_init">
                                         <label for="">Source : </label>
                                         <select name="" >
-                                            <option value="Email" '. ($client->getSource() == "Email" ? "selected" : "" ) . '>Email</option>
-                                            <option value="Téléphone" '. ($client->getSource() == "Téléphone" ? "selected" : "" ) . '>Téléphone</option>
-                                            <option value="Site web" '. ($client->getSource() == "Site web" ? "selected" : "" ) . '>Site web</option>
-                                            <option value="Comptoir" '. ($client->getSource() == "Comptoir" ? "selected" : "" ) . '>Comptoir</option>
+                                            <option value="Email" '. ($visit->getSource() == "Email" ? "selected" : "" ) . '>Email</option>
+                                            <option value="Téléphone" '. ($visit->getSource() == "Téléphone" ? "selected" : "" ) . '>Téléphone</option>
+                                            <option value="Site web" '. ($visit->getSource() == "Site web" ? "selected" : "" ) . '>Site web</option>
+                                            <option value="Comptoir" '. ($visit->getSource() == "Comptoir" ? "selected" : "" ) . '>Comptoir</option>
                                         </select>
                                     </div>
                                 ';
@@ -627,14 +636,14 @@ class ClientController extends AbstractController
 
                             <div class="form-group div_flex">
                                 <label for="nbr_nuit" class="label_nbr_chambre">Nombre de chambre :</label>
-                                <input type="number" id="modif_nbr_chambre_client" value="'. $client->getNbrChambre() .'"> 
+                                <input type="number" id="modif_nbr_chambre_client" value="'. $visit->getNbrChambre() .'"> 
                                 <label for="prix_total" class="label_prix_total">Prix total :</label>
-                                <input type="text" id="modif_prix_total_client" class="input_nombre" value="'. $client->getPrixTotal() .'">
+                                <input type="text" id="modif_prix_total_client" class="input_nombre" value="'. $visit->getMontant() .'">
                                 <span class="span__ar">Ar</span>
                             </div>
 
                             <div class=" list_btn">
-                                <button type = "submit" class="btn btn-warning" id="a_modal_modif_client" data-change-source-init="non" data-id="'. $client->getId() .'">
+                                <button type = "submit" class="btn btn-warning" id="a_modal_modif_client" data-change-source-init="non" data-id="'. $visit->getId() .'">
                                     <span>Enregistrer</span>
                                 </button>
                                 <button class="btn" data-dismiss="modal">
@@ -649,7 +658,7 @@ class ClientController extends AbstractController
                         <form action="/profile/' . $pseudo_hotel . '/hebergement" method = "POST" id = "form_modal_delete">
                             <input type="hidden" id = "hidden_date1" name = "date1" value = "' . $date1 . '">
                             <input type="hidden" id = "hidden_date2" name = "date2" value = "' . $date2 . '">
-                            <input type="hidden" id = "hidden_id" value = "' . $client->getId() . '" name = "client_id">
+                            <input type="hidden" id = "hidden_id" value = "' . $visit->getId() . '" name = "client_id">
                             <input type="hidden" name = "action" value = "suppression">
                             <div class="form-group">
                             <button type = "submit" class="form-control btn btn-warning"><span>Supprimer</span></button>
@@ -697,20 +706,22 @@ class ClientController extends AbstractController
             $diff = $date_arrivee->diff($date_depart);
             $days = $diff->d;
             // on pick le client
-            $client = $repoClient->find($id);
-            $client->setNom($nom);
-            $client->setPrenom($prenom);
+            $visit = $this->repoVisit->find($id);
+            $client = $this->repoCust->find($visit->getCustomer()->getId());
+            $client->setName($nom);
+            $client->setLastName($prenom);
             
-            $client->setProvenance($provenance);
+            $visit->setProvenance($provenance);
             $client->setEmail($email);
             $client->setTelephone($telephone);
-            $client->setSource($source);
-            $client->setNbrChambre($nbr_chambre);
-            $client->setPrixTotal(str_replace(" ", "", $prix_total));
-            $client->setDateArrivee($date_arrivee);
-            $client->setDateDepart($date_depart);
-            $client->setDureeSejour($days);
+            $visit->setSource($source);
+            $visit->setNbrChambre($nbr_chambre);
+            $visit->setMontant(str_replace(" ", "", $prix_total));
+            $visit->setCheckin($date_arrivee);
+            $visit->setCheckout($date_depart);
+            $visit->setNbrNuitee($days);
             $manager->persist($client);
+            $manager->persist($visit);
             $manager->flush();
 
             $data = json_encode("ok");

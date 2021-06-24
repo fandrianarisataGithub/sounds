@@ -49,6 +49,11 @@ class Customer
      */
     private $visits;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Fidelisation::class, inversedBy="customers")
+     */
+    private $fidelisation;
+
     public function __construct()
     {
         $this->visits = new ArrayCollection();
@@ -145,6 +150,18 @@ class Customer
                 $visit->setCustomer(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getFidelisation(): ?Fidelisation
+    {
+        return $this->fidelisation;
+    }
+
+    public function setFidelisation(?Fidelisation $fidelisation): self
+    {
+        $this->fidelisation = $fidelisation;
 
         return $this;
     }

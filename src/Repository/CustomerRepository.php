@@ -36,21 +36,25 @@ class CustomerRepository extends ServiceEntityRepository
         ;
     }
     
-    public function findCustByData($tab): ?Customer
+    public function findCustByData($tab)
     {
-        $by_email = $this->createQueryBuilder('c')
-                ->andWhere('c.email = :val')
-                ->setParameter('val', $tab['email'])
-                ->getQuery()
-                ->getOneOrNullResult();
+       // dd($tab);
+        $by_email = !empty($tab['email']) ? $this->createQueryBuilder('c')
+        ->andWhere('c.email = :val')
+        ->setParameter('val', $tab['email'])
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getOneOrNullResult() : null;
         if($by_email){
+            dd("mail" . $by_email);
             return $by_email;
         }
-        $by_phone = $this->createQueryBuilder('c')
+        $by_phone = !empty($tab['telephone']) ? $this->createQueryBuilder('c')
         ->andWhere('c.telephone = :val')
         ->setParameter('val', $tab['telephone'])
+        ->setMaxResults(1)
         ->getQuery()
-        ->getOneOrNullResult();
+        ->getOneOrNullResult() : null;
         if($by_phone){
             return $by_phone;
         }
@@ -59,6 +63,7 @@ class CustomerRepository extends ServiceEntityRepository
             ->andWhere('c.name = :val1 AND c.name = :val2')
             ->setParameter('val1', $tab['name'])
             ->setParameter('val2', $tab['lastName'])
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
         ;
@@ -66,11 +71,21 @@ class CustomerRepository extends ServiceEntityRepository
             return $by_names;
         }
         else if(!$by_email && !$by_phone && !$by_names){
+           
             return null;
         }
         
     }
 
+    public function findAllForVue()
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c.name, c.lastName, c.email, c.telephone, c.id')
+            ->distinct()
+            ->getQuery()
+            ->getResult()
+        ; 
+    }
    
 
     /*
