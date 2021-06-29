@@ -46,8 +46,9 @@ class TropController extends AbstractController
                                 DataTropicalWoodRepository $repoTrop, EntrepriseTWRepository $repoEntre,
                                 IntervalChangePFRepository $repoInterval)
     {
-        // $test = $repoTrop->findAllGroupedByEntreprise();
-        // dd($test);
+        
+        //dd('ato');
+
         $data_session = $session->get('hotel');
         if($data_session == null){
             return $this->redirectToRoute("app_logout");
@@ -371,21 +372,22 @@ class TropController extends AbstractController
         // on crée les entreprise
 
         $all = $repoTrop->findAll();
+        //dd($all);
         $i = 0;
+        $tab_nom_entre = $repoEntre->findAllNomEntreprise();
+        
         foreach($all as $item){
             
-            $tab_nom_entre = $repoEntre->findAllNomEntreprise();
             $nom = $item->getEntreprise();
+            if (!in_array($nom, $tab_nom_entre)) {
+                $entreprise_objet = new EntrepriseTW();
+                $entreprise_objet->setNom($nom);
+                $manager->persist($entreprise_objet);
+            }
             
-           if($nom){
-                if (!in_array($nom, $tab_nom_entre)) {
-                    $entreprise_objet = new EntrepriseTW();
-                    $entreprise_objet->setNom($nom);
-                    $manager->persist($entreprise_objet);
-                    $manager->flush();
-                }
-           }
         }
+        $manager->flush();
+        //dd('fait ve');
         $Liste = $cache_init_tw->get('init_tw', function () use ($repoTrop) {
             return $repoTrop->filtrer(
                 "",

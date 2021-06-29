@@ -86,6 +86,21 @@ class CustomerRepository extends ServiceEntityRepository
             ->getResult()
         ; 
     }
+
+    public function findallCustAndhisFidelisation()
+    {
+        return $this->createQueryBuilder('c')
+            ->innerJoin("App\Entity\Fidelisation", "f", "WITH", "c.fidelisation = f")
+            ->addSelect('f.nom AS fid_nom, f.style_etiquette AS style_etiquette')
+            ->getQuery()
+            ->getResult()
+        ; 
+    }
+
+    public function compteCustInFid()
+    {
+        
+    }
    
 
     /*

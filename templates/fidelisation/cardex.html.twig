@@ -64,7 +64,7 @@
                                 <p>Nombre de clients <br> CARDEX</p>
                             </aside>
                             <aside>
-                                <p class="f_val_stat"><span>{{ data_clients['nbr_clients'] }}</span></p>
+                                <p class="f_val_stat"><span>{{ customers|length }}</span></p>
                             </aside>
                         </div>
                     </div>
@@ -83,7 +83,7 @@
                                 <p>Revenu <br>global</p>
                             </aside>
                             <aside>
-                                <p class="f_val_stat"><span class="montant_f">{{ data_clients['rev_global'] }}</span><span class="unite_f"> Ar</span></p>
+                                <p class="f_val_stat"><span class="montant_f">{{ ca }}</span><span class="unite_f"> Ar</span></p>
                             </aside>
                         </div>
                     </div>
@@ -109,16 +109,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for client in data_clients['clients'] %}
-                                    <tr data-contact = "{{ (client['email'] is empty) ? client['telephone'] : client['email'] }}">
+                                {% for customer in customers %}
+                                    <tr data-id = "{{ customer.id }}">
                                         <td>
-                                            <span class="nom">{{ client['client_nom'] }}</span><br>
-                                            <span class="nom">{{ client['prenom'] }}</span>
+                                            <span class="nom">{{ customer.name }}</span><br>
+                                            <span class="nom">{{ customer.lastName }}</span>
                                         </td>
-                                        <td><span>{{ client['email'] }}</span></td>
-                                        <td><span>{{ client['telephone'] }}</span></td>
+                                        <td><span>{{ customer.email }}</span></td>
+                                        <td><span>{{ customer.telephone }}</span></td>
                                         <td>
-                                            <span class="{{ client['style_etiquette'] }}">{{ client['fid_nom']|capitalize  }}</span>
+                                            <span class="{{ customer.fidelisation.getStyleEtiquette() }}">{{ customer.fidelisation.getNom()|capitalize  }}</span>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -234,14 +234,9 @@
 
                 $('#table_f').on('click', 'tbody td', function() {
 
-                        // //get textContent of the TD
-                        // console.log('TD cell textContent : ', this.textContent)
-
-                        // //get the value of the TD using the API 
-                        // console.log('value by API : ', table.cell({ row: this.parentNode.rowIndex, column : this.cellIndex }).data());
-                        var contact = $(this).parent().attr('data-contact');
-                        //alert(contact)
-                        window.location.href = "/profile/fidelisation/fiche_client/" + hotel + "/" + contact;
+                    var id = $(this).parent().attr('data-id');
+                    //alert(contact)
+                    window.location.href = "/profile/fidelisation/fiche_client/" + hotel + "/" + id;
                 })
         })
             

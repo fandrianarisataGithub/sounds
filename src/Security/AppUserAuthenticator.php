@@ -102,9 +102,7 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
         }
-        // on va initialiser une variable de session 
-
-        //dd($request); il y a l'a propos de user courant
+        
         $email = $request->request->get('email');
         $groupe = $request->request->get('groupe');
         //dd($email);

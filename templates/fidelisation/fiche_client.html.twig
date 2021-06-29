@@ -67,8 +67,8 @@
                         </div>
                         <div>
                             <p class="nom">
-                                ${data_client.nom} <br>
-                                ${data_client.prenom}
+                                ${data_client['nom']} <br>
+                                ${data_client['prenom']}
                             </p>
                         </div>
                     </section>
@@ -81,7 +81,7 @@
                             </div>
                             <div>
                                 <p class="nom">
-                                   ${data_client.telephone}
+                                   ${data_client['telephone']}
                                 </p>
                             </div>
                         </section>
@@ -95,7 +95,7 @@
                             </div>
                             <div>
                                 <p class="nom">
-                                    ${data_client.email}
+                                    ${data_client['email']}
                                 </p>
                             </div>
                         </section>
@@ -129,28 +129,28 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for client in clients %}
+                                {% for visit in visits %}
                                     <tr>
                                         <td class="hotel">
-                                            <span>{{ client['nom_hotel'] }}</span>
+                                            <span>{{ visit.hotel.nom }}</span>
                                         </td>
                                         <td class="check">
-                                            <span>{{ client[0].dateArrivee|date('d-m-Y') }}</span>
+                                            <span>{{ visit.checkin|date('d-m-Y') }}</span>
                                         </td>
                                         <td class="check">
-                                            <span>{{ client[0].dateDepart|date('d-m-Y') }}</span>
+                                            <span>{{ visit.checkout|date('d-m-Y') }}</span>
                                         </td>
                                         <td>
-                                            <span>{{ client[0].provenance }}</span>
+                                            <span>{{ visit.provenance }}</span>
                                         </td>
                                         <td class="prix">
-                                            <span class="montant_f">{{ client[0].getPrixTotal() }}</span>
+                                            <span class="montant_f">{{ visit.montant }}</span>
                                         </td>
                                         <td>
-                                            <span>{{ client[0].dureeSejour }}</span>
+                                            <span>{{ visit.nbrNuitee }}</span>
                                         </td>
                                         <td>
-                                            <span>{{ client[0].getNbrChambre() }}</span>
+                                            <span>{{ visit.nbrChambre() }}</span>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -191,7 +191,7 @@
                                     <p>Nuitée <br>cumulée</p>
                                 </aside>
                                 <aside>
-                                    <p class="cn_val_stat"><span class="montant_f">{{ nuitee }}</span><span class="unite_f"> nuité</span></p>
+                                    <p class="cn_val_stat"><span class="montant_f">{{ nuitee }}</span><span class="unite_f"> nuitée{{ nuitee >=2 ? 's' : '' }}</span></p>
                                 </aside>
                             </div>
                         </div>
@@ -397,10 +397,10 @@
 
          // vue.js
         let data_client = {
-            "nom" : '{{ clients[0][0].getNom() }}',
-            "prenom" : '{{ clients[0][0].getPrenom() }}',
-            "email" : '{{ clients[0][0].getEmail() is empty ? "" : clients[0][0].getEmail() }}',
-            "telephone" : '{{ clients[0][0].getTelephone() is empty ? "" : clients[0][0].getTelephone() }}',
+            "nom" : '{{ customer.name }}',
+            "prenom" : '{{ customer.lastName }}',
+            "email" : '{{ customer.email is empty ? "" : customer.email }}',
+            "telephone" : '{{ customer.telephone is empty ? "" : customer.telephone }}',
         }
 
         //console.log(data_client);

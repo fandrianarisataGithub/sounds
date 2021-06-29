@@ -38,7 +38,6 @@
             <div class="row block1">      
                 {# boucle fid #}
                 {# for displaying effectif by fid name #}
-                {% set i = 0 %}
 
                 {% for item in fidelisations %}
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -58,9 +57,12 @@
                         <a class="f_block" href="{{ path('fidelisation_' ~ item.nom, {'pseudo_hotel' : hotel}) }}">
                             <div class="f_block_top">
                                 <aside>
-                                    <p><span class="f_val">{{ datas['stat'][i] }}</span> Client{% if datas['stat'][i] >= 2 %}<span>s</span>{% endif %}
+                                    <p>
+                                    <span class="f_val">
+                                        {# calcul his total customers #}
+                                        {{ item.customers|length }}
+                                    </span> Client{% if item.customers|length >= 2 %}<span>s</span>{% endif %}
                                     </p>
-                                    {% set i = i + 1 %}
                                 </aside>
                                 <aside>
                                     <p>
@@ -98,7 +100,7 @@
                                 <p>Nombre <br>de clients fidelisés</p>
                             </aside>
                             <aside>
-                                <p class="f_val_stat"><span>{{ datas['clients']|length }}</span></p>
+                                <p class="f_val_stat"><span>{{ datas|length }}</span></p>
                             </aside>
                         </div>
                     </div>
@@ -117,7 +119,7 @@
                                 <p>Nombre <br>de nuitées totales</p>
                             </aside>
                             <aside>
-                                <p class="f_val_stat"><span>{{ datas['chiffres']['total_nuitee'] }}</span></p>
+                                <p class="f_val_stat"><span>{{ nbrNuitee }}</span></p>
                             </aside>
                         </div>
                     </div>
@@ -137,7 +139,7 @@
                                 <p>Revenu <br>global</p>
                             </aside>
                             <aside>
-                                <p class="f_val_stat"><span class="montant_f">{{ datas['chiffres']['rev_global'] }}</span><span class="unite_f"> Ar</span></p>
+                                <p class="f_val_stat"><span class="montant_f">{{ rev_global }}</span><span class="unite_f"> Ar</span></p>
                             </aside>
                         </div>
                     </div>
@@ -166,14 +168,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for client in datas['clients'] %}
-                                    <tr data-contact = "{{ (client['email'] is empty) ? client['telephone'] : client['email'] }}">
+                                {% for client in datas %}
+                                    <tr data-id = "{{ client[0].id }}">
                                         <td>
-                                            <span class="nom">{{ client['client_nom'] }}</span><br>
-                                            <span class="nom">{{ client['prenom'] }}</span>
+                                            <span class="nom">{{ client[0].name }}</span><br>
+                                            <span class="nom">{{ client[0].lastName }}</span>
                                         </td>
-                                        <td><span>{{ client['email'] }}</span></td>
-                                        <td><span>{{ client['telephone'] }}</span></td>
+                                        <td><span>{{ client[0].email }}</span></td>
+                                        <td><span>{{ client[0].telephone }}</span></td>
                                         <td>
                                             <span class="{{ client['style_etiquette'] }}">{{ client['fid_nom']|capitalize  }}</span>
                                         </td>
@@ -201,6 +203,7 @@
             {# /tableau et graph #}
         </div>
     <section>
+    {% include "fidelisation/fidelisation_modal.html.twig" %}
 {% endblock %}
 {% block javascripts %}
     <script src="https://github.com/chartjs/Chart.js/releases/download/v2.9.3/Chart.min.js"></script>
@@ -306,14 +309,9 @@
 
                 $('#table_f').on('click', 'tbody td', function() {
 
-                    // //get textContent of the TD
-                    // console.log('TD cell textContent : ', this.textContent)
-
-                    // //get the value of the TD using the API 
-                    // console.log('value by API : ', table.cell({ row: this.parentNode.rowIndex, column : this.cellIndex }).data());
-                    var contact = $(this).parent().attr('data-contact');
+                    var id = $(this).parent().attr('data-id');
                     //alert(contact)
-                    window.location.href = "/profile/fidelisation/fiche_client/" + hotel + "/" + contact;
+                    window.location.href = "/profile/fidelisation/fiche_client/" + hotel + "/" + id;
                 })
 
 
