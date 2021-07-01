@@ -96,11 +96,6 @@ class CustomerRepository extends ServiceEntityRepository
             ->getResult()
         ; 
     }
-
-    public function compteCustInFid()
-    {
-        
-    }
    
 
     /*

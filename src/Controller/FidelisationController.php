@@ -31,6 +31,7 @@ class FidelisationController extends AbstractController
         $this->em = $em;
         $this->repoFid = $repoFid;
         $this->repoCust = $repoCust;
+        $this->repoVisit = $repoVisit;
     }
 
     /**
@@ -60,15 +61,19 @@ class FidelisationController extends AbstractController
         }
         
         $fidelisations = $this->repoFid->findAll([], ["id" => "ASC"]);
-        
+
+        // Effectif visit groupe by provenance
+
+        $effectif_provenance = json_encode($this->repoVisit->getEffectifByProvenance());
         return $this->render('fidelisation/home.html.twig', [
-            'fidelisation'      => true,
-            "fidelisations"     => $fidelisations,
-            'hotel'             => $pseudo_hotel,
-            "datas"             => $datas,
-            "nbrNuitee"         => $nbrNuitee,
-            "rev_global"         => $rev_global,
-            "current_page"      => $data_session['current_page'],
+            'fidelisation'          => true,
+            "fidelisations"         => $fidelisations,
+            'hotel'                 => $pseudo_hotel,
+            "datas"                 => $datas,
+            "nbrNuitee"             => $nbrNuitee,
+            "rev_global"            => $rev_global,
+            "current_page"          => $data_session['current_page'],
+            "effectif_provenance"   => $effectif_provenance
         ]);
     }
 
@@ -298,10 +303,27 @@ class FidelisationController extends AbstractController
         if(!$data_session){
             return $this->redirectToRoute("app_logout");
         }
+        $datas = $this->repoVisit->findallCustAndhisFidelisationAndTypeVisit("OTA");
+        //dd($datas);
+        $ca = 0;
+        $nuitee = 0;
+        foreach($datas as $visit){
+            $ca += floatval($visit->getMontant());
+            $nuitee += intval($visit->getNbrNuitee());
+        }
+
+        // effectif par source 
+
+        $effectif = json_encode($this->repoVisit->getEffectifByProvOTABySource());
+        
         return $this->render("fidelisation/client/client_OTA.html.twig", [
-            'fidelisation'  => true,
-            'hotel'         => $pseudo_hotel,
+            'fidelisation'      => true,
+            'hotel'             => $pseudo_hotel,
             "current_page"      => $data_session['current_page'],
+            "datas"             => $datas,
+            "ca"                => $ca,
+            "nuitee"            => $nuitee,
+            "effectif"          => $effectif
         ]);
     }
     /**
@@ -313,10 +335,27 @@ class FidelisationController extends AbstractController
         if(!$data_session){
             return $this->redirectToRoute("app_logout");
         }
+        
+        $datas = $this->repoVisit->findallCustAndhisFidelisationAndTypeVisit("CORPO");
+        //dd($datas);
+        $ca = 0;
+        $nuitee = 0;
+        
+        foreach($datas as $visit){
+            $ca += floatval($visit->getMontant());
+            $nuitee += intval($visit->getNbrNuitee());
+        }
+
+        // effectif par source 
+
+        // $effectif = json_encode($this->repoVisit->getEffectifBySource());
         return $this->render("fidelisation/client/client_CORPO.html.twig", [
-            'fidelisation'  => true,
-            'hotel'         => $pseudo_hotel,
+            'fidelisation'      => true,
+            'hotel'             => $pseudo_hotel,
             "current_page"      => $data_session['current_page'],
+            "datas"             => $datas,
+            "nuitee"            => $nuitee,
+            "ca"                => $ca
         ]);
     }
     /**
@@ -328,10 +367,24 @@ class FidelisationController extends AbstractController
         if(!$data_session){
             return $this->redirectToRoute("app_logout");
         }
+        $datas = $this->repoVisit->findallCustAndhisFidelisationAndTypeVisit("TOA");
+        //dd($datas);
+        $ca = 0;
+        $nuitee = 0;
+        
+        foreach($datas as $visit){
+            $ca += floatval($visit->getMontant());
+            $nuitee += intval($visit->getNbrNuitee());
+        }
+        
+        
         return $this->render("fidelisation/client/client_TOA.html.twig", [
             'fidelisation'  => true,
             'hotel'         => $pseudo_hotel,
             "current_page"      => $data_session['current_page'],
+            "datas"             => $datas,
+            "nuitee"            => $nuitee,
+            "ca"                => $ca
         ]);
     }
     /**
@@ -343,10 +396,25 @@ class FidelisationController extends AbstractController
         if(!$data_session){
             return $this->redirectToRoute("app_logout");
         }
+        $datas = $this->repoVisit->findallCustAndhisFidelisationAndTypeVisit("DIRECT");
+        //dd($datas);
+        $ca = 0;
+        $nuitee = 0;
+        
+        foreach($datas as $visit){
+            $ca += floatval($visit->getMontant());
+            $nuitee += intval($visit->getNbrNuitee());
+        }
+        
+        $effectif = json_encode($this->repoVisit->getEffectifByProvDirectBySource());
         return $this->render("fidelisation/client/client_DIRECT.html.twig", [
-            'fidelisation'  => true,
-            'hotel'         => $pseudo_hotel,
+            'fidelisation'      => true,
+            'hotel'             => $pseudo_hotel,
             "current_page"      => $data_session['current_page'],
+            "datas"             => $datas,
+            "nuitee"            => $nuitee,
+            "ca"                => $ca,
+            "effectif"          => $effectif
         ]);
     }
 }

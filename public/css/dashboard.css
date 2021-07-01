@@ -482,7 +482,21 @@ ul {
     font-family: 'Droid Sans', sans-serif;
     outline: none;
 }
-
+#error_form_presta{
+    background: red;
+    height: 35px;
+    padding-top: 10px;
+    margin-bottom: 15px;
+    display: none;
+}
+#error_form_presta p{
+    color: #fff;
+    padding-left: 15px;
+}
+#date_presta{
+    width: 150px;
+    padding-top: 0px;
+}
 .petit_entete {
     display: -webkit-box;
     display: -ms-flexbox;

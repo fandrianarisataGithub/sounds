@@ -205,7 +205,7 @@
                         <h3>
                             <span>Préstations offertes</span>
                             <div class="action">
-                                <a href="#">
+                                <a href="#" data-toggle="modal" data-target="#modal_customer_presta">
                                     <span class="fa fa-edit fa-3x"></span>
                                 </a>
                             </div>
@@ -287,6 +287,48 @@
                             </div>
                             <div class="form-group" id="edit_contact_client">
                                 <button v-on:click.prevent="editContactClient" class="btn btn-warning"><span>Enregistrer</span></button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        {# modal prestra #}
+        <div class="modal fade" id="modal_customer_presta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog opacity-animate4">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="modal-title" style="text-align: center;">Ajout de prestation</h3>
+                    </div>
+                    <div class="modal-body">
+                        <form action="" method = "POST" id="form_add_presta">
+                            <div class="form-group">
+                                <label for="">Nom de la préstation : </label> 
+                                <input type="text" placeholder="Ex Cocktail" class="form-control" id="nom_presta">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Quantité : </label>
+                                <input type="number" class="form-control" id="quantity_presta">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Date : </label>
+                                <input type="date" class="form-control" id="date_presta">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Pax : </label>
+                                <input type="number" class="form-control" id="pax_presta">
+                            </div>
+                            <div id="test"></div>
+                            <div id="error_form_presta">
+                                <p>
+                                    llrem sdzikfg dszkf dsqkf 
+                                </p>
+                            </div>
+                            <input type="hidden" name="" id="id_cust" value="{{ customer.id }}">
+                            <div class="form-group" id="add_presta">
+                                <button class="btn btn-warning"><span>Enregistrer</span></button>
                             </div>
                         </form>
                     </div>
@@ -387,6 +429,46 @@
                 new $.fn.dataTable.FixedHeader(table);
             
             // tab 2 presta
+
+            // add presta 
+
+            $('#add_presta button').on('click', function(ev){
+                ev.preventDefault();
+                
+                var data = {
+                     'nom' : $('#nom_presta').val(),
+                     'quantity' : $('#quantity_presta').val(),
+                     'createdAt' : $('#date_presta').val(),
+                     'pax' : $('#pax_presta').val(),
+                     'customer_id' : $('#id_cust').val(),
+                }
+                console.log(data);
+                $.ajax({
+                    url : "/profile/add_prestation",
+                    type : "POST",
+                    data : data,
+                    success : function(response){
+                        
+                        $('#test').html(response);
+                        console.log(response);
+                        // if(response == "ok"){
+                        //     console.log(response);
+                        //     $("#modal_customer_presta").modal("hide");
+                        //     $("#form_add_presta").reset();
+                        //     $('#add_presta button').text('Enregistrer');
+                        // }
+                        // else{
+                        //     console.log(response);
+                        //     $("#error_form_presta p").text(response);
+                        //     $("#error_form_presta").show();
+                        // }
+                        
+                    },
+                    error : function(){
+                        console.log("Erreur add prestation");
+                    }
+                })
+            })
 
         })
 

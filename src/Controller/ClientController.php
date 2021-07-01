@@ -229,6 +229,16 @@ class ClientController extends AbstractController
             if(!empty($date_depart) && !empty($date_arrivee)){
                 $date_arrivee = date_create($date_arrivee);
                 $date_depart = date_create($date_depart);
+                if($date_arrivee > $date_depart){
+                    $data = json_encode("Il faut que la date de checkin soit une date inférieur à celle de checkout"); 
+                    $response->headers->set('Content-Type', 'application/json');
+                    $response->headers->set('Access-Control-Allow-Origin', '*');
+                    $response->setContent($data);
+        
+                    // end client insertion in fidelisation
+        
+                    return $response;
+                }
                 $diff = $date_arrivee->diff($date_depart);
                 $days = $diff->days;
                 //dd($days);

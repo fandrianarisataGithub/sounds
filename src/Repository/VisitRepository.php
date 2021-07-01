@@ -47,6 +47,143 @@ class VisitRepository extends ServiceEntityRepository
         ;
     }
 
+    public function getEffectifByProvenance(){
+        
+        $effectif = [
+            ['nom' => 'OTA', 'eff' => 0],
+            ['nom' => 'TOA', 'eff' => 0],
+            ['nom' => 'CORPO', 'eff' => 0],
+            ['nom' => 'DIRECT', 'eff' => 0]
+        ];
+        
+        $data = $this->createQueryBuilder('v')
+            ->select('v.provenance, COUNT(v.provenance) AS effectif')
+            ->innerJoin('App\Entity\Customer' , 'c',  'WITH' , 'v.customer = c')
+            ->innerJoin('App\Entity\Fidelisation' , 'f',  'WITH' , 'c.fidelisation = f')
+            ->groupBy('v.provenance')
+            ->getQuery()
+            ->getResult()
+        ;
+        //dd($data);
+        foreach($data as $d){
+            if($d['provenance'] == 'OTA'){
+                $effectif[0]['eff'] = $d['effectif'];
+            }
+            if($d['provenance'] == 'TOA'){
+                $effectif[1]['eff'] = $d['effectif'];
+            }
+            if($d['provenance'] == 'CORPO'){
+                $effectif[2]['eff'] = $d['effectif'];
+            }
+            if($d['provenance'] == 'DIRECT'){
+                $effectif[3]['eff'] = $d['effectif'];
+            }
+        }
+
+        return $effectif;
+    }
+
+    public function findallCustAndhisFidelisationAndTypeVisit(string $type)
+    {
+        return $this->createQueryBuilder('v')
+            ->innerJoin('App\Entity\Customer' , 'c',  'WITH' , 'v.customer = c')
+            ->innerJoin('App\Entity\Fidelisation' , 'f',  'WITH' , 'c.fidelisation = f')
+            ->andWhere('v.provenance = :type')
+            ->setParameter('type', $type)
+            ->getQuery()
+            ->getResult()
+        ; 
+    }
+
+    public function getEffectifByProvOTABySource()
+    {   
+       
+        $effectif = [
+            ['nom' => 'BOOKING', 'eff' => 0, 'ca' => 0],
+            ['nom' => 'EXPEDIA', 'eff' => 0, 'ca' => 0],
+            ['nom' => 'HOTELBEDS', 'eff' => 0, 'ca' => 0]
+        ];
+        
+        $data = $this->createQueryBuilder('v')
+            ->innerJoin('App\Entity\Customer' , 'c',  'WITH' , 'v.customer = c')
+            ->innerJoin('App\Entity\Fidelisation' , 'f',  'WITH' , 'c.fidelisation = f')
+            ->select('v.source, COUNT(v.source) AS effectif, SUM(v.montant) AS ca')
+            ->andWhere('v.provenance = :prov')
+            ->setParameter('prov', 'OTA')
+            ->groupBy('v.source')
+            ->getQuery()
+            ->getResult()
+        ;
+        
+        foreach($data as $d){
+            if($d['source'] == 'Booking'){
+                $effectif[0]['eff'] = $d['effectif'];
+                $effectif[0]['ca'] = $d['ca'];
+            }
+            if($d['source'] == 'Expedia'){
+                $effectif[1]['eff'] = $d['effectif'];
+                $effectif[1]['ca'] = $d['ca'];
+            }
+            if($d['source'] == 'Hotelbeds'){
+                $effectif[2]['eff'] = $d['effectif'];
+                $effectif[2]['ca'] = $d['ca'];
+            }
+        }
+        //dd($effectif);
+        return $effectif;
+    }
+
+    public function getEffectifByProvDirectBySource()
+    {   
+        /*
+            var chartData = [
+                {"nom": "EMAIL", "eff": 20, "ca" : 12000000}, 
+                {"nom": "TELEPHONE", "eff" : 0 , "ca": 2025000}, 
+                {"nom": "SITE WEB", "eff" : 10 ,"ca": 13000000}, 
+                {"nom": "WALKING","eff" : 30 , "ca": 14000000}
+            ] 
+         */
+       
+        $effectif = [
+            ['nom' => 'EMAIL', 'eff' => 0, 'ca' => 0],
+            ['nom' => 'TELEPHONE', 'eff' => 0, 'ca' => 0],
+            ['nom' => 'SITE WEB', 'eff' => 0, 'ca' => 0],
+            ['nom' => 'WALKING', 'eff' => 0, 'ca' => 0]
+        ];
+        
+        $data = $this->createQueryBuilder('v')
+            ->innerJoin('App\Entity\Customer' , 'c',  'WITH' , 'v.customer = c')
+            ->innerJoin('App\Entity\Fidelisation' , 'f',  'WITH' , 'c.fidelisation = f')
+            ->select('v.source, COUNT(v.source) AS effectif, SUM(v.montant) AS ca')
+            ->andWhere('v.provenance = :prov')
+            ->setParameter('prov', 'DIRECT')
+            ->groupBy('v.source')
+            ->getQuery()
+            ->getResult()
+        ;
+        
+        foreach($data as $d){
+            if($d['source'] == 'Email'){
+                $effectif[0]['eff'] = $d['effectif'];
+                $effectif[0]['ca'] = $d['ca'];
+            }
+            if($d['source'] == 'Téléphone'){
+                $effectif[1]['eff'] = $d['effectif'];
+                $effectif[1]['ca'] = $d['ca'];
+            }
+            if($d['source'] == 'Site web'){
+                $effectif[2]['eff'] = $d['effectif'];
+                $effectif[2]['ca'] = $d['ca'];
+            }
+            if($d['source'] == 'Comptoir'){
+                $effectif[3]['eff'] = $d['effectif'];
+                $effectif[3]['ca'] = $d['ca'];
+            }
+        }
+        //dd($effectif);
+        return $effectif;
+    }
+
     // /**
     //  * @return Visit[] Returns an array of Visit objects
     //  */

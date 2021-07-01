@@ -54,9 +54,15 @@ class Customer
      */
     private $fidelisation;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Prestation::class, mappedBy="customer")
+     */
+    private $prestations;
+
     public function __construct()
     {
         $this->visits = new ArrayCollection();
+        $this->prestations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -162,6 +168,36 @@ class Customer
     public function setFidelisation(?Fidelisation $fidelisation): self
     {
         $this->fidelisation = $fidelisation;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Prestation[]
+     */
+    public function getPrestations(): Collection
+    {
+        return $this->prestations;
+    }
+
+    public function addPrestation(Prestation $prestation): self
+    {
+        if (!$this->prestations->contains($prestation)) {
+            $this->prestations[] = $prestation;
+            $prestation->setCustomer($this);
+        }
+
+        return $this;
+    }
+
+    public function removePrestation(Prestation $prestation): self
+    {
+        if ($this->prestations->removeElement($prestation)) {
+            // set the owning side to null (unless already changed)
+            if ($prestation->getCustomer() === $this) {
+                $prestation->setCustomer(null);
+            }
+        }
 
         return $this;
     }

@@ -54,7 +54,7 @@
                                 <p>Nombre <br>de clients CORPO</p>
                             </aside>
                             <aside>
-                                <p class="f_val_stat"><span>160</span></p>
+                                <p class="f_val_stat"><span>{{ datas|length }}</span></p>
                             </aside>
                         </div>
                     </div>
@@ -73,7 +73,7 @@
                                 <p>Nombre <br>de nuitées totales</p>
                             </aside>
                             <aside>
-                                <p class="f_val_stat"><span>160</span></p>
+                                <p class="f_val_stat"><span>{{ nuitee }}</span></p>
                             </aside>
                         </div>
                     </div>
@@ -93,7 +93,7 @@
                                 <p>Revenu <br>global</p>
                             </aside>
                             <aside>
-                                <p class="f_val_stat"><span class="montant_f">1900440000</span><span class="unite_f"> Ar</span></p>
+                                <p class="f_val_stat"><span class="montant_f" id = "montant_f">{{ ca }}</span><span class="unite_f"> Ar</span></p>
                             </aside>
                         </div>
                     </div>
@@ -111,24 +111,26 @@
                         <table class="table" id="table_f">
                             <thead>
                                 <tr>
-                                    <th><span>Société</span></th>
-                                    <th><span>Nuitées</span></th>
+                                    <th><span>Nom/Prénom</span></th>
+                                    <th><span>Nbr nuitée</span></th>
                                     <th><span>Chiffre d'affaire</span></th>
+                                    <th><span>Fidelisation</span></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><span class="nom">Société nnn</span></td>
-                                    <td><span>50</span></td>
-                                    <td><span class="montant_corpo">25000000</span><span class="unite">Ar</span></td>
-                                    
-                                </tr>
-                                <tr>
-                                    <td><span class="nom">Société nnn</span></td>
-                                    <td><span>50</span></td>
-                                    <td><span class="montant_corpo">25000000</span><span class="unite">Ar</span></td>
-                                    
-                                </tr>
+                                {% for visit in datas %}
+                                    <tr data-id = "{{ visit.customer.id }}">
+                                        <td>
+                                            <span class="nom">{{ visit.customer.name }}</span><br>
+                                            <span class="nom">{{ visit.customer.lastName }}</span>
+                                        </td>
+                                        <td><span>{{ visit.nbrNuitee }}</span></td>
+                                        <td><span class="montant_corpo">{{ visit.montant }}</span></td>
+                                        <td>
+                                            <span class="{{ visit.customer.fidelisation ? visit.customer.fidelisation.getStyleEtiquette() : '' }}">{{ visit.customer.fidelisation ? visit.customer.fidelisation.nom|capitalize : ''  }}</span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -145,13 +147,17 @@
             var t = montant.length;
             var test = new Intl.NumberFormat();
             if (t > 0) {
-                for (var i = 0; i < t; i++) {
-                    
-                    var val = test.format(montant[i].innerHTML.replaceAll(" ", ""));
-                    //alert(montant[i].innerHTML);
-                    montant[i].innerHTML = val;
-                }           
-        }
+                    for (var i = 0; i < t; i++) {
+                        
+                        var val = test.format(montant[i].innerHTML.replaceAll(" ", ""));
+                        //alert(montant[i].innerHTML);
+                        montant[i].innerHTML = val;
+                    }           
+            }
+
+            var montant_f = document.querySelector("#montant_f");
+            var val = test.format(montant_f.innerHTML.replaceAll(" ", ""));
+            montant_f.innerHTML = val;  
 
         $(document).ready(function(){
 
@@ -238,10 +244,12 @@
 
                 /* datatable clickable */
 
-                // $('#table_f').on('click', 'tbody td', function() {
+                $('#table_f').on('click', 'tbody td', function() {
 
-                //     window.location.href = "{{ path('fidelisation_fiche_client', {'pseudo_hotel' : hotel}) }}";
-                // })
+                    var id = $(this).parent().attr('data-id');
+                    //alert(contact)
+                    window.location.href = "/profile/fidelisation/fiche_client/" + hotel + "/" + id;
+                })
         })
             
     </script>
