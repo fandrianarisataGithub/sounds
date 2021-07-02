@@ -436,7 +436,8 @@
 			<script>
 				/* pour l'annimation de loader */
 
-
+			var title = document.querySelector("title");
+			title.innerHTML = title.innerHTML.toUpperCase();
 			$(document).ready(function () {
 				setTimeout(function () {
 				$('body').addClass('loaded');

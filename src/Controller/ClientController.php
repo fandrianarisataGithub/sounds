@@ -216,6 +216,22 @@ class ClientController extends AbstractController
             $provenance = $request->get('provenance');
             $email = $request->get('email');
             $telephone = $request->get('telephone');
+
+            
+            // validation de telephone s'il existe 
+
+            if(!empty($telephone)){
+                $tel = str_replace(" ", "", $telephone);
+                if(strlen($tel) < 8){
+                    $data = json_encode("Veuillez renseigner un numero de téléphone valide s'il y en a"); 
+                    $response->headers->set('Content-Type', 'application/json');
+                    $response->headers->set('Access-Control-Allow-Origin', '*');
+                    $response->setContent($data);
+                    return $response;
+                }
+            }
+
+
             $tab_identifiant = ["mail" => $email, "telephone" => $telephone];
             $source = $request->get('source');
             $prix_total = $request->get('prix_total');

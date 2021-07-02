@@ -9,8 +9,15 @@
             width : 100px !important;
         }
         #contents{
-            margin-left : 100px !important;
+            margin-left : 100px;
         }
+        #aside1 ul li.logo_active_fidelisation{
+            background-color: #555555;
+        } 
+        #aside1 ul li.logo_active {
+            background-color: transparent;
+        }
+
     </style>
 {% endblock %}
 {% block body %}
@@ -112,9 +119,10 @@
                             <thead>
                                 <tr>
                                     <th><span>Nom/Prénom</span></th>
+                                    <th><span>Checkin-Checkout</span></th>
                                     <th><span>Nbr nuitée</span></th>
                                     <th><span>Chiffre d'affaire</span></th>
-                                    <th><span>Fidelisation</span></th>
+                                    <th><span>Source</span></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -124,11 +132,17 @@
                                             <span class="nom">{{ visit.customer.name }}</span><br>
                                             <span class="nom">{{ visit.customer.lastName }}</span>
                                         </td>
-                                        <td><span>{{ visit.nbrNuitee }}</span></td>
-                                        <td><span class="montant_corpo">{{ visit.montant }}</span></td>
                                         <td>
-                                            <span class="{{ visit.customer.fidelisation ? visit.customer.fidelisation.getStyleEtiquette() : '' }}">{{ visit.customer.fidelisation ? visit.customer.fidelisation.nom|capitalize : ''  }}</span>
+                                            <span>{{ visit.checkin|date('d/m/Y') }}</span>
+                                            <span>-</span>
+                                            <span>{{ visit.checkout|date('d/m/Y') }}</span>
                                         </td>
+                                        <td><span class="nbr_nuitee">{{ visit.nbrNuitee }}</span></td>
+                                        <td><span class="montant_table_fid">{{ visit.montant }}</span></td>
+                                        {# <td>
+                                            <span class="{{ visit.customer.fidelisation ? visit.customer.fidelisation.getStyleEtiquette() : '' }}">{{ visit.customer.fidelisation ? visit.customer.fidelisation.nom|capitalize : ''  }}</span>
+                                        </td> #}
+                                        <td><span>{{ visit.source }}</span></td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -143,7 +157,7 @@
     <script src="https://github.com/chartjs/Chart.js/releases/download/v2.9.3/Chart.min.js"></script>
 
     <script>
-        var montant = document.querySelectorAll(".montant_corpo");
+        var montant = document.querySelectorAll(".montant_table_fid");
             var t = montant.length;
             var test = new Intl.NumberFormat();
             if (t > 0) {

@@ -93,10 +93,6 @@ class FidelisationController extends AbstractController
                     <input type="number" id="fid_limite_nuitee" placeholder = "20 ou 35 ..." class="form-control" value="'. $fidelisation->getLimiteNuite() .'">
                 </div>
                 <div class="form-group">
-                    <label for="fid_limite_ca">Maximum de CA : </label>
-                    <input type="number" id="fid_limite_ca" placeholder = "montant en Ar" class="form-control" value="'. $fidelisation->getLimiteCa() .'">
-                </div>
-                <div class="form-group">
                     <button class="btn btn-warning btn-sm" id="modal_button_modif_fid" data-id ="'. $fidelisation->getid() .'" ><span>Enregistrer</span></button>
                 </div>
             </form>

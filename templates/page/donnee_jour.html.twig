@@ -1294,9 +1294,20 @@
         },
         methods: {
             proposeName: function() {
-               setTimeout(() => {
-                    this.isTyping = true;
-                }, 300);
+                if(this.name.length > 2){
+                        setTimeout(() => {
+                        this.isTyping = true;
+                    }, 300);
+                }
+                else{
+                    setTimeout(() => {
+                        this.isTyping = false;
+                    }, 300);
+                    // on vide les autres input
+                    this.lastName = "";
+                    this.email = "";
+                    this.telephone = "";
+                }
             },
             putClient: function(client){
                 this.isTyping = false;

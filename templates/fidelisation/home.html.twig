@@ -42,16 +42,16 @@
                 {% for item in fidelisations %}
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                         <div class="f_action_pack">
-                            <a href="#" class="a_bull">
+                            {# <a href="#" class="a_bull">
                                 <span class="fa fa-ellipsis-h"></span>
-                            </a>
+                            </a> #}
                             <div class="his_dropDown">
                                 <a class="dropdown-item open_modal" href="#" data-id = "{{ item.id }}"  data-toggle="modal">
                                     <span class="fa fa-gear"></span><span>Parametrer</span>
                                 </a>
-                                <a class="dropdown-item open_modal" data-id = "{{ item.id }}" href="#">
+                                {# <a class="dropdown-item open_modal" data-id = "{{ item.id }}" href="#">
                                     <span class="fa fa-trash-o"></span><span>Supprimer</span>
-                                </a>
+                                </a> #}
                             </div>
                         </div>
                         <a class="f_block" href="{{ path('fidelisation_' ~ item.nom, {'pseudo_hotel' : hotel}) }}">

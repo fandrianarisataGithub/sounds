@@ -220,35 +220,8 @@
                                     <th class="pax"><span>PAX</span></th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="presta">
-                                        <span>Cocktail</span>
-                                    </td>
-                                    <td class="qt">
-                                        <span>3</span>
-                                    </td>
-                                    <td class="date">
-                                        <span>26-05-2021</span>
-                                    </td>
-                                    <td class="pax">
-                                        <span>3</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="presta">
-                                        <span>Cocktail</span>
-                                    </td>
-                                    <td class="qt">
-                                        <span>3</span>
-                                    </td>
-                                    <td class="date">
-                                        <span>26-05-2021</span>
-                                    </td>
-                                    <td class="pax">
-                                        <span>3</span>
-                                    </td>
-                                </tr>
+                            <tbody id="data_presta">
+                               
                             </tbody>
                         </table>
                     </div>
@@ -449,19 +422,17 @@
                     data : data,
                     success : function(response){
                         
-                        $('#test').html(response);
-                        console.log(response);
-                        // if(response == "ok"){
-                        //     console.log(response);
-                        //     $("#modal_customer_presta").modal("hide");
-                        //     $("#form_add_presta").reset();
-                        //     $('#add_presta button').text('Enregistrer');
-                        // }
-                        // else{
-                        //     console.log(response);
-                        //     $("#error_form_presta p").text(response);
-                        //     $("#error_form_presta").show();
-                        // }
+                        if(response == "ok"){
+                            listingPresta();
+                            $("#modal_customer_presta").modal("hide");
+                            $("#form_add_presta").reset();
+                            $('#add_presta button').text('Enregistrer');
+                        }
+                        else{
+                           
+                            $("#error_form_presta p").text(response);
+                            $("#error_form_presta").fadeIn("slow");
+                        }
                         
                     },
                     error : function(){
@@ -469,6 +440,25 @@
                     }
                 })
             })
+
+            $("#form_add_presta input").on('focus', function(){
+                $("#error_form_presta").fadeOut("slow");
+            })
+            // listing his presta
+            function listingPresta(){
+                $.ajax({
+                    url : "/profile/list_prestation",
+                    type : "POST",
+                    data : {customer_id : '{{ customer.id }}'},
+                    success : function(response){ 
+                        $("#data_presta").html(response);
+                    },
+                    error : function(){
+                        console.log("Erreur on listing prestation");
+                    }
+                })
+            }
+            listingPresta();
 
         })
 

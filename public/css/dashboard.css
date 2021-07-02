@@ -7684,10 +7684,9 @@ td span.nom {
     transition: all 1s ease-in-out;
 }
 
-#table_f tbody tr:hover td {
-    transition: all 1s ease-in-out;
-    padding-left: 15px;
-    padding-right: 15px;
+#table_f tbody tr:hover {
+    transition: all 0.2s ease-in-out;
+   background: #e7e8e9 !important;
 }
 
 .span_round {
@@ -8263,6 +8262,10 @@ ul.group_nom_client li a{
     margin-top: 15px !important;
 }
 
+.nbr_nuitee, .montant_table_fid{
+    display: block;
+    text-align: center;
+}
     
 /* / fin error_form_contact */
 
